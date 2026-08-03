@@ -297,3 +297,160 @@ export function PerformanceMeterWidget() {
     </div>
   );
 }
+
+/* -------------------------------------------------------------------------- */
+/*  5. Interactive Security Shield Widget (Seguridad y Cumplimiento)            */
+/* -------------------------------------------------------------------------- */
+export function SecurityComplianceWidget() {
+  const [scanning, setScanning] = useState(false);
+  const [audited, setAudited] = useState(true);
+
+  const handleAudit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setScanning(true);
+    setAudited(false);
+    setTimeout(() => {
+      setScanning(false);
+      setAudited(true);
+    }, 800);
+  };
+
+  return (
+    <div className="w-full rounded-xl border border-foreground/10 bg-foreground/95 p-3.5 text-xs text-background font-mono">
+      <div className="flex items-center justify-between border-b border-background/10 pb-2 mb-2.5">
+        <div className="flex items-center gap-1.5 text-green-400 font-bold text-[11px]">
+          <ShieldCheck size={14} /> Security Status: PROTECTED
+        </div>
+        <button
+          onClick={handleAudit}
+          disabled={scanning}
+          className="rounded bg-accent px-2 py-0.5 text-[9px] font-bold text-white hover:bg-accent/90 transition-all active:scale-95 disabled:opacity-50"
+        >
+          {scanning ? "Scanning..." : "Audit SSL"}
+        </button>
+      </div>
+      <div className="space-y-1 text-[10px]">
+        <div className="flex items-center justify-between rounded bg-background/10 px-2 py-1">
+          <span className="text-background/80">AES-256 Encryption</span>
+          <span className="text-green-400 font-bold">VERIFIED</span>
+        </div>
+        <div className="flex items-center justify-between rounded bg-background/10 px-2 py-1">
+          <span className="text-background/80">OWASP Top 10 Guard</span>
+          <span className="text-green-400 font-bold">PASS (0 VULN)</span>
+        </div>
+        <div className="flex items-center justify-between rounded bg-background/10 px-2 py-1">
+          <span className="text-background/80">Ley 1581 / GDPR Compliance</span>
+          <span className="text-green-400 font-bold">COMPLIANT</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  6. Interactive Architecture Diagram Widget (Arquitectura & Documentación)  */
+/* -------------------------------------------------------------------------- */
+export function ArchitectureDocWidget() {
+  const [activeNode, setActiveNode] = useState<string>("gateway");
+
+  return (
+    <div className="w-full rounded-xl border border-foreground/10 bg-background/50 p-3.5 backdrop-blur-md text-xs">
+      <div className="flex items-center justify-between mb-2 text-[10px] font-bold text-foreground/80">
+        <span>System Topology</span>
+        <span className="text-accent font-mono">Clean Architecture</span>
+      </div>
+      <div className="flex items-center justify-between gap-1 text-[9px] font-mono text-center">
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("client"); }}
+          className={`flex-1 rounded border p-1.5 transition-all ${
+            activeNode === "client" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
+          }`}
+        >
+          Web / App
+        </button>
+        <span className="text-foreground/40 font-bold">→</span>
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("gateway"); }}
+          className={`flex-1 rounded border p-1.5 transition-all ${
+            activeNode === "gateway" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
+          }`}
+        >
+          API Gateway
+        </button>
+        <span className="text-foreground/40 font-bold">→</span>
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("db"); }}
+          className={`flex-1 rounded border p-1.5 transition-all ${
+            activeNode === "db" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
+          }`}
+        >
+          DB Cluster
+        </button>
+      </div>
+      <div className="mt-2 rounded bg-foreground/5 p-2 text-[10px] text-foreground/80 font-mono text-center">
+        {activeNode === "client" && "📱 Client: React / React Native UI Layer"}
+        {activeNode === "gateway" && "⚡ Gateway: Rate Limiter + Auth JWT Middleware"}
+        {activeNode === "db" && "💾 Database: PostgreSQL Primary + Replica Sync"}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  7. Interactive Data Migration Progress Widget (Migración de Datos Legacy)  */
+/* -------------------------------------------------------------------------- */
+export function LegacyMigrationWidget() {
+  const [progress, setProgress] = useState(100);
+  const [migrating, setMigrating] = useState(false);
+
+  const handleMigrate = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (migrating) return;
+    setMigrating(true);
+    setProgress(15);
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setMigrating(false);
+          return 100;
+        }
+        return prev + 25;
+      });
+    }, 250);
+  };
+
+  return (
+    <div className="w-full rounded-xl border border-foreground/10 bg-foreground/95 p-3.5 text-xs text-background font-mono">
+      <div className="flex items-center justify-between border-b border-background/10 pb-2 mb-2 text-[11px]">
+        <span className="font-bold text-background/90">Legacy → Cloud DB</span>
+        <button
+          onClick={handleMigrate}
+          disabled={migrating}
+          className="rounded bg-accent px-2 py-0.5 text-[9px] font-bold text-white hover:bg-accent/90 transition-all active:scale-95 disabled:opacity-50"
+        >
+          {migrating ? "Migrating..." : "Run Test"}
+        </button>
+      </div>
+      <div className="space-y-1.5">
+        <div className="flex justify-between text-[10px] text-background/80">
+          <span>Records: 100,000 / 100,000</span>
+          <span className="text-green-400 font-bold">{progress}%</span>
+        </div>
+        <div className="h-2 w-full rounded-full bg-background/20 overflow-hidden">
+          <motion.div
+            className="h-full bg-accent"
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.2 }}
+          />
+        </div>
+        <div className="text-[9px] text-green-400 text-center font-bold pt-0.5">
+          {progress === 100 ? "✔ ZERO DATA LOSS GUARANTEE" : "🔄 Transferring tables..."}
+        </div>
+      </div>
+    </div>
+  );
+}
+

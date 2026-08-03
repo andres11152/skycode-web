@@ -10,6 +10,9 @@ import {
   MobileAppPreviewWidget,
   ApiInspectorWidget,
   PerformanceMeterWidget,
+  SecurityComplianceWidget,
+  ArchitectureDocWidget,
+  LegacyMigrationWidget,
 } from "@/components/services/BentoServiceWidgets";
 import { getServicesContent } from "@/content/services";
 import { getUiContent } from "@/content/ui";
@@ -271,6 +274,9 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                           {service.slug === "desarrollo-aplicaciones-moviles" && <MobileAppPreviewWidget />}
                           {service.slug === "apis-integraciones" && <ApiInspectorWidget />}
                           {service.slug === "frontend-alto-rendimiento" && <PerformanceMeterWidget />}
+                          {service.slug === "seguridad-cumplimiento" && <SecurityComplianceWidget />}
+                          {service.slug === "arquitectura-documentacion" && <ArchitectureDocWidget />}
+                          {service.slug === "migracion-datos-legacy" && <LegacyMigrationWidget />}
                         </div>
                       </div>
                       {/* Listado con efecto Staggered al hacer hover en la tarjeta */}
