@@ -8,7 +8,7 @@ const linkClasses =
 
 export function LegalDocumentView({ doc }: { doc: LegalDocument }) {
   return (
-    <main id="main-content" className="px-6 pt-40 pb-24 sm:pt-48 sm:pb-32">
+    <main id="main-content" className="px-6 pt-28 pb-24 sm:pt-36 sm:pb-32">
       <article className="mx-auto flex max-w-2xl flex-col gap-8">
         <nav aria-label="Ruta de navegación">
           <ol className="flex items-center gap-2 text-sm text-foreground/60">

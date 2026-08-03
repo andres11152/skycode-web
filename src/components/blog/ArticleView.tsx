@@ -16,7 +16,7 @@ export function ArticleView({ post }: { post: BlogPost }) {
   const headings = post.content.filter((block) => block.type === "heading");
 
   return (
-    <main id="main-content" className="px-6 pt-40 pb-24 sm:pt-48 sm:pb-32">
+    <main id="main-content" className="px-6 pt-28 pb-24 sm:pt-36 sm:pb-32">
       <ScrollProgress />
       <motion.article
         variants={staggerContainer(reduced)}

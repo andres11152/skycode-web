@@ -16,7 +16,7 @@ export function PortfolioIndexView() {
   const uiData = getUiContent(defaultLocale);
 
   return (
-    <main id="main-content" className="px-6 pt-40 pb-24 sm:pt-48 sm:pb-32">
+    <main id="main-content" className="px-6 pt-28 pb-24 sm:pt-36 sm:pb-32">
       <div className="mx-auto max-w-5xl">
         <motion.div
           variants={staggerContainer(reduced)}

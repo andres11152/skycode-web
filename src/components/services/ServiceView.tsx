@@ -41,7 +41,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
   const nextService = services[(currentIndex + 1) % services.length];
 
   return (
-    <main id="main-content" className="px-6 pt-40 pb-24 sm:pt-48 sm:pb-32">
+    <main id="main-content" className="px-6 pt-28 pb-24 sm:pt-36 sm:pb-32">
       <motion.div
         variants={staggerContainer(reduced)}
         initial="hidden"
