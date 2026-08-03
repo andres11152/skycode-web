@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, Play, CheckCircle2, Cpu, Smartphone, Zap, ShieldCheck, Server, RefreshCw, Send } from "lucide-react";
+import { Terminal, Play, Smartphone, Zap, ShieldCheck, RefreshCw, Send } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*  1. Interactive Code Console Widget (Software a Medida)                      */
@@ -15,8 +15,15 @@ export function CodeConsoleWidget() {
     "✔ TypeScript 5.4 compilation: CLEAN",
     "⚡ Latency: 0.3ms | Memory: 42MB",
   ]);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleRun = (e: React.MouseEvent) => {
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const handleRun = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (isRunning) return;
@@ -24,7 +31,7 @@ export function CodeConsoleWidget() {
     setActiveTab("output");
     setLogs(["⏳ Compiling microservices...", "📦 Bundling WebAssembly modules..."]);
 
-    setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       setLogs((prev) => [
         ...prev,
         "✅ Build succeeded in 0.28s",
@@ -48,30 +55,40 @@ export function CodeConsoleWidget() {
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => setActiveTab("code")}
-            className={`px-2 py-0.5 rounded text-[10px] transition-colors ${
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveTab("code"); }}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("code"); } }}
+            className={`px-2 py-0.5 rounded text-[10px] cursor-pointer transition-colors ${
               activeTab === "code" ? "bg-background/20 text-background font-bold" : "text-background/50 hover:text-background"
             }`}
           >
             Code
-          </button>
-          <button
-            onClick={() => setActiveTab("output")}
-            className={`px-2 py-0.5 rounded text-[10px] transition-colors ${
+          </span>
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveTab("output"); }}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("output"); } }}
+            className={`px-2 py-0.5 rounded text-[10px] cursor-pointer transition-colors ${
               activeTab === "output" ? "bg-background/20 text-background font-bold" : "text-background/50 hover:text-background"
             }`}
           >
             Output
-          </button>
-          <button
+          </span>
+          <span
+            role="button"
+            tabIndex={0}
             onClick={handleRun}
-            disabled={isRunning}
-            className="ml-2 flex items-center gap-1 rounded bg-accent px-2.5 py-1 text-[10px] font-bold text-white shadow-sm hover:bg-accent/90 active:scale-95 transition-all disabled:opacity-50"
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleRun(e); }}
+            className={`ml-2 flex items-center gap-1 rounded bg-accent px-2.5 py-1 text-[10px] font-bold text-white shadow-sm hover:bg-accent/90 cursor-pointer active:scale-95 transition-all ${
+              isRunning ? "opacity-50 pointer-events-none" : ""
+            }`}
           >
             <Play size={10} className={isRunning ? "animate-spin" : ""} />
             {isRunning ? "Running..." : "Run"}
-          </button>
+          </span>
         </div>
       </div>
 
@@ -158,17 +175,26 @@ export function MobileAppPreviewWidget() {
                 className="space-y-2 text-center py-1"
               >
                 <div className="text-[10px] font-semibold">Offline Sync Engine</div>
-                <button
+                <span
+                  role="button"
+                  tabIndex={0}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     setSynced(!synced);
                   }}
-                  className="mx-auto flex items-center gap-1 rounded-full bg-accent/20 px-2 py-1 text-[9px] text-accent font-bold hover:bg-accent/30 transition-colors"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSynced(!synced);
+                    }
+                  }}
+                  className="mx-auto flex items-center justify-center gap-1 rounded-full bg-accent/20 px-2 py-1 text-[9px] text-accent font-bold cursor-pointer hover:bg-accent/30 transition-colors"
                 >
                   <RefreshCw size={10} className={!synced ? "animate-spin" : ""} />
                   {synced ? "Synced (0 pending)" : "Syncing DB..."}
-                </button>
+                </span>
               </motion.div>
             )}
 
@@ -191,24 +217,33 @@ export function MobileAppPreviewWidget() {
 
         {/* Bottom Tab Bar Selector */}
         <div className="mt-3 flex items-center justify-around border-t border-background/10 pt-2 text-[10px]">
-          <button
+          <span
+            role="button"
+            tabIndex={0}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveTab("dashboard"); }}
-            className={`p-1 rounded transition-colors ${activeTab === "dashboard" ? "text-accent font-bold" : "text-background/40"}`}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("dashboard"); } }}
+            className={`p-1 rounded cursor-pointer transition-colors ${activeTab === "dashboard" ? "text-accent font-bold" : "text-background/40"}`}
           >
             <Smartphone size={12} />
-          </button>
-          <button
+          </span>
+          <span
+            role="button"
+            tabIndex={0}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveTab("sync"); }}
-            className={`p-1 rounded transition-colors ${activeTab === "sync" ? "text-accent font-bold" : "text-background/40"}`}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("sync"); } }}
+            className={`p-1 rounded cursor-pointer transition-colors ${activeTab === "sync" ? "text-accent font-bold" : "text-background/40"}`}
           >
             <RefreshCw size={12} />
-          </button>
-          <button
+          </span>
+          <span
+            role="button"
+            tabIndex={0}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveTab("push"); }}
-            className={`p-1 rounded transition-colors ${activeTab === "push" ? "text-accent font-bold" : "text-background/40"}`}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("push"); } }}
+            className={`p-1 rounded cursor-pointer transition-colors ${activeTab === "push" ? "text-accent font-bold" : "text-background/40"}`}
           >
             <Zap size={12} />
-          </button>
+          </span>
         </div>
       </div>
     </div>
@@ -221,13 +256,21 @@ export function MobileAppPreviewWidget() {
 export function ApiInspectorWidget() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<number | null>(200);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleTestApi = (e: React.MouseEvent) => {
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const handleTestApi = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (loading) return;
     setLoading(true);
     setStatus(null);
-    setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       setStatus(200);
       setLoading(false);
     }, 600);
@@ -239,14 +282,18 @@ export function ApiInspectorWidget() {
       <div className="flex items-center gap-2 rounded bg-background/10 p-2 mb-3">
         <span className="rounded bg-green-500/20 px-1.5 py-0.5 text-[10px] font-bold text-green-400">POST</span>
         <span className="truncate text-[10px] text-background/80 flex-1">https://api.skycode.agency/v1/sync</span>
-        <button
+        <span
+          role="button"
+          tabIndex={0}
           onClick={handleTestApi}
-          disabled={loading}
-          className="flex items-center gap-1 rounded bg-accent px-2.5 py-1 text-[10px] font-bold text-white hover:bg-accent/90 transition-all active:scale-95 shrink-0"
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleTestApi(e); }}
+          className={`flex items-center gap-1 rounded bg-accent px-2.5 py-1 text-[10px] font-bold text-white hover:bg-accent/90 cursor-pointer transition-all active:scale-95 shrink-0 ${
+            loading ? "opacity-50 pointer-events-none" : ""
+          }`}
         >
           <Send size={10} className={loading ? "animate-ping" : ""} />
           {loading ? "Testing..." : "Send"}
-        </button>
+        </span>
       </div>
 
       {/* Response Box */}
@@ -303,16 +350,21 @@ export function PerformanceMeterWidget() {
 /* -------------------------------------------------------------------------- */
 export function SecurityComplianceWidget() {
   const [scanning, setScanning] = useState(false);
-  const [audited, setAudited] = useState(true);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleAudit = (e: React.MouseEvent) => {
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const handleAudit = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (scanning) return;
     setScanning(true);
-    setAudited(false);
-    setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       setScanning(false);
-      setAudited(true);
     }, 800);
   };
 
@@ -322,13 +374,17 @@ export function SecurityComplianceWidget() {
         <div className="flex items-center gap-1.5 text-green-400 font-bold text-[11px]">
           <ShieldCheck size={14} /> Security Status: PROTECTED
         </div>
-        <button
+        <span
+          role="button"
+          tabIndex={0}
           onClick={handleAudit}
-          disabled={scanning}
-          className="rounded bg-accent px-2 py-0.5 text-[9px] font-bold text-white hover:bg-accent/90 transition-all active:scale-95 disabled:opacity-50"
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleAudit(e); }}
+          className={`rounded bg-accent px-2 py-0.5 text-[9px] font-bold text-white hover:bg-accent/90 cursor-pointer transition-all active:scale-95 ${
+            scanning ? "opacity-50 pointer-events-none" : ""
+          }`}
         >
           {scanning ? "Scanning..." : "Audit SSL"}
-        </button>
+        </span>
       </div>
       <div className="space-y-1 text-[10px]">
         <div className="flex items-center justify-between rounded bg-background/10 px-2 py-1">
@@ -361,32 +417,41 @@ export function ArchitectureDocWidget() {
         <span className="text-accent font-mono">Clean Architecture</span>
       </div>
       <div className="flex items-center justify-between gap-1 text-[9px] font-mono text-center">
-        <button
+        <span
+          role="button"
+          tabIndex={0}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("client"); }}
-          className={`flex-1 rounded border p-1.5 transition-all ${
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveNode("client"); } }}
+          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all ${
             activeNode === "client" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
           }`}
         >
           Web / App
-        </button>
+        </span>
         <span className="text-foreground/40 font-bold">→</span>
-        <button
+        <span
+          role="button"
+          tabIndex={0}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("gateway"); }}
-          className={`flex-1 rounded border p-1.5 transition-all ${
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveNode("gateway"); } }}
+          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all ${
             activeNode === "gateway" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
           }`}
         >
           API Gateway
-        </button>
+        </span>
         <span className="text-foreground/40 font-bold">→</span>
-        <button
+        <span
+          role="button"
+          tabIndex={0}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("db"); }}
-          className={`flex-1 rounded border p-1.5 transition-all ${
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveNode("db"); } }}
+          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all ${
             activeNode === "db" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
           }`}
         >
           DB Cluster
-        </button>
+        </span>
       </div>
       <div className="mt-2 rounded bg-foreground/5 p-2 text-[10px] text-foreground/80 font-mono text-center">
         {activeNode === "client" && "📱 Client: React / React Native UI Layer"}
@@ -403,17 +468,25 @@ export function ArchitectureDocWidget() {
 export function LegacyMigrationWidget() {
   const [progress, setProgress] = useState(100);
   const [migrating, setMigrating] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const handleMigrate = (e: React.MouseEvent) => {
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  const handleMigrate = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (migrating) return;
     setMigrating(true);
     setProgress(15);
-    const interval = setInterval(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          clearInterval(interval);
+          if (intervalRef.current) clearInterval(intervalRef.current);
           setMigrating(false);
           return 100;
         }
@@ -426,13 +499,17 @@ export function LegacyMigrationWidget() {
     <div className="w-full rounded-xl border border-foreground/10 bg-foreground/95 p-3.5 text-xs text-background font-mono">
       <div className="flex items-center justify-between border-b border-background/10 pb-2 mb-2 text-[11px]">
         <span className="font-bold text-background/90">Legacy → Cloud DB</span>
-        <button
+        <span
+          role="button"
+          tabIndex={0}
           onClick={handleMigrate}
-          disabled={migrating}
-          className="rounded bg-accent px-2 py-0.5 text-[9px] font-bold text-white hover:bg-accent/90 transition-all active:scale-95 disabled:opacity-50"
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleMigrate(e); }}
+          className={`rounded bg-accent px-2 py-0.5 text-[9px] font-bold text-white hover:bg-accent/90 cursor-pointer transition-all active:scale-95 ${
+            migrating ? "opacity-50 pointer-events-none" : ""
+          }`}
         >
           {migrating ? "Migrating..." : "Run Test"}
-        </button>
+        </span>
       </div>
       <div className="space-y-1.5">
         <div className="flex justify-between text-[10px] text-background/80">
@@ -453,4 +530,3 @@ export function LegacyMigrationWidget() {
     </div>
   );
 }
-
