@@ -1,0 +1,9 @@
+{
+  "ariaLabel": "Standards d'ingénierie logicielle",
+  "items": [
+    { "label": "Bonnes pratiques OWASP" },
+    { "label": "Conformité en protection des données" },
+    { "label": "Documentation technique incluse" },
+    { "label": "Code 100% transférable" }
+  ]
+}

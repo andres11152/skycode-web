@@ -1,0 +1,64 @@
+{
+  "title": "Portfolio",
+  "description": "Projets phares et succès clients : des solutions technologiques déployées avec succès pour résoudre de vrais défis métier.",
+  "items": [
+    {
+      "slug": "servifuturo",
+      "title": "Plateforme de Gestion de Flotte et Contrôle Opérationnel",
+      "client": "ServiFuturo S.A.S. · Transport d'Entreprise & Logistique",
+      "description": "Système de gestion intégrée pour le transport d'entreprise : suivi en temps réel, règlement automatique des prestations, contrôle chauffeurs/passagers et journal d'audit.",
+      "tags": ["Gestion de Flotte", "Contrôle Opérationnel", "Audit & Données", "Next.js & Node"],
+      "iconName": "Truck",
+      "link": "https://servifuturo.cloud/",
+      "coverImage": "/projects/servifuturo/servifuturo-02.webp",
+      "gallery": [
+        "/projects/servifuturo/servifuturo-01.webp",
+        "/projects/servifuturo/servifuturo-02.webp",
+        "/projects/servifuturo/servifuturo-03.webp",
+        "/projects/servifuturo/servifuturo-04.webp",
+        "/projects/servifuturo/servifuturo-05.webp",
+        "/projects/servifuturo/servifuturo-06.webp",
+        "/projects/servifuturo/servifuturo-07.webp",
+        "/projects/servifuturo/servifuturo-08.webp",
+        "/projects/servifuturo/servifuturo-09.webp",
+        "/projects/servifuturo/servifuturo-10.webp",
+        "/projects/servifuturo/servifuturo-11.webp",
+        "/projects/servifuturo/servifuturo-12.webp",
+        "/projects/servifuturo/servifuturo-13.webp",
+        "/projects/servifuturo/servifuturo-14.webp"
+      ]
+    },
+    {
+      "slug": "ecommerce-automatizacion",
+      "title": "Plateforme e-commerce et intégration ERP",
+      "client": "Client confidentiel · E-commerce & Logistique",
+      "description": "Solution e-commerce intégrée aux systèmes ERP et à la facturation électronique, optimisant la gestion opérationnelle et le contrôle des stocks.",
+      "tags": ["E-commerce", "Intégration ERP", "Passerelles de paiement"],
+      "iconName": "ShoppingCart"
+    },
+    {
+      "slug": "landing-alta-conversion",
+      "title": "Portail d'acquisition et design UX/UI",
+      "client": "Client confidentiel · Prospection digitale",
+      "description": "Portail haute vitesse conçu pour optimiser la capture de prospects, intégrant des outils d'analyse et l'optimisation de l'expérience utilisateur.",
+      "tags": ["Frontend", "UX/UI", "Conversion digitale"],
+      "iconName": "Rocket"
+    },
+    {
+      "slug": "sitio-corporativo-seo",
+      "title": "Portail institutionnel et optimisation SEO",
+      "client": "Client confidentiel · Présence institutionnelle",
+      "description": "Plateforme institutionnelle développée pour maximiser le référencement naturel, avec un chargement ultra-rapide et un design responsive haut de gamme.",
+      "tags": ["Portail institutionnel", "Stratégie SEO", "Next.js"],
+      "iconName": "Globe"
+    },
+    {
+      "slug": "automatizacion-procesos",
+      "title": "Système d'automatisation des flux opérationnels",
+      "client": "Client confidentiel · Intégration de systèmes",
+      "description": "Conception et mise en œuvre d'intégrations système et de flux d'automatisation des données pour éliminer les processus manuels et connecter plusieurs plateformes internes.",
+      "tags": ["Automatisation", "Intégration d'API", "Efficacité opérationnelle"],
+      "iconName": "Workflow"
+    }
+  ]
+}

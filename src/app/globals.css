@@ -2,25 +2,114 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0a0a0a;
+  --accent: #0089cd;
+  --accent-strong: #006998;
+  --accent-foreground: #ffffff;
+  --accent-secondary: #ffd100;
+  --mouse-glow-color: rgba(0, 137, 205, 0.22);
+  --mouse-glow-blend: multiply;
 }
 
 @theme inline {
+  /* Usado por el badge de estado del CodeMockup del Hero (hidden xs:flex) —
+     sin esta declaración, Tailwind nunca genera la variante `xs:` y la clase
+     `hidden` queda permanente en todos los tamaños de pantalla. */
+  --breakpoint-xs: 25rem;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-secondary: var(--accent-secondary);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), var(--font-sans), sans-serif;
+}
+
+@keyframes nav-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-nav-enter {
+  animation: nav-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/*
+ * Entrada del Hero en CSS puro (no Framer Motion): el H1 es el elemento LCP
+ * de la página. Con Framer Motion, el HTML servido por el servidor queda con
+ * opacity:0 inline hasta que el bundle de JS descarga, parsea e hidrata —
+ * en conexiones lentas o si el JS falla, el H1 nunca se pinta. Una animación
+ * CSS corre de forma declarativa apenas el navegador parsea el stylesheet,
+ * sin esperar a React/Framer Motion.
+ */
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-fade-up {
+  animation: hero-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes hero-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-hero-scale-in {
+  animation: hero-scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-nav-enter,
+  .animate-hero-fade-up,
+  .animate-hero-scale-in {
+    animation: none;
+  }
+}
+
+/* Modificadores de color de brillo de cursor para secciones oscuras */
+.bg-foreground,
+#servicios {
+  --mouse-glow-color: rgba(255, 209, 0, 0.18);
+  --mouse-glow-blend: normal;
 }

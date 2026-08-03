@@ -1,0 +1,23 @@
+{
+  "sectionAria": "Nuestro proceso de trabajo",
+  "title": "Cómo trabajamos",
+  "description": "Un proceso claro, sin sorpresas, desde el primer diagnóstico hasta la entrega final.",
+  "steps": [
+    {
+      "title": "Diagnóstico de arquitectura",
+      "description": "Evaluamos su sistema actual o el que necesita construir, y entregamos un diagnóstico técnico en menos de 24 horas hábiles."
+    },
+    {
+      "title": "Propuesta y alcance",
+      "description": "Definimos arquitectura, alcance y cronograma antes de escribir una sola línea de código."
+    },
+    {
+      "title": "Desarrollo iterativo",
+      "description": "Entregas funcionales en cada sprint, con visibilidad total del progreso en repositorios compartidos."
+    },
+    {
+      "title": "Entrega y transferencia",
+      "description": "Transferencia formal y completa de repositorios y credenciales — el código es 100% suyo desde el primer día."
+    }
+  ]
+}

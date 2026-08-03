@@ -1,0 +1,94 @@
+{
+  "title": "Nuestros servicios",
+  "description": "Desarrollamos soluciones robustas con arquitectura empresarial, seguridad rigurosa y documentación técnica detallada para respaldar el crecimiento y la autonomía de su organización.",
+  "items": [
+    {
+      "slug": "desarrollo-software-medida",
+      "title": "Sistemas Propios y Escalables a la Medida",
+      "description": "Diseñamos la estructura central de su negocio con backend de alto rendimiento. Entregamos propiedad intelectual absoluta y bases de datos optimizadas para que no pague licencias infinitas ni dependa de builders limitados.",
+      "iconName": "Code2",
+      "features": [
+        "Código propio y transferible",
+        "Bases de datos estructuradas para su negocio",
+        "Lógica de negocio personalizada"
+      ]
+    },
+    {
+      "slug": "desarrollo-aplicaciones-moviles",
+      "title": "Desarrollo Móvil (Android & iOS)",
+      "description": "Creación de aplicaciones móviles nativas y multiplataforma (React Native y Flutter) de alto rendimiento, optimizadas para las tiendas App Store y Google Play.",
+      "iconName": "Smartphone",
+      "features": [
+        "Aplicaciones multiplataforma (React Native / Flutter)",
+        "Publicación y optimización en tiendas (ASO)",
+        "Sincronización sin conexión (Offline-first)"
+      ]
+    },
+    {
+      "slug": "apis-integraciones",
+      "title": "APIs & Integraciones",
+      "description": "Diseño y desarrollo de APIs REST documentadas para conectar sus sistemas con pasarelas de pago, ERPs, CRMs y cualquier plataforma clave en su operación.",
+      "iconName": "Plug",
+      "features": [
+        "APIs REST estandarizadas y documentadas",
+        "Integración con ERPs y pasarelas de pago",
+        "Arquitectura de microservicios"
+      ]
+    },
+    {
+      "slug": "frontend-alto-rendimiento",
+      "title": "Interfaces Ultra-rápidas y Optimización de Conversión",
+      "description": "El rendimiento web es rentabilidad. Desarrollamos con React y Next.js asegurando puntajes perfectos en Core Web Vitals para maximizar sus tasas de conversión y posicionamiento SEO orgánico.",
+      "iconName": "AppWindow",
+      "features": [
+        "Aplicaciones con React y Next.js",
+        "Optimización de Core Web Vitals y SEO",
+        "Accesibilidad web (WCAG) desde el diseño"
+      ]
+    },
+    {
+      "slug": "seguridad-cumplimiento",
+      "title": "Blindaje de Datos y Cumplimiento Normativo (OWASP)",
+      "description": "Protegemos la reputación de su marca. Aplicamos metodologías OWASP contra vulnerabilidades y estructuramos su software bajo la Ley 1581 (Colombia) y el RGPD (Europa), asegurando auditorías de seguridad exitosas.",
+      "iconName": "ShieldCheck",
+      "features": [
+        "Estándares de seguridad OWASP",
+        "Cumplimiento normativo de protección de datos (Ley 1581, RGPD y equivalentes)",
+        "Cifrado de información y control de accesos"
+      ]
+    },
+    {
+      "slug": "arquitectura-documentacion",
+      "title": "Arquitectura & Documentación",
+      "description": "Entregamos documentación técnica exhaustiva y transferencia de conocimiento estructurada para que su equipo mantenga el control y la autonomía sobre el código.",
+      "iconName": "Layers",
+      "features": [
+        "Documentación técnica detallada",
+        "Diseño de sistemas preparado para escalar",
+        "Transferencia completa de propiedad intelectual"
+      ]
+    },
+    {
+      "slug": "migracion-datos-legacy",
+      "title": "Migración y Modernización de Datos Legacy",
+      "description": "Transformamos información fragmentada y archivos estructurados complejos (XML, CSV, bases de datos obsoletas) de sistemas heredados a almacenes de datos modernos y optimizados para la toma de decisiones estratégicas.",
+      "iconName": "Database",
+      "features": [
+        "Migración segura desde sistemas legacy y XML",
+        "Estructuración de datos para Business Intelligence",
+        "Integración de pipelines de datos y ETLs"
+      ]
+    },
+    {
+      "slug": "inteligencia-artificial-aplicada",
+      "title": "Inteligencia Artificial Aplicada (IA)",
+      "description": "Diseñamos e integramos modelos de IA, LLMs y agentes autónomos para optimizar flujos de trabajo, automatizar tareas repetitivas y potenciar la toma de decisiones basada en datos.",
+      "iconName": "BrainCircuit",
+      "features": [
+        "Integración de LLMs y modelos de IA de terceros",
+        "Agentes autónomos para automatización de procesos",
+        "Análisis de datos para decisiones basadas en datos"
+      ]
+    }
+  ]
+}

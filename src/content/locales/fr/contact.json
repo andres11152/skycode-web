@@ -1,0 +1,22 @@
+{
+  "title": "Parlons de votre projet",
+  "description": "Arrêtez de reporter le développement de votre plateforme. Parlez-nous de votre défi technique aujourd'hui et recevez un pré-diagnostic d'architecture gratuit en moins de 24 heures ouvrables de la part de notre équipe d'ingénierie.",
+  "placeholders": {
+    "name": "Nom complet ou raison sociale",
+    "email": "Adresse e-mail de contact",
+    "message": "Décrivez brièvement les besoins ou le défi de votre projet"
+  },
+  "submitLabel": "Envoyer la demande de contact",
+  "habeasData": {
+    "label": "J'accepte la politique de traitement des données personnelles.",
+    "linkText": "Voir la politique de confidentialité",
+    "linkUrl": "/politica-privacidad"
+  },
+  "successModal": {
+    "title": "Message envoyé !",
+    "body": "Merci de nous avoir contactés. Nous reviendrons vers vous très prochainement."
+  },
+  "sendingLabel": "Envoi en cours...",
+  "errorConnection": "Impossible de se connecter au serveur. Veuillez vérifier votre connexion.",
+  "errorGeneral": "Une erreur est survenue lors de l'envoi du message."
+}

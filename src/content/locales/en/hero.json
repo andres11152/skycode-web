@@ -1,0 +1,18 @@
+{
+  "sectionAria": "Agency introduction",
+  "actionsAria": "Main actions",
+  "badge": "SOFTWARE ENGINEERING WITHOUT VENDOR LOCK-IN",
+  "title": "High-performance custom software. 100% transferable code, free from technical debt.",
+  "subtitle": "We build scale-ready enterprise platforms with pristine documentation and total intellectual property transfer. Your success depends on the quality of your software, not on us.",
+  "description": "Protect the continuity and security of your digital operation. We design to international security standards (OWASP) and the data protection frameworks applicable in your country, delivering rigorous technical documentation so your team keeps full control without depending on third parties.",
+  "ctaPrimary": {
+    "label": "Free audit",
+    "href": "#contacto",
+    "ariaLabel": "Schedule a free architecture audit: go to the contact form"
+  },
+  "ctaSecondary": {
+    "label": "View portfolio",
+    "href": "#portfolio",
+    "ariaLabel": "View project portfolio"
+  }
+}

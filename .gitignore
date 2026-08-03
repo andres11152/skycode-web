@@ -15,6 +15,8 @@
 
 # next.js
 /.next/
+/.next-verify/
+/.next-verify-tmp/
 /out/
 
 # production
@@ -35,6 +37,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# raw brand source files (huge originals, PDF) — web-ready derivatives live in public/ and src/app/
+/brand-assets/source/
 
 # typescript
 *.tsbuildinfo

@@ -1,0 +1,19 @@
+{
+  "sectionAria": "Why choose us",
+  "techLabel": "Our technology stack",
+  "videoAria": "Sample video of our work",
+  "items": [
+    {
+      "title": "Direct communication",
+      "description": "Talk to the engineers building your software, not account managers. Full real-time visibility into progress."
+    },
+    {
+      "title": "Post-delivery warranty",
+      "description": "A technical stability warranty period at no extra cost, plus an SLA for ongoing preventive support."
+    },
+    {
+      "title": "Privacy by design",
+      "description": "RBAC, encryption of sensitive data, and immutable audit logs — not a patch after an incident."
+    }
+  ]
+}

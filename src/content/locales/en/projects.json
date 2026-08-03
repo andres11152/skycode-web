@@ -1,0 +1,64 @@
+{
+  "title": "Portfolio",
+  "description": "Featured projects and success stories: technology solutions successfully implemented to solve real business challenges.",
+  "items": [
+    {
+      "slug": "servifuturo",
+      "title": "Fleet Management & Operational Control Platform",
+      "client": "ServiFuturo S.A.S. · Corporate Transport & Logistics",
+      "description": "Comprehensive fleet management system for corporate transport operations: real-time monitoring, automated service settlement, drivers/passengers control, and audit logs under SOX & data protection laws.",
+      "tags": ["Fleet Management", "Operational Control", "Audit & Data", "Next.js & Node"],
+      "iconName": "Truck",
+      "link": "https://servifuturo.cloud/",
+      "coverImage": "/projects/servifuturo/servifuturo-02.webp",
+      "gallery": [
+        "/projects/servifuturo/servifuturo-01.webp",
+        "/projects/servifuturo/servifuturo-02.webp",
+        "/projects/servifuturo/servifuturo-03.webp",
+        "/projects/servifuturo/servifuturo-04.webp",
+        "/projects/servifuturo/servifuturo-05.webp",
+        "/projects/servifuturo/servifuturo-06.webp",
+        "/projects/servifuturo/servifuturo-07.webp",
+        "/projects/servifuturo/servifuturo-08.webp",
+        "/projects/servifuturo/servifuturo-09.webp",
+        "/projects/servifuturo/servifuturo-10.webp",
+        "/projects/servifuturo/servifuturo-11.webp",
+        "/projects/servifuturo/servifuturo-12.webp",
+        "/projects/servifuturo/servifuturo-13.webp",
+        "/projects/servifuturo/servifuturo-14.webp"
+      ]
+    },
+    {
+      "slug": "ecommerce-automatizacion",
+      "title": "E-Commerce Platform & ERP Integration",
+      "client": "Confidential Client · E-commerce & Logistics",
+      "description": "E-commerce solution integrated with ERP systems and electronic invoicing, streamlining operational management and inventory control.",
+      "tags": ["E-commerce", "ERP Integration", "Payment Gateways"],
+      "iconName": "ShoppingCart"
+    },
+    {
+      "slug": "landing-alta-conversion",
+      "title": "Lead Generation Portal & UX/UI Design",
+      "client": "Confidential Client · Digital Lead Generation",
+      "description": "High-speed portal designed to optimize lead capture, integrating analytics tools and user experience optimization.",
+      "tags": ["Frontend", "UX/UI", "Digital Conversion"],
+      "iconName": "Rocket"
+    },
+    {
+      "slug": "sitio-corporativo-seo",
+      "title": "Corporate Site & SEO Optimization",
+      "client": "Confidential Client · Corporate Presence",
+      "description": "Corporate platform built to maximize organic search rankings, with ultra-fast load times and premium responsive design.",
+      "tags": ["Corporate Site", "SEO Strategy", "Next.js"],
+      "iconName": "Globe"
+    },
+    {
+      "slug": "automatizacion-procesos",
+      "title": "Operational Workflow Automation System",
+      "client": "Confidential Client · Systems Integration",
+      "description": "Design and implementation of system integrations and data automation workflows to eliminate manual processes and connect multiple internal platforms.",
+      "tags": ["Automation", "API Integration", "Operational Efficiency"],
+      "iconName": "Workflow"
+    }
+  ]
+}

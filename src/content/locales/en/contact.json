@@ -1,0 +1,22 @@
+{
+  "title": "Let's talk about your project",
+  "description": "Stop postponing your platform's development. Tell us about your technical challenge today and get a free architecture pre-diagnostics within 24 business hours from our engineering team.",
+  "placeholders": {
+    "name": "Full name or company name",
+    "email": "Contact email address",
+    "message": "Briefly describe your project's requirements or challenge"
+  },
+  "submitLabel": "Send contact request",
+  "habeasData": {
+    "label": "I agree to the personal data processing policy.",
+    "linkText": "View privacy policy",
+    "linkUrl": "/politica-privacidad"
+  },
+  "successModal": {
+    "title": "Message sent!",
+    "body": "Thanks for reaching out. We'll be in touch shortly."
+  },
+  "sendingLabel": "Sending...",
+  "errorConnection": "Could not connect to the server. Please check your connection.",
+  "errorGeneral": "There was an error sending your message."
+}

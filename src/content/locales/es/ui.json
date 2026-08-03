@@ -1,0 +1,20 @@
+{
+  "portfolioSectionAria": "Portafolio de proyectos",
+  "portfolioTechUsed": "Tecnologías usadas en {title}",
+  "testimonialsSectionAria": "Testimonios de clientes",
+  "pauseVideo": "Pausar video",
+  "playVideo": "Reproducir video",
+  "servicesSectionAria": "Nuestros servicios",
+  "servicesScrollPrev": "Ver servicios anteriores",
+  "servicesScrollNext": "Ver siguientes servicios",
+  "servicesGoToSlide": "Ir al servicio número {index}",
+  "contactOtherWaysAria": "Otras formas de contacto",
+  "modalClose": "Cerrar",
+  "portfolioViewCase": "Ver caso completo",
+  "servicesViewDetails": "Ver detalles del servicio",
+  "testimonialsScrollPrev": "Testimonio anterior",
+  "testimonialsScrollNext": "Siguiente testimonio",
+  "testimonialsGoToSlide": "Ir al testimonio número {index}",
+  "testimonialsPause": "Pausar carrusel de testimonios",
+  "testimonialsResume": "Reanudar carrusel de testimonios"
+}

@@ -1,0 +1,36 @@
+{
+  "sectionAria": "Nuestro equipo",
+  "title": "El equipo detrás del código",
+  "description": "Un equipo senior, sin intermediarios comerciales entre usted y quienes construyen su software. Hable directamente con los ingenieros a cargo de su proyecto.",
+  "ctaLabel": "Hablar con el equipo",
+  "members": [
+    {
+      "slug": "andres-betancourt",
+      "name": "Andrés Betancourt",
+      "role": "Backend Developer",
+      "description": "Diseña sistemas de alto rendimiento, arquitecturas de APIs robustas y soluciones de datos que soportan la operación crítica de cada cliente.",
+      "photo": "/team/andres-betancourt.webp"
+    },
+    {
+      "slug": "cesar-leon",
+      "name": "César León",
+      "role": "Frontend Developer",
+      "description": "Construye interfaces rápidas, accesibles y optimizadas para conversión, con foco en rendimiento y Core Web Vitals.",
+      "photo": "/team/cesar-leon.webp"
+    },
+    {
+      "slug": "ximena-calderon",
+      "name": "Ximena Calderón",
+      "role": "UI/UX Designer",
+      "description": "Diseña experiencias de usuario que equilibran estética y funcionalidad, alineando cada entregable con los objetivos de negocio del cliente.",
+      "photo": "/team/ximena-calderon.webp"
+    },
+    {
+      "slug": "sales-manager",
+      "name": "Sales Manager",
+      "role": "Sales Manager",
+      "description": "Gestiona la relación comercial con cada cliente, asegurando que cada propuesta esté alineada con los objetivos reales del negocio.",
+      "photo": null
+    }
+  ]
+}

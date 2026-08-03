@@ -1,0 +1,36 @@
+{
+  "sectionAria": "Our team",
+  "title": "The team behind the code",
+  "description": "A senior team, with no sales intermediaries between you and the people building your software. Talk directly to the engineers in charge of your project.",
+  "ctaLabel": "Talk to the team",
+  "members": [
+    {
+      "slug": "andres-betancourt",
+      "name": "Andrés Betancourt",
+      "role": "Backend Developer",
+      "description": "Designs high-performance systems, robust API architectures, and data solutions that support each client's critical operation.",
+      "photo": "/team/andres-betancourt.webp"
+    },
+    {
+      "slug": "cesar-leon",
+      "name": "César León",
+      "role": "Frontend Developer",
+      "description": "Builds fast, accessible interfaces optimized for conversion, focusing on performance and Core Web Vitals.",
+      "photo": "/team/cesar-leon.webp"
+    },
+    {
+      "slug": "ximena-calderon",
+      "name": "Ximena Calderón",
+      "role": "UI/UX Designer",
+      "description": "Designs user experiences that balance aesthetics and functionality, aligning every deliverable with the client's business goals.",
+      "photo": "/team/ximena-calderon.webp"
+    },
+    {
+      "slug": "sales-manager",
+      "name": "Sales Manager",
+      "role": "Sales Manager",
+      "description": "Manages the commercial relationship with each client, ensuring every proposal is aligned with real business objectives.",
+      "photo": null
+    }
+  ]
+}

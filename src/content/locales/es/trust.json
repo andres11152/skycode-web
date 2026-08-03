@@ -1,0 +1,9 @@
+{
+  "ariaLabel": "Estándares de ingeniería de software",
+  "items": [
+    { "label": "Buenas prácticas OWASP" },
+    { "label": "Cumplimiento normativo de datos" },
+    { "label": "Documentación técnica incluida" },
+    { "label": "Código 100% transferible" }
+  ]
+}

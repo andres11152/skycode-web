@@ -1,0 +1,20 @@
+{
+  "portfolioSectionAria": "Portfolio de projets",
+  "portfolioTechUsed": "Technologies utilisées pour {title}",
+  "testimonialsSectionAria": "Témoignages clients",
+  "pauseVideo": "Mettre la vidéo en pause",
+  "playVideo": "Lire la vidéo",
+  "servicesSectionAria": "Nos services",
+  "servicesScrollPrev": "Voir les services précédents",
+  "servicesScrollNext": "Voir les services suivants",
+  "servicesGoToSlide": "Aller au service numéro {index}",
+  "contactOtherWaysAria": "Autres moyens de nous contacter",
+  "modalClose": "Fermer",
+  "portfolioViewCase": "Voir l'étude de cas complète",
+  "servicesViewDetails": "Voir les détails du service",
+  "testimonialsScrollPrev": "Témoignage précédent",
+  "testimonialsScrollNext": "Témoignage suivant",
+  "testimonialsGoToSlide": "Aller au témoignage numéro {index}",
+  "testimonialsPause": "Mettre en pause le carrousel de témoignages",
+  "testimonialsResume": "Reprendre le carrousel de témoignages"
+}

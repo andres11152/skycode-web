@@ -1,0 +1,22 @@
+{
+  "title": "Hablemos de su proyecto",
+  "description": "Deje de aplazar el desarrollo de su plataforma. Cuéntenos su desafío técnico hoy y reciba un pre-diagnóstico de arquitectura en menos de 24 horas hábiles por parte de nuestro equipo de ingeniería.",
+  "placeholders": {
+    "name": "Nombre completo o nombre de la empresa",
+    "email": "Correo electrónico de contacto",
+    "message": "Describa brevemente los requerimientos o el desafío de su proyecto"
+  },
+  "submitLabel": "Enviar solicitud de contacto",
+  "habeasData": {
+    "label": "Acepto la política de tratamiento de datos personales.",
+    "linkText": "Ver política de privacidad",
+    "linkUrl": "/politica-privacidad"
+  },
+  "successModal": {
+    "title": "¡Mensaje enviado!",
+    "body": "Gracias por escribirnos. Lo contactaremos muy pronto."
+  },
+  "sendingLabel": "Enviando...",
+  "errorConnection": "No se pudo conectar con el servidor. Revise su conexión.",
+  "errorGeneral": "Hubo un error al enviar el mensaje."
+}

@@ -1,0 +1,11 @@
+{
+  "siteName": "SkyCode Agency",
+  "siteTagline": "High-reliability custom software development",
+  "siteDescription": "Custom software, robust APIs, and high-performance frontends with scalable architecture, built to OWASP security standards and data protection compliance.",
+  "contactEmail": "contact@skycode.agency",
+  "contactPhone": "+573138081081",
+  "socials": {
+    "facebook": "https://facebook.com/skycodeagency/",
+    "instagram": "https://instagram.com/skycode.agency/"
+  }
+}

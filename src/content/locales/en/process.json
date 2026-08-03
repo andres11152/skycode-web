@@ -1,0 +1,23 @@
+{
+  "sectionAria": "Our work process",
+  "title": "How we work",
+  "description": "A clear process, no surprises, from the first diagnostic to final delivery.",
+  "steps": [
+    {
+      "title": "Architecture diagnostic",
+      "description": "We assess your current system or the one you need to build, and deliver a technical diagnostic within 24 business hours."
+    },
+    {
+      "title": "Proposal and scope",
+      "description": "We define architecture, scope, and timeline before writing a single line of code."
+    },
+    {
+      "title": "Iterative development",
+      "description": "Functional deliveries every sprint, with full visibility into progress through shared repositories."
+    },
+    {
+      "title": "Delivery and transfer",
+      "description": "Formal, complete transfer of repositories and credentials — the code is 100% yours from day one."
+    }
+  ]
+}

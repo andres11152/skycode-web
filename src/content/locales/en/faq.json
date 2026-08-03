@@ -1,0 +1,26 @@
+{
+  "title": "Frequently Asked Questions",
+  "description": "We address your questions about our software engineering methodology, intellectual property, and regulatory compliance — wherever your business operates.",
+  "items": [
+    {
+      "question": "Who owns the code once the software is delivered?",
+      "answer": "The intellectual property of the source code developed belongs 100% to your company. At the end of the project, we carry out a formal, complete transfer of repositories and credentials. We don't implement proprietary monthly-licensing systems or technical dependencies (vendor lock-in) that would prevent your team from continuing development on its own."
+    },
+    {
+      "question": "How do you ensure compliance with data protection regulations?",
+      "answer": "We design every system on a privacy-by-design premise. We implement explicit consent flows, role-based access control (RBAC), encryption of sensitive personal data (at rest and in transit), and immutable audit logs, adapted to each market's regulatory framework — Law 1581 in Colombia, GDPR in the European Union, and equivalent frameworks elsewhere."
+    },
+    {
+      "question": "Can your builds integrate with payment gateways and ERP systems?",
+      "answer": "Yes — robust API integration is one of our specialties. We connect your custom software to payment gateways (Stripe, PayPal, Wompi, PayU, Mercado Pago, and others) and ERP/accounting systems such as SAP, Siigo, Alegra, or in-house tools, automating invoicing and inventory synchronization."
+    },
+    {
+      "question": "What kind of support and maintenance do you offer after delivery?",
+      "answer": "We include a technical-stability warranty period to resolve any incident at no additional cost. We also offer Service Level Agreements (SLAs) for ongoing monthly support, security updates, cloud infrastructure patches, and continuous performance optimization."
+    },
+    {
+      "question": "How do you handle communication and project management?",
+      "answer": "We work under adapted agile frameworks. Your company gets full real-time visibility into progress through shared repositories and project management tools. We deliver working increments iteratively so you can give feedback early, ensuring the final product matches your operation's actual needs."
+    }
+  ]
+}

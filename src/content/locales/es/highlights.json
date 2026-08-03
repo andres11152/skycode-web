@@ -1,0 +1,19 @@
+{
+  "sectionAria": "Por qué elegirnos",
+  "techLabel": "Nuestro stack tecnológico",
+  "videoAria": "Video de muestra de nuestro trabajo",
+  "items": [
+    {
+      "title": "Comunicación directa",
+      "description": "Habla con los ingenieros que construyen su software, no con gestores de cuenta. Visibilidad total del progreso en tiempo real."
+    },
+    {
+      "title": "Garantía post-entrega",
+      "description": "Periodo de garantía de estabilidad técnica sin costo adicional, más SLA de soporte preventivo continuo."
+    },
+    {
+      "title": "Privacidad desde el diseño",
+      "description": "RBAC, cifrado de datos sensibles y logs de auditoría inmutables — no como parche posterior a un incidente."
+    }
+  ]
+}

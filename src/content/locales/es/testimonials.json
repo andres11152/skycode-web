@@ -1,0 +1,35 @@
+{
+  "title": "Lo que dicen quienes ya trabajaron con nosotros",
+  "description": "Resultados medibles, no solo buenas intenciones.",
+  "items": [
+    {
+      "name": "Ricardo Jiménez",
+      "role": "Gerente de Tecnología",
+      "company": "Comercializadora Andina S.A.S.",
+      "location": "Bogotá",
+      "quote": "Trabajar con Skycode nos dio la tranquilidad de que nuestra plataforma de e-commerce podría manejar picos de tráfico sin caerse. En el último Black Friday superamos todas las proyecciones y su arquitectura backend se mantuvo impecable. Su experticia en manejo de alta concurrencia es, sinceramente, de clase mundial."
+    },
+    {
+      "name": "María Fernanda Vélez",
+      "role": "CEO y Fundadora",
+      "company": "Capital Rápido",
+      "location": "Medellín",
+      "quote": "Necesitábamos migrar y optimizar nuestros microservicios clave de pagos bajo un marco regulatorio complejo. El equipo de Skycode, con su dominio de Node.js y su rigor en pruebas, entregó una solución robusta y auditable. Los recomendamos 100% para proyectos con altos estándares de seguridad.",
+      "featured": true
+    },
+    {
+      "name": "Juan Manuel Osorio",
+      "role": "Director de Transformación Digital",
+      "company": "Grupo Logístico del Valle",
+      "location": "Cali",
+      "quote": "Skycode no solo trae talento técnico, sino una metodología de trabajo muy clara y profesional. La comunicación fue fluida, los reportes transparentes y las entregas se cumplieron en cada sprint. Por fin pudimos dejar atrás un software legacy que nos estaba limitando."
+    },
+    {
+      "name": "Amparo Sánchez",
+      "role": "Dueña",
+      "company": "Mentamoda (E-commerce)",
+      "location": null,
+      "quote": "El equipo de Skycode Agency no solo cumplió, sino que superó nuestras expectativas. Su solución de e-commerce nos ayudó a automatizar procesos clave, resultando en una reducción del 40% en tiempos de gestión."
+    }
+  ]
+}

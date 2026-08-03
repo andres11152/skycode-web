@@ -1,0 +1,18 @@
+{
+  "sectionAria": "Présentation de l'agence",
+  "actionsAria": "Actions principales",
+  "badge": "INGÉNIERIE LOGICIELLE SANS DÉPENDANCE TECHNOLOGIQUE",
+  "title": "Logiciel sur mesure à haute performance. Code 100% transférable et libre de dette technique.",
+  "subtitle": "Nous développons des plateformes d'entreprise prêtes pour l'échelle, avec une documentation impeccable et un transfert complet de propriété intellectuelle. Votre succès dépend de la qualité de votre logiciel, pas de nous.",
+  "description": "Garantissez la continuité et la sécurité de votre activité numérique. Nous concevons selon les normes de sécurité internationales (OWASP) et la réglementation de protection des données applicable dans votre pays, en livrant une documentation technique rigoureuse afin que votre équipe garde le contrôle total sans dépendre de tiers.",
+  "ctaPrimary": {
+    "label": "Diagnostic gratuit",
+    "href": "#contacto",
+    "ariaLabel": "Planifier un diagnostic d'architecture gratuit : aller au formulaire de contact"
+  },
+  "ctaSecondary": {
+    "label": "Voir le portfolio",
+    "href": "#portfolio",
+    "ariaLabel": "Voir le portfolio de projets"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "title": "Portafolio",
+  "description": "Proyectos destacados y casos de éxito: soluciones tecnológicas implementadas con éxito para resolver desafíos reales de negocio.",
+  "items": [
+    {
+      "slug": "servifuturo",
+      "title": "Plataforma de Gestión de Flota y Control Operativo",
+      "client": "ServiFuturo S.A.S. · Transporte Corporativo & Logística",
+      "description": "Sistema de gestión integral para la operación de transporte corporativo: monitoreo en tiempo real, liquidación automática de servicios, control de conductores/pasajeros y auditoría bajo SOX & Ley 1581.",
+      "tags": ["Gestión de Flotas", "Control Operativo", "Auditoría & Datos", "Next.js & Node"],
+      "iconName": "Truck",
+      "link": "https://servifuturo.cloud/",
+      "coverImage": "/projects/servifuturo/servifuturo-02.webp",
+      "gallery": [
+        "/projects/servifuturo/servifuturo-01.webp",
+        "/projects/servifuturo/servifuturo-02.webp",
+        "/projects/servifuturo/servifuturo-03.webp",
+        "/projects/servifuturo/servifuturo-04.webp",
+        "/projects/servifuturo/servifuturo-05.webp",
+        "/projects/servifuturo/servifuturo-06.webp",
+        "/projects/servifuturo/servifuturo-07.webp",
+        "/projects/servifuturo/servifuturo-08.webp",
+        "/projects/servifuturo/servifuturo-09.webp",
+        "/projects/servifuturo/servifuturo-10.webp",
+        "/projects/servifuturo/servifuturo-11.webp",
+        "/projects/servifuturo/servifuturo-12.webp",
+        "/projects/servifuturo/servifuturo-13.webp",
+        "/projects/servifuturo/servifuturo-14.webp"
+      ]
+    },
+    {
+      "slug": "ecommerce-automatizacion",
+      "title": "Plataforma de Comercio Electrónico e Integración ERP",
+      "client": "Cliente Confidencial · E-commerce & Logística",
+      "description": "Solución de comercio electrónico integrada con sistemas ERP y facturación electrónica, logrando optimizar los tiempos de gestión operativa y control de inventarios.",
+      "tags": ["E-commerce", "Integración ERP", "Pasarelas de Pago"],
+      "iconName": "ShoppingCart"
+    },
+    {
+      "slug": "landing-alta-conversion",
+      "title": "Portal Web de Captación y Diseño UX/UI",
+      "client": "Cliente Confidencial · Prospección Digital",
+      "description": "Portal de alta velocidad diseñado para optimizar el registro de clientes potenciales, integrando herramientas de analítica y optimización de experiencia de usuario.",
+      "tags": ["Frontend", "UX/UI", "Conversión Digital"],
+      "iconName": "Rocket"
+    },
+    {
+      "slug": "sitio-corporativo-seo",
+      "title": "Portal Institucional y Optimización SEO",
+      "client": "Cliente Confidencial · Presencia Corporativa",
+      "description": "Plataforma institucional desarrollada para maximizar el posicionamiento orgánico en buscadores, con carga ultra rápida y diseño responsive de alta gama.",
+      "tags": ["Portal Corporativo", "Estrategia SEO", "Next.js"],
+      "iconName": "Globe"
+    },
+    {
+      "slug": "automatizacion-procesos",
+      "title": "Sistema de Automatización de Flujos Operativos",
+      "client": "Cliente Confidencial · Integración de Sistemas",
+      "description": "Diseño e implementación de integraciones de sistemas y flujos de automatización de datos para eliminar procesos manuales y conectar múltiples plataformas internas.",
+      "tags": ["Automatización", "Integración de APIs", "Eficiencia Operativa"],
+      "iconName": "Workflow"
+    }
+  ]
+}

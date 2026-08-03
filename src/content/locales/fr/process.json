@@ -1,0 +1,23 @@
+{
+  "sectionAria": "Notre processus de travail",
+  "title": "Comment nous travaillons",
+  "description": "Un processus clair, sans surprises, du premier diagnostic à la livraison finale.",
+  "steps": [
+    {
+      "title": "Diagnostic d'architecture",
+      "description": "Nous évaluons votre système actuel ou celui que vous devez construire, et livrons un diagnostic technique en moins de 24 heures ouvrables."
+    },
+    {
+      "title": "Proposition et périmètre",
+      "description": "Nous définissons l'architecture, le périmètre et le calendrier avant d'écrire la moindre ligne de code."
+    },
+    {
+      "title": "Développement itératif",
+      "description": "Des livraisons fonctionnelles à chaque sprint, avec une visibilité totale sur l'avancement via des dépôts partagés."
+    },
+    {
+      "title": "Livraison et transfert",
+      "description": "Transfert formel et complet des dépôts et des identifiants — le code vous appartient à 100% dès le premier jour."
+    }
+  ]
+}

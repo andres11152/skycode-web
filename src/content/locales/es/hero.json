@@ -1,0 +1,18 @@
+{
+  "sectionAria": "Presentación de la agencia",
+  "actionsAria": "Acciones principales",
+  "badge": "INGENIERÍA DE SOFTWARE SIN DEPENDENCIA TECNOLÓGICA",
+  "title": "Software a la medida de alto rendimiento. Con código 100% transferible y libre de deuda técnica.",
+  "subtitle": "Desarrollamos plataformas empresariales listas para escalar, con documentación impecable y entrega total de propiedad intelectual. Su éxito no depende de nosotros, sino de la calidad de su software.",
+  "description": "Garantice la continuidad y seguridad de su operación digital. Diseñamos de acuerdo a estándares internacionales de seguridad (OWASP) y los marcos de protección de datos vigentes en su país, entregando documentación técnica rigurosa para que su equipo mantenga el control total sin depender de terceros.",
+  "ctaPrimary": {
+    "label": "Diagnóstico gratis",
+    "href": "#contacto",
+    "ariaLabel": "Agendar diagnóstico de arquitectura gratis: ir al formulario de contacto"
+  },
+  "ctaSecondary": {
+    "label": "Ver portafolio",
+    "href": "#portfolio",
+    "ariaLabel": "Ver portafolio de proyectos"
+  }
+}

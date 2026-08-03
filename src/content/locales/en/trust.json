@@ -1,0 +1,9 @@
+{
+  "ariaLabel": "Software engineering standards",
+  "items": [
+    { "label": "OWASP best practices" },
+    { "label": "Data-protection compliance" },
+    { "label": "Technical documentation included" },
+    { "label": "100% transferable code" }
+  ]
+}

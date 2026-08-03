@@ -1,0 +1,11 @@
+{
+  "siteName": "SkyCode Agency",
+  "siteTagline": "Développement logiciel sur mesure, fiabilité garantie",
+  "siteDescription": "Logiciels sur mesure, API robustes et frontend haute performance, architecture évolutive, conformes aux normes OWASP et à la protection des données.",
+  "contactEmail": "contact@skycode.agency",
+  "contactPhone": "+573138081081",
+  "socials": {
+    "facebook": "https://facebook.com/skycodeagency/",
+    "instagram": "https://instagram.com/skycode.agency/"
+  }
+}
