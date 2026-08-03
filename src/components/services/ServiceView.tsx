@@ -2,8 +2,18 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import {
+  CodeConsoleWidget,
+  MobileAppPreviewWidget,
+  ApiInspectorWidget,
+  PerformanceMeterWidget,
+  SecurityComplianceWidget,
+  ArchitectureDocWidget,
+  LegacyMigrationWidget,
+  AiAppliedWidget,
+} from "@/components/services/BentoServiceWidgets";
 import { getServicesContent, getServiceBySlug } from "@/content/services";
 import { getServicePageContent } from "@/content/servicePage";
 import { getNavContent } from "@/content/nav";
@@ -92,6 +102,21 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
             >
               {service.description}
             </motion.p>
+
+            {/* Interactive Demo & Environment Simulation Box */}
+            <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6 bg-foreground/[0.02]">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60 mb-4 flex items-center gap-2">
+                <Sparkles size={14} className="text-accent" /> Demo Interactiva &amp; Simulación de Entorno
+              </h2>
+              {slug === "desarrollo-software-medida" && <CodeConsoleWidget />}
+              {slug === "desarrollo-aplicaciones-moviles" && <MobileAppPreviewWidget />}
+              {slug === "apis-integraciones" && <ApiInspectorWidget />}
+              {slug === "frontend-alto-rendimiento" && <PerformanceMeterWidget />}
+              {slug === "seguridad-cumplimiento" && <SecurityComplianceWidget />}
+              {slug === "arquitectura-documentacion" && <ArchitectureDocWidget />}
+              {slug === "migracion-datos-legacy" && <LegacyMigrationWidget />}
+              {slug === "inteligencia-artificial-aplicada" && <AiAppliedWidget />}
+            </motion.div>
 
             <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60">

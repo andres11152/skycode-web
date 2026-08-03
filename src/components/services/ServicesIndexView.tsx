@@ -3,6 +3,16 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import {
+  CodeConsoleWidget,
+  MobileAppPreviewWidget,
+  ApiInspectorWidget,
+  PerformanceMeterWidget,
+  SecurityComplianceWidget,
+  ArchitectureDocWidget,
+  LegacyMigrationWidget,
+  AiAppliedWidget,
+} from "@/components/services/BentoServiceWidgets";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { getServicesContent } from "@/content/services";
 import { getServicePageContent } from "@/content/servicePage";
@@ -73,7 +83,19 @@ export function ServicesIndexView({ locale }: { locale: Locale }) {
                     <h2 className="text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-accent">
                       {service.title}
                     </h2>
-                    <p className="mt-2 text-sm leading-relaxed text-foreground/80">{service.description}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/80 mb-4">{service.description}</p>
+
+                    {/* Interactive Bento 2.0 Widget */}
+                    <div className="my-3">
+                      {service.slug === "desarrollo-software-medida" && <CodeConsoleWidget />}
+                      {service.slug === "desarrollo-aplicaciones-moviles" && <MobileAppPreviewWidget />}
+                      {service.slug === "apis-integraciones" && <ApiInspectorWidget />}
+                      {service.slug === "frontend-alto-rendimiento" && <PerformanceMeterWidget />}
+                      {service.slug === "seguridad-cumplimiento" && <SecurityComplianceWidget />}
+                      {service.slug === "arquitectura-documentacion" && <ArchitectureDocWidget />}
+                      {service.slug === "migracion-datos-legacy" && <LegacyMigrationWidget />}
+                      {service.slug === "inteligencia-artificial-aplicada" && <AiAppliedWidget />}
+                    </div>
                   </div>
                   <ul className="mt-6 flex flex-col gap-2 border-t border-foreground/5 pt-5">
                     {service.features.map((feature) => (
