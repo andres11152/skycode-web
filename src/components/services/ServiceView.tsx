@@ -19,7 +19,6 @@ import { getServicePageContent } from "@/content/servicePage";
 import { getNavContent } from "@/content/nav";
 import { getTrustContent } from "@/content/trust";
 import { Button } from "@/components/ui/Button";
-import { ProjectCover } from "@/components/ui/ProjectCover";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 
@@ -69,29 +68,22 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
               </Link>
             </li>
             <li aria-hidden="true">/</li>
-            <li>
-              <Link
-                href={servicesIndexHref}
-                className="rounded outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                {navData.servicios}
-              </Link>
-            </li>
+            <li className="text-foreground font-medium">{service.title}</li>
           </ol>
         </motion.nav>
 
-        <motion.div variants={fadeUp(reduced)}>
-          <ProjectCover
-            icon={service.coverIcon}
-            className={`${COVER_ASPECT} w-full rounded-xl`}
-            iconClassName="h-20 w-20 sm:h-24 sm:w-24"
-          />
-        </motion.div>
-
-        <div className="grid gap-10 lg:grid-cols-[1fr_320px] lg:gap-16">
+        <div className="grid gap-10 lg:grid-cols-[1fr_340px] lg:gap-16">
           <div className="flex min-w-0 flex-col gap-8">
             <motion.header variants={fadeUp(reduced)} className="flex flex-col gap-4">
-              <h1 className="text-4xl font-bold tracking-tight text-balance text-foreground sm:text-5xl">
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-foreground/10 bg-gradient-to-br from-foreground/5 to-foreground/[0.01] text-accent shadow-[0_0_25px_rgba(0,137,205,0.12)]">
+                  <service.coverIcon size={28} strokeWidth={1.75} aria-hidden="true" />
+                </div>
+                <div className="rounded-full border border-accent/20 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+                  Solución Enterprise SKYCODE
+                </div>
+              </div>
+              <h1 className="text-3xl font-bold tracking-tight text-balance text-foreground sm:text-4xl lg:text-5xl">
                 {service.title}
               </h1>
             </motion.header>
