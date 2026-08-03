@@ -13,6 +13,7 @@ import {
   SecurityComplianceWidget,
   ArchitectureDocWidget,
   LegacyMigrationWidget,
+  AiAppliedWidget,
 } from "@/components/services/BentoServiceWidgets";
 import { getServicesContent } from "@/content/services";
 import { getUiContent } from "@/content/ui";
@@ -277,6 +278,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                           {service.slug === "seguridad-cumplimiento" && <SecurityComplianceWidget />}
                           {service.slug === "arquitectura-documentacion" && <ArchitectureDocWidget />}
                           {service.slug === "migracion-datos-legacy" && <LegacyMigrationWidget />}
+                          {service.slug === "inteligencia-artificial-aplicada" && <AiAppliedWidget />}
                         </div>
                       </div>
                       {/* Listado con efecto Staggered al hacer hover en la tarjeta */}

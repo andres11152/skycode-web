@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, Play, Smartphone, Zap, ShieldCheck, RefreshCw, Send } from "lucide-react";
+import { Terminal, Play, Smartphone, Zap, ShieldCheck, RefreshCw, Send, Sparkles } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*  1. Interactive Code Console Widget (Software a Medida)                      */
@@ -530,3 +530,56 @@ export function LegacyMigrationWidget() {
     </div>
   );
 }
+
+/* -------------------------------------------------------------------------- */
+/*  8. Interactive AI Agent Simulator Widget (Inteligencia Artificial)        */
+/* -------------------------------------------------------------------------- */
+export function AiAppliedWidget() {
+  const [running, setRunning] = useState(false);
+  const [response, setResponse] = useState<string>('🤖 Agent: "Workflow automated. Sentiment: 98% Positive"');
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const handleRunAi = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (running) return;
+    setRunning(true);
+    setResponse("⏳ LLM Agent processing prompt...");
+    timerRef.current = setTimeout(() => {
+      setResponse("✨ Agent: Output generated (Latency: 0.18s, Accuracy: 99.4%)");
+      setRunning(false);
+    }, 700);
+  };
+
+  return (
+    <div className="w-full rounded-xl border border-foreground/10 bg-foreground/95 p-3.5 text-xs text-background font-mono">
+      <div className="flex items-center justify-between border-b border-background/10 pb-2 mb-2 text-[11px]">
+        <span className="font-bold text-accent flex items-center gap-1">
+          <Sparkles size={12} /> Autonomous AI Agent
+        </span>
+        <span
+          role="button"
+          tabIndex={0}
+          onClick={handleRunAi}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleRunAi(e); }}
+          className={`rounded bg-accent px-2 py-0.5 text-[9px] font-bold text-white hover:bg-accent/90 cursor-pointer transition-all active:scale-95 ${
+            running ? "opacity-50 pointer-events-none" : ""
+          }`}
+        >
+          {running ? "Thinking..." : "Run AI Agent"}
+        </span>
+      </div>
+      <div className="rounded bg-background/10 p-2 text-[10px] space-y-1">
+        <div className="text-background/50 text-[9px]">Prompt: &quot;Optimize workflow &amp; sentiment&quot;</div>
+        <div className="text-green-400 font-bold leading-relaxed">{response}</div>
+      </div>
+    </div>
+  );
+}
+
