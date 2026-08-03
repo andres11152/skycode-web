@@ -5,6 +5,12 @@ import Link from "next/link";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import {
+  CodeConsoleWidget,
+  MobileAppPreviewWidget,
+  ApiInspectorWidget,
+  PerformanceMeterWidget,
+} from "@/components/services/BentoServiceWidgets";
 import { getServicesContent } from "@/content/services";
 import { getUiContent } from "@/content/ui";
 import { defaultLocale, localeHomePath, t, type Locale } from "@/lib/i18n";
@@ -257,7 +263,15 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                             {service.title}
                           </h3>
                         </div>
-                        <p className="text-sm text-foreground/80 leading-relaxed">{service.description}</p>
+                        <p className="text-sm text-foreground/80 leading-relaxed mb-4">{service.description}</p>
+
+                        {/* Interactive Bento 2.0 Widget */}
+                        <div className="my-3">
+                          {service.slug === "desarrollo-software-medida" && <CodeConsoleWidget />}
+                          {service.slug === "desarrollo-aplicaciones-moviles" && <MobileAppPreviewWidget />}
+                          {service.slug === "apis-integraciones" && <ApiInspectorWidget />}
+                          {service.slug === "frontend-alto-rendimiento" && <PerformanceMeterWidget />}
+                        </div>
                       </div>
                       {/* Listado con efecto Staggered al hacer hover en la tarjeta */}
                       <motion.ul
