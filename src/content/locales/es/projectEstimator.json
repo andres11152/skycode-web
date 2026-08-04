@@ -1,0 +1,79 @@
+{
+  "sectionAria": "Cotizador interactivo de proyectos",
+  "badge": "Cotizador Transparente en Tiempo Real",
+  "title": "Calcula la Inversión y Tiempos de tu Proyecto",
+  "subtitle": "Tarifas altamente competitivas (~18-20% por debajo de agencias tradicionales) con ingeniería de software directa de alto rendimiento.",
+  "currency": {
+    "copLabel": "COP (Pesos)",
+    "usdLabel": "USD (Dólares)"
+  },
+  "steps": {
+    "type": "Tipo de Solución",
+    "addons": "Módulos & Capacidades Especiales",
+    "pace": "Ritmo de Desarrollo"
+  },
+  "projectTypes": [
+    {
+      "id": "software",
+      "iconName": "Code2",
+      "title": "Software a Medida / SaaS",
+      "desc": "Backend multi-inquilino, arquitectura hexagonal, panel web y base de datos."
+    },
+    {
+      "id": "mobile",
+      "iconName": "Smartphone",
+      "title": "App Móvil (Android & iOS)",
+      "desc": "Aplicación nativa o multiplataforma con React Native / Flutter."
+    },
+    {
+      "id": "ai",
+      "iconName": "BrainCircuit",
+      "title": "Inteligencia Artificial Aplicada",
+      "desc": "Integración de LLMs, bases vectoriales y agentes autónomos."
+    },
+    {
+      "id": "apis",
+      "iconName": "Plug",
+      "title": "APIs & Integraciones REST",
+      "desc": "Microservicios, conexión con ERPs y pasarelas de pago."
+    },
+    {
+      "id": "web",
+      "iconName": "AppWindow",
+      "title": "Web / Frontend Ultra-Rápido",
+      "desc": "Next.js con 100/100 Core Web Vitals y SEO optimizado."
+    }
+  ],
+  "addons": [
+    { "id": "auth", "title": "Autenticación OAuth / RBAC Multi-Rol" },
+    { "id": "payments", "title": "Pasarela de Pagos (Stripe / Wompi)" },
+    { "id": "offline", "title": "Sincronización Offline-First" },
+    { "id": "security", "title": "Auditoría de Seguridad OWASP & Ley 1581" },
+    { "id": "ai_bot", "title": "Asistente Virtual / Bot de IA Personalizado" }
+  ],
+  "discountBadge": "-20% vs Mercado",
+  "fromLabel": "Desde",
+  "pace": {
+    "standardTitle": "Estándar (Sprints continuos)",
+    "standardDesc": "Tiempos normales de arquitectura.",
+    "expressTitle": "Prioritario Express (-25% tiempo)",
+    "expressDesc": "Equipo dedicado de alto ritmo."
+  },
+  "summary": {
+    "title": "Resumen de Proyecto",
+    "investmentLabel": "Inversión Estimada:",
+    "competitiveRateLabel": "Tarifa Competitiva",
+    "timeLabel": "Tiempo Estimado:",
+    "weeksSuffix": "Semanas",
+    "ipLabel": "Propiedad Intelectual:",
+    "ipValue": "100% Transferible",
+    "paymentLabel": "Modalidad de Pago:",
+    "paymentValue": "50% Inicial / 50% Final",
+    "warrantyLabel": "Garantía de Código:",
+    "warrantyValue": "90 Días SLA Incluidos",
+    "ctaLabel": "Solicitar Propuesta Oficial",
+    "disclaimer": "*Estimación preliminar sin IVA. Se ratifica mediante propuesta técnica formal."
+  },
+  "whatsappMessageTemplate": "Hola equipo SKYCODE, configuré mi proyecto con el cotizador interactivo:\n- Tipo: {type}\n- Módulos adicionales: {addons}\n- Modalidad: {pace}\n- Estimado: {total} (~{weeks} semanas).\nMe gustaría solicitar una propuesta formal y agendar una llamada de valoración.",
+  "noAddonsLabel": "Ninguno"
+}

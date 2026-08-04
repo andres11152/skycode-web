@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { verifySessionToken } from "@/lib/auth";
+import { verifySessionToken } from "@/lib/session";
 
 export async function GET() {
   try {
@@ -17,7 +17,7 @@ export async function GET() {
     }
 
     return NextResponse.json({ authenticated: true, user });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ authenticated: false, user: null }, { status: 500 });
   }
 }

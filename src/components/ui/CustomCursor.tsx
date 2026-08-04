@@ -9,7 +9,6 @@ export function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [cursorText, setCursorText] = useState<string | null>(null);
-  const [cursorVariant, setCursorVariant] = useState<"default" | "project" | "button">("default");
 
   // Mouse Coordinates
   const mouseX = useMotionValue(-100);
@@ -36,17 +35,14 @@ export function CustomCursor() {
 
       const cursorTarget = target.closest("[data-cursor]") as HTMLElement | null;
       if (cursorTarget) {
-        const type = cursorTarget.getAttribute("data-cursor") as "project" | "button";
+        const type = cursorTarget.getAttribute("data-cursor");
         const customText = cursorTarget.getAttribute("data-cursor-text");
-        setCursorVariant(type || "default");
         setCursorText(customText || (type === "project" ? "EXPLORAR" : null));
         setIsHovered(true);
       } else if (target.closest("button, a, input, select, textarea, [role='button']")) {
-        setCursorVariant("button");
         setCursorText(null);
         setIsHovered(true);
       } else {
-        setCursorVariant("default");
         setCursorText(null);
         setIsHovered(false);
       }
@@ -66,14 +62,16 @@ export function CustomCursor() {
   if (reduced || !isVisible) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden hidden md:block">
+    // z-[80]: por encima de todo lo demás en la escala (Modal en z-[70] es lo más alto
+    // hasta ahora) — un cursor reemplazado nunca debe quedar oculto detrás de un modal.
+    <div className="pointer-events-none fixed inset-0 z-[80] overflow-hidden hidden md:block">
       {/* Precision Center Dot */}
       <motion.div
         style={{
           x: mouseX,
           y: mouseY,
         }}
-        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50"
+        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[80]"
       >
         <div className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_#0089CD]" />
       </motion.div>
@@ -84,7 +82,7 @@ export function CustomCursor() {
           x: cursorX,
           y: cursorY,
         }}
-        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-40"
+        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[75]"
       >
         <motion.div
           animate={{

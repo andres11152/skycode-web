@@ -1,119 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import {
-  Code2,
-  Smartphone,
-  Plug,
-  AppWindow,
-  BrainCircuit,
-  ShieldCheck,
-  Zap,
-  CheckCircle2,
-  Sparkles,
-  Calculator,
-  ArrowRight,
-  Clock,
-  Globe,
-  Tag,
-} from "lucide-react";
+import { CheckCircle2, Calculator, ArrowRight, Clock, Tag, Zap } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { getProjectEstimatorContent, getDefaultCurrency } from "@/content/projectEstimator";
+import { defaultLocale, t, type Locale } from "@/lib/i18n";
 
-interface ProjectOption {
-  id: string;
-  title: string;
-  desc: string;
-  icon: React.ElementType;
-  priceCop: number;
-  priceUsd: number;
-  baseWeeks: number;
-}
+export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }) {
+  const content = getProjectEstimatorContent(locale);
+  const { projectTypes, addons } = content;
 
-const PROJECT_TYPES: ProjectOption[] = [
-  {
-    id: "software",
-    title: "Software a Medida / SaaS",
-    desc: "Backend multi-inquilino, arquitectura hexagonal, panel web y base de datos.",
-    icon: Code2,
-    priceCop: 10500000,
-    priceUsd: 2600,
-    baseWeeks: 6,
-  },
-  {
-    id: "mobile",
-    title: "App Móvil (Android & iOS)",
-    desc: "Aplicación nativa o multiplataforma con React Native / Flutter.",
-    icon: Smartphone,
-    priceCop: 8900000,
-    priceUsd: 2200,
-    baseWeeks: 5,
-  },
-  {
-    id: "ai",
-    title: "Inteligencia Artificial Aplicada",
-    desc: "Integración de LLMs, bases vectoriales y agentes autónomos.",
-    icon: BrainCircuit,
-    priceCop: 11800000,
-    priceUsd: 2900,
-    baseWeeks: 6,
-  },
-  {
-    id: "apis",
-    title: "APIs & Integraciones REST",
-    desc: "Microservicios, conexión con ERPs y pasarelas de pago.",
-    icon: Plug,
-    priceCop: 5500000,
-    priceUsd: 1400,
-    baseWeeks: 3,
-  },
-  {
-    id: "web",
-    title: "Web / Frontend Ultra-Rápido",
-    desc: "Next.js con 100/100 Core Web Vitals y SEO optimizado.",
-    icon: AppWindow,
-    priceCop: 4500000,
-    priceUsd: 1150,
-    baseWeeks: 3,
-  },
-];
-
-interface AddonOption {
-  id: string;
-  title: string;
-  priceCop: number;
-  priceUsd: number;
-  weeks: number;
-}
-
-const ADDONS: AddonOption[] = [
-  { id: "auth", title: "Autenticación OAuth / RBAC Multi-Rol", priceCop: 950000, priceUsd: 250, weeks: 0.5 },
-  { id: "payments", title: "Pasarela de Pagos (Stripe / Wompi)", priceCop: 1400000, priceUsd: 350, weeks: 1 },
-  { id: "offline", title: "Sincronización Offline-First", priceCop: 1550000, priceUsd: 390, weeks: 1 },
-  { id: "security", title: "Auditoría de Seguridad OWASP & Ley 1581", priceCop: 1850000, priceUsd: 460, weeks: 1 },
-  { id: "ai_bot", title: "Asistente Virtual / Bot de IA Personalizado", priceCop: 2450000, priceUsd: 620, weeks: 1.5 },
-];
-
-export function ProjectEstimator() {
-  const reduced = Boolean(useReducedMotion());
-  const [currency, setCurrency] = useState<"COP" | "USD">("COP");
-  const [selectedType, setSelectedType] = useState<string>("software");
-  const [selectedAddons, setSelectedAddons] = useState<string[]>(["auth", "payments"]);
+  const [currency, setCurrency] = useState<"COP" | "USD">(getDefaultCurrency(locale));
+  const [selectedType, setSelectedType] = useState<string>(projectTypes[0].id);
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([addons[0].id, addons[1].id]);
   const [urgency, setUrgency] = useState<"standard" | "express">("standard");
 
-  const currentType = PROJECT_TYPES.find((t) => t.id === selectedType) || PROJECT_TYPES[0];
+  const currentType = projectTypes.find((type) => type.id === selectedType) || projectTypes[0];
 
   // Price Calculation according to active currency
   const basePrice = currency === "COP" ? currentType.priceCop : currentType.priceUsd;
 
   const addonsTotal = selectedAddons.reduce((acc, addonId) => {
-    const addon = ADDONS.find((a) => a.id === addonId);
+    const addon = addons.find((a) => a.id === addonId);
     if (!addon) return acc;
     return acc + (currency === "COP" ? addon.priceCop : addon.priceUsd);
   }, 0);
 
   const addonsWeeks = selectedAddons.reduce((acc, addonId) => {
-    const addon = ADDONS.find((a) => a.id === addonId);
+    const addon = addons.find((a) => a.id === addonId);
     return acc + (addon ? addon.weeks : 0);
   }, 0);
 
@@ -138,18 +52,17 @@ export function ProjectEstimator() {
 
   const handlePreFillContact = () => {
     const addonTitles = selectedAddons
-      .map((id) => ADDONS.find((a) => a.id === id)?.title)
+      .map((id) => addons.find((a) => a.id === id)?.title)
       .filter(Boolean)
       .join(", ");
 
-    const formattedTotal = formatPrice(totalPrice);
-
-    const text = `Hola equipo SKYCODE, configuré mi proyecto con el cotizador interactivo:
-- Tipo: ${currentType.title}
-- Módulos adicionales: ${addonTitles || "Ninguno"}
-- Modalidad: ${urgency === "express" ? "Entrega Acelerada Express" : "Entrega Estándar"}
-- Estimado: ${formattedTotal} (~${totalWeeks} semanas).
-Me gustaría solicitar una propuesta formal y agendar una llamada de valoración.`;
+    const text = t(content.whatsappMessageTemplate, {
+      type: currentType.title,
+      addons: addonTitles || content.noAddonsLabel,
+      pace: urgency === "express" ? content.pace.expressTitle : content.pace.standardTitle,
+      total: formatPrice(totalPrice),
+      weeks: String(totalWeeks),
+    });
 
     const contactTextarea = document.querySelector<HTMLTextAreaElement>("textarea[name='mensaje']");
     if (contactTextarea) {
@@ -163,19 +76,21 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
   };
 
   return (
-    <section id="cotizador" className="py-20 px-6 bg-gradient-to-b from-transparent via-foreground/[0.02] to-transparent">
+    <section
+      id="cotizador"
+      aria-label={content.sectionAria}
+      className="py-20 px-6 bg-gradient-to-b from-transparent via-foreground/[0.02] to-transparent"
+    >
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-12">
           <div className="flex items-center gap-2 rounded-full border border-accent/20 bg-accent/10 px-3.5 py-1 text-xs font-semibold text-accent mb-4">
-            <Calculator size={14} /> Cotizador Transparente en Tiempo Real
+            <Calculator size={14} /> {content.badge}
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Calcula la Inversión y Tiempos de tu Proyecto
+            {content.title}
           </h2>
-          <p className="mt-3 text-base text-foreground/70">
-            Tarifas altamente competitivas (~18-20% por debajo de agencias tradicionales) con ingeniería de software directa de alto rendimiento.
-          </p>
+          <p className="mt-3 text-base text-foreground/70">{content.subtitle}</p>
 
           {/* Currency Switcher Toggle */}
           <div className="mt-6 flex items-center gap-2 rounded-full border border-foreground/15 bg-background p-1.5 shadow-sm">
@@ -183,21 +98,21 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
               onClick={() => setCurrency("COP")}
               className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
                 currency === "COP"
-                  ? "bg-accent text-white shadow-sm"
+                  ? "bg-accent-strong text-white shadow-sm"
                   : "text-foreground/70 hover:text-foreground"
               }`}
             >
-              <span>🇨🇴 COP ($ Pesos)</span>
+              <span>{content.currency.copLabel}</span>
             </button>
             <button
               onClick={() => setCurrency("USD")}
               className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
                 currency === "USD"
-                  ? "bg-accent text-white shadow-sm"
+                  ? "bg-accent-strong text-white shadow-sm"
                   : "text-foreground/70 hover:text-foreground"
               }`}
             >
-              <span>🇺🇸 USD ($ Dólares)</span>
+              <span>{content.currency.usdLabel}</span>
             </button>
           </div>
         </div>
@@ -209,11 +124,11 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
             {/* 1. Tipo de Proyecto */}
             <div>
               <h3 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-4 flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] text-white">1</span>
-                Tipo de Solución
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-white">1</span>
+                {content.steps.type}
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
-                {PROJECT_TYPES.map((type) => {
+                {projectTypes.map((type) => {
                   const Icon = type.icon;
                   const isSelected = selectedType === type.id;
                   const displayPrice = currency === "COP" ? type.priceCop : type.priceUsd;
@@ -231,7 +146,7 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${
-                            isSelected ? "bg-accent text-white" : "bg-foreground/5 text-foreground/70"
+                            isSelected ? "bg-accent-strong text-white" : "bg-foreground/5 text-foreground/70"
                           }`}>
                             <Icon size={18} />
                           </div>
@@ -243,10 +158,10 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
 
                       <div className="mt-3 border-t border-foreground/5 pt-2 flex items-center justify-between text-[11px]">
                         <span className="font-mono font-bold text-accent">
-                          Desde {formatPrice(displayPrice)}
+                          {content.fromLabel} {formatPrice(displayPrice)}
                         </span>
                         <span className="rounded bg-green-500/10 px-1.5 py-0.5 text-[9px] font-bold text-green-600">
-                          -20% vs Mercado
+                          {content.discountBadge}
                         </span>
                       </div>
                     </div>
@@ -258,11 +173,11 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
             {/* 2. Módulos Adicionales */}
             <div>
               <h3 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-4 flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] text-white">2</span>
-                Módulos &amp; Capacidades Especiales
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-white">2</span>
+                {content.steps.addons}
               </h3>
               <div className="grid gap-2.5">
-                {ADDONS.map((addon) => {
+                {addons.map((addon) => {
                   const isChecked = selectedAddons.includes(addon.id);
                   const addonPrice = currency === "COP" ? addon.priceCop : addon.priceUsd;
 
@@ -278,7 +193,7 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
                     >
                       <div className="flex items-center gap-3">
                         <div className={`flex h-4 w-4 items-center justify-center rounded border ${
-                          isChecked ? "border-accent bg-accent text-white" : "border-foreground/30"
+                          isChecked ? "border-accent bg-accent-strong text-white" : "border-foreground/30"
                         }`}>
                           {isChecked && <CheckCircle2 size={12} />}
                         </div>
@@ -294,8 +209,8 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
             {/* 3. Urgencia */}
             <div>
               <h3 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-3 flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] text-white">3</span>
-                Ritmo de Desarrollo
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-white">3</span>
+                {content.steps.pace}
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -306,8 +221,8 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
                       : "border-foreground/10 bg-background/40 text-foreground/70"
                   }`}
                 >
-                  <div className="font-bold mb-0.5">Estándar (Sprints continuos)</div>
-                  <div className="text-[11px] text-foreground/60">Tiempos normales de arquitectura.</div>
+                  <div className="font-bold mb-0.5">{content.pace.standardTitle}</div>
+                  <div className="text-[11px] text-foreground/60">{content.pace.standardDesc}</div>
                 </button>
                 <button
                   onClick={() => setUrgency("express")}
@@ -318,9 +233,9 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
                   }`}
                 >
                   <div className="font-bold mb-0.5 text-accent flex items-center gap-1">
-                    <Zap size={12} /> Prioritario Express (-25% tiempo)
+                    <Zap size={12} /> {content.pace.expressTitle}
                   </div>
-                  <div className="text-[11px] text-foreground/60">Equipo dedicado de alto ritmo.</div>
+                  <div className="text-[11px] text-foreground/60">{content.pace.expressDesc}</div>
                 </button>
               </div>
             </div>
@@ -331,19 +246,19 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
             <SpotlightCard className="rounded-2xl border border-foreground/15 bg-foreground/95 p-6 text-background shadow-2xl">
               <div className="flex items-center justify-between border-b border-background/10 pb-4 mb-4">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-background/60">
-                  Resumen de Proyecto
+                  {content.summary.title}
                 </span>
                 <span className="rounded-full bg-green-400/20 px-2.5 py-0.5 text-[10px] font-bold text-green-400">
-                  {currency === "COP" ? "🇨🇴 COP" : "🇺🇸 USD"}
+                  {currency}
                 </span>
               </div>
 
               {/* Price Display */}
               <div className="space-y-1 mb-6">
                 <div className="flex items-center justify-between text-[11px] text-background/60">
-                  <span>Inversión Estimada:</span>
+                  <span>{content.summary.investmentLabel}</span>
                   <span className="text-green-400 font-bold text-[10px] flex items-center gap-1">
-                    <Tag size={10} /> Tarifa Competitiva
+                    <Tag size={10} /> {content.summary.competitiveRateLabel}
                   </span>
                 </div>
                 <div className="text-2xl sm:text-3xl font-bold font-mono text-accent-secondary leading-tight">
@@ -360,36 +275,34 @@ Me gustaría solicitar una propuesta formal y agendar una llamada de valoración
               <div className="space-y-3 border-t border-background/10 pt-4 text-xs font-mono">
                 <div className="flex items-center justify-between text-background/80">
                   <span className="flex items-center gap-1.5 text-background/60">
-                    <Clock size={14} className="text-accent" /> Tiempo Estimado:
+                    <Clock size={14} className="text-accent" /> {content.summary.timeLabel}
                   </span>
-                  <span className="font-bold text-background">{totalWeeks} Semanas</span>
+                  <span className="font-bold text-background">{totalWeeks} {content.summary.weeksSuffix}</span>
                 </div>
                 <div className="flex items-center justify-between text-background/80">
-                  <span className="text-background/60">Propiedad Intelectual:</span>
-                  <span className="text-green-400 font-bold">100% Transferible</span>
+                  <span className="text-background/60">{content.summary.ipLabel}</span>
+                  <span className="text-green-400 font-bold">{content.summary.ipValue}</span>
                 </div>
                 <div className="flex items-center justify-between text-background/80">
-                  <span className="text-background/60">Modalidad de Pago:</span>
-                  <span className="text-background font-bold">50% Inicial / 50% Final</span>
+                  <span className="text-background/60">{content.summary.paymentLabel}</span>
+                  <span className="text-background font-bold">{content.summary.paymentValue}</span>
                 </div>
                 <div className="flex items-center justify-between text-background/80">
-                  <span className="text-background/60">Garantía de Código:</span>
-                  <span className="text-green-400 font-bold">90 Días SLA Incluidos</span>
+                  <span className="text-background/60">{content.summary.warrantyLabel}</span>
+                  <span className="text-green-400 font-bold">{content.summary.warrantyValue}</span>
                 </div>
               </div>
 
               {/* CTA Button */}
               <button
                 onClick={handlePreFillContact}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-xs font-bold text-white shadow-lg hover:bg-accent/90 active:scale-98 transition-all"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 active:scale-98 transition-all"
               >
-                <span>Solicitar Propuesta Oficial</span>
+                <span>{content.summary.ctaLabel}</span>
                 <ArrowRight size={14} />
               </button>
 
-              <p className="mt-3 text-center text-[10px] text-background/50">
-                *Estimación preliminar sin IVA. Se ratifica mediante propuesta técnica formal.
-              </p>
+              <p className="mt-3 text-center text-[10px] text-background/50">{content.summary.disclaimer}</p>
             </SpotlightCard>
           </div>
         </div>

@@ -1,0 +1,79 @@
+{
+  "sectionAria": "Interactive project estimator",
+  "badge": "Real-Time Transparent Estimator",
+  "title": "Calculate Your Project's Investment and Timeline",
+  "subtitle": "Highly competitive rates (~18-20% below traditional agencies) with direct, high-performance software engineering.",
+  "currency": {
+    "copLabel": "COP (Pesos)",
+    "usdLabel": "USD (Dollars)"
+  },
+  "steps": {
+    "type": "Solution Type",
+    "addons": "Modules & Special Capabilities",
+    "pace": "Development Pace"
+  },
+  "projectTypes": [
+    {
+      "id": "software",
+      "iconName": "Code2",
+      "title": "Custom Software / SaaS",
+      "desc": "Multi-tenant backend, hexagonal architecture, web dashboard and database."
+    },
+    {
+      "id": "mobile",
+      "iconName": "Smartphone",
+      "title": "Mobile App (Android & iOS)",
+      "desc": "Native or cross-platform app with React Native / Flutter."
+    },
+    {
+      "id": "ai",
+      "iconName": "BrainCircuit",
+      "title": "Applied Artificial Intelligence",
+      "desc": "LLM integration, vector databases and autonomous agents."
+    },
+    {
+      "id": "apis",
+      "iconName": "Plug",
+      "title": "APIs & REST Integrations",
+      "desc": "Microservices, ERP connections and payment gateways."
+    },
+    {
+      "id": "web",
+      "iconName": "AppWindow",
+      "title": "Ultra-Fast Web / Frontend",
+      "desc": "Next.js with 100/100 Core Web Vitals and optimized SEO."
+    }
+  ],
+  "addons": [
+    { "id": "auth", "title": "OAuth Authentication / Multi-Role RBAC" },
+    { "id": "payments", "title": "Payment Gateway (Stripe / Wompi)" },
+    { "id": "offline", "title": "Offline-First Sync" },
+    { "id": "security", "title": "OWASP Security Audit & Data Protection Compliance" },
+    { "id": "ai_bot", "title": "Custom AI Virtual Assistant / Chatbot" }
+  ],
+  "discountBadge": "-20% vs Market",
+  "fromLabel": "From",
+  "pace": {
+    "standardTitle": "Standard (Continuous sprints)",
+    "standardDesc": "Regular architecture timelines.",
+    "expressTitle": "Express Priority (-25% time)",
+    "expressDesc": "Dedicated high-pace team."
+  },
+  "summary": {
+    "title": "Project Summary",
+    "investmentLabel": "Estimated Investment:",
+    "competitiveRateLabel": "Competitive Rate",
+    "timeLabel": "Estimated Time:",
+    "weeksSuffix": "Weeks",
+    "ipLabel": "Intellectual Property:",
+    "ipValue": "100% Transferable",
+    "paymentLabel": "Payment Terms:",
+    "paymentValue": "50% Upfront / 50% on Delivery",
+    "warrantyLabel": "Code Warranty:",
+    "warrantyValue": "90-Day SLA Included",
+    "ctaLabel": "Request Official Proposal",
+    "disclaimer": "*Preliminary estimate, taxes not included. Confirmed via formal technical proposal."
+  },
+  "whatsappMessageTemplate": "Hi SKYCODE team, I configured my project with the interactive estimator:\n- Type: {type}\n- Additional modules: {addons}\n- Mode: {pace}\n- Estimate: {total} (~{weeks} weeks).\nI'd like to request a formal proposal and schedule a scoping call.",
+  "noAddonsLabel": "None"
+}

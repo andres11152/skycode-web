@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { GridPattern } from "@/components/ui/GridPattern";
-import { ShaderBackground } from "@/components/ui/manu";
+import { ShaderBackground } from "@/components/ui/ShaderBackground";
 import { GradientShimmer } from "@/components/ui/gradient-shimmer";
 import { getHeroContent } from "@/content/hero";
 import { defaultLocale, type Locale } from "@/lib/i18n";

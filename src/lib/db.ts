@@ -1,8 +1,12 @@
 import { Pool } from "pg";
 
-const connectionString =
-  process.env.DATABASE_URL ||
-  "postgresql://invencheck_user:ESoPoD4WgmrP9bjQpUi5dgnJsBr0DEuV@dpg-d9hv88rrjlhs73dantdg-a.oregon-postgres.render.com/invencheck?sslmode=require";
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error(
+    "DATABASE_URL no está configurada. Defínela en .env.local (desarrollo) o en las variables de entorno del hosting (producción)."
+  );
+}
 
 // Configuración global del pool de conexiones PostgreSQL
 const pool = new Pool({

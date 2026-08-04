@@ -1,23 +1,30 @@
-import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { query } from "./db";
 
-const JWT_SECRET_KEY = new TextEncoder().encode(
-  process.env.JWT_SECRET || "skycode_super_secret_jwt_key_2026_enterprise"
-);
+export type { UserSession } from "./session";
 
-export interface UserSession {
-  id: number | string;
-  name: string;
-  email: string;
-  role: string;
-}
+let dbInitPromise: Promise<void> | null = null;
 
 /**
  * Inicializa automáticamente la tabla de usuarios en PostgreSQL si no existe.
- * Crea un usuario Admin predeterminado para pruebas.
+ * Crea un usuario Admin predeterminado a partir de variables de entorno (si se proveen).
+ *
+ * Memoizada a nivel de módulo: en serverless cada instancia solo la ejecuta una vez
+ * (en el primer request que la dispara), no en cada request que llega a esa instancia.
  */
-export async function initAuthDatabase() {
+export function initAuthDatabase(): Promise<void> {
+  if (!dbInitPromise) {
+    dbInitPromise = runAuthDatabaseInit().catch((error) => {
+      // Si la inicialización falla, se permite reintentar en el próximo request
+      // en vez de dejar la instancia atascada con una promesa rechazada para siempre.
+      dbInitPromise = null;
+      throw error;
+    });
+  }
+  return dbInitPromise;
+}
+
+async function runAuthDatabaseInit() {
   try {
     // 1. Crear tabla de usuarios y leads
     await query(`
@@ -75,54 +82,29 @@ export async function initAuthDatabase() {
     const count = parseInt(existingUsers.rows[0].count, 10);
 
     // 3. Crear usuario administrador por defecto si la base de datos está vacía
+    //    y se proveyeron credenciales vía variables de entorno (nunca hardcodeadas).
     if (count === 0) {
-      const defaultEmail = "admin@skycode.agency";
-      const defaultPassword = "admin123456"; // Contraseña inicial de prueba
-      const passwordHash = await bcrypt.hash(defaultPassword, 10);
+      const seedEmail = process.env.ADMIN_SEED_EMAIL;
+      const seedPassword = process.env.ADMIN_SEED_PASSWORD;
+
+      if (!seedEmail || !seedPassword) {
+        console.warn(
+          "⚠️ [Auth DB] No hay usuarios en la base de datos y ADMIN_SEED_EMAIL/ADMIN_SEED_PASSWORD no están configuradas. Defínelas para crear el primer usuario admin."
+        );
+        return;
+      }
+
+      const passwordHash = await bcrypt.hash(seedPassword, 10);
 
       await query(
         `INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4);`,
-        ["Administrador SKYCODE", defaultEmail, passwordHash, "admin"]
+        ["Administrador SKYCODE", seedEmail.trim().toLowerCase(), passwordHash, "admin"]
       );
 
-      console.log("✅ [Auth DB] Tabla 'users' creada y usuario admin inicial sembrado:");
-      console.log(`   Email: ${defaultEmail} | Password: ${defaultPassword}`);
+      console.log(`✅ [Auth DB] Usuario admin inicial sembrado para ${seedEmail}.`);
     }
   } catch (error) {
     console.error("❌ [Auth DB Init Error]", error);
-  }
-}
-
-/**
- * Genera un Token JWT firmado para la sesión del usuario.
- */
-export async function createSessionToken(user: UserSession): Promise<string> {
-  return new SignJWT({
-    sub: String(user.id),
-    name: user.name,
-    email: user.email,
-    role: user.role,
-  })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime("7d") // Válido por 7 días
-    .sign(JWT_SECRET_KEY);
-}
-
-/**
- * Verifica y decodifica un Token JWT.
- */
-export async function verifySessionToken(token: string): Promise<UserSession | null> {
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET_KEY);
-    return {
-      id: payload.sub as string,
-      name: payload.name as string,
-      email: payload.email as string,
-      role: payload.role as string,
-    };
-  } catch (error) {
-    return null;
   }
 }
 

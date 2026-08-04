@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { locales, localeHomePath, localeNames, type Locale } from "@/lib/i18n";
 

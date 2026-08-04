@@ -22,8 +22,6 @@ import { Button } from "@/components/ui/Button";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 
-const COVER_ASPECT = "aspect-[16/9] sm:aspect-[21/9]";
-
 export function ServiceView({ slug, locale = defaultLocale }: { slug: string; locale?: Locale }) {
   const reduced = Boolean(useReducedMotion());
   const service = getServiceBySlug(slug, locale);

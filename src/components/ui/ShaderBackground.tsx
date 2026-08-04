@@ -6,6 +6,7 @@
 // <div className="relative"><ShaderBackground className="absolute inset-0" />…
 
 import { useEffect, useRef } from "react";
+import { useReducedMotion } from "framer-motion";
 
 const VERT = `attribute vec2 a_position;
 void main() {
@@ -306,9 +307,11 @@ const UNIFORMS = {
 const pendingContextReleases = new WeakMap<HTMLCanvasElement, number>();
 
 export function ShaderBackground({ className }: { className?: string }) {
+  const reduced = Boolean(useReducedMotion());
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    if (reduced) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const pendingRelease = pendingContextReleases.get(canvas);
@@ -576,7 +579,9 @@ export function ShaderBackground({ className }: { className?: string }) {
       }, 0);
       pendingContextReleases.set(canvas, releaseTimer);
     };
-  }, []);
+  }, [reduced]);
+
+  if (reduced) return null;
 
   return (
     <canvas

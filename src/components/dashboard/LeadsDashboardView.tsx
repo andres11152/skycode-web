@@ -30,6 +30,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { toCsvCell } from "@/lib/utils";
 
 export interface Lead {
   id: number;
@@ -69,6 +70,44 @@ export interface Project {
   sprints: Sprint[];
 }
 
+interface DashboardData {
+  user: { name: string; email: string; role: string };
+  leads?: Lead[];
+  projects?: Project[];
+}
+
+async function loadDashboardData(router: ReturnType<typeof useRouter>): Promise<DashboardData | null> {
+  try {
+    const meRes = await fetch("/api/auth/me");
+    if (!meRes.ok) {
+      router.push("/login");
+      return null;
+    }
+    const meData = await meRes.json();
+
+    let leads: Lead[] | undefined;
+    if (meData.user.role === "admin") {
+      const leadsRes = await fetch("/api/leads");
+      if (leadsRes.ok) {
+        const data = await leadsRes.json();
+        leads = data.leads || [];
+      }
+    }
+
+    let projects: Project[] | undefined;
+    const projectsRes = await fetch("/api/projects");
+    if (projectsRes.ok) {
+      const data = await projectsRes.json();
+      projects = data.projects || [];
+    }
+
+    return { user: meData.user, leads, projects };
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+    return null;
+  }
+}
+
 export function LeadsDashboardView() {
   const router = useRouter();
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -91,50 +130,41 @@ export function LeadsDashboardView() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
-  const fetchData = useCallback(async () => {
-    try {
-      const meRes = await fetch("/api/auth/me");
-      if (!meRes.ok) {
-        router.push("/login");
-        return;
-      }
-      const meData = await meRes.json();
-      setUser(meData.user);
-
-      // Si el usuario es un cliente, redirigir pestaña por defecto a proyectos
-      if (meData.user.role !== "admin") {
-        setActiveTab("projects");
-      }
-
-      // Cargar leads si es Admin
-      if (meData.user.role === "admin") {
-        const leadsRes = await fetch("/api/leads");
-        if (leadsRes.ok) {
-          const data = await leadsRes.json();
-          setLeads(data.leads || []);
-        }
-      }
-
-      // Cargar proyectos de la base de datos
-      const projectsRes = await fetch("/api/projects");
-      if (projectsRes.ok) {
-        const data = await projectsRes.json();
-        setProjects(data.projects || []);
-      }
-    } catch (err) {
-      console.error("Error al cargar datos:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [router]);
+  // Reloj para los badges de SLA — Date.now() no puede llamarse durante el render
+  // (react-hooks/purity), así que se lee una sola vez por tick dentro de un efecto.
+  const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const tick = () => setNow(Date.now());
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, []);
 
-  const handleManualRefresh = () => {
+  const applyDashboardData = useCallback((result: DashboardData) => {
+    setUser(result.user);
+    if (result.user.role !== "admin") setActiveTab("projects");
+    if (result.leads) setLeads(result.leads);
+    if (result.projects) setProjects(result.projects);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    let ignore = false;
+    loadDashboardData(router).then((result) => {
+      if (ignore || result === null) return;
+      applyDashboardData(result);
+    });
+    return () => {
+      ignore = true;
+    };
+  }, [router, applyDashboardData]);
+
+  const handleManualRefresh = async () => {
     setLoading(true);
-    fetchData();
+    const result = await loadDashboardData(router);
+    if (result !== null) applyDashboardData(result);
+    else setLoading(false);
   };
 
   const handleStatusChange = async (id: number, newStatus: string) => {
@@ -199,18 +229,18 @@ export function LeadsDashboardView() {
 
     const headers = ["ID", "Nombre", "Email", "Telefono", "Servicio", "Presupuesto", "Moneda", "Semanas", "Origen", "Estado", "Fecha", "Notas"];
     const rows = filteredLeads.map((l) => [
-      l.id,
-      `"${(l.name || "").replace(/"/g, '""')}"`,
-      `"${(l.email || "").replace(/"/g, '""')}"`,
-      `"${(l.phone || "").replace(/"/g, '""')}"`,
-      `"${(l.service || "").replace(/"/g, '""')}"`,
-      `"${(l.budget || "").replace(/"/g, '""')}"`,
-      l.currency || "COP",
-      l.estimated_weeks || 4,
-      `"${(l.source || "").replace(/"/g, '""')}"`,
-      l.status,
+      String(l.id),
+      toCsvCell(l.name || ""),
+      toCsvCell(l.email || ""),
+      toCsvCell(l.phone || ""),
+      toCsvCell(l.service || ""),
+      toCsvCell(l.budget || ""),
+      toCsvCell(l.currency || "COP"),
+      String(l.estimated_weeks || 4),
+      toCsvCell(l.source || ""),
+      toCsvCell(l.status),
       new Date(l.created_at).toISOString(),
-      `"${(l.notes || "").replace(/"/g, '""')}"`,
+      toCsvCell(l.notes || ""),
     ]);
 
     const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
@@ -224,26 +254,29 @@ export function LeadsDashboardView() {
   };
 
   const getSLABadge = (createdAt: string, status: string) => {
-    if (status !== "Nuevo") return null;
-    const diffHours = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60);
+    if (status !== "Nuevo" || now === null) return null;
+    const diffHours = (now - new Date(createdAt).getTime()) / (1000 * 60 * 60);
 
     if (diffHours < 2) {
       return (
-        <span className="rounded bg-green-500/20 px-2 py-0.5 text-[10px] font-bold text-green-400">
-          🟢 Respuesta Inmediata (&lt;2h)
+        <span className="inline-flex items-center gap-1 rounded bg-green-500/20 px-2 py-0.5 text-[10px] font-bold text-green-400">
+          <CheckCircle2 size={11} />
+          Respuesta Inmediata (&lt;2h)
         </span>
       );
     }
     if (diffHours < 24) {
       return (
-        <span className="rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-400">
-          🟡 Atención Requerida Hoy
+        <span className="inline-flex items-center gap-1 rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-400">
+          <Clock size={11} />
+          Atención Requerida Hoy
         </span>
       );
     }
     return (
-      <span className="rounded bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-400 animate-pulse">
-        🔴 SLA Vencido (&gt;24h)
+      <span className="inline-flex items-center gap-1 rounded bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-400 animate-pulse">
+        <AlertCircle size={11} />
+        SLA Vencido (&gt;24h)
       </span>
     );
   };
@@ -312,23 +345,25 @@ export function LeadsDashboardView() {
           <div className="flex border-b border-background/15 gap-6">
             <button
               onClick={() => setActiveTab("leads")}
-              className={`pb-3.5 text-sm font-semibold tracking-wide transition-all border-b-2 outline-none ${
+              className={`flex items-center gap-1.5 pb-3.5 text-sm font-semibold tracking-wide transition-all border-b-2 outline-none ${
                 activeTab === "leads"
                   ? "border-accent text-accent font-bold"
                   : "border-transparent text-background/50 hover:text-background"
               }`}
             >
-              📊 Leads y Ventas
+              <TrendingUp size={15} />
+              Leads y Ventas
             </button>
             <button
               onClick={() => setActiveTab("projects")}
-              className={`pb-3.5 text-sm font-semibold tracking-wide transition-all border-b-2 outline-none ${
+              className={`flex items-center gap-1.5 pb-3.5 text-sm font-semibold tracking-wide transition-all border-b-2 outline-none ${
                 activeTab === "projects"
                   ? "border-accent text-accent font-bold"
                   : "border-transparent text-background/50 hover:text-background"
               }`}
             >
-              🚀 Gestión de Proyectos
+              <Layers size={15} />
+              Gestión de Proyectos
             </button>
           </div>
         )}

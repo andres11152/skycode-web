@@ -23,3 +23,17 @@ export function slugify(text: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 }
+
+const CSV_FORMULA_TRIGGERS = ["=", "+", "-", "@", "\t", "\r"];
+
+/**
+ * Formatea un valor como celda CSV entrecomillada. Antepone un `'` cuando el
+ * valor empieza con un carácter que Excel/Sheets interpreta como fórmula
+ * (mitigación estándar de CSV injection para datos de origen no confiable).
+ */
+export function toCsvCell(value: string | number): string {
+  const stringValue = String(value ?? "");
+  const needsFormulaGuard = CSV_FORMULA_TRIGGERS.some((prefix) => stringValue.startsWith(prefix));
+  const guarded = needsFormulaGuard ? `'${stringValue}` : stringValue;
+  return `"${guarded.replace(/"/g, '""')}"`;
+}

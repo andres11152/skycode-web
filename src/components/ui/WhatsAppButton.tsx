@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { MessageCircle, X, Sparkles, Send } from "lucide-react";
+import { MessageCircle, X, Send } from "lucide-react";
 
-const WHATSAPP_PHONE = "573113132378"; // Número de la agencia
+const WHATSAPP_PHONE = "573138081081"; // Número de la agencia
 const DEFAULT_MESSAGE = encodeURIComponent(
   "Hola equipo SKYCODE, estuve revisando su sitio web y me gustaría cotizar un proyecto de software."
 );
@@ -16,15 +16,17 @@ export function WhatsAppButton() {
   const waLink = `https://wa.me/${WHATSAPP_PHONE}?text=${DEFAULT_MESSAGE}`;
 
   return (
+    // z-40: por debajo de Navbar (50), ScrollProgress (55), skip-link (60) y CookieBanner
+    // (65) — el banner de cookies, que ocupa todo el ancho inferior, debe poder taparlo.
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end pointer-events-auto">
       {/* Popover / Chat Card Preview */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 15, scale: 0.9 }}
+            initial={{ opacity: 0, y: reduced ? 0 : 15, scale: reduced ? 1 : 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 15, scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            exit={{ opacity: 0, y: reduced ? 0 : 15, scale: reduced ? 1 : 0.9 }}
+            transition={reduced ? { duration: 0.15 } : { type: "spring", stiffness: 350, damping: 25 }}
             className="mb-3 w-80 rounded-2xl border border-foreground/15 bg-foreground/95 p-4 text-background shadow-2xl backdrop-blur-xl"
           >
             <div className="flex items-center justify-between border-b border-background/10 pb-3 mb-3">
@@ -76,15 +78,12 @@ export function WhatsAppButton() {
         aria-label="Contactar por WhatsApp"
       >
         {/* Pulsing Ring */}
-        <span className="absolute -inset-1 rounded-full bg-[#25D366]/30 animate-ping pointer-events-none" />
+        {!reduced && (
+          <span className="absolute -inset-1 rounded-full bg-[#25D366]/30 animate-ping pointer-events-none" />
+        )}
 
         {/* Icon */}
         <MessageCircle size={28} className="relative z-10 text-white transition-transform duration-300 group-hover:scale-110" />
-
-        {/* Unread Indicator Badge */}
-        <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[9px] font-bold text-white shadow-sm border border-background">
-          1
-        </span>
       </motion.button>
     </div>
   );

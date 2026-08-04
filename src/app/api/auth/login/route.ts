@@ -1,25 +1,41 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { query } from "@/lib/db";
-import { initAuthDatabase, comparePassword, createSessionToken } from "@/lib/auth";
+import { initAuthDatabase, comparePassword } from "@/lib/auth";
+import { createSessionToken } from "@/lib/session";
+import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+
+const LoginSchema = z.object({
+  email: z.string().email().trim().max(254),
+  password: z.string().min(1).max(200),
+});
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(`login:${ip}`, 5, 10 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Demasiados intentos de inicio de sesión. Intente de nuevo en unos minutos." },
+        { status: 429 }
+      );
+    }
+
     // Asegurar que la tabla y admin estén inicializados
     await initAuthDatabase();
 
-    const { email, password } = await request.json();
-
-    if (!email || !password) {
+    const parsed = LoginSchema.safeParse(await request.json());
+    if (!parsed.success) {
       return NextResponse.json(
         { error: "Correo electrónico y contraseña son requeridos." },
         { status: 400 }
       );
     }
+    const { email, password } = parsed.data;
 
     // Buscar usuario por email en PostgreSQL
     const res = await query(
       "SELECT id, name, email, password_hash, role FROM users WHERE email = $1 LIMIT 1;",
-      [email.trim().toLowerCase()]
+      [email.toLowerCase()]
     );
 
     if (res.rows.length === 0) {

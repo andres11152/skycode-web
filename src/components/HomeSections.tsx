@@ -44,7 +44,7 @@ export function HomeSections({ locale }: { locale: Locale }) {
       <Highlights locale={locale} />
       <Services locale={locale} />
       <Process locale={locale} />
-      <ProjectEstimator />
+      <ProjectEstimator locale={locale} />
       <Portfolio locale={locale} />
       <Testimonials locale={locale} />
       <BlogTeaser locale={locale} />

@@ -1,7 +1,30 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { z } from "zod";
 import { query } from "@/lib/db";
-import { initAuthDatabase, verifySessionToken } from "@/lib/auth";
+import { initAuthDatabase } from "@/lib/auth";
+import { verifySessionToken } from "@/lib/session";
+import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+
+const LeadStatusSchema = z.enum(["Nuevo", "En Cotización", "Ganado", "Perdido"]);
+
+const CreateLeadSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  email: z.email().trim().max(254),
+  phone: z.string().trim().max(50).optional(),
+  service: z.string().trim().max(255).optional(),
+  budget: z.string().trim().max(100).optional(),
+  currency: z.string().trim().max(10).optional(),
+  estimatedWeeks: z.number().int().min(1).max(104).optional(),
+  message: z.string().trim().max(5000).optional(),
+  source: z.string().trim().max(100).optional(),
+});
+
+const UpdateLeadSchema = z.object({
+  id: z.number().int().positive(),
+  status: LeadStatusSchema.optional(),
+  notes: z.string().trim().max(5000).optional(),
+});
 
 /**
  * GET /api/leads - Obtiene todas las cotizaciones y prospectos de PostgreSQL.
@@ -40,22 +63,29 @@ export async function GET() {
  */
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(`leads:${ip}`, 5, 10 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." },
+        { status: 429 }
+      );
+    }
+
     await initAuthDatabase();
 
-    const body = await request.json();
-    const { name, email, phone, service, budget, currency, estimatedWeeks, message, source } = body;
-
-    if (!name || !email) {
-      return NextResponse.json({ error: "Nombre y correo son obligatorios." }, { status: 400 });
+    const parsed = CreateLeadSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Datos de solicitud inválidos." }, { status: 400 });
     }
+    const { name, email, phone, service, budget, currency, estimatedWeeks, message, source } = parsed.data;
 
     const res = await query(
       `INSERT INTO leads (name, email, phone, service, budget, currency, estimated_weeks, message, source, status)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'Nuevo')
        RETURNING id, name, email, created_at;`,
       [
-        name.trim(),
-        email.trim().toLowerCase(),
+        name,
+        email.toLowerCase(),
         phone || "",
         service || "Desarrollo General",
         budget || "A convenir",
@@ -93,11 +123,11 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Sesión inválida." }, { status: 401 });
     }
 
-    const { id, status, notes } = await request.json();
-
-    if (!id) {
-      return NextResponse.json({ error: "ID del prospecto es requerido." }, { status: 400 });
+    const parsed = UpdateLeadSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Datos de solicitud inválidos." }, { status: 400 });
     }
+    const { id, status, notes } = parsed.data;
 
     if (status !== undefined && notes !== undefined) {
       const res = await query(

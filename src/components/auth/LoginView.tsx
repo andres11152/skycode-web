@@ -5,13 +5,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Lock, Mail, Eye, EyeOff, ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { Lock, Mail, Eye, EyeOff, ArrowRight, CheckCircle2 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function LoginView() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@skycode.agency");
-  const [password, setPassword] = useState("admin123456");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +59,7 @@ export function LoginView() {
           </Link>
           <h1 className="text-2xl font-bold tracking-tight text-background">Acceso a Plataforma</h1>
           <p className="mt-1.5 text-xs text-background/70 font-sans">
-            Inicie sesión con sus credenciales de la base de datos PostgreSQL
+            Inicie sesión con sus credenciales de acceso
           </p>
         </div>
 
@@ -84,16 +84,6 @@ export function LoginView() {
                     {error}
                   </div>
                 )}
-
-                <div className="rounded-xl border border-accent/20 bg-accent/10 p-3 text-[11px] font-mono text-accent flex items-start gap-2">
-                  <ShieldCheck size={16} className="shrink-0 mt-0.5" />
-                  <div>
-                    <strong>Base de Datos PostgreSQL Conectada (Render):</strong>
-                    <div className="mt-0.5 text-[10px] opacity-90">
-                      Email: <code className="font-bold">admin@skycode.agency</code> | Clave: <code className="font-bold">admin123456</code>
-                    </div>
-                  </div>
-                </div>
 
                 <div className="space-y-1.5">
                   <label htmlFor="email" className="block text-xs font-semibold text-background/80">

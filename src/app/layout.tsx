@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
-import { Footer } from "@/components/Footer";
 import { LocaleProvider } from "@/components/LocaleProvider";
-import { SkipLink } from "@/components/SkipLink";
-import { HtmlLangSync } from "@/components/HtmlLangSync";
-import { CustomCursor } from "@/components/ui/CustomCursor";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
-import { CookieBanner } from "@/components/CookieBanner";
 import { services } from "@/content/services";
 import {
   contactEmail,

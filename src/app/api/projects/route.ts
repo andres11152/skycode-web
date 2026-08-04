@@ -1,7 +1,39 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { z } from "zod";
 import { query } from "@/lib/db";
-import { initAuthDatabase, verifySessionToken } from "@/lib/auth";
+import { initAuthDatabase } from "@/lib/auth";
+import { verifySessionToken } from "@/lib/session";
+
+const ProjectStatusSchema = z.enum(["Planificación", "En Desarrollo", "Fase QA", "Entregado", "Garantía SLA"]);
+const SprintStatusSchema = z.enum(["Completado", "En Progreso", "Pendiente"]);
+
+const CreateProjectSchema = z.object({
+  client_email: z.email().trim().max(254),
+  title: z.string().trim().min(1).max(255),
+  description: z.string().trim().max(2000).optional(),
+  repo_url: z.url().max(255).optional().or(z.literal("")),
+  staging_url: z.url().max(255).optional().or(z.literal("")),
+  sprints: z
+    .array(
+      z.object({
+        title: z.string().trim().min(1).max(255),
+        status: SprintStatusSchema.optional(),
+        progress: z.number().int().min(0).max(100).optional(),
+      })
+    )
+    .optional(),
+});
+
+const UpdateProjectSchema = z.object({
+  id: z.number().int().positive(),
+  progress: z.number().int().min(0).max(100).optional(),
+  status: ProjectStatusSchema.optional(),
+  repo_url: z.url().max(255).optional().or(z.literal("")),
+  staging_url: z.url().max(255).optional().or(z.literal("")),
+  sla_warranty_start: z.string().trim().max(30).optional(),
+  sla_warranty_end: z.string().trim().max(30).optional(),
+});
 
 /**
  * GET /api/projects - Obtiene los proyectos del cliente o todos los proyectos si es Admin.
@@ -75,19 +107,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Permiso denegado." }, { status: 403 });
     }
 
-    const body = await request.json();
-    const { client_email, title, description, repo_url, staging_url, sprints } = body;
-
-    if (!client_email || !title) {
+    const parsed = CreateProjectSchema.safeParse(await request.json());
+    if (!parsed.success) {
       return NextResponse.json({ error: "El correo del cliente y el título son requeridos." }, { status: 400 });
     }
+    const { client_email, title, description, repo_url, staging_url, sprints } = parsed.data;
 
     // Insertar proyecto
     const projectRes = await query(
       `INSERT INTO projects (client_email, title, description, progress, repo_url, staging_url, status)
        VALUES ($1, $2, $3, 0, $4, $5, 'En Desarrollo')
        RETURNING *;`,
-      [client_email.trim().toLowerCase(), title.trim(), description || "", repo_url || "", staging_url || ""]
+      [client_email.toLowerCase(), title, description || "", repo_url || "", staging_url || ""]
     );
 
     const newProject = projectRes.rows[0];
@@ -126,12 +157,11 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Permiso denegado." }, { status: 403 });
     }
 
-    const body = await request.json();
-    const { id, progress, status, repo_url, staging_url, sla_warranty_start, sla_warranty_end } = body;
-
-    if (!id) {
+    const parsed = UpdateProjectSchema.safeParse(await request.json());
+    if (!parsed.success) {
       return NextResponse.json({ error: "ID del proyecto es requerido." }, { status: 400 });
     }
+    const { id, progress, status, repo_url, staging_url, sla_warranty_start, sla_warranty_end } = parsed.data;
 
     const res = await query(
       `UPDATE projects 
