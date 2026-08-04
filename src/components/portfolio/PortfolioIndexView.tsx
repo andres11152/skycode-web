@@ -62,6 +62,8 @@ export function PortfolioIndexView() {
               <SpotlightCard>
                 <Link
                   href={`/portafolio/${project.slug}`}
+                  data-cursor="project"
+                  data-cursor-text="Ver Proyecto ↗"
                   aria-label={`${uiData.portfolioViewCase}: ${project.title}`}
                   className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-foreground/10 py-6 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:grid-cols-[2.5rem_5rem_1fr_auto] sm:gap-6 sm:py-8"
                 >

@@ -5,19 +5,19 @@
   "steps": [
     {
       "title": "Diagnóstico de arquitectura",
-      "description": "Evaluamos su sistema actual o el que necesita construir, y entregamos un diagnóstico técnico en menos de 24 horas hábiles."
+      "description": "Evaluamos su sistema y entregamos la arquitectura técnica y propuesta formal sin costo ni compromiso."
     },
     {
-      "title": "Propuesta y alcance",
-      "description": "Definimos arquitectura, alcance y cronograma antes de escribir una sola línea de código."
+      "title": "Inicio & 50% Anticipo",
+      "description": "Definimos entregables y damos inicio al desarrollo con el 50% de anticipo bajo contrato formal."
     },
     {
-      "title": "Desarrollo iterativo",
-      "description": "Entregas funcionales en cada sprint, con visibilidad total del progreso en repositorios compartidos."
+      "title": "Desarrollo & Sprints Ágiles",
+      "description": "Entregas funcionales probadas en repositorios compartidos con visibilidad total en tiempo real."
     },
     {
-      "title": "Entrega y transferencia",
-      "description": "Transferencia formal y completa de repositorios y credenciales — el código es 100% suyo desde el primer día."
+      "title": "50% Final & Despliegue en Producción",
+      "description": "El 50% restante se abona únicamente contra entrega probada, despliegue en la nube y transferencia de código 100% suyo."
     }
   ]
 }

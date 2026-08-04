@@ -1,9 +1,10 @@
 {
   "ariaLabel": "Software engineering standards",
   "items": [
-    { "label": "OWASP best practices" },
-    { "label": "Data-protection compliance" },
-    { "label": "Technical documentation included" },
-    { "label": "100% transferable code" }
+    { "label": "OWASP Best Practices" },
+    { "label": "90-Day SLA Warranty · Zero Bugs" },
+    { "label": "Data Protection Compliance" },
+    { "label": "Technical Documentation Included" },
+    { "label": "100% Transferable Code" }
   ]
 }

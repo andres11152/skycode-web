@@ -17,8 +17,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const project = getProjectBySlug(slug);
   if (!project) return {};
 
+  const coverUrl = project.coverImage ? `${siteUrl}${project.coverImage}` : ogImageUrl;
+
   return {
-    title: project.title,
+    title: `${project.title} | Casos de Éxito SKYCODE`,
     description: project.description,
     alternates: {
       canonical: `/portafolio/${project.slug}`,
@@ -27,28 +29,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: "article",
       title: project.title,
       description: project.description,
-      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: project.title }],
+      images: [{ url: coverUrl, width: 1200, height: 630, alt: project.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: project.title,
       description: project.description,
-      images: [ogImageUrl],
+      images: [coverUrl],
     },
   };
 }
 
 function ProjectJsonLd({ project }: { project: NonNullable<ReturnType<typeof getProjectBySlug>> }) {
   const url = `${siteUrl}/portafolio/${project.slug}`;
+  const coverUrl = project.coverImage ? `${siteUrl}${project.coverImage}` : ogImageUrl;
 
-  const creativeWorkJsonLd = {
+  const softwareAppJsonLd = {
     "@context": "https://schema.org",
-    "@type": "CreativeWork",
+    "@type": "SoftwareApplication",
     name: project.title,
     description: project.description,
-    keywords: project.tags.join(", "),
-    creator: { "@type": "Organization", name: siteName },
-    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    image: coverUrl,
+    url: project.link ?? url,
+    author: { "@type": "Organization", name: siteName, url: siteUrl },
   };
 
   const breadcrumbJsonLd = {
@@ -56,7 +61,7 @@ function ProjectJsonLd({ project }: { project: NonNullable<ReturnType<typeof get
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Inicio", item: siteUrl },
-      { "@type": "ListItem", position: 2, name: "Portafolio", item: `${siteUrl}/#portfolio` },
+      { "@type": "ListItem", position: 2, name: "Portafolio", item: `${siteUrl}/portafolio` },
       { "@type": "ListItem", position: 3, name: project.title, item: url },
     ],
   };
@@ -66,7 +71,7 @@ function ProjectJsonLd({ project }: { project: NonNullable<ReturnType<typeof get
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(creativeWorkJsonLd).replace(/</g, "\\u003c"),
+          __html: JSON.stringify(softwareAppJsonLd).replace(/</g, "\\u003c"),
         }}
       />
       <script

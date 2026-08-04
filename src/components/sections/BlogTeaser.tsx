@@ -38,7 +38,7 @@ export function BlogTeaser({ locale = defaultLocale }: { locale?: Locale }) {
           variants={staggerContainer(reduced, 0.06)}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, amount: 0.1 }}
           className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           {posts.map((post) => (

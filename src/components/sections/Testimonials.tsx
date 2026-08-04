@@ -92,7 +92,7 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
               goPrev();
             }
           }}
-          className="relative mx-auto max-w-3xl rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+          className="relative mx-auto max-w-2xl rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
         >
           <SpotlightCard spotlightSize={360}>
             <motion.div
@@ -106,22 +106,22 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
                   animate={{ opacity: 1, x: 0 }}
                   exit={reduced ? { opacity: 0 } : { opacity: 0, x: direction * -32 }}
                   transition={{ duration: reduced ? 0.01 : 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col items-center px-8 py-12 text-center sm:px-14 sm:py-16"
+                  className="flex flex-col items-center px-6 py-7 text-center sm:px-10 sm:py-9"
                 >
-                  <Quote className="text-accent/40" size={36} aria-hidden="true" />
-                  <blockquote className="mt-6 max-w-2xl text-xl leading-snug font-medium text-balance text-foreground sm:text-2xl">
+                  <Quote className="text-accent/40" size={24} aria-hidden="true" />
+                  <blockquote className="mt-4 max-w-xl text-base leading-relaxed font-medium text-balance text-foreground sm:text-lg">
                     &ldquo;{active.quote}&rdquo;
                   </blockquote>
-                  <div className="mt-8 flex flex-col items-center gap-3">
+                  <div className="mt-5 flex items-center gap-3">
                     <span
                       aria-hidden="true"
-                      className="flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 font-heading text-base font-semibold text-accent-strong"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 font-heading text-xs font-bold text-accent-strong shrink-0"
                     >
                       {initials(active.name)}
                     </span>
-                    <div>
-                      <p className="font-heading text-sm font-semibold text-foreground">{active.name}</p>
-                      <p className="text-sm text-foreground/60">
+                    <div className="text-left">
+                      <p className="font-heading text-xs font-bold text-foreground">{active.name}</p>
+                      <p className="text-[11px] text-foreground/60 leading-tight">
                         {active.role}, {active.company}
                         {active.location ? ` · ${active.location}` : ""}
                       </p>

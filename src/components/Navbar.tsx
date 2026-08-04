@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/Button";
 
 const SPRING = { type: "spring", stiffness: 400, damping: 34 } as const;
 const GLASS = "border border-foreground/10 bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl";
+const MOBILE_GLASS = "border border-foreground/15 bg-background/95 shadow-2xl shadow-black/30 backdrop-blur-2xl";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,8 +91,8 @@ export function Navbar() {
           ))}
         </motion.ul>
 
-        <motion.div layout="position" transition={SPRING} className="flex items-center gap-1">
-          <LanguageSwitcher locale={locale} glassClassName={GLASS} className="hidden sm:block" />
+        <motion.div layout="position" transition={SPRING} className="flex items-center gap-1.5">
+          <LanguageSwitcher locale={locale} glassClassName={GLASS} className="flex items-center" />
 
           {/* Desktop Contact button */}
           <Button
@@ -99,7 +100,7 @@ export function Navbar() {
             variant="accent"
             size="sm"
             aria-label={navData.contactoAria}
-            className="hidden sm:inline-flex"
+            className="hidden sm:inline-flex shadow-[0_0_20px_rgba(0,137,205,0.35)] animate-pulse-glow"
           >
             {navData.contacto}
           </Button>
@@ -126,7 +127,7 @@ export function Navbar() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className={cn("absolute inset-x-0 top-14 z-40 flex flex-col gap-3 rounded-2xl p-4 sm:hidden", GLASS)}
+              className={cn("absolute inset-x-0 top-14 z-40 flex flex-col gap-3 rounded-2xl p-4 sm:hidden", MOBILE_GLASS)}
             >
               <ul className="flex flex-col gap-2">
                 {navLinks.map((link) => (
@@ -146,7 +147,6 @@ export function Navbar() {
                   </li>
                 ))}
               </ul>
-              <LanguageSwitcher locale={locale} glassClassName={GLASS} className="self-start" />
               <Button
                 href={contactHref}
                 variant="accent"

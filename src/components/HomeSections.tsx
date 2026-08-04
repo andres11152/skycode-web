@@ -27,6 +27,9 @@ const Faq = dynamic(() =>
 const ClosingStatement = dynamic(() =>
   import("@/components/sections/ClosingStatement").then((mod) => mod.ClosingStatement)
 );
+const ProjectEstimator = dynamic(() =>
+  import("@/components/sections/ProjectEstimator").then((mod) => mod.ProjectEstimator)
+);
 const Contact = dynamic(() =>
   import("@/components/sections/Contact").then((mod) => mod.Contact)
 );
@@ -41,6 +44,7 @@ export function HomeSections({ locale }: { locale: Locale }) {
       <Highlights locale={locale} />
       <Services locale={locale} />
       <Process locale={locale} />
+      <ProjectEstimator />
       <Portfolio locale={locale} />
       <Testimonials locale={locale} />
       <BlogTeaser locale={locale} />

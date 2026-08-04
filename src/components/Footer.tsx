@@ -194,6 +194,14 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/login"
+                  className={cn(linkClasses, "text-foreground/60 hover:text-accent transition-colors")}
+                >
+                  Acceso a Plataforma
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

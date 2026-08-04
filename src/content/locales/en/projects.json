@@ -3,6 +3,37 @@
   "description": "Featured projects and success stories: technology solutions successfully implemented to solve real business challenges.",
   "items": [
     {
+      "slug": "sentry-crm",
+      "title": "Sentry CRM · Omnichannel SaaS Multitenant Platform & AI Agents",
+      "client": "Sentry CRM · Smart CRM & WhatsApp Automation",
+      "description": "Enterprise multi-tenant SaaS platform for omnichannel conversation management: official WhatsApp Business API integration, autonomous AI Copilot agents, unified agent inbox, smart routing, and real-time sales funnel analytics.",
+      "tags": ["SaaS Multitenant", "WhatsApp API", "AI Agents", "Omnichannel", "Next.js & Cloud DB"],
+      "iconName": "BrainCircuit",
+      "link": "https://app.sentrycrm.cloud/",
+      "coverImage": "/projects/sentry-crm/dashboard.webp",
+      "gallery": [
+        "/projects/sentry-crm/dashboard.webp",
+        "/projects/sentry-crm/inbox-chat.webp",
+        "/projects/sentry-crm/login.webp",
+        "/projects/sentry-crm/capture-4.webp",
+        "/projects/sentry-crm/capture-5.webp",
+        "/projects/sentry-crm/capture-6.webp",
+        "/projects/sentry-crm/capture-7.webp",
+        "/projects/sentry-crm/capture-8.webp",
+        "/projects/sentry-crm/capture-9.webp",
+        "/projects/sentry-crm/capture-10.webp",
+        "/projects/sentry-crm/capture-11.webp",
+        "/projects/sentry-crm/capture-12.webp",
+        "/projects/sentry-crm/capture-13.webp",
+        "/projects/sentry-crm/capture-14.webp",
+        "/projects/sentry-crm/capture-15.webp",
+        "/projects/sentry-crm/capture-16.webp",
+        "/projects/sentry-crm/capture-17.webp",
+        "/projects/sentry-crm/capture-18.webp",
+        "/projects/sentry-crm/capture-19.webp"
+      ]
+    },
+    {
       "slug": "servifuturo",
       "title": "Fleet Management & Operational Control Platform",
       "client": "ServiFuturo S.A.S. · Corporate Transport & Logistics",

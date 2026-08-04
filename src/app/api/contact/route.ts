@@ -1,19 +1,34 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { contactEmail } from "@/lib/site";
+import { query } from "@/lib/db";
+import { initAuthDatabase } from "@/lib/auth";
 
 export async function POST(request: Request) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const isDummyKey = !apiKey || apiKey === "your_resend_api_key_here" || !apiKey.startsWith("re_");
 
   try {
-    const { name, email, message } = await request.json();
+    const { name, email, phone, message } = await request.json();
 
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: "Todos los campos (nombre, correo y mensaje) son requeridos." },
         { status: 400 }
       );
+    }
+
+    // 1. Guardar automáticamente en la Base de Datos PostgreSQL (Render)
+    try {
+      await initAuthDatabase();
+      await query(
+        `INSERT INTO leads (name, email, phone, service, message, source, status)
+         VALUES ($1, $2, $3, 'Contacto Web', $4, 'Formulario Directo', 'Nuevo');`,
+        [name.trim(), email.trim().toLowerCase(), phone || "", message]
+      );
+      console.log("🐘 [PostgreSQL] Lead guardado exitosamente en BD invencheck!");
+    } catch (dbErr) {
+      console.error("⚠️ [PostgreSQL Lead Warning]", dbErr);
     }
 
     // Si no hay API Key de Resend válida configurada
@@ -45,7 +60,7 @@ export async function POST(request: Request) {
       to: targetEmail,
       subject: `Nuevo contacto de ${name}`,
       replyTo: email,
-      text: `Nombre: ${name}\nCorreo: ${email}\nMensaje:\n${message}`,
+      text: `Nombre: ${name}\nCorreo: ${email}\nTeléfono: ${phone || "No provisto"}\nMensaje:\n${message}`,
     };
 
     let { data, error } = await resend.emails.send(emailPayload);

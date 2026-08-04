@@ -15,8 +15,12 @@
       "answer": "Sí, nos especializamos en la integración robusta de APIs. Conectamos su software a la medida con pasarelas de pago (Stripe, PayPal, Wompi, PayU, Mercado Pago, entre otras) y sistemas ERP/contables como SAP, Siigo, Alegra o desarrollos propios, garantizando la automatización de la facturación y la sincronización de inventarios."
     },
     {
-      "question": "¿Qué tipo de soporte y mantenimiento ofrecen post-entrega?",
-      "answer": "Entregamos un periodo de garantía de estabilidad técnica para resolver cualquier incidente sin costo adicional. Adicionalmente, ofrecemos Acuerdos de Nivel de Servicio (SLA) para soporte mensual preventivo, actualizaciones de seguridad, parches en infraestructura en la nube y optimizaciones continuas de rendimiento."
+      "question": "¿Qué tipo de soporte y garantía ofrecen post-entrega?",
+      "answer": "Todos nuestros desarrollos incluyen una Garantía de Código de 90 Días SLA con cobertura del 100% sin costo adicional para la corrección inmediata de cualquier anomalía o bug. Adicionalmente, realizamos la transferencia de conocimiento completa a su equipo interno y ofrecemos Acuerdos de Nivel de Servicio (SLA) para soporte preventivo y escalamiento en la nube."
+    },
+    {
+      "question": "¿Cuál es el esquema y modalidad de pago para los proyectos?",
+      "answer": "Trabajamos bajo un esquema de hitos 100% transparente y seguro para su empresa: 50% de anticipo para formalizar el contrato e iniciar el desarrollo de arquitectura, y el 50% final únicamente contra entrega funcional probada y desplegada en producción. Para proyectos empresariales de gran envergadura, habilitamos modalidades de pago por Sprints quincenales."
     },
     {
       "question": "¿Cómo manejan el proceso de comunicación y gestión del proyecto?",

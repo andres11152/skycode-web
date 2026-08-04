@@ -2,7 +2,8 @@
   "ariaLabel": "Standards d'ingénierie logicielle",
   "items": [
     { "label": "Bonnes pratiques OWASP" },
-    { "label": "Conformité en protection des données" },
+    { "label": "Garantie 90 Jours SLA · Zéro Bug" },
+    { "label": "Conformité protection des données" },
     { "label": "Documentation technique incluse" },
     { "label": "Code 100% transférable" }
   ]

@@ -11,9 +11,9 @@ export function CodeConsoleWidget() {
   const [isRunning, setIsRunning] = useState(false);
   const [activeTab, setActiveTab] = useState<"code" | "output">("code");
   const [logs, setLogs] = useState<string[]>([
-    "🚀 SKYCODE Engine v2.4 initialized",
-    "✔ TypeScript 5.4 compilation: CLEAN",
-    "⚡ Latency: 0.3ms | Memory: 42MB",
+    "[SYSTEM] SKYCODE Engine v2.4 initialized",
+    "[BUILD] TypeScript 5.4 compilation: CLEAN",
+    "[METRICS] Latency: 0.3ms | Memory: 42MB",
   ]);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -29,13 +29,13 @@ export function CodeConsoleWidget() {
     if (isRunning) return;
     setIsRunning(true);
     setActiveTab("output");
-    setLogs(["⏳ Compiling microservices...", "📦 Bundling WebAssembly modules..."]);
+    setLogs(["[COMPILING] Microservices pipeline...", "[PACKAGING] WebAssembly modules..."]);
 
     timerRef.current = setTimeout(() => {
       setLogs((prev) => [
         ...prev,
-        "✅ Build succeeded in 0.28s",
-        "🌐 Deployed to Global Edge Network",
+        "[SUCCESS] Build succeeded in 0.28s",
+        "[DEPLOYED] Global Edge Network Active",
         "STATUS: 200 OK (Clean Architecture)",
       ]);
       setIsRunning(false);
@@ -96,7 +96,7 @@ export function CodeConsoleWidget() {
       {activeTab === "code" ? (
         <div className="space-y-1 text-background/90 font-mono text-[11px] leading-relaxed">
           <div><span className="text-purple-400">import</span> &#123; SkycodeCore &#125; <span className="text-purple-400">from</span> <span className="text-accent-secondary">&apos;@skycode/sdk&apos;</span>;</div>
-          <div className="text-background/40">// Auto-scaling microservice config</div>
+          <div className="text-background/40">{"// Auto-scaling microservice config"}</div>
           <div><span className="text-purple-400">export const</span> app = <span className="text-blue-400">new</span> SkycodeCore(&#123;</div>
           <div className="pl-4">architecture: <span className="text-accent-secondary">&apos;Hexagonal&apos;</span>,</div>
           <div className="pl-4">testCoverage: <span className="text-yellow-400">100</span>,</div>
@@ -454,9 +454,9 @@ export function ArchitectureDocWidget() {
         </span>
       </div>
       <div className="mt-2 rounded bg-foreground/5 p-2 text-[10px] text-foreground/80 font-mono text-center">
-        {activeNode === "client" && "📱 Client: React / React Native UI Layer"}
-        {activeNode === "gateway" && "⚡ Gateway: Rate Limiter + Auth JWT Middleware"}
-        {activeNode === "db" && "💾 Database: PostgreSQL Primary + Replica Sync"}
+        {activeNode === "client" && "Client: React / React Native UI Layer"}
+        {activeNode === "gateway" && "Gateway: Rate Limiter + Auth JWT Middleware"}
+        {activeNode === "db" && "Database: PostgreSQL Primary + Replica Sync"}
       </div>
     </div>
   );
@@ -524,7 +524,7 @@ export function LegacyMigrationWidget() {
           />
         </div>
         <div className="text-[9px] text-green-400 text-center font-bold pt-0.5">
-          {progress === 100 ? "✔ ZERO DATA LOSS GUARANTEE" : "🔄 Transferring tables..."}
+          {progress === 100 ? "[OK] ZERO DATA LOSS GUARANTEE" : "[SYNC] Transferring tables..."}
         </div>
       </div>
     </div>
@@ -536,7 +536,7 @@ export function LegacyMigrationWidget() {
 /* -------------------------------------------------------------------------- */
 export function AiAppliedWidget() {
   const [running, setRunning] = useState(false);
-  const [response, setResponse] = useState<string>('🤖 Agent: "Workflow automated. Sentiment: 98% Positive"');
+  const [response, setResponse] = useState<string>('Agent: "Workflow automated. Sentiment: 98% Positive"');
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -550,9 +550,9 @@ export function AiAppliedWidget() {
     e.stopPropagation();
     if (running) return;
     setRunning(true);
-    setResponse("⏳ LLM Agent processing prompt...");
+    setResponse("LLM Agent processing prompt...");
     timerRef.current = setTimeout(() => {
-      setResponse("✨ Agent: Output generated (Latency: 0.18s, Accuracy: 99.4%)");
+      setResponse("Agent: Output generated (Latency: 0.18s, Accuracy: 99.4%)");
       setRunning(false);
     }, 700);
   };

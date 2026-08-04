@@ -4,6 +4,7 @@
   "placeholders": {
     "name": "Nom complet ou raison sociale",
     "email": "Adresse e-mail de contact",
+    "phone": "Numéro de téléphone de contact (avec code pays)",
     "message": "Décrivez brièvement les besoins ou le défi de votre projet"
   },
   "submitLabel": "Envoyer la demande de contact",

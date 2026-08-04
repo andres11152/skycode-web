@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
-import { Navbar } from "@/components/Navbar";
+import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { Footer } from "@/components/Footer";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { SkipLink } from "@/components/SkipLink";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
-import { MouseGlow } from "@/components/ui/MouseGlow";
+import { CustomCursor } from "@/components/ui/CustomCursor";
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { CookieBanner } from "@/components/CookieBanner";
 import { services } from "@/content/services";
 import {
@@ -204,12 +205,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         <LocaleProvider>
-          <SkipLink />
-          <Navbar />
-          {children}
-          <Footer />
-          <HtmlLangSync />
-          <CookieBanner />
+          <ConditionalLayout>{children}</ConditionalLayout>
         </LocaleProvider>
       </body>
     </html>

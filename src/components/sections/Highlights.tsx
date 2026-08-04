@@ -8,10 +8,8 @@ import { getHeroContent } from "@/content/hero";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, type Locale } from "@/lib/i18n";
+import { BrainCircuit } from "lucide-react";
 import {
-  ExpressIcon,
-  JavaScriptIcon,
-  MongoDBIcon,
   NestJsIcon,
   NextJsIcon,
   PostgreSQLIcon,
@@ -20,14 +18,12 @@ import {
 } from "@/components/icons/TechIcons";
 
 const techStack = [
-  { name: "React", Icon: ReactIcon },
-  { name: "Next.js", Icon: NextJsIcon },
-  { name: "PostgreSQL", Icon: PostgreSQLIcon },
-  { name: "Nest.js", Icon: NestJsIcon },
-  { name: "Express", Icon: ExpressIcon },
-  { name: "JavaScript", Icon: JavaScriptIcon },
   { name: "TypeScript", Icon: TypeScriptIcon },
-  { name: "MongoDB", Icon: MongoDBIcon },
+  { name: "Next.js", Icon: NextJsIcon },
+  { name: "React", Icon: ReactIcon },
+  { name: "Nest.js / Node", Icon: NestJsIcon },
+  { name: "PostgreSQL", Icon: PostgreSQLIcon },
+  { name: "IA & Agentes", Icon: BrainCircuit },
 ];
 
 function VideoShowcase({

@@ -55,6 +55,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
+      phone: formData.get("phone"),
       message: formData.get("message"),
     };
 
@@ -133,6 +134,19 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
               type="email"
               name="email"
               autoComplete="email"
+              required
+              className={fieldClasses}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor={`${idPrefix}-phone`} className={labelClasses}>
+              {contactData.placeholders.phone || "Teléfono de contacto"}
+            </label>
+            <input
+              id={`${idPrefix}-phone`}
+              type="tel"
+              name="phone"
+              autoComplete="tel"
               required
               className={fieldClasses}
             />
