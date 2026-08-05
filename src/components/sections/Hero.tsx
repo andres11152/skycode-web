@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { GridPattern } from "@/components/ui/GridPattern";
-import { ShaderBackground } from "@/components/ui/ShaderBackground";
+import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { GradientShimmer } from "@/components/ui/gradient-shimmer";
 import { getHeroContent } from "@/content/hero";
 import { defaultLocale, type Locale } from "@/lib/i18n";
@@ -236,32 +236,23 @@ function CodeMockup() {
         <div className="flex items-center justify-between border-b border-background/10 px-3 py-2 sm:px-4 sm:py-2.5 bg-background/20 backdrop-blur-sm">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="flex gap-1 sm:gap-1.5">
-              <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-red-500/80" />
-              <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-yellow-500/80" />
-              <motion.span
-                animate={{
-                  backgroundColor: status === "success" ? "rgba(34, 197, 94, 0.8)" : "rgba(234, 179, 8, 0.8)",
-                  scale: reduced || status !== "success" ? 1 : [1, 1.25, 1],
-                }}
-                transition={{ duration: reduced ? 0.01 : 0.3 }}
-                className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-yellow-500/80"
-              />
+              <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
+              <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
+              <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
             </div>
             <span className="font-mono text-[10px] sm:text-xs text-background/60">
               api/orders/route.ts
             </span>
           </div>
           {/* Badge de estado de la API */}
-          <motion.div
-            animate={{
-              borderColor: status === "success" ? "rgba(34, 197, 94, 0.2)" : "rgba(234, 179, 8, 0.2)",
-              color: status === "success" ? "rgb(34, 197, 94)" : "rgb(234, 179, 8)",
-            }}
-            className="hidden xs:flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[9px] sm:text-[10px] font-semibold"
+          <div
+            className={`hidden xs:flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[9px] sm:text-[10px] font-semibold transition-colors ${
+              status === "success" ? "border-accent/30 text-accent" : "border-background/20 text-background/60"
+            }`}
           >
-            <span className={`h-1.5 w-1.5 rounded-full ${status === "success" ? "bg-green-500 animate-pulse" : "bg-yellow-500"}`} />
+            <span className={`h-1.5 w-1.5 rounded-full ${status === "success" ? "bg-accent" : "bg-background/40"}`} />
             {status === "success" ? "201 Created" : "POSTing..."}
-          </motion.div>
+          </div>
         </div>
 
         {/* Cuerpo del código con efecto typing */}
@@ -323,15 +314,11 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
       aria-label={heroData.sectionAria}
       className="relative overflow-hidden scroll-mt-24 px-6 pt-24 pb-10 sm:pt-28 sm:pb-10 lg:flex lg:flex-1 lg:items-center lg:py-8"
     >
-      <ShaderBackground className="absolute inset-0 -z-20 opacity-30 pointer-events-none" />
-      {/* Luces ambientales duales traslapadas (Azul + Amarillo Corporativo) */}
+      {/* Resplandor ambiental — un solo glow de acento, no dos (ver CLAUDE.md: el amarillo
+          se reserva para el punto del Footer). */}
       <div
         aria-hidden="true"
-        className="absolute left-[35%] top-0 -z-10 h-[460px] w-[600px] -translate-x-1/2 rounded-full bg-accent/[0.10] blur-[100px]"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute left-[65%] top-[-40px] -z-10 h-[460px] w-[600px] -translate-x-1/2 rounded-full bg-accent-secondary/[0.07] blur-[100px]"
+        className="absolute left-1/2 top-0 -z-10 h-[460px] w-[600px] -translate-x-1/2 rounded-full bg-accent/[0.10] blur-[100px]"
       />
       <GridPattern
         width={40}
@@ -341,16 +328,17 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
       />
       <div className="relative mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-center lg:gap-10 xl:gap-16">
         <div className="flex flex-col items-start gap-3 text-left">
-          <div
-            className="animate-hero-fade-up mb-1 rounded-2xl sm:rounded-full border border-foreground/10 px-3.5 py-1.5 text-xs font-medium uppercase tracking-wide text-foreground/80 max-w-full inline-flex items-center gap-2 leading-relaxed bg-foreground/[0.01]"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent-secondary shadow-[0_0_8px_rgba(255,209,0,0.85)] animate-pulse shrink-0" />
-            <span>{heroData.badge}</span>
-          </div>
+          <SectionEyebrow className="animate-hero-fade-up mb-2">{heroData.badge}</SectionEyebrow>
 
           <GradientShimmer
             as="h1"
-            gradient="sunrise"
+            gradient={[
+              { color: "#0089CD", position: 0 },
+              { color: "#38BDF8", position: 0.3 },
+              { color: "#7DD3FC", position: 0.5 },
+              { color: "#38BDF8", position: 0.7 },
+              { color: "#0089CD", position: 1 },
+            ]}
             angle={125}
             duration={2.5}
             spread={4}

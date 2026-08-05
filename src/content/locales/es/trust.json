@@ -2,7 +2,7 @@
   "ariaLabel": "Estándares de ingeniería de software",
   "items": [
     { "label": "Buenas prácticas OWASP" },
-    { "label": "Garantía 90 Días SLA · Cero Bugs" },
+    { "label": "Garantía 90 Días SLA · Corrección de Defectos Incluida" },
     { "label": "Cumplimiento normativo de datos" },
     { "label": "Documentación técnica incluida" },
     { "label": "Código 100% transferible" }

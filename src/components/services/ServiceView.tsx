@@ -19,6 +19,7 @@ import { getServicePageContent } from "@/content/servicePage";
 import { getNavContent } from "@/content/nav";
 import { getTrustContent } from "@/content/trust";
 import { Button } from "@/components/ui/Button";
+import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 
@@ -70,16 +71,14 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
           </ol>
         </motion.nav>
 
-        <div className="grid gap-10 lg:grid-cols-[1fr_340px] lg:gap-16">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_340px] lg:gap-16">
           <div className="flex min-w-0 flex-col gap-8">
             <motion.header variants={fadeUp(reduced)} className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-foreground/10 bg-gradient-to-br from-foreground/5 to-foreground/[0.01] text-accent shadow-[0_0_25px_rgba(0,137,205,0.12)]">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-gradient-to-br from-foreground/5 to-foreground/[0.01] text-accent shadow-[0_0_25px_rgba(0,137,205,0.12)]">
                   <service.coverIcon size={28} strokeWidth={1.75} aria-hidden="true" />
                 </div>
-                <div className="rounded-full border border-accent/20 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
-                  Solución Enterprise SKYCODE
-                </div>
+                <SectionEyebrow>Solución Enterprise SkyCode</SectionEyebrow>
               </div>
               <h1 className="text-3xl font-bold tracking-tight text-balance text-foreground sm:text-4xl lg:text-5xl">
                 {service.title}

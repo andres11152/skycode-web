@@ -2,7 +2,7 @@
   "sectionAria": "Interactive project estimator",
   "badge": "Real-Time Transparent Estimator",
   "title": "Calculate Your Project's Investment and Timeline",
-  "subtitle": "Highly competitive rates (~18-20% below traditional agencies) with direct, high-performance software engineering.",
+  "subtitle": "Competitive rates, with direct, high-performance software engineering.",
   "currency": {
     "copLabel": "COP (Pesos)",
     "usdLabel": "USD (Dollars)"
@@ -51,7 +51,6 @@
     { "id": "security", "title": "OWASP Security Audit & Data Protection Compliance" },
     { "id": "ai_bot", "title": "Custom AI Virtual Assistant / Chatbot" }
   ],
-  "discountBadge": "-20% vs Market",
   "fromLabel": "From",
   "pace": {
     "standardTitle": "Standard (Continuous sprints)",

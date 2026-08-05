@@ -7,8 +7,6 @@
   --accent-strong: #006998;
   --accent-foreground: #ffffff;
   --accent-secondary: #ffd100;
-  --mouse-glow-color: rgba(0, 137, 205, 0.22);
-  --mouse-glow-blend: multiply;
 }
 
 @theme inline {
@@ -44,21 +42,6 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading), var(--font-sans), sans-serif;
-}
-
-@keyframes nav-enter {
-  from {
-    opacity: 0;
-    transform: translateY(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-nav-enter {
-  animation: nav-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /*
@@ -100,75 +83,9 @@ h6 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-nav-enter,
   .animate-hero-fade-up,
   .animate-hero-scale-in {
     animation: none;
   }
-}
-
-/* Modificadores de color de brillo de cursor para secciones oscuras */
-.bg-foreground,
-#servicios {
-  --mouse-glow-color: rgba(255, 209, 0, 0.18);
-  --mouse-glow-blend: normal;
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Enterprise Micro-Animations & World-Class Transitions                     */
-/* -------------------------------------------------------------------------- */
-
-@keyframes float-slow {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-6px) rotate(0.5deg);
-  }
-}
-
-.animate-float-slow {
-  animation: float-slow 6s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(0, 137, 205, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(0, 137, 205, 0.35);
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-@keyframes text-shimmer-wave {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-.animate-shimmer-wave {
-  background-size: 200% auto;
-  animation: text-shimmer-wave 4s linear infinite;
-}
-
-/* Transiciones táctiles suaves de tarjetas y botones (Apple/Linear Curve) */
-.enterprise-transition {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.hover-lift-enterprise {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.hover-lift-enterprise:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px -10px rgba(0, 137, 205, 0.12);
 }
 

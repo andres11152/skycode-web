@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { CheckCircle2, Calculator, ArrowRight, Clock, Tag, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
+import { CheckCircle2, ArrowRight, Clock, Tag, Zap } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProjectEstimatorContent, getDefaultCurrency } from "@/content/projectEstimator";
 import { defaultLocale, t, type Locale } from "@/lib/i18n";
 
@@ -12,6 +13,20 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
 
   const [currency, setCurrency] = useState<"COP" | "USD">(getDefaultCurrency(locale));
   const [selectedType, setSelectedType] = useState<string>(projectTypes[0].id);
+  useEffect(() => {
+    // El middleware (src/proxy.ts) ya resolvió el país por IP en el edge y lo
+    // dejó en esta cookie — se lee una sola vez al montar. Solo Colombia ve
+    // COP por defecto; cualquier otro país ve USD, sin importar el idioma.
+    // Si no hay cookie (host sin geo-IP, o dev local), se respeta el default
+    // por locale que ya trae el estado inicial.
+    const applyGeoCurrency = () => {
+      const match = document.cookie.match(/(?:^|; )skycode-geo-country=([^;]+)/);
+      if (match) {
+        setCurrency(decodeURIComponent(match[1]) === "CO" ? "COP" : "USD");
+      }
+    };
+    applyGeoCurrency();
+  }, []);
   const [selectedAddons, setSelectedAddons] = useState<string[]>([addons[0].id, addons[1].id]);
   const [urgency, setUrgency] = useState<"standard" | "express">("standard");
 
@@ -64,7 +79,9 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
       weeks: String(totalWeeks),
     });
 
-    const contactTextarea = document.querySelector<HTMLTextAreaElement>("textarea[name='mensaje']");
+    // El textarea del formulario de contacto es `name="message"` (ver
+    // sections/Contact.tsx); antes se buscaba "mensaje" y el prefill fallaba en silencio.
+    const contactTextarea = document.querySelector<HTMLTextAreaElement>("textarea[name='message']");
     if (contactTextarea) {
       contactTextarea.value = text;
     }
@@ -79,14 +96,12 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
     <section
       id="cotizador"
       aria-label={content.sectionAria}
-      className="py-20 px-6 bg-gradient-to-b from-transparent via-foreground/[0.02] to-transparent"
+      className="scroll-mt-24 px-6 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-transparent via-foreground/[0.02] to-transparent"
     >
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-12">
-          <div className="flex items-center gap-2 rounded-full border border-accent/20 bg-accent/10 px-3.5 py-1 text-xs font-semibold text-accent mb-4">
-            <Calculator size={14} /> {content.badge}
-          </div>
+          <SectionEyebrow className="mb-3">{content.badge}</SectionEyebrow>
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             {content.title}
           </h2>
@@ -156,12 +171,9 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                         <p className="mt-1 text-xs text-foreground/70 leading-relaxed">{type.desc}</p>
                       </div>
 
-                      <div className="mt-3 border-t border-foreground/5 pt-2 flex items-center justify-between text-[11px]">
+                      <div className="mt-3 border-t border-foreground/5 pt-2 text-[11px]">
                         <span className="font-mono font-bold text-accent">
                           {content.fromLabel} {formatPrice(displayPrice)}
-                        </span>
-                        <span className="rounded bg-green-500/10 px-1.5 py-0.5 text-[9px] font-bold text-green-600">
-                          {content.discountBadge}
                         </span>
                       </div>
                     </div>
@@ -243,12 +255,12 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
 
           {/* Estimation Summary Box */}
           <div className="lg:sticky lg:top-28 h-fit">
-            <SpotlightCard className="rounded-2xl border border-foreground/15 bg-foreground/95 p-6 text-background shadow-2xl">
+            <SpotlightCard className="rounded-xl border border-foreground/15 bg-foreground/95 p-6 text-background shadow-2xl">
               <div className="flex items-center justify-between border-b border-background/10 pb-4 mb-4">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-background/60">
                   {content.summary.title}
                 </span>
-                <span className="rounded-full bg-green-400/20 px-2.5 py-0.5 text-[10px] font-bold text-green-400">
+                <span className="rounded-full bg-background/10 px-2.5 py-0.5 text-[10px] font-bold text-background">
                   {currency}
                 </span>
               </div>
@@ -257,11 +269,11 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
               <div className="space-y-1 mb-6">
                 <div className="flex items-center justify-between text-[11px] text-background/60">
                   <span>{content.summary.investmentLabel}</span>
-                  <span className="text-green-400 font-bold text-[10px] flex items-center gap-1">
+                  <span className="text-accent font-bold text-[10px] flex items-center gap-1">
                     <Tag size={10} /> {content.summary.competitiveRateLabel}
                   </span>
                 </div>
-                <div className="text-2xl sm:text-3xl font-bold font-mono text-accent-secondary leading-tight">
+                <div className="text-2xl sm:text-3xl font-bold font-mono text-accent leading-tight">
                   {formatPrice(totalPrice)}
                 </div>
                 <div className="text-[10px] text-background/50">
@@ -281,7 +293,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                 </div>
                 <div className="flex items-center justify-between text-background/80">
                   <span className="text-background/60">{content.summary.ipLabel}</span>
-                  <span className="text-green-400 font-bold">{content.summary.ipValue}</span>
+                  <span className="text-background font-bold">{content.summary.ipValue}</span>
                 </div>
                 <div className="flex items-center justify-between text-background/80">
                   <span className="text-background/60">{content.summary.paymentLabel}</span>
@@ -289,7 +301,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                 </div>
                 <div className="flex items-center justify-between text-background/80">
                   <span className="text-background/60">{content.summary.warrantyLabel}</span>
-                  <span className="text-green-400 font-bold">{content.summary.warrantyValue}</span>
+                  <span className="text-background font-bold">{content.summary.warrantyValue}</span>
                 </div>
               </div>
 

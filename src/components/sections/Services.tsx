@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import {
   CodeConsoleWidget,
   MobileAppPreviewWidget,
@@ -188,10 +189,11 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
   };
 
   return (
-    <section id="servicios" className="scroll-mt-24 bg-foreground px-6 py-24 overflow-hidden">
+    <section id="servicios" className="scroll-mt-24 bg-foreground px-6 py-20 sm:py-24 lg:py-28 overflow-hidden">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
+            <SectionEyebrow onDark className="mb-3">Nuestros Servicios</SectionEyebrow>
             <h2 className="text-4xl font-bold tracking-tight text-background sm:text-5xl">
               {servicesSection.title}
             </h2>
@@ -252,7 +254,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                   <SpotlightCard className="h-full">
                     <Link
                       href={`${servicesPrefix}/servicios/${service.slug}`}
-                      aria-label={`${uiData.servicesViewDetails}: ${service.title}`}
+                      aria-labelledby={`service-title-${service.slug}`}
                       className="group flex min-h-[460px] sm:min-h-[450px] h-full flex-col justify-between rounded-xl border border-foreground/10 bg-background p-6 sm:p-8 outline-none transition-all duration-300 hover:border-accent/30 hover:shadow-[0_12px_40px_rgba(0,137,205,0.04)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                     >
                       <div>
@@ -263,7 +265,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                               <service.coverIcon size={22} strokeWidth={1.75} aria-hidden="true" />
                             </motion.span>
                           </div>
-                          <h3 className="text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-accent">
+                          <h3 id={`service-title-${service.slug}`} className="text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-accent">
                             {service.title}
                           </h3>
                         </div>
@@ -320,7 +322,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
               <motion.div
                 animate={{
                   width: currentIndex === index ? 24 : 8,
-                  backgroundColor: currentIndex === index ? "var(--accent-secondary)" : "rgba(255, 255, 255, 0.25)"
+                  backgroundColor: currentIndex === index ? "var(--accent)" : "rgba(255, 255, 255, 0.25)"
                 }}
                 transition={reduced ? { duration: 0.01 } : { type: "spring", stiffness: 300, damping: 30 }}
                 className="h-2 rounded-full transition-colors group-hover:bg-background/40"

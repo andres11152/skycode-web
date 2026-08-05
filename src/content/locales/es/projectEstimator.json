@@ -1,8 +1,8 @@
 {
   "sectionAria": "Cotizador interactivo de proyectos",
-  "badge": "Cotizador Transparente en Tiempo Real",
+  "badge": "Cotizador de Proyectos",
   "title": "Calcula la Inversión y Tiempos de tu Proyecto",
-  "subtitle": "Tarifas altamente competitivas (~18-20% por debajo de agencias tradicionales) con ingeniería de software directa de alto rendimiento.",
+  "subtitle": "Seleccione las opciones de su proyecto para obtener un estimado de tiempo e inversión en tiempo real.",
   "currency": {
     "copLabel": "COP (Pesos)",
     "usdLabel": "USD (Dólares)"
@@ -51,7 +51,6 @@
     { "id": "security", "title": "Auditoría de Seguridad OWASP & Ley 1581" },
     { "id": "ai_bot", "title": "Asistente Virtual / Bot de IA Personalizado" }
   ],
-  "discountBadge": "-20% vs Mercado",
   "fromLabel": "Desde",
   "pace": {
     "standardTitle": "Estándar (Sprints continuos)",
@@ -72,7 +71,7 @@
     "warrantyLabel": "Garantía de Código:",
     "warrantyValue": "90 Días SLA Incluidos",
     "ctaLabel": "Solicitar Propuesta Oficial",
-    "disclaimer": "*Estimación preliminar sin IVA. Se ratifica mediante propuesta técnica formal."
+    "disclaimer": "*Estimación preliminar sin IMPUESTOS. Se ratifica mediante propuesta técnica formal."
   },
   "whatsappMessageTemplate": "Hola equipo SKYCODE, configuré mi proyecto con el cotizador interactivo:\n- Tipo: {type}\n- Módulos adicionales: {addons}\n- Modalidad: {pace}\n- Estimado: {total} (~{weeks} semanas).\nMe gustaría solicitar una propuesta formal y agendar una llamada de valoración.",
   "noAddonsLabel": "Ninguno"

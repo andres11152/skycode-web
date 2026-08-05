@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Plus } from "lucide-react";
+import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getFaqContent } from "@/content/faq";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 
@@ -16,9 +17,10 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
   };
 
   return (
-    <section id="faq" className="scroll-mt-24 bg-foreground/[0.01] px-6 py-24 border-t border-foreground/5">
+    <section id="faq" className="scroll-mt-24 bg-foreground/[0.01] px-6 py-20 sm:py-24 lg:py-28 border-t border-foreground/5">
       <div className="mx-auto max-w-4xl">
         <div className="mb-12 max-w-xl">
+          <SectionEyebrow className="mb-3">Preguntas Frecuentes</SectionEyebrow>
           <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
             {faqData.title}
           </h2>
@@ -45,7 +47,7 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
                   <span className="text-base font-semibold text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-lg">
                     {item.question}
                   </span>
-                  <span className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-foreground/60 transition-all duration-350 group-hover:bg-accent-secondary group-hover:text-foreground">
+                  <span className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-foreground/60 transition-all duration-350 group-hover:bg-accent-strong group-hover:text-white">
                     <motion.span
                       animate={{ rotate: isOpen ? 135 : 0 }}
                       transition={{ duration: reduced ? 0.01 : 0.25, ease: "easeOut" }}

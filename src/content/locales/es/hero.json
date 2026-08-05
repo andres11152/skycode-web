@@ -1,14 +1,14 @@
 {
   "sectionAria": "Presentación de la agencia",
   "actionsAria": "Acciones principales",
-  "badge": "INGENIERÍA DE SOFTWARE SIN DEPENDENCIA TECNOLÓGICA",
+  "badge": "SOFTWARE A LA MEDIDA 100% CÓDIGO PROPIO",
   "title": "Construimos el Software de su Empresa sin Dependencia Tecnológica. 100% Código Propio.",
-  "subtitle": "Desarrollamos plataformas empresariales listas para escalar, con documentación impecable y entrega total de propiedad intelectual. Su éxito no depende de nosotros, sino de la calidad de su software.",
+  "subtitle": "Desarrollamos plataformas empresariales listas para escalar, con documentación impecable y entrega total de propiedad intelectual. Su software, sin dependencia técnica de nuestro equipo una vez finalizado el proyecto.",
   "description": "Garantice la continuidad y seguridad de su operación digital. Diseñamos de acuerdo a estándares internacionales de seguridad (OWASP) y los marcos de protección de datos vigentes en su país, entregando documentación técnica rigurosa para que su equipo mantenga el control total sin depender de terceros.",
   "ctaPrimary": {
     "label": "Cotizar Proyecto",
-    "href": "#contacto",
-    "ariaLabel": "Cotizar proyecto de software: ir al formulario de contacto"
+    "href": "#cotizador",
+    "ariaLabel": "Cotizar proyecto de software: ir al cotizador interactivo"
   },
   "ctaSecondary": {
     "label": "Ver portafolio",

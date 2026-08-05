@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Pause, Play, Quote } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getTestimonialsContent } from "@/content/testimonials";
 import { getUiContent } from "@/content/ui";
 import { defaultLocale, t, type Locale } from "@/lib/i18n";
@@ -63,10 +64,11 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
     <section
       id="testimonios"
       aria-label={uiData.testimonialsSectionAria}
-      className="scroll-mt-24 bg-foreground px-6 py-24"
+      className="scroll-mt-24 bg-foreground px-6 py-20 sm:py-24 lg:py-28"
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 max-w-xl">
+          <SectionEyebrow onDark className="mb-3">Testimonios &amp; Casos Reales</SectionEyebrow>
           <h2 className="text-4xl font-bold tracking-tight text-background sm:text-5xl">
             {testimonialsSection.title}
           </h2>
@@ -92,12 +94,12 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
               goPrev();
             }
           }}
-          className="relative mx-auto max-w-2xl rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+          className="relative mx-auto max-w-2xl rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
         >
           <SpotlightCard spotlightSize={360}>
             <motion.div
               layout
-              className="relative overflow-hidden rounded-2xl border border-foreground/10 bg-background shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+              className="relative overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
             >
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
@@ -175,7 +177,7 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
                   <motion.div
                     animate={{
                       width: index === i ? 24 : 8,
-                      backgroundColor: index === i ? "var(--accent-secondary)" : "rgba(255, 255, 255, 0.25)",
+                      backgroundColor: index === i ? "var(--accent)" : "rgba(255, 255, 255, 0.25)",
                     }}
                     transition={reduced ? { duration: 0.01 } : { type: "spring", stiffness: 300, damping: 30 }}
                     className="h-2 rounded-full transition-colors group-hover:bg-background/40"

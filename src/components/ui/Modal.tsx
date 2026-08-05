@@ -37,7 +37,7 @@ export function Modal({ open, onClose, title, closeLabel, children, className }:
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/75 backdrop-blur-md p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -49,13 +49,13 @@ export function Modal({ open, onClose, title, closeLabel, children, className }:
             aria-modal="true"
             aria-labelledby={title ? titleId : undefined}
             className={cn(
-              "w-full max-w-md rounded-xl bg-background p-6 shadow-xl",
+              "w-full max-w-md rounded-2xl border border-foreground/15 bg-background p-6 sm:p-8 shadow-2xl shadow-black/40 backdrop-blur-2xl relative overflow-hidden",
               className,
             )}
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            initial={{ opacity: 0, scale: 0.92, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.15 }}
+            exit={{ opacity: 0, scale: 0.92, y: 16 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">

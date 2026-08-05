@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { cn } from "@/lib/utils";
 import { getClosingContent } from "@/content/closing";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
@@ -63,9 +64,7 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
         />
 
         <div className="mx-auto flex w-full max-w-4xl flex-col items-start gap-8">
-          <span className="rounded-full border border-background/15 px-4 py-1 text-xs font-medium uppercase tracking-wide text-background/70">
-            {closingData.eyebrow}
-          </span>
+          <SectionEyebrow onDark>{closingData.eyebrow}</SectionEyebrow>
 
           {reduced ? (
             <p className="text-3xl font-bold leading-snug tracking-tight text-balance text-background sm:text-5xl">

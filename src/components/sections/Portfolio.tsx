@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, ExternalLink } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { ProjectCover } from "@/components/ui/ProjectCover";
+import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { EsBadge } from "@/components/ui/EsBadge";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { cn } from "@/lib/utils";
@@ -106,10 +107,11 @@ export function Portfolio({ locale = defaultLocale }: { locale?: Locale }) {
     <section
       id="portfolio"
       aria-label={uiData.portfolioSectionAria}
-      className="scroll-mt-24 bg-foreground/[0.03] px-6 py-24"
+      className="scroll-mt-24 bg-foreground/[0.03] px-6 py-20 sm:py-24 lg:py-28"
     >
       <div className="mx-auto max-w-5xl">
-        <div className="mb-10 max-w-xl">
+        <div className="mb-12 max-w-xl">
+          <SectionEyebrow className="mb-3">Portafolio &amp; Casos de Éxito</SectionEyebrow>
           <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
             {projectsSection.title}
           </h2>

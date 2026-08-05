@@ -6,6 +6,7 @@ import { getTestimonialsContent } from "@/content/testimonials";
 import { getHighlightsContent } from "@/content/highlights";
 import { getHeroContent } from "@/content/hero";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { BrainCircuit } from "lucide-react";
@@ -87,7 +88,7 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
   const featuredTestimonial = testimonials.find((t) => t.featured) ?? testimonials[0];
 
   return (
-    <section aria-label={highlightsData.sectionAria} className="px-6 py-16">
+    <section aria-label={highlightsData.sectionAria} className="px-6 py-20 sm:py-24 lg:py-28">
       <h2 className="sr-only">{highlightsData.sectionAria}</h2>
       <div className="mx-auto max-w-6xl">
         <motion.div
@@ -95,8 +96,9 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="mb-8 max-w-4xl"
+          className="mb-12 max-w-4xl"
         >
+          <SectionEyebrow className="mb-3">Por Qué SkyCode</SectionEyebrow>
           <p className="text-base sm:text-lg font-medium text-foreground/80 leading-relaxed">
             {getHeroContent(locale).description}
           </p>
@@ -114,7 +116,7 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
         >
           <motion.div variants={fadeUp(reduced)} className="lg:col-span-2 lg:row-span-2">
             <SpotlightCard className="h-full" spotlightSize={320}>
-              <div className="flex h-full flex-col justify-between rounded-2xl border border-foreground/10 bg-background p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg sm:p-10">
+              <div className="flex h-full flex-col justify-between rounded-xl border border-foreground/10 bg-background p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg sm:p-10">
                 <blockquote className="text-2xl leading-snug font-medium text-balance text-foreground">
                   &ldquo;{featuredTestimonial.quote}&rdquo;
                 </blockquote>
@@ -132,7 +134,7 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
 
           <motion.div variants={fadeUp(reduced)} className="lg:col-span-1">
             <SpotlightCard className="h-full">
-              <div className="h-full rounded-2xl border border-foreground/10 bg-background p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
+              <div className="h-full rounded-xl border border-foreground/10 bg-background p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
                 <VideoShowcase videoAria={highlightsData.videoAria} />
               </div>
             </SpotlightCard>
@@ -140,7 +142,7 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
 
           <motion.div variants={fadeUp(reduced)} className="lg:col-span-1">
             <SpotlightCard className="h-full">
-              <div className="flex h-full flex-col justify-center rounded-2xl border border-foreground/10 bg-background p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
+              <div className="flex h-full flex-col justify-center rounded-xl border border-foreground/10 bg-background p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
                 <p className="text-sm font-medium text-foreground/60">{highlightsData.techLabel}</p>
                 <ul className="mt-4 flex flex-wrap gap-3">
                   {techStack.map(({ name, Icon }) => (
@@ -162,16 +164,16 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
 
           <motion.div variants={fadeUp(reduced)} className="lg:col-span-3">
             <SpotlightCard>
-              <div className="grid gap-6 rounded-2xl border border-foreground/10 bg-background p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg sm:grid-cols-2 sm:p-10 lg:grid-cols-4">
+              <div className="grid gap-8 rounded-xl border border-foreground/10 bg-background p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg sm:grid-cols-3 sm:gap-6 sm:p-10">
                 {highlightsData.items.map((item) => (
-                  <div
-                    key={item.title}
-                    className="group -ml-3 rounded-lg border-l-2 border-transparent py-1 pl-3 transition-colors duration-200 hover:border-accent hover:bg-accent/[0.04]"
-                  >
-                    <h3 className="font-heading text-lg font-bold text-foreground transition-colors duration-200 group-hover:text-accent-strong">
+                  <div key={item.title} className="group">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-foreground/5 to-foreground/[0.01] border border-foreground/10 text-foreground/60 transition-all duration-300 group-hover:from-accent/15 group-hover:to-accent/5 group-hover:border-accent/30 group-hover:text-accent">
+                      <item.icon size={20} strokeWidth={1.75} aria-hidden="true" />
+                    </div>
+                    <h3 className="mt-4 font-heading text-lg font-bold text-foreground transition-colors duration-200 group-hover:text-accent-strong">
                       {item.title}
                     </h3>
-                    <p className="mt-1.5 text-sm text-foreground/70">{item.description}</p>
+                    <p className="mt-1.5 text-sm text-foreground/70 leading-relaxed">{item.description}</p>
                   </div>
                 ))}
               </div>

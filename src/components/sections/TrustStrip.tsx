@@ -9,13 +9,13 @@ const OwaspIcon = () => (
     <defs>
       <linearGradient id="owaspGrad" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#0089CD" />
-        <stop offset="100%" stopColor="#FFD100" />
+        <stop offset="100%" stopColor="#006998" />
       </linearGradient>
     </defs>
     <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="url(#owaspGrad)" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M2 17l10 5 10-5" stroke="#0089CD" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M2 12l10 5 10-5" stroke="#FFD100" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="12" cy="7" r="1.5" fill="#FFD100" />
+    <path d="M2 12l10 5 10-5" stroke="#006998" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="12" cy="7" r="1.5" fill="#006998" />
   </svg>
 );
 
@@ -23,13 +23,13 @@ const ComplianceIcon = () => (
   <svg className="w-4 h-4 text-current transition-transform duration-500 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" strokeWidth="2">
     <defs>
       <linearGradient id="compGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#FFD100" />
+        <stop offset="0%" stopColor="#006998" />
         <stop offset="100%" stopColor="#0089CD" />
       </linearGradient>
     </defs>
     <circle cx="12" cy="12" r="8" stroke="url(#compGrad)" strokeDasharray="3 2" />
     <path d="M12 6v12M6 12h12" stroke="#0089CD" strokeLinecap="round" />
-    <rect x="10" y="10" width="4" height="4" rx="1" fill="#FFD100" />
+    <rect x="10" y="10" width="4" height="4" rx="1" fill="#006998" />
   </svg>
 );
 
@@ -38,7 +38,7 @@ const DocIcon = () => (
     <defs>
       <linearGradient id="docGrad" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#0089CD" />
-        <stop offset="100%" stopColor="#FFD100" />
+        <stop offset="100%" stopColor="#006998" />
       </linearGradient>
     </defs>
     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="#0089CD" strokeLinecap="round" />
@@ -51,13 +51,13 @@ const TransferIcon = () => (
   <svg className="w-4 h-4 text-current transition-transform duration-300 group-hover:scale-105" viewBox="0 0 24 24" fill="none" strokeWidth="2">
     <defs>
       <linearGradient id="transGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#FFD100" />
+        <stop offset="0%" stopColor="#006998" />
         <stop offset="100%" stopColor="#0089CD" />
       </linearGradient>
     </defs>
     <path d="M16 18l6-6-6-6M8 6l-6 6 6 6" stroke="url(#transGrad)" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M12 4v2M12 16v2" stroke="#0089CD" strokeLinecap="round" />
-    <circle cx="12" cy="11" r="2" fill="#FFD100" />
+    <circle cx="12" cy="11" r="2" fill="#006998" />
   </svg>
 );
 

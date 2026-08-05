@@ -4,7 +4,9 @@
   "placeholders": {
     "name": "Nombre completo o nombre de la empresa",
     "email": "Correo electrónico de contacto",
-    "phone": "Teléfono de contacto (con indicativo de país)",
+    "phone": "Teléfono de contacto",
+    "phoneCountry": "País del número de teléfono",
+    "phoneCountryEmpty": "Seleccione su país",
     "message": "Describa brevemente los requerimientos o el desafío de su proyecto"
   },
   "submitLabel": "Enviar solicitud de contacto",
@@ -14,8 +16,8 @@
     "linkUrl": "/politica-privacidad"
   },
   "successModal": {
-    "title": "¡Mensaje enviado!",
-    "body": "Gracias por escribirnos. Lo contactaremos muy pronto."
+    "title": "Solicitud de Diagnóstico Registrada",
+    "body": "Hemos recibido los requerimientos de su proyecto. Un ingeniero de software de nuestro equipo revisará la información y le enviará un pre-diagnóstico técnico en menos de 24 horas hábiles."
   },
   "sendingLabel": "Enviando...",
   "errorConnection": "No se pudo conectar con el servidor. Revise su conexión.",

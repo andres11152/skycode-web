@@ -64,7 +64,7 @@ export function Navbar() {
               transition={SPRING}
               className="flex h-8 items-center rounded-full transition-transform duration-300 ease-out group-hover:scale-110"
             >
-              <Image src="/logo-mark.png" alt="" width={110} height={63} className="h-6 w-auto" />
+              <Image src="/logo-mark.png" alt="" width={110} height={63} priority className="h-6 w-auto" />
             </motion.span>
           </Link>
         </motion.div>

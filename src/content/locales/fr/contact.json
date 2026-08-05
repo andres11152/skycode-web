@@ -4,7 +4,9 @@
   "placeholders": {
     "name": "Nom complet ou raison sociale",
     "email": "Adresse e-mail de contact",
-    "phone": "Numéro de téléphone de contact (avec code pays)",
+    "phone": "Numéro de téléphone de contact",
+    "phoneCountry": "Pays du numéro de téléphone",
+    "phoneCountryEmpty": "Sélectionnez votre pays",
     "message": "Décrivez brièvement les besoins ou le défi de votre projet"
   },
   "submitLabel": "Envoyer la demande de contact",

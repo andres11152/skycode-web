@@ -86,24 +86,24 @@ export function CustomCursor() {
       >
         <motion.div
           animate={{
-            scale: cursorText ? 1 : isHovered ? 1.6 : 1,
-            width: cursorText ? "auto" : isHovered ? "36px" : "28px",
-            height: cursorText ? "auto" : isHovered ? "36px" : "28px",
+            scale: cursorText ? 1 : isHovered ? 1.25 : 1,
+            width: cursorText ? "auto" : isHovered ? "32px" : "24px",
+            height: cursorText ? "auto" : isHovered ? "32px" : "24px",
           }}
           transition={{ type: "spring", stiffness: 450, damping: 28 }}
           className={`flex items-center justify-center rounded-full transition-all ${
             cursorText
               ? "px-3.5 py-1.5 bg-background/90 text-foreground border border-accent/40 shadow-[0_8px_25px_rgba(0,137,205,0.25)] backdrop-blur-md"
               : isHovered
-                ? "bg-accent/15 border border-accent/60 backdrop-blur-[2px] shadow-[0_0_15px_rgba(0,137,205,0.2)]"
-                : "border border-foreground/30 bg-foreground/5 backdrop-blur-[1px]"
+                ? "bg-accent/5 border border-accent/40 shadow-[0_0_10px_rgba(0,137,205,0.15)]"
+                : "border border-foreground/20 bg-transparent"
           }`}
         >
           {cursorText ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="flex items-center gap-1 font-mono text-[10px] font-bold tracking-widest text-accent uppercase"
+              className="flex items-center gap-1 font-mono text-[10px] font-bold tracking-widest text-accent-strong uppercase"
             >
               <span>{cursorText}</span>
               <ArrowUpRight size={12} className="text-accent stroke-[2.5]" />

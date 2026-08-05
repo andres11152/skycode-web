@@ -4,14 +4,17 @@
   "videoAria": "Video de muestra de nuestro trabajo",
   "items": [
     {
+      "iconName": "Users",
       "title": "Comunicación directa",
       "description": "Habla con los ingenieros que construyen su software, no con gestores de cuenta. Visibilidad total del progreso en tiempo real."
     },
     {
+      "iconName": "BadgeCheck",
       "title": "Garantía post-entrega",
       "description": "Periodo de garantía de estabilidad técnica sin costo adicional, más SLA de soporte preventivo continuo."
     },
     {
+      "iconName": "ShieldCheck",
       "title": "Privacidad desde el diseño",
       "description": "RBAC, cifrado de datos sensibles y logs de auditoría inmutables — no como parche posterior a un incidente."
     }

@@ -27,20 +27,16 @@ export function WhatsAppButton() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: reduced ? 0 : 15, scale: reduced ? 1 : 0.9 }}
             transition={reduced ? { duration: 0.15 } : { type: "spring", stiffness: 350, damping: 25 }}
-            className="mb-3 w-80 rounded-2xl border border-foreground/15 bg-foreground/95 p-4 text-background shadow-2xl backdrop-blur-xl"
+            className="mb-3 w-80 rounded-xl border border-foreground/15 bg-foreground/95 p-4 text-background shadow-2xl backdrop-blur-xl"
           >
             <div className="flex items-center justify-between border-b border-background/10 pb-3 mb-3">
               <div className="flex items-center gap-2.5">
                 <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#25D366] text-white shadow-md">
                   <MessageCircle size={20} />
-                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-400 border-2 border-foreground" />
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-background leading-tight">SKYCODE Directo</h4>
-                  <span className="text-[10px] text-green-400 font-mono flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
-                    Ingeniero En Vivo
-                  </span>
+                  <span className="text-[10px] text-background/60 font-mono">Respuesta en horario laboral</span>
                 </div>
               </div>
               <button
@@ -74,16 +70,10 @@ export function WhatsAppButton() {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
-        className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_0_25px_rgba(37,211,102,0.4)] transition-all hover:shadow-[0_0_35px_rgba(37,211,102,0.6)] outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2"
+        className="group flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-shadow hover:shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2"
         aria-label="Contactar por WhatsApp"
       >
-        {/* Pulsing Ring */}
-        {!reduced && (
-          <span className="absolute -inset-1 rounded-full bg-[#25D366]/30 animate-ping pointer-events-none" />
-        )}
-
-        {/* Icon */}
-        <MessageCircle size={28} className="relative z-10 text-white transition-transform duration-300 group-hover:scale-110" />
+        <MessageCircle size={28} className="text-white transition-transform duration-300 group-hover:scale-110" />
       </motion.button>
     </div>
   );

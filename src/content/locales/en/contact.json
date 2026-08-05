@@ -4,7 +4,9 @@
   "placeholders": {
     "name": "Full name or company name",
     "email": "Contact email address",
-    "phone": "Contact phone number (with country code)",
+    "phone": "Contact phone number",
+    "phoneCountry": "Phone number country",
+    "phoneCountryEmpty": "Select your country",
     "message": "Briefly describe your project's requirements or challenge"
   },
   "submitLabel": "Send contact request",

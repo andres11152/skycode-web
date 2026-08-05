@@ -2,7 +2,7 @@
   "sectionAria": "Estimateur de projet interactif",
   "badge": "Estimateur Transparent en Temps Réel",
   "title": "Calculez l'Investissement et les Délais de Votre Projet",
-  "subtitle": "Tarifs très compétitifs (~18-20% sous les agences traditionnelles) avec une ingénierie logicielle directe et haute performance.",
+  "subtitle": "Tarifs compétitifs, avec une ingénierie logicielle directe et haute performance.",
   "currency": {
     "copLabel": "COP (Pesos)",
     "usdLabel": "USD (Dollars)"
@@ -51,7 +51,6 @@
     { "id": "security", "title": "Audit de Sécurité OWASP & Conformité RGPD" },
     { "id": "ai_bot", "title": "Assistant Virtuel IA Personnalisé" }
   ],
-  "discountBadge": "-20% vs Marché",
   "fromLabel": "À partir de",
   "pace": {
     "standardTitle": "Standard (Sprints continus)",

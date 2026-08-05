@@ -46,7 +46,7 @@ export function ArticleView({ post }: { post: BlogPost }) {
           </ol>
         </motion.nav>
 
-        <div className="grid gap-10 lg:grid-cols-[1fr_280px] lg:gap-16">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_280px] lg:gap-16">
           <div className="flex min-w-0 flex-col gap-8">
             <motion.header variants={fadeUp(reduced)} className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center gap-2">

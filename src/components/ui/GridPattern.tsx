@@ -117,7 +117,7 @@ export function GridPattern({
               height={height - 1}
               x={squareX * width + 1}
               y={squareY * height + 1}
-              fill={index % 2 === 0 ? "var(--accent)" : "var(--accent-secondary)"}
+              fill="var(--accent)"
               fillOpacity={0.4}
               strokeWidth={0}
             />

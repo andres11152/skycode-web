@@ -7,10 +7,25 @@ import { initAuthDatabase } from "@/lib/auth";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 
 const ContactSchema = z.object({
-  name: z.string().trim().min(1).max(200),
-  email: z.string().email().trim().max(254),
-  phone: z.string().trim().max(50).optional().nullable(),
-  message: z.string().trim().min(1).max(5000),
+  name: z.string().trim().min(2, "El nombre debe tener al menos 2 caracteres.").max(200),
+  email: z
+    .string()
+    .trim()
+    .email("Formato de correo electrónico no válido.")
+    .max(254)
+    .refine((val) => {
+      const fakeDomains = ["test.com", "asdf.com", "fake.com", "xxx.com", "example.com", "mailinator.com", "tempmail.com", "dispostable.com"];
+      const domain = val.split("@")[1]?.toLowerCase();
+      return domain && !fakeDomains.includes(domain) && domain.includes(".");
+    }, "Por favor ingrese un correo electrónico corporativo o personal válido."),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^\+[1-9]\d{6,17}$/)
+    .optional()
+    .nullable()
+    .or(z.literal("")),
+  message: z.string().trim().min(10, "El mensaje debe tener al menos 10 caracteres.").max(5000),
 });
 
 export async function POST(request: Request) {
