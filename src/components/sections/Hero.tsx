@@ -11,7 +11,8 @@ import { defaultLocale, type Locale } from "@/lib/i18n";
 
 const CTA_TRANSITION = { duration: 0.15, ease: "easeOut" } as const;
 
-function CodeMockup() {
+function CodeMockup({ locale }: { locale: Locale }) {
+  const { comment } = getHeroContent(locale).codeMockup;
   const reduced = Boolean(useReducedMotion());
   const x = useMotionValue(200);
   const y = useMotionValue(200);
@@ -34,8 +35,10 @@ function CodeMockup() {
 
   const codeLines: { length: number; isBreak?: boolean; jsx: React.ReactNode }[] = [
     {
-      length: 32,
-      jsx: <span className="text-background/60">{"// valida, autentica y documenta"}</span>,
+      // La duración del "tipeo" depende de esto — se deriva del string real
+      // (no un número fijo) porque el comentario cambia de largo por idioma.
+      length: comment.length,
+      jsx: <span className="text-background/60">{comment}</span>,
     },
     {
       length: 29,
@@ -400,7 +403,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           aria-hidden="true"
           className="animate-hero-scale-in flex justify-center lg:mt-16 lg:justify-end w-full max-w-full overflow-hidden"
         >
-          <CodeMockup />
+          <CodeMockup locale={locale} />
         </div>
       </div>
     </section>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist_Mono, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { LocaleProvider } from "@/components/LocaleProvider";
@@ -195,7 +196,11 @@ export default function RootLayout({
     >
       <head>
         <OrganizationJsonLd />
-        <script dangerouslySetInnerHTML={{ __html: BROWSER_LOCALE_REDIRECT_SCRIPT }} />
+        <Script
+          id="locale-redirect"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: BROWSER_LOCALE_REDIRECT_SCRIPT }}
+        />
       </head>
       <body className="min-h-full flex flex-col">
         <LocaleProvider>

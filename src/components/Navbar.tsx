@@ -92,7 +92,7 @@ export function Navbar() {
         </motion.ul>
 
         <motion.div layout="position" transition={SPRING} className="flex items-center gap-1.5">
-          <LanguageSwitcher locale={locale} glassClassName={GLASS} className="flex items-center" />
+          <LanguageSwitcher locale={locale} className="flex items-center" />
 
           {/* Desktop Contact button */}
           <Button

@@ -14,5 +14,8 @@
     "label": "Ver portafolio",
     "href": "#portfolio",
     "ariaLabel": "Ver portafolio de proyectos"
+  },
+  "codeMockup": {
+    "comment": "// valida, autentica y documenta"
   }
 }

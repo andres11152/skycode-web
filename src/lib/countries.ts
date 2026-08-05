@@ -274,9 +274,28 @@ export interface CountryOption extends Country {
 }
 
 /**
+ * Lista "SSR-segura" de países: mismo contenido en cualquier entorno (nombre
+ * = código ISO, orden por código), sin `Intl.DisplayNames`. Existe porque los
+ * nombres de región de `Intl.DisplayNames` NO son idénticos entre el ICU de
+ * Node (servidor) y el del navegador — ej. Node da "RAE de Hong Kong (China)"
+ * para `HK` en español, un navegador puede dar solo "Hong Kong" — lo que
+ * cambia el orden alfabético resultante y rompe la hidratación si se usa esta
+ * lista directamente en el primer render. Se usa como estado inicial y se
+ * reemplaza por `getCountryOptions` en un efecto de montaje, ya en cliente.
+ */
+export function getFallbackCountryOptions(): CountryOption[] {
+  return COUNTRIES.map((country) => ({
+    ...country,
+    flag: flagEmoji(country.code),
+    name: country.code,
+  })).sort((a, b) => a.code.localeCompare(b.code));
+}
+
+/**
  * Lista de países lista para pintar en un `<select>`: nombre localizado según
  * el idioma activo y orden estrictamente alfabético A→Z (sin "países populares"
  * arriba). Si `Intl.DisplayNames` no está disponible, se degrada al código ISO.
+ * Solo debe llamarse en cliente (ver `getFallbackCountryOptions` sobre por qué).
  */
 export function getCountryOptions(locale: Locale): CountryOption[] {
   let displayNames: Intl.DisplayNames | undefined;

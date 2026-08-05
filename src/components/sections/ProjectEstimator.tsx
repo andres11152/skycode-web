@@ -6,6 +6,7 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProjectEstimatorContent, getDefaultCurrency } from "@/content/projectEstimator";
 import { defaultLocale, t, type Locale } from "@/lib/i18n";
+import { useGeoCountry } from "@/lib/useGeoCountry";
 
 export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }) {
   const content = getProjectEstimatorContent(locale);
@@ -13,20 +14,17 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
 
   const [currency, setCurrency] = useState<"COP" | "USD">(getDefaultCurrency(locale));
   const [selectedType, setSelectedType] = useState<string>(projectTypes[0].id);
+  // Solo Colombia ve COP por defecto; cualquier otro país ve USD, sin importar
+  // el idioma. Si no hay señal de país (host sin geo-IP, o dev local), se
+  // respeta el default por locale que ya trae el estado inicial.
+  const geoCountry = useGeoCountry();
   useEffect(() => {
-    // El middleware (src/proxy.ts) ya resolvió el país por IP en el edge y lo
-    // dejó en esta cookie — se lee una sola vez al montar. Solo Colombia ve
-    // COP por defecto; cualquier otro país ve USD, sin importar el idioma.
-    // Si no hay cookie (host sin geo-IP, o dev local), se respeta el default
-    // por locale que ya trae el estado inicial.
     const applyGeoCurrency = () => {
-      const match = document.cookie.match(/(?:^|; )skycode-geo-country=([^;]+)/);
-      if (match) {
-        setCurrency(decodeURIComponent(match[1]) === "CO" ? "COP" : "USD");
-      }
+      if (!geoCountry) return;
+      setCurrency(geoCountry === "CO" ? "COP" : "USD");
     };
     applyGeoCurrency();
-  }, []);
+  }, [geoCountry]);
   const [selectedAddons, setSelectedAddons] = useState<string[]>([addons[0].id, addons[1].id]);
   const [urgency, setUrgency] = useState<"standard" | "express">("standard");
 

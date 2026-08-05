@@ -11,11 +11,9 @@ const LOCALE_FLAG: Record<Locale, string> = { es: "🇨🇴", en: "🇺🇸", fr
 
 export function LanguageSwitcher({
   locale,
-  glassClassName,
   className,
 }: {
   locale: Locale;
-  glassClassName: string;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);

@@ -17,11 +17,21 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Home (donde vive el cotizador): país por IP vía el header que Vercel ya
-  // inyecta en el edge, sin servicio de terceros ni JS de tracking. Se lee
-  // acá (no en la página con `headers()`) para no forzar el home a render
-  // dinámico — el home sigue 100% estático, solo se agrega una cookie liviana
-  // que el cotizador lee una vez al montar para decidir COP vs USD.
+  // Home (donde viven el cotizador y el teléfono de contacto): país por IP
+  // vía el header que Vercel ya inyecta en el edge, sin servicio de terceros
+  // ni JS de tracking. Se lee acá (no en la página con `headers()`) para no
+  // forzar el home a render dinámico — el home sigue 100% estático, solo se
+  // agrega una cookie liviana que los componentes leen una vez al montar.
+  //
+  // En hosts sin este header (ej. Render), no se intenta resolver el país
+  // acá: `geoip-country` necesita leer su base de datos desde disco con una
+  // ruta relativa a `__dirname`, y el bundle especial que Next.js genera para
+  // Proxy no preserva esa ruta (falla en silencio — sin excepción, sin log,
+  // simplemente nunca encuentra el archivo). Ese fallback vive en
+  // `/api/geo` ([app/api/geo/route.ts](src/app/api/geo/route.ts)), una Route
+  // Handler normal con el bundling estándar de Next.js (el mismo que ya usan
+  // `/api/contact` y `/api/leads`), consumida desde el cliente vía
+  // `useGeoCountry` ([lib/useGeoCountry.ts](src/lib/useGeoCountry.ts)).
   if (HOME_PATHS.has(request.nextUrl.pathname)) {
     const response = NextResponse.next();
     const country = request.headers.get("x-vercel-ip-country");

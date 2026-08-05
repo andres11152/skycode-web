@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { findCountry, flagEmoji, getCountryOptions } from "@/lib/countries";
+import { findCountry, flagEmoji, getCountryOptions, getFallbackCountryOptions } from "@/lib/countries";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { useGeoCountry } from "@/lib/useGeoCountry";
 
 // País por defecto según el idioma, usado solo mientras no haya señal de IP
 // (o si el host no expone geolocalización). Es el mismo criterio de mercado
@@ -41,27 +42,34 @@ export function PhoneField({
   fieldClassName: string;
   labelClassName: string;
 }) {
-  const countries = useMemo(() => getCountryOptions(locale), [locale]);
+  // Arranca con la lista "SSR-segura" (nombre = código, ver getFallbackCountryOptions)
+  // y se reemplaza por la localizada real en un efecto de montaje — evita un
+  // mismatch de hidratación si el ICU del navegador ordena distinto al de Node.
+  const [countries, setCountries] = useState(getFallbackCountryOptions);
+  useEffect(() => {
+    const applyLocalizedCountries = () => {
+      setCountries(getCountryOptions(locale));
+    };
+    applyLocalizedCountries();
+  }, [locale]);
   const [countryCode, setCountryCode] = useState<string>(LOCALE_DEFAULT_COUNTRY[locale]);
   const [localNumber, setLocalNumber] = useState("");
 
+  // País resuelto por IP (ver useGeoCountry) — se lee una sola vez al montar,
+  // nunca durante el render, para no romper la hidratación. Si el país no
+  // está en la lista o no hay señal (dev local, host sin geo-IP), se conserva
+  // el default por idioma que ya trae el estado inicial.
+  const geoCountry = useGeoCountry();
   useEffect(() => {
-    // El middleware (src/proxy.ts) ya resolvió el país por IP en el edge y lo
-    // dejó en esta cookie — se lee una sola vez al montar, nunca durante el
-    // render, para no romper la hidratación. Si el país no está en la lista o
-    // no hay cookie (dev local, host sin geo-IP), se conserva el default por
-    // idioma que ya trae el estado inicial.
     const applyGeoCountry = () => {
-      const match = document.cookie.match(/(?:^|; )skycode-geo-country=([^;]+)/);
-      if (!match) return;
-      const detected = decodeURIComponent(match[1]).toUpperCase();
+      if (!geoCountry) return;
       // Si sí hubo señal de IP pero el país no está en la lista (territorio raro),
       // se limpia la selección en vez de dejar el default por idioma: es preferible
       // que el visitante elija a que mande su número con un indicativo ajeno.
-      setCountryCode(findCountry(detected) ? detected : "");
+      setCountryCode(findCountry(geoCountry) ? geoCountry : "");
     };
     applyGeoCountry();
-  }, []);
+  }, [geoCountry]);
 
   const selected = findCountry(countryCode);
   const composed = composePhone(selected?.dial ?? "", localNumber);
