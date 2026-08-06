@@ -23,7 +23,7 @@ export interface Testimonial {
 export function getTestimonialsContent(locale: Locale) {
   const testimonialsData = testimonialsByLocale[locale];
   return {
-    testimonialsSection: { title: testimonialsData.title, description: testimonialsData.description },
+    testimonialsSection: { badge: testimonialsData.badge, title: testimonialsData.title, description: testimonialsData.description },
     testimonials: testimonialsData.items as Testimonial[],
   };
 }

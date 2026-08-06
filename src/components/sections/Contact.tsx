@@ -186,7 +186,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
     <section id="contacto" className="scroll-mt-24 px-6 py-20 sm:py-24 lg:py-28">
       <div className="mx-auto max-w-xl">
         <div className="mb-12 text-center">
-          <SectionEyebrow className="mb-3">Contacto &amp; Diagnóstico</SectionEyebrow>
+          <SectionEyebrow className="mb-3">{contactData.badge}</SectionEyebrow>
           <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
             {contactData.title}
           </h2>

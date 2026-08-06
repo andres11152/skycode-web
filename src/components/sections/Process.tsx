@@ -14,7 +14,7 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
     <section aria-label={processData.sectionAria} id="proceso" className="scroll-mt-24 px-6 py-20 sm:py-24 lg:py-28 bg-foreground/[0.01]">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 max-w-2xl">
-          <SectionEyebrow className="mb-3">Nuestro Proceso</SectionEyebrow>
+          <SectionEyebrow className="mb-3">{processData.badge}</SectionEyebrow>
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             {processData.title}
           </h2>

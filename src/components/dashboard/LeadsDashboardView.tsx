@@ -292,9 +292,10 @@ export function LeadsDashboardView() {
     return matchesSearch && matchesStatus;
   });
 
-  // Paginación calculada
+  // Paginación calculada con safety clamp si currentPage está fuera de rango
   const totalPages = Math.ceil(filteredLeads.length / pageSize) || 1;
-  const paginatedLeads = filteredLeads.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedLeads = filteredLeads.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
 
   // Métricas
   const totalLeads = leads.length;
@@ -390,7 +391,7 @@ export function LeadsDashboardView() {
                 <button
                   onClick={handleManualRefresh}
                   disabled={loading}
-                  className="flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-xs font-bold text-white shadow-lg hover:bg-accent-strong transition-all disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl bg-accent-strong px-4 py-2 text-xs font-bold text-white shadow-lg hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                 >
                   <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
                   <span>Actualizar Datos</span>
@@ -448,7 +449,7 @@ export function LeadsDashboardView() {
             {/* Filter and Search Toolbar */}
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background/5 border border-background/15 p-4 rounded-2xl">
               <div className="relative w-full sm:w-80">
-                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-background/40" />
+                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-background/60" />
                 <input
                   type="text"
                   value={search}
@@ -523,7 +524,16 @@ export function LeadsDashboardView() {
                                 setSelectedLead(lead);
                                 setActiveNotes(lead.notes || "");
                               }}
-                              className="hover:bg-background/10 cursor-pointer transition-colors"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  setSelectedLead(lead);
+                                  setActiveNotes(lead.notes || "");
+                                }
+                              }}
+                              tabIndex={0}
+                              role="button"
+                              className="hover:bg-background/10 cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                             >
                               <td className="px-5 py-4">
                                 <div className="font-bold text-background flex items-center gap-2">
@@ -603,21 +613,21 @@ export function LeadsDashboardView() {
 
                   <div className="flex items-center justify-between border-t border-background/10 px-5 py-3.5 text-xs text-background/60 font-mono">
                     <div>
-                      Mostrando {((currentPage - 1) * pageSize) + 1} a {Math.min(currentPage * pageSize, filteredLeads.length)} de {filteredLeads.length} registros
+                      Mostrando {((safeCurrentPage - 1) * pageSize) + 1} a {Math.min(safeCurrentPage * pageSize, filteredLeads.length)} de {filteredLeads.length} registros
                     </div>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                        disabled={currentPage === 1}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-background/15 hover:bg-background/10 disabled:opacity-30 transition-all"
+                        disabled={safeCurrentPage === 1}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-background/15 hover:bg-background/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                       >
                         <ChevronLeft size={16} />
                       </button>
-                      <span>Página {currentPage} de {totalPages}</span>
+                      <span>Página {safeCurrentPage} de {totalPages}</span>
                       <button
                         onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                        disabled={currentPage === totalPages}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-background/15 hover:bg-background/10 disabled:opacity-30 transition-all"
+                        disabled={safeCurrentPage === totalPages}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-background/15 hover:bg-background/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                       >
                         <ChevronRight size={16} />
                       </button>
@@ -642,7 +652,7 @@ export function LeadsDashboardView() {
               <button
                 onClick={handleManualRefresh}
                 disabled={loading}
-                className="self-start sm:self-auto flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-xs font-bold text-white shadow-lg hover:bg-accent-strong transition-all"
+                className="self-start sm:self-auto flex items-center gap-2 rounded-xl bg-accent-strong px-4 py-2 text-xs font-bold text-white shadow-lg hover:bg-accent-strong transition-all"
               >
                 <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
                 <span>Actualizar Avances</span>
@@ -708,7 +718,7 @@ export function LeadsDashboardView() {
                             href={project.staging_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-bold text-white shadow-md hover:bg-accent-strong transition-colors"
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-accent-strong px-3 py-1.5 text-xs font-bold text-white shadow-md hover:bg-accent-strong transition-colors"
                           >
                             <Layers size={14} />
                             <span>Entorno Staging</span>
@@ -804,13 +814,25 @@ export function LeadsDashboardView() {
       {/* Slide-over Drawer for Lead Detail & Internal Notes */}
       <AnimatePresence>
         {selectedLead && (
-          <div className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-sm flex justify-end">
+          <div
+            className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-sm flex justify-end"
+            onClick={() => setSelectedLead(null)}
+            role="presentation"
+          >
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="w-full max-w-lg bg-foreground border-l border-background/20 p-6 overflow-y-auto space-y-6 text-background shadow-2xl flex flex-col justify-between"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setSelectedLead(null);
+              }}
+              className="w-full max-w-lg bg-foreground border-l border-background/20 p-6 overflow-y-auto space-y-6 text-background shadow-2xl flex flex-col justify-between outline-none"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={`lead-detail-${selectedLead.id}`}
+              tabIndex={-1}
             >
               <div className="space-y-6">
                 <div className="flex items-start justify-between border-b border-background/10 pb-4">
@@ -818,7 +840,7 @@ export function LeadsDashboardView() {
                     <span className="text-[10px] font-mono uppercase tracking-wider text-background/50">
                       Detalle de Prospecto #{selectedLead.id}
                     </span>
-                    <h2 className="text-xl font-bold text-background mt-0.5">{selectedLead.name}</h2>
+                    <h2 id={`lead-detail-${selectedLead.id}`} className="text-xl font-bold text-background mt-0.5">{selectedLead.name}</h2>
                   </div>
                   <button
                     onClick={() => setSelectedLead(null)}

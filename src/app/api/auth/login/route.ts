@@ -38,18 +38,14 @@ export async function POST(request: Request) {
       [email.toLowerCase()]
     );
 
-    if (res.rows.length === 0) {
-      return NextResponse.json(
-        { error: "Credenciales de acceso no válidas." },
-        { status: 401 }
-      );
-    }
+    const user = res.rows[0] || null;
+    // Siempre comparar contra un hash, incluso si el usuario no existe, para evitar
+    // un oráculo de timing que revele qué correos tienen cuenta.
+    // Usar un hash dummy si el usuario no existe garantiza ~igual tiempo de bcrypt.compare().
+    const passwordHashToCheck = user?.password_hash || "$2b$10$dummyhashfornonexistentusers1234567890";
+    const isValid = await comparePassword(password, passwordHashToCheck);
 
-    const user = res.rows[0];
-
-    // Verificar contraseña
-    const isValid = await comparePassword(password, user.password_hash);
-    if (!isValid) {
+    if (!user || !isValid) {
       return NextResponse.json(
         { error: "Credenciales de acceso no válidas." },
         { status: 401 }

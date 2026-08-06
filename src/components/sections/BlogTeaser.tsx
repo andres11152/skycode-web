@@ -19,7 +19,7 @@ export function BlogTeaser({ locale = defaultLocale }: { locale?: Locale }) {
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
-            <SectionEyebrow className="mb-3">Artículos &amp; Recursos</SectionEyebrow>
+            <SectionEyebrow className="mb-3">{blogTeaserData.badge}</SectionEyebrow>
             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
               {blogTeaserData.title}
             </h2>

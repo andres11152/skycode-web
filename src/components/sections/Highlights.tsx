@@ -98,7 +98,7 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
           viewport={{ once: true, margin: "-80px" }}
           className="mb-12 max-w-4xl"
         >
-          <SectionEyebrow className="mb-3">Por Qué SkyCode</SectionEyebrow>
+          <SectionEyebrow className="mb-3">{highlightsData.badge}</SectionEyebrow>
           <p className="text-base sm:text-lg font-medium text-foreground/80 leading-relaxed">
             {getHeroContent(locale).description}
           </p>

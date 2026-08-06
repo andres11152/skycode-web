@@ -42,8 +42,8 @@ export async function GET() {
     }
 
     const session = await verifySessionToken(token);
-    if (!session) {
-      return NextResponse.json({ error: "Sesión inválida o expirada." }, { status: 401 });
+    if (!session || session.role !== "admin") {
+      return NextResponse.json({ error: "Permiso denegado." }, { status: 403 });
     }
 
     const res = await query(
@@ -119,8 +119,8 @@ export async function PATCH(request: Request) {
     }
 
     const session = await verifySessionToken(token);
-    if (!session) {
-      return NextResponse.json({ error: "Sesión inválida." }, { status: 401 });
+    if (!session || session.role !== "admin") {
+      return NextResponse.json({ error: "Permiso denegado." }, { status: 403 });
     }
 
     const parsed = UpdateLeadSchema.safeParse(await request.json());

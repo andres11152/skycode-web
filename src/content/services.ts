@@ -42,6 +42,7 @@ export function getServicesContent(locale: Locale) {
   const servicesData = servicesByLocale[locale];
   return {
     servicesSection: {
+      badge: servicesData.badge,
       title: servicesData.title,
       description: servicesData.description,
     },

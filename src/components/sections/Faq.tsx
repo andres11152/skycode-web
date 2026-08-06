@@ -20,7 +20,7 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
     <section id="faq" className="scroll-mt-24 bg-foreground/[0.01] px-6 py-20 sm:py-24 lg:py-28 border-t border-foreground/5">
       <div className="mx-auto max-w-4xl">
         <div className="mb-12 max-w-xl">
-          <SectionEyebrow className="mb-3">Preguntas Frecuentes</SectionEyebrow>
+          <SectionEyebrow className="mb-3">{faqData.badge}</SectionEyebrow>
           <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
             {faqData.title}
           </h2>

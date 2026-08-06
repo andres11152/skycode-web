@@ -193,7 +193,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
-            <SectionEyebrow onDark className="mb-3">Nuestros Servicios</SectionEyebrow>
+            <SectionEyebrow onDark className="mb-3">{servicesSection.badge}</SectionEyebrow>
             <h2 className="text-4xl font-bold tracking-tight text-background sm:text-5xl">
               {servicesSection.title}
             </h2>

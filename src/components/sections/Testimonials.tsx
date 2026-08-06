@@ -68,7 +68,7 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 max-w-xl">
-          <SectionEyebrow onDark className="mb-3">Testimonios &amp; Casos Reales</SectionEyebrow>
+          <SectionEyebrow onDark className="mb-3">{testimonialsSection.badge}</SectionEyebrow>
           <h2 className="text-4xl font-bold tracking-tight text-background sm:text-5xl">
             {testimonialsSection.title}
           </h2>
