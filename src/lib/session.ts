@@ -33,28 +33,40 @@ export interface UserSession {
   name: string;
   email: string;
   role: string;
+  /** Solo tiene valor cuando role === "client"; enlaza a la fila real en `clients`. */
+  clientId: number | string | null;
+}
+
+export interface SessionTokenPayload {
+  sessionId: string;
 }
 
 /**
- * Genera un Token JWT firmado para la sesión del usuario.
+ * Genera un Token JWT firmado que solo apunta a una fila de `sessions` en
+ * PostgreSQL — no lleva nombre, correo ni rol adentro.
+ *
+ * Es deliberado: cuando el rol viajaba dentro del JWT (versión anterior),
+ * degradar o desactivar a alguien no tenía efecto hasta que su token
+ * expirara, hasta 7 días después. Con el JWT reducido a un puntero, cada
+ * request resuelve el rol *actual* contra la base vía
+ * `lib/authSession.ts::resolveSession()`, y revocar la fila en `sessions`
+ * (logout, o un admin forzando el cierre de una sesión ajena) tiene efecto
+ * inmediato en el siguiente request.
  */
-export async function createSessionToken(user: UserSession): Promise<string> {
-  return new SignJWT({
-    sub: String(user.id),
-    name: user.name,
-    email: user.email,
-    role: user.role,
-  })
+export async function createSessionToken(payload: SessionTokenPayload): Promise<string> {
+  return new SignJWT({ sid: payload.sessionId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("7d") // Válido por 7 días
+    .setExpirationTime("7d") // Cota de seguridad; la vida real la controla `sessions.expires_at`.
     .sign(getSecretKey());
 }
 
 /**
- * Verifica y decodifica un Token JWT.
+ * Verifica la firma y expiración del JWT y devuelve el id de sesión que
+ * apunta a validar contra la base de datos. No es, por sí solo, prueba de
+ * que la sesión siga activa — para eso ver `resolveSession()`.
  */
-export async function verifySessionToken(token: string): Promise<UserSession | null> {
+export async function verifySessionToken(token: string): Promise<SessionTokenPayload | null> {
   // Fuera del try a propósito: un token inválido o expirado devuelve null (caso
   // normal), pero un secreto ausente es un error de configuración y debe
   // reventar visible en vez de disfrazarse de "sesión inválida".
@@ -62,12 +74,9 @@ export async function verifySessionToken(token: string): Promise<UserSession | n
 
   try {
     const { payload } = await jwtVerify(token, secretKey);
-    return {
-      id: payload.sub as string,
-      name: payload.name as string,
-      email: payload.email as string,
-      role: payload.role as string,
-    };
+    const sessionId = payload.sid;
+    if (typeof sessionId !== "string") return null;
+    return { sessionId };
   } catch {
     return null;
   }

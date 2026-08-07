@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { query } from "@/lib/db";
-import { initAuthDatabase, comparePassword } from "@/lib/auth";
-import { createSessionToken } from "@/lib/session";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+import { authenticateUserCredentials, SESSION_LIFETIME_MS } from "@/lib/authService";
 
 const LoginSchema = z.object({
   email: z.string().email().trim().max(254),
@@ -20,9 +18,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Asegurar que la tabla y admin estén inicializados
-    await initAuthDatabase();
-
     const parsed = LoginSchema.safeParse(await request.json());
     if (!parsed.success) {
       return NextResponse.json(
@@ -32,52 +27,33 @@ export async function POST(request: Request) {
     }
     const { email, password } = parsed.data;
 
-    // Buscar usuario por email en PostgreSQL
-    const res = await query(
-      "SELECT id, name, email, password_hash, role FROM users WHERE email = $1 LIMIT 1;",
-      [email.toLowerCase()]
-    );
+    const authResult = await authenticateUserCredentials({
+      email,
+      password,
+      ip,
+      userAgent: request.headers.get("user-agent"),
+    });
 
-    const user = res.rows[0] || null;
-    // Siempre comparar contra un hash, incluso si el usuario no existe, para evitar
-    // un oráculo de timing que revele qué correos tienen cuenta.
-    // Usar un hash dummy si el usuario no existe garantiza ~igual tiempo de bcrypt.compare().
-    const passwordHashToCheck = user?.password_hash || "$2b$10$dummyhashfornonexistentusers1234567890";
-    const isValid = await comparePassword(password, passwordHashToCheck);
-
-    if (!user || !isValid) {
+    if (!authResult) {
       return NextResponse.json(
         { error: "Credenciales de acceso no válidas." },
         { status: 401 }
       );
     }
 
-    // Crear Token JWT y Cookie HTTP-Only
-    const token = await createSessionToken({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    });
-
     const response = NextResponse.json({
       success: true,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user: authResult.user,
     });
 
     // Settear Cookie HTTP-Only segura
     response.cookies.set({
       name: "skycode_session",
-      value: token,
+      value: authResult.token,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 días
+      maxAge: SESSION_LIFETIME_MS / 1000,
       path: "/",
     });
 
@@ -90,3 +66,4 @@ export async function POST(request: Request) {
     );
   }
 }
+

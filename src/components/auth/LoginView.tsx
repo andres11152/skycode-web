@@ -36,8 +36,9 @@ export function LoginView() {
       }
 
       setSuccess(true);
+      const destination = data.user?.role === "client" ? "/portal" : "/dashboard";
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push(destination);
         router.refresh();
       }, 1000);
     } catch (err) {

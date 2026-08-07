@@ -1,15 +1,24 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { z } from "zod";
-import { query } from "@/lib/db";
-import { initAuthDatabase } from "@/lib/auth";
-import { verifySessionToken } from "@/lib/session";
+import { withTransaction } from "@/lib/db";
+import { requireSession, withAuth } from "@/lib/withAuth";
+import { hasPermission } from "@/lib/rbac";
+import { logAudit } from "@/lib/audit";
+import { getClientIp } from "@/lib/rateLimit";
+import {
+  getAllActiveProjects,
+  getClientProjects,
+  createProjectWithClient,
+  updateProject,
+  softDeleteProject,
+} from "@/lib/queries/projects";
 
 const ProjectStatusSchema = z.enum(["Planificación", "En Desarrollo", "Fase QA", "Entregado", "Garantía SLA"]);
 const SprintStatusSchema = z.enum(["Completado", "En Progreso", "Pendiente"]);
 
 const CreateProjectSchema = z.object({
   client_email: z.email().trim().max(254),
+  client_name: z.string().trim().min(1).max(255),
   title: z.string().trim().min(1).max(255),
   description: z.string().trim().max(2000).optional(),
   repo_url: z.url().max(255).optional().or(z.literal("")),
@@ -36,51 +45,29 @@ const UpdateProjectSchema = z.object({
 });
 
 /**
- * GET /api/projects - Obtiene los proyectos del cliente o todos los proyectos si es Admin.
+ * GET /api/projects - Admin/sales_manager ven todos los proyectos; un
+ * cliente ve solo los suyos (por `users.client_id` → `projects.client_id`).
+ * El acceso de cliente es por dueño, no por permiso de rol — no pasa por
+ * `withAuth`/`hasPermission`.
  */
 export async function GET() {
+  const auth = await requireSession();
+  if ("error" in auth) return auth.error;
+  const { session } = auth;
+
   try {
-    await initAuthDatabase();
-
-    const cookieStore = await cookies();
-    const token = cookieStore.get("skycode_session")?.value;
-
-    if (!token) {
-      return NextResponse.json({ error: "No autorizado." }, { status: 401 });
-    }
-
-    const session = await verifySessionToken(token);
-    if (!session) {
-      return NextResponse.json({ error: "Sesión inválida o expirada." }, { status: 401 });
-    }
-
-    let projectsRes;
-    if (session.role === "admin") {
-      // Admin ve todos los proyectos
-      projectsRes = await query(
-        `SELECT id, client_email, title, description, progress, repo_url, staging_url, sla_warranty_start, sla_warranty_end, status, created_at 
-         FROM projects ORDER BY created_at DESC;`
-      );
+    let projects;
+    if (session.role === "client") {
+      if (!session.clientId) {
+        // Cuenta de portal sin cliente vinculado todavía: sin proyectos,
+        // no es un error del sistema.
+        return NextResponse.json({ success: true, projects: [] });
+      }
+      projects = await getClientProjects(session.clientId);
+    } else if (hasPermission(session.role, "projects:read")) {
+      projects = await getAllActiveProjects();
     } else {
-      // Cliente ve solo sus proyectos
-      projectsRes = await query(
-        `SELECT id, client_email, title, description, progress, repo_url, staging_url, sla_warranty_start, sla_warranty_end, status, created_at 
-         FROM projects WHERE client_email = $1 ORDER BY created_at DESC;`,
-        [session.email]
-      );
-    }
-
-    // Obtener los sprints para cada proyecto
-    const projects = [];
-    for (const project of projectsRes.rows) {
-      const sprintsRes = await query(
-        `SELECT id, title, status, progress FROM sprints WHERE project_id = $1 ORDER BY id ASC;`,
-        [project.id]
-      );
-      projects.push({
-        ...project,
-        sprints: sprintsRes.rows,
-      });
+      return NextResponse.json({ error: "Permiso denegado." }, { status: 403 });
     }
 
     return NextResponse.json({ success: true, projects });
@@ -91,98 +78,123 @@ export async function GET() {
 }
 
 /**
- * POST /api/projects - Crea un nuevo proyecto (Solo Administradores).
+ * POST /api/projects - Crea un nuevo proyecto. Requiere projects:write.
+ * `client_email`/`client_name` identifican al cliente; si ya existe una
+ * fila en `clients` con ese correo se reutiliza (nunca se sobreescribe su
+ * nombre — evita que un typo en un proyecto nuevo corrompa un cliente ya
+ * establecido).
  */
-export async function POST(request: Request) {
+export const POST = withAuth("projects:write", async (request, { session }) => {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("skycode_session")?.value;
-
-    if (!token) {
-      return NextResponse.json({ error: "No autorizado." }, { status: 401 });
-    }
-
-    const session = await verifySessionToken(token);
-    if (!session || session.role !== "admin") {
-      return NextResponse.json({ error: "Permiso denegado." }, { status: 403 });
-    }
-
     const parsed = CreateProjectSchema.safeParse(await request.json());
     if (!parsed.success) {
-      return NextResponse.json({ error: "El correo del cliente y el título son requeridos." }, { status: 400 });
+      return NextResponse.json({ error: "El cliente y el título son requeridos." }, { status: 400 });
     }
-    const { client_email, title, description, repo_url, staging_url, sprints } = parsed.data;
+    const ip = getClientIp(request);
 
-    // Insertar proyecto
-    const projectRes = await query(
-      `INSERT INTO projects (client_email, title, description, progress, repo_url, staging_url, status)
-       VALUES ($1, $2, $3, 0, $4, $5, 'En Desarrollo')
-       RETURNING *;`,
-      [client_email.toLowerCase(), title, description || "", repo_url || "", staging_url || ""]
-    );
+    const newProject = await withTransaction(async (client) => {
+      const project = await createProjectWithClient(parsed.data, client);
 
-    const newProject = projectRes.rows[0];
+      await logAudit(client.query.bind(client), {
+        actorId: session.id,
+        actorEmail: session.email,
+        action: "project.create",
+        entityType: "project",
+        entityId: project.id,
+        diff: { after: project },
+        ip,
+      });
 
-    // Insertar sprints opcionales si se envían
-    if (sprints && Array.isArray(sprints)) {
-      for (const sprint of sprints) {
-        await query(
-          `INSERT INTO sprints (project_id, title, status, progress) VALUES ($1, $2, $3, $4);`,
-          [newProject.id, sprint.title, sprint.status || "Pendiente", sprint.progress || 0]
-        );
-      }
-    }
+      return project;
+    });
 
     return NextResponse.json({ success: true, project: newProject });
   } catch (error) {
     console.error("❌ [API POST Project Error]", error);
     return NextResponse.json({ error: "Error al crear el proyecto." }, { status: 500 });
   }
-}
+});
 
 /**
- * PATCH /api/projects - Actualiza un proyecto (Progreso, estado, links, etc.) (Solo Administradores).
+ * PATCH /api/projects - Actualiza un proyecto. Requiere projects:write.
  */
-export async function PATCH(request: Request) {
+export const PATCH = withAuth("projects:write", async (request, { session }) => {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("skycode_session")?.value;
-
-    if (!token) {
-      return NextResponse.json({ error: "No autorizado." }, { status: 401 });
-    }
-
-    const session = await verifySessionToken(token);
-    if (!session || session.role !== "admin") {
-      return NextResponse.json({ error: "Permiso denegado." }, { status: 403 });
-    }
-
     const parsed = UpdateProjectSchema.safeParse(await request.json());
     if (!parsed.success) {
       return NextResponse.json({ error: "ID del proyecto es requerido." }, { status: 400 });
     }
-    const { id, progress, status, repo_url, staging_url, sla_warranty_start, sla_warranty_end } = parsed.data;
+    const { id, ...data } = parsed.data;
+    const ip = getClientIp(request);
 
-    const res = await query(
-      `UPDATE projects 
-       SET progress = COALESCE($1, progress),
-           status = COALESCE($2, status),
-           repo_url = COALESCE($3, repo_url),
-           staging_url = COALESCE($4, staging_url),
-           sla_warranty_start = COALESCE($5, sla_warranty_start),
-           sla_warranty_end = COALESCE($6, sla_warranty_end)
-       WHERE id = $7
-       RETURNING *;`,
-      [progress, status, repo_url, staging_url, sla_warranty_start, sla_warranty_end, id]
-    );
+    const project = await withTransaction(async (client) => {
+      const result = await updateProject(id, data, client);
+      if (!result) return null;
 
-    if (res.rows.length === 0) {
+      const { before, after } = result;
+
+      await logAudit(client.query.bind(client), {
+        actorId: session.id,
+        actorEmail: session.email,
+        action: "project.update",
+        entityType: "project",
+        entityId: id,
+        diff: { before, after },
+        ip,
+      });
+
+      return after;
+    });
+
+    if (!project) {
       return NextResponse.json({ error: "Proyecto no encontrado." }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, project: res.rows[0] });
+    return NextResponse.json({ success: true, project });
   } catch (error) {
     console.error("❌ [API PATCH Project Error]", error);
     return NextResponse.json({ error: "Error al actualizar el proyecto." }, { status: 500 });
   }
-}
+});
+
+/**
+ * DELETE /api/projects?id=123 - Borrado lógico (deleted_at), nunca físico.
+ * Requiere projects:write.
+ */
+export const DELETE = withAuth("projects:write", async (request, { session }) => {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = Number(searchParams.get("id"));
+    if (!Number.isInteger(id) || id <= 0) {
+      return NextResponse.json({ error: "ID de proyecto inválido." }, { status: 400 });
+    }
+    const ip = getClientIp(request);
+
+    const deleted = await withTransaction(async (client) => {
+      const row = await softDeleteProject(id, client);
+      if (!row) return null;
+
+      await logAudit(client.query.bind(client), {
+        actorId: session.id,
+        actorEmail: session.email,
+        action: "project.delete",
+        entityType: "project",
+        entityId: id,
+        diff: { before: row },
+        ip,
+      });
+
+      return row;
+    });
+
+    if (!deleted) {
+      return NextResponse.json({ error: "Proyecto no encontrado." }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("❌ [API DELETE Project Error]", error);
+    return NextResponse.json({ error: "Error al eliminar el proyecto." }, { status: 500 });
+  }
+});
+

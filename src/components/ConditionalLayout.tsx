@@ -9,10 +9,24 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { SkipLink } from "@/components/SkipLink";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { AttributionCapture } from "@/components/AttributionCapture";
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isDashboardOrLogin = pathname === "/dashboard" || pathname === "/login";
+  // `startsWith`, no igualdad exacta: /dashboard, /portal, /invitar y
+  // /propuesta tienen subrutas propias (/dashboard/leads,
+  // /dashboard/equipo, /portal, /invitar/[token], /propuesta/[id]) que
+  // también deben quedar sin el Navbar/Footer públicos — cada una ya trae
+  // su propio header (DashboardChrome/PortalChrome) o es una pantalla
+  // transaccional de página completa (aceptar invitación, ver y responder
+  // una propuesta) donde el nav público con su propio CTA de "Cotizar
+  // Proyecto" solo compite con la acción real de la página.
+  const isAppShell =
+    pathname === "/login" ||
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/portal") ||
+    pathname.startsWith("/invitar") ||
+    pathname.startsWith("/propuesta");
 
   // `html { scroll-behavior: smooth }` (globals.css) hace que el scroll-to-top
   // automático de Next en cada navegación se anime en vez de ser instantáneo —
@@ -24,7 +38,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [pathname]);
 
-  if (isDashboardOrLogin) {
+  if (isAppShell) {
     return (
       <main className="min-h-screen flex flex-col bg-foreground text-background">
         {children}
@@ -42,6 +56,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
       <CustomCursor />
       <WhatsAppButton />
       <CookieBanner />
+      <AttributionCapture />
     </>
   );
 }

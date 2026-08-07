@@ -1,8 +1,24 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { Currency } from "./currency";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+const MONEY_FORMATTERS: Record<Currency, Intl.NumberFormat> = {
+  COP: new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }),
+  USD: new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }),
+};
+
+/**
+ * Única fuente de formateo de dinero del panel — antes duplicada en seis
+ * componentes distintos, cada uno formateando siempre en `es-CO`/COP sin
+ * importar la moneda real del dato. USD usa 2 decimales (convención del
+ * dólar); COP usa 0 (nadie cotiza en centavos de peso).
+ */
+export function formatMoney(amount: number, currency: Currency): string {
+  return MONEY_FORMATTERS[currency].format(amount);
 }
 
 const dateFormatter = new Intl.DateTimeFormat("es-CO", {

@@ -5,7 +5,13 @@ import { verifySessionToken } from "@/lib/session";
 const HOME_PATHS = new Set(["/", "/en", "/fr"]);
 
 export async function proxy(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+  // Chequeo barato en el edge: solo confirma que exista un JWT con firma y
+  // expiración válidas. No puede consultar PostgreSQL (pg no corre en Edge
+  // Runtime), así que no sabe el rol ni si la sesión fue revocada — esa
+  // autorización real vive en `requireSessionOrRedirect()` dentro de los
+  // `layout.tsx` de `/dashboard` y `/portal` (Server Components en Node),
+  // que además deciden a cuál de los dos redirigir según el rol.
+  if (request.nextUrl.pathname.startsWith("/dashboard") || request.nextUrl.pathname.startsWith("/portal")) {
     const token = request.cookies.get("skycode_session")?.value;
     const session = token ? await verifySessionToken(token) : null;
 
@@ -51,5 +57,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/", "/en", "/fr"],
+  matcher: ["/dashboard/:path*", "/portal/:path*", "/", "/en", "/fr"],
 };

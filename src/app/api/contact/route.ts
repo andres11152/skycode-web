@@ -2,31 +2,33 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { contactEmail } from "@/lib/site";
-import { query } from "@/lib/db";
-import { initAuthDatabase } from "@/lib/auth";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+import { AttributionFieldsSchema } from "@/lib/attributionSchema";
+import { createLead } from "@/lib/queries/leads";
 
-const ContactSchema = z.object({
-  name: z.string().trim().min(2, "El nombre debe tener al menos 2 caracteres.").max(200),
-  email: z
-    .string()
-    .trim()
-    .email("Formato de correo electrónico no válido.")
-    .max(254)
-    .refine((val) => {
-      const fakeDomains = ["test.com", "asdf.com", "fake.com", "xxx.com", "example.com", "mailinator.com", "tempmail.com", "dispostable.com"];
-      const domain = val.split("@")[1]?.toLowerCase();
-      return domain && !fakeDomains.includes(domain) && domain.includes(".");
-    }, "Por favor ingrese un correo electrónico corporativo o personal válido."),
-  phone: z
-    .string()
-    .trim()
-    .regex(/^\+[1-9]\d{6,17}$/)
-    .optional()
-    .nullable()
-    .or(z.literal("")),
-  message: z.string().trim().min(10, "El mensaje debe tener al menos 10 caracteres.").max(5000),
-});
+const ContactSchema = z
+  .object({
+    name: z.string().trim().min(2, "El nombre debe tener al menos 2 caracteres.").max(200),
+    email: z
+      .string()
+      .trim()
+      .email("Formato de correo electrónico no válido.")
+      .max(254)
+      .refine((val) => {
+        const fakeDomains = ["test.com", "asdf.com", "fake.com", "xxx.com", "example.com", "mailinator.com", "tempmail.com", "dispostable.com"];
+        const domain = val.split("@")[1]?.toLowerCase();
+        return domain && !fakeDomains.includes(domain) && domain.includes(".");
+      }, "Por favor ingrese un correo electrónico corporativo o personal válido."),
+    phone: z
+      .string()
+      .trim()
+      .regex(/^\+[1-9]\d{6,17}$/)
+      .optional()
+      .nullable()
+      .or(z.literal("")),
+    message: z.string().trim().min(10, "El mensaje debe tener al menos 10 caracteres.").max(5000),
+  })
+  .extend(AttributionFieldsSchema.shape);
 
 export async function POST(request: Request) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
@@ -50,18 +52,17 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    const { name, email, phone, message } = parsed.data;
 
+    const { name, email, phone, message } = parsed.data;
     let dbSaved = false;
 
     // 1. Guardar automáticamente en la Base de Datos PostgreSQL (Render)
     try {
-      await initAuthDatabase();
-      await query(
-        `INSERT INTO leads (name, email, phone, service, message, source, status)
-         VALUES ($1, $2, $3, 'Contacto Web', $4, 'Formulario Directo', 'Nuevo');`,
-        [name, email.toLowerCase(), phone || "", message]
-      );
+      await createLead({
+        ...parsed.data,
+        service: "Contacto Web",
+        source: "Formulario Directo",
+      });
       dbSaved = true;
       console.log("🐘 [PostgreSQL] Lead guardado exitosamente en BD invencheck!");
     } catch (dbErr) {

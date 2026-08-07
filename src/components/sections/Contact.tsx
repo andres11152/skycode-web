@@ -11,6 +11,7 @@ import { getUiContent } from "@/content/ui";
 import { contactEmail, contactPhone, socials, whatsappHref } from "@/lib/site";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { getAttribution } from "@/lib/attribution";
 
 function FacebookIcon({ size = 16, className, ...props }: React.SVGProps<SVGSVGElement> & { size?: number }) {
   return (
@@ -152,6 +153,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
       email: email.trim(),
       phone: formData.get("phone") || "",
       message: message.trim(),
+      ...getAttribution(),
     };
 
     try {

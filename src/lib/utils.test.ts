@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { toCsvCell } from "./utils";
+import { cn, formatMoney, slugify, toCsvCell } from "./utils";
 
 describe("toCsvCell", () => {
   it("wraps plain values in quotes", () => {
@@ -26,5 +26,53 @@ describe("toCsvCell", () => {
 
   it("accepts numbers", () => {
     expect(toCsvCell(42)).toBe('"42"');
+  });
+});
+
+describe("formatMoney", () => {
+  it("formatea COP sin decimales, con símbolo de peso", () => {
+    const formatted = formatMoney(1500000, "COP");
+    expect(formatted).toContain("1.500.000");
+    expect(formatted).toMatch(/\$/);
+    expect(formatted).not.toMatch(/,\d\d$/); // sin centavos
+  });
+
+  it("formatea USD con 2 decimales", () => {
+    const formatted = formatMoney(1500.5, "USD");
+    expect(formatted).toContain("1,500.50");
+    expect(formatted).toMatch(/\$/);
+  });
+
+  it("maneja cero y negativos sin reventar", () => {
+    expect(formatMoney(0, "COP")).toBeTruthy();
+    expect(formatMoney(-100, "USD")).toContain("100");
+  });
+});
+
+describe("slugify", () => {
+  it("convierte a minúsculas y reemplaza espacios por guiones", () => {
+    expect(slugify("Hola Mundo")).toBe("hola-mundo");
+  });
+
+  it("quita acentos", () => {
+    expect(slugify("Múltiples Días Después")).toBe("multiples-dias-despues");
+  });
+
+  it("quita caracteres no alfanuméricos", () => {
+    expect(slugify("¿Qué tal, todo bien?")).toBe("que-tal-todo-bien");
+  });
+
+  it("no deja guiones al principio o al final", () => {
+    expect(slugify("  espacios  ")).toBe("espacios");
+  });
+});
+
+describe("cn", () => {
+  it("combina clases y resuelve conflictos de Tailwind (la última gana)", () => {
+    expect(cn("px-2", "px-4")).toBe("px-4");
+  });
+
+  it("ignora valores falsy", () => {
+    expect(cn("a", false, undefined, null, "b")).toBe("a b");
   });
 });
