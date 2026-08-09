@@ -61,6 +61,59 @@
       ]
     },
     {
+      "slug": "equilibrio-arquitectonico",
+      "title": "Equilibrio Arquitectónico · Portail Web Corporatif & Solutions Verre et Métal",
+      "client": "Equilibrio Arquitectónico S.A.S. · Design & Systèmes Architecturales",
+      "description": "Site web d'entreprise haut de gamme conçu pour valoriser les projets résidentiels, commerciaux et institutionnels en verre trempé, aluminium et acier inoxydable. Optimisé pour la performance, le SEO et la conversion.",
+      "tags": ["Design Web", "Portail Corporatif", "Architecture & Design", "Verre & Aluminium", "Next.js & Performance"],
+      "iconName": "Building2",
+      "link": "https://equilibrioarquitectonico.com/",
+      "coverImage": "/projects/equilibrio-arquitectonico/hero.webp",
+      "gallery": [
+        "/projects/equilibrio-arquitectonico/hero.webp",
+        "/projects/equilibrio-arquitectonico/nosotros.webp",
+        "/projects/equilibrio-arquitectonico/servicios.webp",
+        "/projects/equilibrio-arquitectonico/proyectos.webp",
+        "/projects/equilibrio-arquitectonico/proceso.webp",
+        "/projects/equilibrio-arquitectonico/contacto.webp"
+      ]
+    },
+    {
+      "slug": "cda-revifull",
+      "title": "CDA Revifull · Portail Web Corporatif & Système de Rendez-vous Digital",
+      "client": "CDA Revifull S.A.S. · Centre de Diagnostic Automobile à Bogotá",
+      "description": "Plateforme web haute vitesse et système de prise de rendez-vous en ligne pour l'inspection technico-mécanique des véhicules et motos. Intégration WhatsApp, calcul des tarifs et acquisition de clients.",
+      "tags": ["Portail Web", "Secteur Automobile", "Prise de Rendez-vous", "Optimisation SEO", "Next.js & Performance"],
+      "iconName": "Car",
+      "link": "https://cdarevifull.com/",
+      "coverImage": "/projects/cda-revifull/hero.webp",
+      "gallery": [
+        "/projects/cda-revifull/hero.webp",
+        "/projects/cda-revifull/servicios.webp",
+        "/projects/cda-revifull/proceso.webp",
+        "/projects/cda-revifull/ubicacion.webp",
+        "/projects/cda-revifull/contacto.webp"
+      ]
+    },
+    {
+      "slug": "moncyre",
+      "title": "Moncyre Studios · E-Commerce de Mode, Chaussures & Parfums Exclusifs",
+      "client": "Moncyre Studios · Marque de Mode Urbaine & Haute Couture",
+      "description": "Plateforme e-commerce de luxe conçue pour présenter des collections exclusives de vêtements streetwear, chaussures et parfums. Intégration avec passerelles de paiement et livraison nationale.",
+      "tags": ["E-Commerce", "Mode & Chaussures", "Design UX/UI", "Passerelle de Paiement", "Next.js & Performance"],
+      "iconName": "ShoppingCart",
+      "link": "https://moncyre.com/",
+      "coverImage": "/projects/moncyre/hero.webp",
+      "gallery": [
+        "/projects/moncyre/hero.webp",
+        "/projects/moncyre/colecciones-drops.webp",
+        "/projects/moncyre/catalogo-productos.webp",
+        "/projects/moncyre/lookbook-estilo.webp",
+        "/projects/moncyre/detalle-producto.webp",
+        "/projects/moncyre/footer-newsletter.webp"
+      ]
+    },
+    {
       "slug": "ecommerce-automatizacion",
       "title": "Plateforme e-commerce et intégration ERP",
       "client": "Client confidentiel · E-commerce & Logistique",

@@ -1,4 +1,4 @@
-import { BrainCircuit, Car, Globe, Rocket, ShieldCheck, ShoppingCart, Truck, Workflow, type LucideIcon } from "lucide-react";
+import { BrainCircuit, Building2, Car, Globe, Rocket, ShieldCheck, ShoppingCart, Truck, Workflow, type LucideIcon } from "lucide-react";
 import projectsDataEs from "./locales/es/projects.json";
 import projectsDataEn from "./locales/en/projects.json";
 import projectsDataFr from "./locales/fr/projects.json";
@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/i18n";
 
 const coverIconMap: Record<string, LucideIcon> = {
   BrainCircuit,
+  Building2,
   ShoppingCart,
   Rocket,
   Globe,

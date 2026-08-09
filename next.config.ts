@@ -1,8 +1,55 @@
 import type { NextConfig } from "next";
 
+// El sitio no tenía ninguna cabecera de seguridad HTTP: /dashboard y
+// /portal (autenticados) eran embebibles en un <iframe> de cualquier
+// dominio (clickjacking sobre acciones destructivas — borrar leads,
+// cambiar roles de equipo), y el UUID de /propuesta/[id] (que ES la
+// credencial de acceso a esa propuesta, ver lib/queries/proposals.ts) podía
+// filtrarse en el header `Referer` hacia cualquier enlace externo.
+const SECURITY_HEADERS = [
+  {
+    key: "Content-Security-Policy",
+    value: [
+      "default-src 'self'",
+      // Next.js inyecta scripts inline para hidratar/streamear RSC, y el
+      // script de detección de idioma del layout raíz también es inline
+      // (ver BROWSER_LOCALE_REDIRECT_SCRIPT en app/layout.tsx) — sin
+      // 'unsafe-inline' el sitio entero queda en blanco. No hay un sistema
+      // de nonces implementado todavía para poder retirar esto.
+      "script-src 'self' 'unsafe-inline'",
+      // Framer Motion anima vía el atributo `style` inline (opacity/transform,
+      // ver lib/animations.ts) — 'unsafe-inline' es necesario para eso, no
+      // hay hojas de estilo de terceros que lo requieran.
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data:",
+      "font-src 'self' data:",
+      // Ninguna llamada desde el navegador sale del propio origen — la
+      // única API externa (open.er-api.com, tasa de cambio) se consulta
+      // solo desde el servidor (lib/exchangeRate.ts), nunca desde el cliente.
+      "connect-src 'self'",
+      // Reemplaza y refuerza X-Frame-Options en navegadores modernos.
+      "frame-ancestors 'none'",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join("; "),
+  },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  // El UUID de /propuesta/[id] es la única credencial de acceso a esa
+  // propuesta (sin cuenta ni sesión, ver la ruta pública) — no debe viajar
+  // en el header Referer hacia un dominio externo enlazado desde ahí.
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
+];
+
 const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
+  },
+  async headers() {
+    return [{ source: "/(.*)", headers: SECURITY_HEADERS }];
   },
   // `geoip-country` (usada en app/api/geo) lee su base de datos desde disco
   // con una ruta relativa a `__dirname` — si Next.js la empaqueta junto con

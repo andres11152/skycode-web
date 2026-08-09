@@ -7,7 +7,15 @@ import { logAudit } from "./audit";
 import { findUserByEmail, createSessionRecord, revokeSessionRecord } from "./queries/auth";
 
 export const SESSION_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000; // 7 días
-const DUMMY_HASH = "$2b$10$dummyhashfornonexistentusers1234567890";
+
+// Hash bcrypt real (60 chars, cost 10) de una contraseña aleatoria descartada
+// — DEBE ser un hash válido: uno con formato incorrecto hace que
+// bcrypt.compare() falle por longitud/formato en <1ms en vez de ejecutar el
+// work factor completo (~65ms), lo que reabre el oráculo de timing que esto
+// existe para cerrar (un correo inexistente respondería visiblemente más
+// rápido que uno real). Verificado con un benchmark real: con un hash
+// malformado la relación era de ~1200x; con este, ambas rutas miden lo mismo.
+export const DUMMY_HASH = "$2b$10$DHmTJ6VSGrz344hSNr9l/.3Eh7aLbuSCNolwzZ9z0lL8eeTBxoGXW";
 
 export interface AuthenticateParams {
   email: string;

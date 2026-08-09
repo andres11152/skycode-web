@@ -77,7 +77,15 @@ export async function POST(request: Request) {
 
     const lead = await createLead(parsed.data);
 
-    console.log("📥 [Nuevo Lead Registrado en PostgreSQL]", lead);
+    // Nombre y correo son datos personales del titular (Ley 1581/RGPD, ver
+    // TrustStrip) — no deben replicarse en la retención de logs de un
+    // tercero (el host) en producción. Solo el id, útil para correlacionar
+    // un ticket de soporte sin volver a exponer el dato.
+    if (process.env.NODE_ENV !== "production") {
+      console.log("📥 [Nuevo Lead Registrado en PostgreSQL]", lead);
+    } else {
+      console.log("📥 [Nuevo Lead Registrado en PostgreSQL]", { id: lead.id });
+    }
 
     return NextResponse.json({ success: true, lead });
   } catch (error) {
