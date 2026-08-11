@@ -2,28 +2,38 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { getTestimonialsContent } from "@/content/testimonials";
 import { getHighlightsContent } from "@/content/highlights";
-import { getHeroContent } from "@/content/hero";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, type Locale } from "@/lib/i18n";
-import { BrainCircuit } from "lucide-react";
+import { BrainCircuit, Smartphone } from "lucide-react";
 import {
+  FlutterIcon,
+  JavaScriptIcon,
+  MongoDBIcon,
   NestJsIcon,
   NextJsIcon,
   PostgreSQLIcon,
   ReactIcon,
+  TailwindCSSIcon,
   TypeScriptIcon,
 } from "@/components/icons/TechIcons";
 
 const techStack = [
   { name: "TypeScript", Icon: TypeScriptIcon },
+  { name: "JavaScript", Icon: JavaScriptIcon },
   { name: "Next.js", Icon: NextJsIcon },
   { name: "React", Icon: ReactIcon },
+  // React Native no tiene marca propia en Simple Icons (usa oficialmente el
+  // mismo átomo de React) — ícono genérico de Lucide, mismo criterio que
+  // "IA & Agentes" más abajo, en vez de duplicar el logo de React.
+  { name: "React Native", Icon: Smartphone },
+  { name: "Flutter", Icon: FlutterIcon },
+  { name: "Tailwind CSS", Icon: TailwindCSSIcon },
   { name: "Nest.js / Node", Icon: NestJsIcon },
   { name: "PostgreSQL", Icon: PostgreSQLIcon },
+  { name: "MongoDB", Icon: MongoDBIcon },
   { name: "IA & Agentes", Icon: BrainCircuit },
 ];
 
@@ -84,12 +94,9 @@ function VideoShowcase({
 export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
   const reduced = Boolean(useReducedMotion());
   const highlightsData = getHighlightsContent(locale);
-  const { testimonials } = getTestimonialsContent(locale);
-  const featuredTestimonial = testimonials.find((t) => t.featured) ?? testimonials[0];
 
   return (
     <section aria-label={highlightsData.sectionAria} className="px-6 py-20 sm:py-24 lg:py-28">
-      <h2 className="sr-only">{highlightsData.sectionAria}</h2>
       <div className="mx-auto max-w-6xl">
         <motion.div
           variants={fadeUp(reduced)}
@@ -99,40 +106,24 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
           className="mb-12 max-w-4xl"
         >
           <SectionEyebrow className="mb-3">{highlightsData.badge}</SectionEyebrow>
-          <p className="text-base sm:text-lg font-medium text-foreground/80 leading-relaxed">
-            {getHeroContent(locale).description}
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            {highlightsData.title}
+          </h2>
+          <p className="mt-3 text-base sm:text-lg font-medium text-foreground/80 leading-relaxed">
+            {highlightsData.description}
           </p>
         </motion.div>
 
-        {/* Bento: la tarjeta del testimonio pesa el doble que video/stack, y el
-            listado de enfoque ocupa el ancho completo debajo — jerarquía visual
-            real en vez de 3 columnas parejas. */}
+        {/* Bento de 2 columnas: video + stack arriba (mismo peso visual), el
+            listado de diferenciadores ocupa el ancho completo debajo. */}
         <motion.div
-          variants={staggerContainer(reduced, 0.08)}
+          variants={staggerContainer(reduced, 0.06)}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="grid gap-6 lg:grid-cols-3"
+          className="grid gap-6 lg:grid-cols-2"
         >
-          <motion.div variants={fadeUp(reduced)} className="lg:col-span-2 lg:row-span-2">
-            <SpotlightCard className="h-full" spotlightSize={320}>
-              <div className="flex h-full flex-col justify-between rounded-xl border border-foreground/10 bg-background p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg sm:p-10">
-                <blockquote className="text-2xl leading-snug font-medium text-balance text-foreground">
-                  &ldquo;{featuredTestimonial.quote}&rdquo;
-                </blockquote>
-                <div className="mt-8">
-                  <p className="font-heading text-sm font-semibold text-foreground">
-                    {featuredTestimonial.name}
-                  </p>
-                  <p className="text-sm text-foreground/60">
-                    {featuredTestimonial.role}, {featuredTestimonial.company}
-                  </p>
-                </div>
-              </div>
-            </SpotlightCard>
-          </motion.div>
-
-          <motion.div variants={fadeUp(reduced)} className="lg:col-span-1">
+          <motion.div variants={fadeUp(reduced)}>
             <SpotlightCard className="h-full">
               <div className="h-full rounded-xl border border-foreground/10 bg-background p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
                 <VideoShowcase videoAria={highlightsData.videoAria} />
@@ -140,19 +131,32 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
             </SpotlightCard>
           </motion.div>
 
-          <motion.div variants={fadeUp(reduced)} className="lg:col-span-1">
-            <SpotlightCard className="h-full">
-              <div className="flex h-full flex-col justify-center rounded-xl border border-foreground/10 bg-background p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
+          {/* self-start: por defecto CSS Grid estira ambas celdas de la fila a
+              la altura de la más alta (el video, por su aspect-[4/3]) — esta
+              tarjeta terminaba con ~280px de relleno vacío arriba y abajo de
+              2 filas de iconos centradas dentro de una caja mucho más alta
+              que su contenido. Con self-start, la tarjeta toma su altura
+              natural y queda alineada arriba; el resto de la fila queda como
+              espacio de página normal, no como una caja vacía con borde. */}
+          <motion.div variants={fadeUp(reduced)} className="self-start">
+            <SpotlightCard>
+              <div className="rounded-xl border border-foreground/10 bg-background p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
                 <p className="text-sm font-medium text-foreground/60">{highlightsData.techLabel}</p>
-                <ul className="mt-4 flex flex-wrap gap-3">
+                {/* grid explícito (no flex-wrap): 6 iconos en 3×2 sin importar
+                    el ancho del contenedor — flex-wrap partía 5+1 en algunos
+                    anchos intermedios. `w-fit` evita que las columnas `1fr`
+                    se estiren al ancho completo de la tarjeta — sin esto los
+                    iconos quedaban como puntos sueltos con mucho aire entre
+                    columnas en vez de un bloque compacto. */}
+                <ul className="mt-4 grid w-fit grid-cols-3 gap-4">
                   {techStack.map(({ name, Icon }) => (
                     <li
                       key={name}
                       title={name}
-                      className="group relative flex h-11 w-11 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/30 hover:bg-accent/[0.04] hover:shadow-lg hover:shadow-accent/5"
+                      className="group relative flex h-16 w-16 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/30 hover:bg-accent/[0.04] hover:shadow-lg hover:shadow-accent/5"
                     >
                       <Icon
-                        className="h-6 w-6 text-foreground/75 transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-accent group-hover:rotate-3"
+                        className="h-8 w-8 text-foreground/75 transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-accent group-hover:rotate-3"
                         aria-label={name}
                       />
                     </li>
@@ -162,18 +166,24 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
             </SpotlightCard>
           </motion.div>
 
-          <motion.div variants={fadeUp(reduced)} className="lg:col-span-3">
+          <motion.div variants={fadeUp(reduced)} className="lg:col-span-2">
             <SpotlightCard>
-              <div className="grid gap-8 rounded-xl border border-foreground/10 bg-background p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg sm:grid-cols-3 sm:gap-6 sm:p-10">
+              {/* divide-y: en mobile (una sola columna) marca cada ítem con una
+                  línea sutil en vez de tres tarjetas separadas con su propio
+                  padding — mismo contenido, la mitad del scroll. Desde sm: se
+                  vuelven 3 columnas propias, sin divisores. */}
+              <div className="grid divide-y divide-foreground/10 rounded-xl border border-foreground/10 bg-background p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg sm:grid-cols-3 sm:gap-6 sm:divide-y-0 sm:p-10">
                 {highlightsData.items.map((item) => (
-                  <div key={item.title} className="group">
+                  <div key={item.title} className="group flex items-start gap-4 py-6 first:pt-0 last:pb-0 sm:block sm:gap-0 sm:py-0">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-foreground/5 to-foreground/[0.01] border border-foreground/10 text-foreground/60 transition-all duration-300 group-hover:from-accent/15 group-hover:to-accent/5 group-hover:border-accent/30 group-hover:text-accent">
                       <item.icon size={20} strokeWidth={1.75} aria-hidden="true" />
                     </div>
-                    <h3 className="mt-4 font-heading text-lg font-bold text-foreground transition-colors duration-200 group-hover:text-accent-strong">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1.5 text-sm text-foreground/70 leading-relaxed">{item.description}</p>
+                    <div className="min-w-0 sm:mt-4">
+                      <h3 className="font-heading text-base font-bold text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-lg">
+                        {item.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-foreground/70 leading-relaxed sm:mt-1.5">{item.description}</p>
+                    </div>
                   </div>
                 ))}
               </div>

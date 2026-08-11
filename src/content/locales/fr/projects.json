@@ -112,38 +112,6 @@
         "/projects/moncyre/detalle-producto.webp",
         "/projects/moncyre/footer-newsletter.webp"
       ]
-    },
-    {
-      "slug": "ecommerce-automatizacion",
-      "title": "Plateforme e-commerce et intégration ERP",
-      "client": "Client confidentiel · E-commerce & Logistique",
-      "description": "Solution e-commerce intégrée aux systèmes ERP et à la facturation électronique, optimisant la gestion opérationnelle et le contrôle des stocks.",
-      "tags": ["E-commerce", "Intégration ERP", "Passerelles de paiement"],
-      "iconName": "ShoppingCart"
-    },
-    {
-      "slug": "landing-alta-conversion",
-      "title": "Portail d'acquisition et design UX/UI",
-      "client": "Client confidentiel · Prospection digitale",
-      "description": "Portail haute vitesse conçu pour optimiser la capture de prospects, intégrant des outils d'analyse et l'optimisation de l'expérience utilisateur.",
-      "tags": ["Frontend", "UX/UI", "Conversion digitale"],
-      "iconName": "Rocket"
-    },
-    {
-      "slug": "sitio-corporativo-seo",
-      "title": "Portail institutionnel et optimisation SEO",
-      "client": "Client confidentiel · Présence institutionnelle",
-      "description": "Plateforme institutionnelle développée pour maximiser le référencement naturel, avec un chargement ultra-rapide et un design responsive haut de gamme.",
-      "tags": ["Portail institutionnel", "Stratégie SEO", "Next.js"],
-      "iconName": "Globe"
-    },
-    {
-      "slug": "automatizacion-procesos",
-      "title": "Système d'automatisation des flux opérationnels",
-      "client": "Client confidentiel · Intégration de systèmes",
-      "description": "Conception et mise en œuvre d'intégrations système et de flux d'automatisation des données pour éliminer les processus manuels et connecter plusieurs plateformes internes.",
-      "tags": ["Automatisation", "Intégration d'API", "Efficacité opérationnelle"],
-      "iconName": "Workflow"
     }
   ]
 }

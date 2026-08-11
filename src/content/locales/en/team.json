@@ -24,13 +24,6 @@
       "role": "UI/UX Designer",
       "description": "Designs user experiences that balance aesthetics and functionality, aligning every deliverable with the client's business goals.",
       "photo": "/team/ximena-calderon.webp"
-    },
-    {
-      "slug": "sales-manager",
-      "name": "Sales Manager",
-      "role": "Sales Manager",
-      "description": "Manages the commercial relationship with each client, ensuring every proposal is aligned with real business objectives.",
-      "photo": null
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "badge": "Contact & Diagnostic",
   "title": "Parlons de votre projet",
-  "description": "Arrêtez de reporter le développement de votre plateforme. Parlez-nous de votre défi technique aujourd'hui et recevez un pré-diagnostic d'architecture gratuit en moins de 24 heures ouvrables de la part de notre équipe d'ingénierie.",
+  "description": "Arrêtez de reporter le développement de votre plateforme. Parlez-nous de votre défi technique aujourd'hui et recevez un pré-diagnostic d'architecture gratuit directement de notre équipe d'ingénierie, pas une réponse automatique.",
   "placeholders": {
     "name": "Nom complet ou raison sociale",
     "email": "Adresse e-mail de contact",

@@ -6,6 +6,14 @@ import type { NextConfig } from "next";
 // cambiar roles de equipo), y el UUID de /propuesta/[id] (que ES la
 // credencial de acceso a esa propuesta, ver lib/queries/proposals.ts) podía
 // filtrarse en el header `Referer` hacia cualquier enlace externo.
+// `next dev` usa eval() para Fast Refresh y para reconstruir stack traces de
+// React en consola — sin 'unsafe-eval' ahí, la app entera falla con "eval()
+// is not supported" apenas arranca. React nunca usa eval() en producción
+// (`next build` + `next start`), así que ahí sí se puede — y se debe — dejar
+// afuera del CSP; agregarlo solo en dev mantiene la protección real donde
+// importa (el sitio servido a usuarios reales).
+const SCRIPT_SRC = ["'self'", "'unsafe-inline'", ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : [])];
+
 const SECURITY_HEADERS = [
   {
     key: "Content-Security-Policy",
@@ -16,7 +24,7 @@ const SECURITY_HEADERS = [
       // (ver BROWSER_LOCALE_REDIRECT_SCRIPT en app/layout.tsx) — sin
       // 'unsafe-inline' el sitio entero queda en blanco. No hay un sistema
       // de nonces implementado todavía para poder retirar esto.
-      "script-src 'self' 'unsafe-inline'",
+      `script-src ${SCRIPT_SRC.join(" ")}`,
       // Framer Motion anima vía el atributo `style` inline (opacity/transform,
       // ver lib/animations.ts) — 'unsafe-inline' es necesario para eso, no
       // hay hojas de estilo de terceros que lo requieran.

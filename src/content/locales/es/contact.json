@@ -1,7 +1,7 @@
 {
   "badge": "Contacto & Diagnóstico",
   "title": "Hablemos de su proyecto",
-  "description": "Deje de aplazar el desarrollo de su plataforma. Cuéntenos su desafío técnico hoy y reciba un pre-diagnóstico de arquitectura en menos de 24 horas hábiles por parte de nuestro equipo de ingeniería.",
+  "description": "Deje de aplazar el desarrollo de su plataforma. Cuéntenos su desafío técnico hoy y reciba un pre-diagnóstico de arquitectura directamente de nuestro equipo de ingeniería, no una respuesta automática.",
   "placeholders": {
     "name": "Nombre completo o nombre de la empresa",
     "email": "Correo electrónico de contacto",
@@ -18,7 +18,7 @@
   },
   "successModal": {
     "title": "Solicitud de Diagnóstico Registrada",
-    "body": "Hemos recibido los requerimientos de su proyecto. Un ingeniero de software de nuestro equipo revisará la información y le enviará un pre-diagnóstico técnico en menos de 24 horas hábiles."
+    "body": "Hemos recibido los requerimientos de su proyecto. Un ingeniero de software de nuestro equipo revisará la información y le enviará un pre-diagnóstico técnico personalizado."
   },
   "sendingLabel": "Enviando...",
   "errorConnection": "No se pudo conectar con el servidor. Revise su conexión.",

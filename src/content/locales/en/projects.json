@@ -112,38 +112,6 @@
         "/projects/moncyre/detalle-producto.webp",
         "/projects/moncyre/footer-newsletter.webp"
       ]
-    },
-    {
-      "slug": "ecommerce-automatizacion",
-      "title": "E-Commerce Platform & ERP Integration",
-      "client": "Confidential Client · E-commerce & Logistics",
-      "description": "E-commerce solution integrated with ERP systems and electronic invoicing, streamlining operational management and inventory control.",
-      "tags": ["E-commerce", "ERP Integration", "Payment Gateways"],
-      "iconName": "ShoppingCart"
-    },
-    {
-      "slug": "landing-alta-conversion",
-      "title": "Lead Generation Portal & UX/UI Design",
-      "client": "Confidential Client · Digital Lead Generation",
-      "description": "High-speed portal designed to optimize lead capture, integrating analytics tools and user experience optimization.",
-      "tags": ["Frontend", "UX/UI", "Digital Conversion"],
-      "iconName": "Rocket"
-    },
-    {
-      "slug": "sitio-corporativo-seo",
-      "title": "Corporate Site & SEO Optimization",
-      "client": "Confidential Client · Corporate Presence",
-      "description": "Corporate platform built to maximize organic search rankings, with ultra-fast load times and premium responsive design.",
-      "tags": ["Corporate Site", "SEO Strategy", "Next.js"],
-      "iconName": "Globe"
-    },
-    {
-      "slug": "automatizacion-procesos",
-      "title": "Operational Workflow Automation System",
-      "client": "Confidential Client · Systems Integration",
-      "description": "Design and implementation of system integrations and data automation workflows to eliminate manual processes and connect multiple internal platforms.",
-      "tags": ["Automation", "API Integration", "Operational Efficiency"],
-      "iconName": "Workflow"
     }
   ]
 }

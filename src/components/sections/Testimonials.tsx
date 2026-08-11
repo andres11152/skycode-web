@@ -57,6 +57,11 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
     return () => clearInterval(timer);
   }, [reduced, hovering, userPaused, testimonials.length]);
 
+  // Después de todos los hooks (regla de hooks: nunca antes) — sin
+  // testimonios reales que mostrar, la sección completa desaparece sola en
+  // vez de renderizar un carrusel vacío o un placeholder.
+  if (testimonials.length === 0) return null;
+
   const active = testimonials[index];
   const isAutoplaying = !reduced && !userPaused && testimonials.length > 1;
 

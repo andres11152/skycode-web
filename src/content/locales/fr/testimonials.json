@@ -2,35 +2,5 @@
   "badge": "Témoignages & Cas Réels",
   "title": "Ce que disent ceux qui ont déjà travaillé avec nous",
   "description": "Des résultats mesurables, pas seulement de bonnes intentions.",
-  "items": [
-    {
-      "name": "Ricardo Jiménez",
-      "role": "Directeur Technologie",
-      "company": "Comercializadora Andina S.A.S.",
-      "location": "Bogotá",
-      "quote": "Travailler avec Skycode nous a donné l'assurance que notre plateforme e-commerce pouvait absorber des pics de trafic sans tomber en panne. Lors du dernier Black Friday, nous avons dépassé toutes nos projections et leur architecture backend est restée irréprochable. Leur expertise en gestion de forte concurrence est, sincèrement, de classe mondiale."
-    },
-    {
-      "name": "María Fernanda Vélez",
-      "role": "PDG et Fondatrice",
-      "company": "Capital Rápido",
-      "location": "Medellín",
-      "quote": "Nous devions migrer et optimiser nos microservices de paiement critiques dans un cadre réglementaire complexe. L'équipe de Skycode, avec sa maîtrise de Node.js et sa rigueur en matière de tests, a livré une solution robuste et auditable. Nous les recommandons sans réserve pour des projets exigeant des standards de sécurité élevés.",
-      "featured": true
-    },
-    {
-      "name": "Juan Manuel Osorio",
-      "role": "Directeur de la Transformation Digitale",
-      "company": "Grupo Logístico del Valle",
-      "location": "Cali",
-      "quote": "Skycode n'apporte pas seulement du talent technique, mais aussi une méthodologie de travail claire et professionnelle. La communication était fluide, les rapports transparents et les livraisons respectées à chaque sprint. Nous avons enfin pu abandonner un logiciel legacy qui nous freinait."
-    },
-    {
-      "name": "Amparo Sánchez",
-      "role": "Propriétaire",
-      "company": "Mentamoda (E-commerce)",
-      "location": null,
-      "quote": "L'équipe de Skycode Agency n'a pas seulement répondu à nos attentes, elle les a dépassées. Leur solution e-commerce nous a aidés à automatiser des processus clés, réduisant nos délais de gestion de 40%."
-    }
-  ]
+  "items": []
 }

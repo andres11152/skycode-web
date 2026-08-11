@@ -2,35 +2,5 @@
   "badge": "Testimonials & Real Cases",
   "title": "What people who've worked with us say",
   "description": "Measurable results, not just good intentions.",
-  "items": [
-    {
-      "name": "Ricardo Jiménez",
-      "role": "Technology Manager",
-      "company": "Comercializadora Andina S.A.S.",
-      "location": "Bogotá",
-      "quote": "Working with Skycode gave us the confidence that our e-commerce platform could handle traffic spikes without going down. During last Black Friday we exceeded every projection, and their backend architecture held up flawlessly. Their expertise in high-concurrency systems is, honestly, world-class."
-    },
-    {
-      "name": "María Fernanda Vélez",
-      "role": "CEO & Founder",
-      "company": "Capital Rápido",
-      "location": "Medellín",
-      "quote": "We needed to migrate and optimize our core payment microservices under a complex regulatory framework. Skycode's team, with their command of Node.js and rigorous testing, delivered a robust, auditable solution. We recommend them without reservation for projects with high security standards.",
-      "featured": true
-    },
-    {
-      "name": "Juan Manuel Osorio",
-      "role": "Director of Digital Transformation",
-      "company": "Grupo Logístico del Valle",
-      "location": "Cali",
-      "quote": "Skycode doesn't just bring technical talent — they bring a clear, professional way of working. Communication was smooth, reporting was transparent, and every sprint delivered on time. We were finally able to move past legacy software that was holding us back."
-    },
-    {
-      "name": "Amparo Sánchez",
-      "role": "Owner",
-      "company": "Mentamoda (E-commerce)",
-      "location": null,
-      "quote": "The Skycode Agency team didn't just meet our expectations — they exceeded them. Their e-commerce solution helped us automate key processes, cutting management time by 40%."
-    }
-  ]
+  "items": []
 }

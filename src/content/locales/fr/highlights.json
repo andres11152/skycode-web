@@ -1,6 +1,8 @@
 {
   "sectionAria": "Pourquoi nous choisir",
   "badge": "Pourquoi Skycode",
+  "title": "Un logiciel que votre équipe peut maintenir sans nous",
+  "description": "Nous livrons le code, la documentation et l'ensemble des identifiants. Les produits que nous construisons sont en production aujourd'hui.",
   "techLabel": "Notre stack technologique",
   "videoAria": "Vidéo de démonstration de notre travail",
   "items": [
