@@ -16,10 +16,19 @@ interface EndpointCase {
 /**
  * Todo endpoint gateado por un permiso de lib/rbac.ts (vía `withAuth` o el
  * patrón manual `requireSession()` + `hasPermission()`, ver leads/[id]/activities
- * y time-entries). No incluye GET /api/projects a propósito: ese endpoint
- * no usa un permiso fijo, resuelve acceso por dueño (ver comentario en
- * projects/route.ts) — es un modelo de autorización distinto, no un hueco.
- * `/api/time-entries` no tiene un permiso `time:*` propio: pide
+ * y time-entries). No incluye GET /api/projects, GET /api/invoices,
+ * GET /api/documents ni GET /api/support-tickets a propósito: esos
+ * endpoints no usan un permiso fijo para TODOS los roles — un cliente
+ * accede por dueño a lo suyo (200 con su propia lista, ver e2e/portal.e2e.test.ts),
+ * mientras que el resto de roles sí sigue el permiso normal. Es un modelo
+ * de autorización distinto para el rol `client`, no un hueco. `POST
+ * /api/invoices` sí queda en esta matriz (no tiene camino especial para
+ * `client`, que recibe 403 igual que cualquier rol sin `invoices:write`).
+ * `POST /api/support-tickets` tampoco está acá — sí tiene un camino
+ * especial de `client` (abre contra su propio proyecto) probado aparte en
+ * e2e/portal.e2e.test.ts, junto con GET /api/documents y GET
+ * /api/support-tickets. `/api/time-entries` no tiene un permiso `time:*`
+ * propio: pide
  * `projects:read` (ver `canLogTime` en ese archivo), documentado ahí mismo.
  */
 const ENDPOINTS: EndpointCase[] = [
@@ -44,7 +53,6 @@ const ENDPOINTS: EndpointCase[] = [
   { method: "POST", path: "/api/campaigns/1/spend", permission: "campaigns:write" },
   { method: "GET", path: "/api/proposals", permission: "proposals:read" },
   { method: "POST", path: "/api/proposals", permission: "proposals:write" },
-  { method: "GET", path: "/api/invoices", permission: "invoices:read" },
   { method: "POST", path: "/api/invoices", permission: "invoices:write" },
   { method: "POST", path: "/api/invoices/1/payments", permission: "invoices:write" },
   { method: "GET", path: "/api/profitability", permission: "profitability:read" },

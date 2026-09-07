@@ -65,7 +65,7 @@ export function AcceptInviteView({ token }: { token: string }) {
         </div>
 
         <SpotlightCard spotlightSize={350}>
-          <div className="rounded-2xl border border-background/15 bg-background/5 p-6 backdrop-blur-2xl shadow-2xl">
+          <div className="rounded-xl border border-background/15 bg-background/5 p-6 backdrop-blur-2xl shadow-2xl">
             {success ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}

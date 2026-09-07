@@ -1,0 +1,87 @@
+name: CI
+
+# `verify` corre en cada push/PR: es rápido (sin Postgres) y atrapa la
+# mayoría de errores (tipos, lint, lógica pura, que el build no rompa).
+# `integration-e2e` depende de `verify` (fail-fast, no gasta minutos de CI
+# en una base de datos si lo básico ya está roto) y sí necesita Postgres —
+# usa un contenedor de servicio con las mismas credenciales de
+# docker-compose.test.yml, para poder correr los mismos scripts de
+# package.json sin lógica especial de CI.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Tipos, lint, tests unitarios y build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npx eslint .
+
+      - name: Tests unitarios
+        run: npm test
+
+      - name: Build de producción
+        run: npx next build
+
+  integration-e2e:
+    name: Tests de integración y E2E
+    needs: verify
+    runs-on: ubuntu-latest
+    # Mismas credenciales y puerto que docker-compose.test.yml — así los
+    # scripts de package.json (que leen .env.test) funcionan sin cambios.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: skycode_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d skycode_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Aplicar migraciones a la base de test
+        run: npm run test:db:migrate
+
+      - name: Tests de integración
+        run: npm run test:integration
+
+      - name: Tests E2E
+        run: npm run test:e2e

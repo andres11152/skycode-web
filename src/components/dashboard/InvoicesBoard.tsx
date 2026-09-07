@@ -145,7 +145,14 @@ export function InvoicesBoard({
                 {invoices.map((inv) => (
                   <tr key={inv.id}>
                     <td className="px-5 py-4">
-                      <div className="font-bold text-background">{inv.project_title}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-background">{inv.project_title}</span>
+                        {inv.invoice_number && (
+                          <span className="rounded-full bg-background/10 px-2 py-0.5 text-[10px] font-mono text-background/60">
+                            {inv.invoice_number}
+                          </span>
+                        )}
+                      </div>
                       <div className="text-[11px] text-background/60 font-mono">{inv.client_name}</div>
                     </td>
                     <td className="px-5 py-4 max-w-xs truncate">{inv.description}</td>

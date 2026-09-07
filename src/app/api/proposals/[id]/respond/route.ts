@@ -8,6 +8,7 @@ import {
   rejectProposal,
   acceptProposalAndCreateProject,
 } from "@/lib/queries/proposals";
+import { logError } from "@/lib/logger";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -82,7 +83,7 @@ export async function POST(request: Request, { params }: RouteContext) {
 
     return NextResponse.json({ success: true, status: "accepted", projectId: project.id });
   } catch (error) {
-    console.error("❌ [API POST Proposal Respond Error]", error);
+    logError("❌ [API POST Proposal Respond Error]", error);
     return NextResponse.json({ error: "Error al procesar la respuesta." }, { status: 500 });
   }
 }

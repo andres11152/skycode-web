@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireSession } from "@/lib/withAuth";
 import { hasPermission } from "@/lib/rbac";
 import { getLeadActivities, addLeadActivity } from "@/lib/queries/leads";
+import { logError } from "@/lib/logger";
 
 const CreateActivitySchema = z.object({
   type: z.enum(["note", "call", "email"]),
@@ -40,7 +41,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
     const activities = await getLeadActivities(leadId);
     return NextResponse.json({ success: true, activities });
   } catch (error) {
-    console.error("❌ [API GET Lead Activities Error]", error);
+    logError("❌ [API GET Lead Activities Error]", error);
     return NextResponse.json({ error: "Error al obtener actividades." }, { status: 500 });
   }
 }
@@ -85,7 +86,7 @@ export async function POST(request: Request, { params }: RouteContext) {
 
     return NextResponse.json({ success: true, activity });
   } catch (error) {
-    console.error("❌ [API POST Lead Activity Error]", error);
+    logError("❌ [API POST Lead Activity Error]", error);
     return NextResponse.json({ error: "Error al registrar la actividad." }, { status: 500 });
   }
 }

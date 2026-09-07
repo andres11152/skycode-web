@@ -5,5 +5,7 @@
   "ctaQuestion": "Need this service for your project?",
   "ctaButton": "Talk to an engineer",
   "nextServiceLabel": "Next service",
-  "backToServices": "Back to services"
+  "backToServices": "Back to services",
+  "enterpriseSolutionBadge": "SkyCode Enterprise Solution",
+  "interactiveDemoHeading": "Interactive Demo & Environment Simulation"
 }

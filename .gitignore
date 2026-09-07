@@ -35,12 +35,17 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
 
 # raw brand source files (huge originals, PDF) — web-ready derivatives live in public/ and src/app/
 /brand-assets/source/
+
+# documentos subidos en desarrollo local (lib/storage.ts) — en producción
+# viven en el disco persistente de Render, nunca en el repo
+/storage/
 
 # typescript
 *.tsbuildinfo

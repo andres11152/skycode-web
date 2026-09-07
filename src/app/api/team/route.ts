@@ -7,6 +7,7 @@ import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { getTeamMembers, updateTeamMember } from "@/lib/queries/team";
 import { CURRENCIES } from "@/lib/currency";
+import { logError } from "@/lib/logger";
 
 const UpdateTeamMemberSchema = z.object({
   id: z.number().int().positive(),
@@ -25,7 +26,7 @@ export const GET = withAuth("team:read", async () => {
     const members = await getTeamMembers();
     return NextResponse.json({ success: true, members });
   } catch (error) {
-    console.error("❌ [API GET Team Error]", error);
+    logError("❌ [API GET Team Error]", error);
     return NextResponse.json({ error: "Error al obtener el equipo." }, { status: 500 });
   }
 });
@@ -95,7 +96,7 @@ export const PATCH = withAuth("team:write", async (request, { session }) => {
       member: { ...member, hourly_cost: member.hourly_cost !== null ? Number(member.hourly_cost) : null },
     });
   } catch (error) {
-    console.error("❌ [API PATCH Team Error]", error);
+    logError("❌ [API PATCH Team Error]", error);
     return NextResponse.json({ error: "Error al actualizar el miembro del equipo." }, { status: 500 });
   }
 });

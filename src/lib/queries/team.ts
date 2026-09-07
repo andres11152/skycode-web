@@ -35,6 +35,19 @@ export async function getAssignableLeadOwners(): Promise<{ id: number; name: str
   return res.rows;
 }
 
+/**
+ * Todo el equipo interno activo (los 3 roles no-client), para el selector
+ * de responsable de una tarea — a diferencia de `getAssignableLeadOwners`,
+ * acá sí entra `traffiker`: cualquiera del equipo puede tener tareas
+ * asignadas, no solo quien vende.
+ */
+export async function getActiveTeamMembers(): Promise<{ id: number; name: string; email: string }[]> {
+  const res = await query(
+    `SELECT id, name, email FROM users WHERE role != 'client' AND status = 'active' ORDER BY name ASC;`
+  );
+  return res.rows;
+}
+
 interface QueryRunner {
   query: typeof query;
 }

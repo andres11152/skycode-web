@@ -38,11 +38,16 @@ export interface LeadActivity {
   created_at: string;
 }
 
+export type SprintApprovalStatus = "aprobado" | "rechazado";
+
 export interface Sprint {
   id: number;
   title: string;
   status: "Completado" | "En Progreso" | "Pendiente";
   progress: number;
+  approval_status: SprintApprovalStatus | null;
+  approval_comment: string | null;
+  approved_at: string | null;
 }
 
 export interface ProjectClient {
@@ -64,6 +69,99 @@ export interface Project {
   status: "Planificación" | "En Desarrollo" | "Fase QA" | "Entregado" | "Garantía SLA";
   created_at: string;
   sprints: Sprint[];
+}
+
+export type TaskStatus = "Pendiente" | "En Progreso" | "Completada";
+
+export interface TaskAssignee {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export interface Task {
+  id: number;
+  project_id: number;
+  sprint_id: number | null;
+  sprint_title: string | null;
+  title: string;
+  description: string;
+  assignee: TaskAssignee | null;
+  status: TaskStatus;
+  estimated_hours: number | null;
+  actual_hours: number;
+  due_date: string | null;
+  created_at: string;
+  completed_at: string | null;
+}
+
+export interface ProjectOption {
+  id: number;
+  title: string;
+  client_name: string;
+}
+
+export type TicketPriority = "Baja" | "Media" | "Alta" | "Urgente";
+export type TicketStatus = "Abierto" | "En Progreso" | "Resuelto" | "Cerrado";
+
+export interface SupportTicket {
+  id: number;
+  project_id: number;
+  project_title: string;
+  client_name: string;
+  title: string;
+  description: string;
+  priority: TicketPriority;
+  status: TicketStatus;
+  assignee: TaskAssignee | null;
+  resolution_note: string | null;
+  sla_due_at: string;
+  created_at: string;
+  resolved_at: string | null;
+  closed_at: string | null;
+}
+
+/**
+ * Carga de trabajo de una persona — ver lib/queries/capacity.ts. Todo
+ * derivado de `tasks`/`support_tickets`/`time_entries`, no hay una tabla
+ * propia de "capacidad".
+ */
+export interface TeamCapacity {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  open_tasks_count: number;
+  open_estimated_hours: number;
+  open_tickets_count: number;
+  hours_this_week: number;
+}
+
+/** Documento subido a un proyecto — ver lib/storage.ts y lib/queries/documents.ts. */
+export type ExpenseCategory = "licencias" | "infraestructura" | "subcontratos" | "otro";
+
+export interface Expense {
+  id: number;
+  project_id: number | null;
+  project_title: string | null;
+  category: ExpenseCategory;
+  description: string;
+  amount: number;
+  currency: Currency;
+  expense_date: string;
+  created_by: TaskAssignee | null;
+  created_at: string;
+}
+
+export interface ProjectDocument {
+  id: number;
+  project_id: number;
+  project_title: string;
+  original_filename: string;
+  mime_type: string;
+  size_bytes: number;
+  uploaded_by: TaskAssignee | null;
+  created_at: string;
 }
 
 export type CampaignChannel = "google_ads" | "meta_ads" | "linkedin_ads" | "organico" | "referido" | "otro";
@@ -138,6 +236,7 @@ export interface InvoicePayment {
 
 export interface Invoice {
   id: number;
+  invoice_number: string | null;
   project_id: number;
   project_title: string;
   client_name: string;
@@ -185,6 +284,7 @@ export interface ProjectProfitability {
   quotedAmountCop: number | null;
   totalHours: number;
   totalCostCop: number;
+  totalExpensesCop: number;
   totalBilledCop: number;
   marginVsQuotedCop: number | null;
   marginVsBilledCop: number;
@@ -221,4 +321,59 @@ export interface SessionUser {
   name: string;
   email: string;
   role: string;
+}
+
+export interface UserSessionRow {
+  id: string;
+  created_at: string;
+  expires_at: string;
+  ip: string | null;
+  user_agent: string | null;
+}
+
+export interface AuditLogEntry {
+  id: number;
+  actor_id: number | null;
+  actor_email: string | null;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  diff: unknown;
+  ip: string | null;
+  created_at: string;
+}
+
+/** Fila de `clients` — se crea implícitamente al crear un proyecto o aceptar una propuesta (upsert por email). */
+export interface Client {
+  id: number;
+  name: string;
+  email: string;
+  company: string | null;
+  phone: string | null;
+  notes: string;
+  created_at: string;
+  projectCount: number;
+  totalBilledCop: number;
+  totalOutstandingCop: number;
+}
+
+/**
+ * Ficha 360: el cliente más todo lo que se le vinculó, cruzando proyectos,
+ * propuestas y facturas. `totalBilledCop`/`totalOutstandingCop` ya vienen
+ * convertidos a COP con la tasa vigente — sumar `invoices[].amount`
+ * directo mezclaría facturas en COP y USD sin convertir.
+ */
+export interface ClientDetail {
+  id: number;
+  name: string;
+  email: string;
+  company: string | null;
+  phone: string | null;
+  notes: string;
+  created_at: string;
+  projects: Project[];
+  proposals: Proposal[];
+  invoices: Invoice[];
+  totalBilledCop: number;
+  totalOutstandingCop: number;
 }

@@ -1,0 +1,15 @@
+{
+  "notFound": {
+    "eyebrow": "Erreur 404",
+    "title": "Cette page n'existe pas",
+    "description": "Le lien est peut-être rompu ou la page a été déplacée. Retournez à l'accueil ou dites-nous ce que vous cherchiez.",
+    "ctaHome": "Retour à l'accueil",
+    "ctaContact": "Contacter l'équipe"
+  },
+  "globalError": {
+    "title": "Une erreur est survenue",
+    "description": "Une erreur inattendue s'est produite lors du chargement du site. Veuillez réessayer — si le problème persiste, contactez-nous sur WhatsApp.",
+    "ctaRetry": "Réessayer",
+    "ctaHome": "Retour à l'accueil"
+  }
+}

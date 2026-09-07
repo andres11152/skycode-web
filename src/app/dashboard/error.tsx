@@ -2,10 +2,11 @@
 
 import { useEffect } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
+import { logError } from "@/lib/logger";
 
 export default function DashboardError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    console.error("❌ [Dashboard Error Boundary]", error);
+    logError("❌ [Dashboard Error Boundary]", error);
   }, [error]);
 
   return (

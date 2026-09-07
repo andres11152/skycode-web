@@ -5,6 +5,7 @@ import {
   createTestCampaign,
   createTestCampaignSpend,
   createTestClient,
+  createTestExpense,
   createTestInvoice,
   createTestLead,
   createTestProject,
@@ -33,6 +34,7 @@ describe("getProjectProfitability", () => {
     expect(result.quotedAmountCop).toBeNull();
     expect(result.totalHours).toBe(0);
     expect(result.totalCostCop).toBe(0);
+    expect(result.totalExpensesCop).toBe(0);
     expect(result.totalBilledCop).toBe(0);
     expect(result.marginVsBilledCop).toBe(0);
     expect(result.marginVsQuotedCop).toBeNull();
@@ -72,6 +74,7 @@ describe("getProjectProfitability", () => {
 
       expect(result.totalHours).toBe(7);
       expect(result.totalCostCop).toBeCloseTo(240000, 5); // 200000 + 40000
+      expect(result.totalExpensesCop).toBe(0);
 
       expect(result.totalBilledCop).toBeCloseTo(300000, 5); // 200000 + 100000
 
@@ -120,6 +123,28 @@ describe("getProjectProfitability", () => {
 
     const results = await getProjectProfitability(RATE);
     expect(results.map((r) => r.title)).toEqual(["Visible"]);
+  });
+
+  it("resta los gastos del proyecto (convertidos a COP) del margen — cierra el cálculo de margen real", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const otherProject = await createTestProject(client.id);
+
+    await createTestInvoice(project.id, { amount: 500000, currency: "COP" });
+    await createTestExpense({ projectId: project.id, amount: 50, currency: "USD" }); // -> 200000 COP
+    await createTestExpense({ projectId: project.id, amount: 30000, currency: "COP" });
+    // Gasto de otro proyecto: no debe afectar el margen de `project`.
+    await createTestExpense({ projectId: otherProject.id, amount: 999999, currency: "COP" });
+    // Gasto general sin proyecto (overhead): tampoco debe afectar ningún margen por proyecto.
+    await createTestExpense({ projectId: null, amount: 999999, currency: "COP" });
+
+    const results = await getProjectProfitability(RATE);
+    const result = results.find((r) => r.id === project.id)!;
+
+    expect(result.totalExpensesCop).toBeCloseTo(230000, 5); // 200000 + 30000
+    expect(result.totalCostCop).toBe(0); // sin horas registradas
+    expect(result.totalBilledCop).toBeCloseTo(500000, 5);
+    expect(result.marginVsBilledCop).toBeCloseTo(270000, 5); // 500000 - 0 - 230000
   });
 });
 

@@ -1,4 +1,5 @@
 import { Pool, type PoolClient } from "pg";
+import { logError } from "./logger";
 
 let pool: Pool | null = null;
 // Sin `export default pool` a propósito: esa exportación capturaría el valor
@@ -64,7 +65,7 @@ export async function query(text: string, params?: unknown[]) {
     }
     return res;
   } catch (error) {
-    console.error("❌ [PostgreSQL Error]", { text, error });
+    logError("❌ [PostgreSQL Error]", error, { text });
     throw error;
   }
 }
@@ -83,7 +84,11 @@ export async function withTransaction<T>(fn: (client: PoolClient) => Promise<T>)
     await client.query("COMMIT");
     return result;
   } catch (error) {
-    await client.query("ROLLBACK");
+    try {
+      await client.query("ROLLBACK");
+    } catch (rollbackError) {
+      logError("❌ [PostgreSQL Rollback Error]", rollbackError);
+    }
     throw error;
   } finally {
     client.release();

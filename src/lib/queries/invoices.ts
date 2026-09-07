@@ -1,4 +1,5 @@
 import { query } from "../db";
+import { consumeNextInvoiceNumber } from "./settings";
 import type { Invoice } from "@/components/dashboard/types";
 
 /**
@@ -11,8 +12,30 @@ import type { Invoice } from "@/components/dashboard/types";
  * primero `leads` con la propuesta que los convirtió.
  */
 export async function getAllInvoices(): Promise<Invoice[]> {
-  const res = await query(`
-    SELECT i.id, i.project_id, p.title AS project_title, c.name AS client_name,
+  return queryInvoices();
+}
+
+/**
+ * Solo las facturas de un cliente puntual (portal, solo lectura) —
+ * `clientId` viene de `session.clientId`, nunca de un email (mismo
+ * criterio que `getClientProjects`). Reutiliza `queryInvoices()` con un
+ * filtro extra en vez de duplicar el cálculo de saldo/estado/pagos.
+ */
+export async function getClientInvoices(clientId: number | string): Promise<Invoice[]> {
+  return queryInvoices(clientId);
+}
+
+async function queryInvoices(clientId?: number | string): Promise<Invoice[]> {
+  const params: unknown[] = [];
+  let clientFilter = "";
+  if (clientId !== undefined) {
+    params.push(clientId);
+    clientFilter = `AND c.id = $${params.length}`;
+  }
+
+  const res = await query(
+    `
+    SELECT i.id, i.invoice_number, i.project_id, p.title AS project_title, c.name AS client_name,
            i.description, i.amount, i.currency, i.due_date, i.created_at,
            COALESCE(pay.paid_amount, 0) AS paid_amount
     FROM invoices i
@@ -21,9 +44,11 @@ export async function getAllInvoices(): Promise<Invoice[]> {
     LEFT JOIN (
       SELECT invoice_id, SUM(amount) AS paid_amount FROM payments GROUP BY invoice_id
     ) pay ON pay.invoice_id = i.id
-    WHERE i.deleted_at IS NULL
+    WHERE i.deleted_at IS NULL ${clientFilter}
     ORDER BY i.due_date ASC;
-  `);
+  `,
+    params
+  );
 
   const invoices: Invoice[] = [];
   for (const row of res.rows) {
@@ -50,6 +75,7 @@ export async function getAllInvoices(): Promise<Invoice[]> {
 
     invoices.push({
       id: row.id,
+      invoice_number: row.invoice_number,
       project_id: row.project_id,
       project_title: row.project_title,
       client_name: row.client_name,
@@ -87,7 +113,11 @@ export interface CreateInvoiceData {
 }
 
 /**
- * Emite una nueva factura para un proyecto.
+ * Emite una nueva factura para un proyecto. El número legible
+ * (`invoice_number`, ej. "FAC-0001") se genera atómicamente desde
+ * `settings.invoice_next_number` (ver `consumeNextInvoiceNumber`) —
+ * `dbRunner` debe ser una transacción para que el número consumido y la
+ * fila de factura se confirmen (o reviertan) juntos.
  */
 export async function createInvoice(data: CreateInvoiceData, userId: number | string, dbRunner: QueryRunner) {
   const projectExists = await dbRunner.query("SELECT id FROM projects WHERE id = $1 AND deleted_at IS NULL;", [
@@ -95,11 +125,13 @@ export async function createInvoice(data: CreateInvoiceData, userId: number | st
   ]);
   if (projectExists.rows.length === 0) return null;
 
+  const invoiceNumber = await consumeNextInvoiceNumber(dbRunner);
+
   const res = await dbRunner.query(
-    `INSERT INTO invoices (project_id, description, amount, currency, due_date, created_by)
-     VALUES ($1, $2, $3, $4, $5, $6)
+    `INSERT INTO invoices (project_id, invoice_number, description, amount, currency, due_date, created_by)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      RETURNING *;`,
-    [data.project_id, data.description, data.amount, data.currency || "COP", data.due_date, userId]
+    [data.project_id, invoiceNumber, data.description, data.amount, data.currency || "COP", data.due_date, userId]
   );
   return res.rows[0];
 }

@@ -1,0 +1,54 @@
+{
+  "codeConsole": {
+    "logsInitial": ["[BUILD] Compilation de TypeScript...", "[TEST] Exécution de la suite de tests...", "[READY] Prêt à déployer"],
+    "logsRunning": ["[BUILD] Compilation des services...", "[TEST] Exécution des tests automatisés..."],
+    "logsSuccessAppend": ["[SUCCESS] Compilation réussie", "[DEPLOY] Déployé sur l'environnement de staging", "STATUS: 200 OK"],
+    "codeComment": "// Validé à chaque requête, sans exception",
+    "running": "En cours...",
+    "run": "Exécuter"
+  },
+  "mobilePreview": {
+    "appPanelLabel": "Panneau de l'application",
+    "sessionLabel": "Session",
+    "authenticated": "Authentifiée",
+    "syncEngineLabel": "Moteur de synchronisation hors ligne",
+    "synced": "Synchronisé",
+    "syncing": "Synchronisation...",
+    "pushNotificationLabel": "Notification push",
+    "pushOrderUpdated": "Commande mise à jour",
+    "ariaViewDashboard": "Voir le tableau de bord",
+    "ariaViewSync": "Voir la synchronisation",
+    "ariaViewPush": "Voir les notifications push"
+  },
+  "apiInspector": {
+    "testing": "Test en cours...",
+    "send": "Envoyer"
+  },
+  "security": {
+    "reviewing": "Analyse en cours...",
+    "viewChecklist": "Voir la checklist",
+    "tlsLabel": "Chiffrement en transit (TLS)",
+    "tlsValue": "Actif",
+    "owaspLabel": "Lignes directrices OWASP Top 10",
+    "owaspValue": "Appliquées",
+    "dataFrameworkLabel": "Cadre de protection des données",
+    "dataFrameworkValue": "Pris en compte"
+  },
+  "migration": {
+    "migrating": "Migration en cours...",
+    "simulate": "Simuler la migration",
+    "tablesMigrated": "Tables migrées",
+    "verified": "[OK] Migration vérifiée, intégrité des données validée",
+    "transferring": "[SYNC] Transfert des tables..."
+  },
+  "aiAgent": {
+    "heading": "Agent IA autonome",
+    "thinking": "Réflexion...",
+    "runAgent": "Exécuter l'agent",
+    "promptLabel": "Prompt",
+    "promptText": "Optimiser le flux de support client",
+    "initialResponse": "Agent : \"Flux de travail automatisé.\"",
+    "runningResponse": "L'agent LLM traite le prompt...",
+    "finalResponse": "Agent : réponse générée avec succès."
+  }
+}

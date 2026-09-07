@@ -5,6 +5,7 @@ import { contactEmail } from "@/lib/site";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { AttributionFieldsSchema } from "@/lib/attributionSchema";
 import { createLead } from "@/lib/queries/leads";
+import { logError } from "@/lib/logger";
 
 const ContactSchema = z
   .object({
@@ -66,13 +67,21 @@ export async function POST(request: Request) {
       dbSaved = true;
       console.log("🐘 [PostgreSQL] Lead guardado exitosamente en BD invencheck!");
     } catch (dbErr) {
-      console.error("⚠️ [PostgreSQL Lead Warning]", dbErr);
+      logError("⚠️ [PostgreSQL Lead Warning]", dbErr);
     }
 
     // Si no hay API Key de Resend válida configurada pero se guardó en BD, retornar éxito
     if (isDummyKey) {
       console.warn("⚠️ [Contacto] RESEND_API_KEY no está configurada o es una clave de prueba.");
-      console.log("📥 Mensaje recibido y guardado:", { name, email, phone, message });
+      // Nombre, correo, teléfono y mensaje son datos personales del titular
+      // (Ley 1581/RGPD, ver TrustStrip) — no deben replicarse en la retención
+      // de logs de un tercero (el host) en producción. Mismo criterio que
+      // /api/leads: solo el id fuera de desarrollo.
+      if (process.env.NODE_ENV !== "production") {
+        console.log("📥 Mensaje recibido y guardado:", { name, email, phone, message });
+      } else {
+        console.log("📥 Mensaje recibido y guardado.");
+      }
 
       return NextResponse.json({
         success: true,
@@ -109,29 +118,31 @@ export async function POST(request: Request) {
           (error as { statusCode?: number }).statusCode === 403)
       ) {
         const match = error.message?.match(/\(([^)]+)\)/);
-        const ownerEmail = match ? match[1] : (process.env.RESEND_SANDBOX_EMAIL || "cre8tive.pro.info@gmail.com");
+        const ownerEmail = match ? match[1] : process.env.RESEND_SANDBOX_EMAIL;
 
-        console.warn(`⚠️ [Resend Sandbox Fallback] Reenviando a ${ownerEmail} desde onboarding@resend.dev.`);
+        if (ownerEmail) {
+          console.warn(`⚠️ [Resend Sandbox Fallback] Reenviando a ${ownerEmail} desde onboarding@resend.dev.`);
 
-        const retryResult = await resend.emails.send({
-          ...emailPayload,
-          from: "SKYCODE Web <onboarding@resend.dev>",
-          to: ownerEmail,
-        });
+          const retryResult = await resend.emails.send({
+            ...emailPayload,
+            from: "SKYCODE Web <onboarding@resend.dev>",
+            to: ownerEmail,
+          });
 
-        data = retryResult.data;
-        error = retryResult.error;
+          data = retryResult.data;
+          error = retryResult.error;
+        }
       }
 
       if (error && !dbSaved) {
-        console.error("Error de Resend al enviar correo:", error);
+        logError("Error de Resend al enviar correo:", error);
         return NextResponse.json(
           { error: "Inconveniente con el servidor de correo. Intente más tarde o contáctenos por WhatsApp." },
           { status: 400 }
         );
       }
     } catch (emailErr) {
-      console.error("Error capturado en Resend:", emailErr);
+      logError("Error capturado en Resend:", emailErr);
       if (!dbSaved) {
         throw emailErr;
       }
@@ -139,7 +150,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, dbSaved });
   } catch (error: unknown) {
-    console.error("Error en el endpoint de contacto:", error);
+    logError("Error en el endpoint de contacto:", error);
     return NextResponse.json(
       { error: "Ocurrió un error inesperado al enviar el mensaje." },
       { status: 500 }

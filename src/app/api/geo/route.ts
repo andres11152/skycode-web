@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { lookup as geoipLookup } from "geoip-country";
-import { getClientIp } from "@/lib/rateLimit";
+import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 
 /**
  * GET /api/geo - País del visitante por IP, para hosts sin `x-vercel-ip-country`
@@ -13,6 +13,12 @@ import { getClientIp } from "@/lib/rateLimit";
  */
 export async function GET(request: Request) {
   const ip = getClientIp(request);
+  // Cada lookup lee la base de datos de geoip desde disco — sin límite, un
+  // cliente (o script) machacando este endpoint fuerza I/O de disco repetido
+  // sin ningún beneficio (el país de una IP no cambia en minutos).
+  if (isRateLimited(`geo:${ip}`, 30, 60 * 1000)) {
+    return NextResponse.json({ country: null }, { status: 429 });
+  }
   const country = ip === "unknown" ? null : (geoipLookup(ip)?.country ?? null);
   return NextResponse.json({ country });
 }

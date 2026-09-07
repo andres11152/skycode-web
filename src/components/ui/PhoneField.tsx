@@ -92,7 +92,6 @@ export function PhoneField({
         <div className="relative shrink-0">
           <select
             aria-label={countryLabel}
-            required
             value={countryCode}
             onChange={(event) => setCountryCode(event.target.value)}
             className="peer absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
@@ -133,7 +132,6 @@ export function PhoneField({
           type="tel"
           inputMode="numeric"
           autoComplete="tel-national"
-          required
           value={localNumber}
           // El indicativo lo pone el selector — aquí solo se aceptan dígitos y
           // separadores, para que nunca llegue un "+57" duplicado ni un "0057".

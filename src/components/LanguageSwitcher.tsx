@@ -50,7 +50,7 @@ export function LanguageSwitcher({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -6 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute right-0 top-12 z-50 min-w-[165px] overflow-hidden rounded-2xl border border-foreground/15 bg-background/95 p-1.5 shadow-2xl backdrop-blur-2xl shadow-black/20"
+            className="absolute right-0 top-12 z-50 min-w-[165px] overflow-hidden rounded-xl border border-foreground/15 bg-background/95 p-1.5 shadow-2xl backdrop-blur-2xl shadow-black/20"
           >
             {locales.map((loc) => (
               <li key={loc}>
@@ -65,7 +65,7 @@ export function LanguageSwitcher({
                   className={cn(
                     "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors",
                     loc === locale
-                      ? "bg-accent/15 text-accent font-bold"
+                      ? "bg-accent/15 text-accent-strong font-bold"
                       : "text-foreground/90 hover:bg-foreground/10 hover:text-foreground",
                   )}
                 >

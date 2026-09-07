@@ -35,7 +35,15 @@ interface DraftItem {
 
 const EMPTY_ITEM: DraftItem = { description: "", quantity: "1", unit_price: "" };
 
-export function ProposalsBoard({ initialProposals, origin }: { initialProposals: Proposal[]; origin: string }) {
+export function ProposalsBoard({
+  initialProposals,
+  origin,
+  defaultTaxRatePct,
+}: {
+  initialProposals: Proposal[];
+  origin: string;
+  defaultTaxRatePct: number;
+}) {
   const router = useRouter();
   const [isRefreshing, startRefresh] = useTransition();
   const [proposals, setProposals] = useState<Proposal[]>(initialProposals);
@@ -135,20 +143,20 @@ export function ProposalsBoard({ initialProposals, origin }: { initialProposals:
       </div>
 
       <AnimatePresence>
-        {createOpen && <CreateProposalModal onClose={() => setCreateOpen(false)} />}
+        {createOpen && <CreateProposalModal onClose={() => setCreateOpen(false)} defaultTaxRatePct={defaultTaxRatePct} />}
       </AnimatePresence>
     </div>
   );
 }
 
-function CreateProposalModal({ onClose }: { onClose: () => void }) {
+function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => void; defaultTaxRatePct: number }) {
   const router = useRouter();
   const titleId = useId();
   const [clientEmail, setClientEmail] = useState("");
   const [clientName, setClientName] = useState("");
   const [title, setTitle] = useState("");
   const [currency, setCurrency] = useState<Currency>("COP");
-  const [taxRate, setTaxRate] = useState("0");
+  const [taxRate, setTaxRate] = useState(String(defaultTaxRatePct));
   const [validUntil, setValidUntil] = useState("");
   const [items, setItems] = useState<DraftItem[]>([{ ...EMPTY_ITEM }]);
   const [error, setError] = useState<string | null>(null);

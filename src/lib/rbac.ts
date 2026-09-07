@@ -14,7 +14,53 @@ export type Permission =
   | "proposals:write"
   | "invoices:read"
   | "invoices:write"
-  | "profitability:read";
+  | "profitability:read"
+  | "clients:read"
+  | "clients:write"
+  | "tasks:read"
+  | "tasks:write"
+  | "support:read"
+  | "support:write"
+  | "documents:read"
+  | "documents:write"
+  | "expenses:read"
+  | "expenses:write"
+  | "settings:write";
+
+export const ALL_ROLES = ["admin", "sales_manager", "traffiker", "client"] as const satisfies readonly Role[];
+
+// `satisfies` valida que cada elemento sea un `Permission` real, pero no
+// obliga a que el array cubra el tipo completo — si agregas un permiso
+// nuevo, agrégalo también acá (lo mismo que ya exige `rbac.test.ts` con su
+// propio `ALL_PERMISSIONS` duplicado). Usado por /dashboard/roles para
+// mostrar la matriz completa sin adivinar qué permisos existen.
+export const ALL_PERMISSIONS = [
+  "leads:read",
+  "leads:write",
+  "projects:read",
+  "projects:write",
+  "audit:read",
+  "team:read",
+  "team:write",
+  "campaigns:read",
+  "campaigns:write",
+  "proposals:read",
+  "proposals:write",
+  "invoices:read",
+  "invoices:write",
+  "profitability:read",
+  "clients:read",
+  "clients:write",
+  "tasks:read",
+  "tasks:write",
+  "support:read",
+  "support:write",
+  "documents:read",
+  "documents:write",
+  "expenses:read",
+  "expenses:write",
+  "settings:write",
+] as const satisfies readonly Permission[];
 
 /**
  * Única fuente de verdad de "quién puede hacer qué". Un endpoint nuevo
@@ -34,6 +80,34 @@ export type Permission =
  * tampoco pasa por acá: es por identidad (cualquier rol interno registra
  * las suyas), no por permiso — `profitability:read` es solo para VER el
  * reporte con costos y horas de todo el equipo, exclusivo de admin.
+ * `clients:*` gatea la ficha 360 (`/dashboard/clientes`) — la fila de
+ * `clients` en sí se sigue creando implícitamente al crear un proyecto o
+ * aceptar una propuesta (upsert por email), esto solo gatea consultarla y
+ * editar sus datos de contacto (nombre, empresa, teléfono, notas).
+ * `tasks:*` gatea la gestión de tareas (crear, asignar, editar, borrar)
+ * dentro de un proyecto — quien solo tiene `tasks:read` puede ver el
+ * tablero pero no tocar nada. Aparte de esto, cualquier usuario interno
+ * puede cambiar el **estado** de una tarea que tiene asignada a sí mismo
+ * sin tener `tasks:write` — es autogestión por identidad (mismo criterio
+ * que registrar horas propias), resuelto en la propia ruta, no acá.
+ * `support:*` gatea los tickets de soporte post-lanzamiento
+ * (`/dashboard/soporte`) — alcance interno por ahora (el equipo abre y
+ * resuelve incidencias contra un proyecto), el cliente todavía no abre
+ * tickets desde `/portal` (eso es "Portal ampliado", una fase posterior).
+ * `documents:*` gatea subir/descargar/borrar documentos de un proyecto
+ * (contratos, especificaciones, entregables) — mismo alcance interno que
+ * `support:*` y `tasks:*`, el cliente todavía no los descarga desde
+ * `/portal` (también "Portal ampliado").
+ * `expenses:*` es exclusivo de admin (no de sales_manager, a diferencia de
+ * `clients:*`/`tasks:*`/`support:*`/`documents:*`) — mismo criterio que
+ * `profitability:read`: son costos reales de la agencia (licencias,
+ * infraestructura, subcontratos), y el reporte de rentabilidad que los
+ * consume ya es admin-only. Un sales_manager no necesita ver cuánto cuesta
+ * operar la agencia para hacer su trabajo.
+ * `settings:write` es un permiso único (no un par read/write) — gatea
+ * `/dashboard/configuracion` completo, tanto para ver como para editar,
+ * porque solo admin necesita verlo alguna vez. No hay `settings:read`
+ * separado a propósito, a diferencia de todos los demás módulos.
  */
 const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Permission>> = {
   admin: new Set([
@@ -51,6 +125,17 @@ const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Permission>> = {
     "invoices:read",
     "invoices:write",
     "profitability:read",
+    "clients:read",
+    "clients:write",
+    "tasks:read",
+    "tasks:write",
+    "support:read",
+    "support:write",
+    "documents:read",
+    "documents:write",
+    "expenses:read",
+    "expenses:write",
+    "settings:write",
   ]),
   sales_manager: new Set([
     "leads:read",
@@ -60,16 +145,33 @@ const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Permission>> = {
     "proposals:read",
     "proposals:write",
     "invoices:read",
+    "clients:read",
+    "clients:write",
+    "tasks:read",
+    "tasks:write",
+    "support:read",
+    "support:write",
+    "documents:read",
+    "documents:write",
   ]),
   traffiker: new Set(["campaigns:read", "campaigns:write"]),
   client: new Set([]),
 };
 
+/**
+ * Permisos de un rol, para mostrar la matriz completa en
+ * `/dashboard/roles` — nunca para tomar decisiones de autorización (eso
+ * siempre pasa por `hasPermission`, permiso por permiso).
+ */
+export function getRolePermissions(role: Role): Permission[] {
+  return Array.from(ROLE_PERMISSIONS[role]);
+}
+
 export function hasPermission(role: string, permission: Permission): boolean {
-  const permissions = ROLE_PERMISSIONS[role as Role];
-  return permissions ? permissions.has(permission) : false;
+  if (!Object.hasOwn(ROLE_PERMISSIONS, role)) return false;
+  return ROLE_PERMISSIONS[role as Role].has(permission);
 }
 
 export function isValidRole(role: string): role is Role {
-  return role in ROLE_PERMISSIONS;
+  return Object.hasOwn(ROLE_PERMISSIONS, role);
 }

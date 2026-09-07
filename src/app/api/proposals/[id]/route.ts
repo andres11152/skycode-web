@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { getProposalById, markProposalViewed } from "@/lib/queries/proposals";
+import { logError } from "@/lib/logger";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -43,7 +44,7 @@ export async function GET(request: Request, { params }: RouteContext) {
 
     return NextResponse.json({ success: true, proposal });
   } catch (error) {
-    console.error("❌ [API GET Public Proposal Error]", error);
+    logError("❌ [API GET Public Proposal Error]", error);
     return NextResponse.json({ error: "Error al obtener la propuesta." }, { status: 500 });
   }
 }

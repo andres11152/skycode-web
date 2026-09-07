@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { getAllInvoices } from "./invoices";
+import { getAllInvoices, getClientInvoices, createInvoice } from "./invoices";
+import { withTransaction, query } from "../db";
 import {
   createTestClient,
   createTestInvoice,
   createTestPayment,
   createTestProject,
+  createTestUser,
   resetTestDb,
 } from "../testHelpers/db";
 
@@ -121,5 +123,72 @@ describe("getAllInvoices — estado y saldo", () => {
 
     const invoices = await getAllInvoices();
     expect(invoices.map((i) => i.description)).toEqual(["Próxima", "Lejana"]);
+  });
+});
+
+describe("createInvoice — numeración automática", () => {
+  it("asigna un invoice_number consecutivo con el prefijo de settings, empezando en 0001", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const user = await createTestUser();
+
+    const first = await withTransaction((c) =>
+      createInvoice({ project_id: project.id, description: "A", amount: 100, due_date: "2026-06-01" }, user.id, c)
+    );
+    const second = await withTransaction((c) =>
+      createInvoice({ project_id: project.id, description: "B", amount: 100, due_date: "2026-06-01" }, user.id, c)
+    );
+
+    expect(first!.invoice_number).toBe("FAC-0001");
+    expect(second!.invoice_number).toBe("FAC-0002");
+  });
+
+  it("usa el prefijo configurado en settings", async () => {
+    await query(`UPDATE settings SET invoice_number_prefix = 'INV-' WHERE id = 1;`);
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const user = await createTestUser();
+
+    const invoice = await withTransaction((c) =>
+      createInvoice({ project_id: project.id, description: "A", amount: 100, due_date: "2026-06-01" }, user.id, c)
+    );
+    expect(invoice!.invoice_number).toBe("INV-0001");
+  });
+
+  it("un proyecto inexistente no consume número (devuelve null antes de generar uno)", async () => {
+    const user = await createTestUser();
+    const result = await withTransaction((c) =>
+      createInvoice({ project_id: 999999, description: "A", amount: 100, due_date: "2026-06-01" }, user.id, c)
+    );
+    expect(result).toBeNull();
+
+    const settingsRes = await query(`SELECT invoice_next_number FROM settings WHERE id = 1;`);
+    expect(Number(settingsRes.rows[0].invoice_next_number)).toBe(1);
+  });
+});
+
+describe("getClientInvoices — portal, solo lectura de lo propio", () => {
+  it("solo devuelve facturas del cliente indicado, aislado de otros clientes", async () => {
+    const clientA = await createTestClient({ name: "Cliente A" });
+    const clientB = await createTestClient({ name: "Cliente B" });
+    const projectA = await createTestProject(clientA.id);
+    const projectB = await createTestProject(clientB.id);
+    await createTestInvoice(projectA.id, { description: "Factura A" });
+    await createTestInvoice(projectB.id, { description: "Factura B" });
+
+    const invoicesA = await getClientInvoices(clientA.id);
+    expect(invoicesA.map((i) => i.description)).toEqual(["Factura A"]);
+  });
+
+  it("calcula saldo/estado igual que getAllInvoices, con el mismo shape", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const invoice = await createTestInvoice(project.id, { amount: 1000, dueDate: daysFromNow(-3) });
+    await createTestPayment(invoice.id, { amount: 400 });
+
+    const [result] = await getClientInvoices(client.id);
+    expect(result.status).toBe("overdue");
+    expect(result.balance).toBe(600);
+    expect(result.paidAmount).toBe(400);
   });
 });

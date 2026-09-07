@@ -8,6 +8,7 @@ import { logAudit } from "@/lib/audit";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { findUserByEmail } from "@/lib/queries/auth";
 import { createTeamInvite } from "@/lib/queries/team";
+import { logError } from "@/lib/logger";
 
 const InviteSchema = z.object({
   email: z.email().trim().max(254),
@@ -80,7 +81,7 @@ export const POST = withAuth("team:write", async (request, { session }) => {
           text: `${session.name} te invitó a unirte al panel interno de SKYCODE Agency con el rol "${role}".\n\nActiva tu cuenta acá (válido por 3 días):\n${inviteUrl}`,
         });
       } catch (emailErr) {
-        console.error("⚠️ [Team Invite Resend Warning]", emailErr);
+        logError("⚠️ [Team Invite Resend Warning]", emailErr);
       }
     }
 
@@ -89,7 +90,7 @@ export const POST = withAuth("team:write", async (request, { session }) => {
     // privilegio — y sirve de respaldo si el correo no llega.
     return NextResponse.json({ success: true, inviteUrl, expiresAt });
   } catch (error) {
-    console.error("❌ [API POST Team Invite Error]", error);
+    logError("❌ [API POST Team Invite Error]", error);
     return NextResponse.json({ error: "Error al crear la invitación." }, { status: 500 });
   }
 });

@@ -12,6 +12,7 @@ import {
   addLeadActivity,
 } from "@/lib/queries/leads";
 import { AttributionFieldsSchema } from "@/lib/attributionSchema";
+import { logError } from "@/lib/logger";
 
 const LeadStatusSchema = z.enum(["Nuevo", "En Cotización", "Ganado", "Perdido"]);
 
@@ -51,7 +52,7 @@ export const GET = withAuth("leads:read", async (request) => {
     const { leads, total } = await getActiveLeadsPage({ q, status, page, pageSize });
     return NextResponse.json({ success: true, leads, total, page, pageSize });
   } catch (error) {
-    console.error("❌ [API GET Leads Error]", error);
+    logError("❌ [API GET Leads Error]", error);
     return NextResponse.json({ error: "Error de servidor al obtener prospectos." }, { status: 500 });
   }
 });
@@ -89,7 +90,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, lead });
   } catch (error) {
-    console.error("❌ [API POST Lead Error]", error);
+    logError("❌ [API POST Lead Error]", error);
     return NextResponse.json({ error: "Error al guardar el prospecto." }, { status: 500 });
   }
 }
@@ -153,7 +154,7 @@ export const PATCH = withAuth("leads:write", async (request, { session }) => {
 
     return NextResponse.json({ success: true, lead });
   } catch (error) {
-    console.error("❌ [API PATCH Lead Error]", error);
+    logError("❌ [API PATCH Lead Error]", error);
     return NextResponse.json({ error: "Error al actualizar prospecto." }, { status: 500 });
   }
 });
@@ -195,7 +196,7 @@ export const DELETE = withAuth("leads:write", async (request, { session }) => {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("❌ [API DELETE Lead Error]", error);
+    logError("❌ [API DELETE Lead Error]", error);
     return NextResponse.json({ error: "Error al eliminar prospecto." }, { status: 500 });
   }
 });

@@ -170,7 +170,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                       </div>
 
                       <div className="mt-3 border-t border-foreground/5 pt-2 text-[11px]">
-                        <span className="font-mono font-bold text-accent">
+                        <span className="font-mono font-bold text-accent-strong">
                           {content.fromLabel} {formatPrice(displayPrice)}
                         </span>
                       </div>
@@ -242,7 +242,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                       : "border-foreground/10 bg-background/40 text-foreground/70"
                   }`}
                 >
-                  <div className="font-bold mb-0.5 text-accent flex items-center gap-1">
+                  <div className="font-bold mb-0.5 text-accent-strong flex items-center gap-1">
                     <Zap size={12} /> {content.pace.expressTitle}
                   </div>
                   <div className="text-[11px] text-foreground/60">{content.pace.expressDesc}</div>

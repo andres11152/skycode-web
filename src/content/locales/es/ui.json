@@ -16,5 +16,12 @@
   "testimonialsScrollNext": "Siguiente testimonio",
   "testimonialsGoToSlide": "Ir al testimonio número {index}",
   "testimonialsPause": "Pausar carrusel de testimonios",
-  "testimonialsResume": "Reanudar carrusel de testimonios"
+  "testimonialsResume": "Reanudar carrusel de testimonios",
+  "whatsappDefaultMessage": "Hola equipo SKYCODE, estuve revisando su sitio web y me gustaría cotizar un proyecto de software.",
+  "whatsappHeading": "SKYCODE Directo",
+  "whatsappSchedule": "Respuesta en horario laboral",
+  "whatsappClose": "Cerrar chat",
+  "whatsappPreview": "Estimado cliente: ¿Tiene dudas sobre su proyecto o requiere una valoración técnica inmediata? Chatee directamente con nuestro equipo de ingeniería.",
+  "whatsappOpenChat": "Abrir Chat de WhatsApp",
+  "whatsappTriggerAria": "Contactar por WhatsApp"
 }

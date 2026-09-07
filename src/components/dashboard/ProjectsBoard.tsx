@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { RefreshCw, Code2, Layers, ShieldCheck, Calendar, AlertCircle } from "lucide-react";
+import { RefreshCw, Code2, Layers, ShieldCheck, Calendar, AlertCircle, ClipboardList } from "lucide-react";
 import { EmptyState } from "./EmptyState";
+import { SprintApproval } from "./SprintApproval";
 import type { Project } from "./types";
 
 interface ProjectsBoardProps {
@@ -101,6 +103,15 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
                 </div>
 
                 <div className="flex flex-wrap gap-2 shrink-0">
+                  {variant === "internal" && (
+                    <Link
+                      href={`/dashboard/proyectos/${project.id}`}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-background/15 bg-background/10 px-3 py-1.5 text-xs text-background hover:bg-background/20 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                    >
+                      <ClipboardList size={14} />
+                      <span>Ver tareas</span>
+                    </Link>
+                  )}
                   {project.repo_url && (
                     <a
                       href={project.repo_url}
@@ -177,6 +188,10 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
                           />
                         </div>
                       </div>
+
+                      {variant === "portal" && sprint.status === "Completado" && (
+                        <SprintApproval sprint={sprint} />
+                      )}
                     </div>
                   ))}
                 </div>

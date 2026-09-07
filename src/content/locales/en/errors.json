@@ -1,0 +1,15 @@
+{
+  "notFound": {
+    "eyebrow": "Error 404",
+    "title": "This page doesn't exist",
+    "description": "The link may be broken or the page has moved. Head back home or let us know what you were looking for.",
+    "ctaHome": "Back to home",
+    "ctaContact": "Contact the team"
+  },
+  "globalError": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred while loading the site. Please try again — if the problem persists, reach out on WhatsApp.",
+    "ctaRetry": "Try again",
+    "ctaHome": "Back to home"
+  }
+}

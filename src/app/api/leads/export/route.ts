@@ -5,6 +5,7 @@ import { query } from "@/lib/db";
 import { getClientIp } from "@/lib/rateLimit";
 import { getAllMatchingLeads } from "@/lib/queries/leads";
 import { toCsvCell } from "@/lib/utils";
+import { logError } from "@/lib/logger";
 
 /**
  * GET /api/leads/export - CSV de los leads que calzan el filtro actual
@@ -61,7 +62,7 @@ export const GET = withAuth("leads:read", async (request, { session }) => {
       },
     });
   } catch (error) {
-    console.error("❌ [API GET Leads Export Error]", error);
+    logError("❌ [API GET Leads Export Error]", error);
     return NextResponse.json({ error: "Error al exportar prospectos." }, { status: 500 });
   }
 });

@@ -35,7 +35,7 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
                 <div className="flex flex-col justify-between h-full gap-4">
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-white font-mono text-sm font-bold shadow-md shadow-accent/20">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-strong text-white font-mono text-sm font-bold shadow-md shadow-accent/20">
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       {index < processData.steps.length - 1 && (

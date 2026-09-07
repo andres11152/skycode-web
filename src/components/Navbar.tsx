@@ -127,7 +127,7 @@ export function Navbar() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className={cn("absolute inset-x-0 top-14 z-40 flex flex-col gap-3 rounded-2xl p-4 sm:hidden", MOBILE_GLASS)}
+              className={cn("absolute inset-x-0 top-14 z-40 flex flex-col gap-3 rounded-xl p-4 sm:hidden", MOBILE_GLASS)}
             >
               <ul className="flex flex-col gap-2">
                 {navLinks.map((link) => (

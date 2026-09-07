@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { getAllActiveProjects, getClientProjects } from "./projects";
-import { query } from "../db";
-import { createTestClient, createTestProject, resetTestDb } from "../testHelpers/db";
+import { getAllActiveProjects, getClientProjects, approveSprint } from "./projects";
+import { query, withTransaction } from "../db";
+import { createTestClient, createTestProject, createTestSprint, createTestUser, resetTestDb } from "../testHelpers/db";
 
 beforeEach(async () => {
   await resetTestDb();
@@ -82,5 +82,65 @@ describe("getClientProjects", () => {
 
     const projects = await getClientProjects(client.id);
     expect(projects).toEqual([]);
+  });
+});
+
+describe("approveSprint", () => {
+  it("aprueba un sprint completado del cliente dueño, con comentario", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const sprint = await createTestSprint(project.id, { status: "Completado" });
+    const user = await createTestUser();
+
+    const result = await withTransaction((c) =>
+      approveSprint(sprint.id, client.id, { status: "aprobado", comment: "Se ve bien" }, user.id, c)
+    );
+
+    expect(result.outcome).toBe("ok");
+    const [refreshedProject] = await getClientProjects(client.id);
+    const approvedSprint = refreshedProject.sprints.find((s) => s.id === sprint.id)!;
+    expect(approvedSprint.approval_status).toBe("aprobado");
+    expect(approvedSprint.approval_comment).toBe("Se ve bien");
+    expect(approvedSprint.approved_at).not.toBeNull();
+  });
+
+  it("rechaza con 'not_owner' si el sprint pertenece a otro cliente", async () => {
+    const owner = await createTestClient();
+    const attacker = await createTestClient();
+    const project = await createTestProject(owner.id);
+    const sprint = await createTestSprint(project.id, { status: "Completado" });
+    const user = await createTestUser();
+
+    const result = await withTransaction((c) => approveSprint(sprint.id, attacker.id, { status: "aprobado" }, user.id, c));
+    expect(result.outcome).toBe("not_owner");
+  });
+
+  it("rechaza con 'not_completed' si el sprint no está en estado Completado", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const sprint = await createTestSprint(project.id, { status: "En Progreso" });
+    const user = await createTestUser();
+
+    const result = await withTransaction((c) => approveSprint(sprint.id, client.id, { status: "aprobado" }, user.id, c));
+    expect(result.outcome).toBe("not_completed");
+  });
+
+  it("rechaza con 'already_decided' si ya se aprobó o rechazó antes", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const sprint = await createTestSprint(project.id, { status: "Completado" });
+    const user = await createTestUser();
+
+    await withTransaction((c) => approveSprint(sprint.id, client.id, { status: "aprobado" }, user.id, c));
+    const second = await withTransaction((c) => approveSprint(sprint.id, client.id, { status: "rechazado" }, user.id, c));
+    expect(second.outcome).toBe("already_decided");
+  });
+
+  it("devuelve 'not_found' para un sprint inexistente", async () => {
+    const client = await createTestClient();
+    const user = await createTestUser();
+
+    const result = await withTransaction((c) => approveSprint(999999, client.id, { status: "aprobado" }, user.id, c));
+    expect(result.outcome).toBe("not_found");
   });
 });

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireSession } from "@/lib/withAuth";
 import { getUsdToCopRate } from "@/lib/exchangeRate";
+import { logError } from "@/lib/logger";
 
 /**
  * GET /api/exchange-rate - Tasa USD→COP vigente (dinámica, ver
@@ -19,7 +20,7 @@ export async function GET() {
     const rate = await getUsdToCopRate();
     return NextResponse.json({ success: true, usdToCopRate: rate });
   } catch (error) {
-    console.error("❌ [API GET Exchange Rate Error]", error);
+    logError("❌ [API GET Exchange Rate Error]", error);
     return NextResponse.json({ error: "Error al obtener la tasa de cambio." }, { status: 500 });
   }
 }

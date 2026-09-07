@@ -1,6 +1,7 @@
 import { query } from "../db";
 import { getUsdToCopRate } from "../exchangeRate";
 import { convertCurrency, type Currency } from "../currency";
+import { getExpensesByProjectCop } from "./expenses";
 import type { ProjectProfitability, CampaignProfitability } from "@/components/dashboard/types";
 
 function usdToCopSqlMultiplier(paramIndex: number, currencyColumn = "currency"): string {
@@ -8,14 +9,21 @@ function usdToCopSqlMultiplier(paramIndex: number, currencyColumn = "currency"):
 }
 
 /**
- * Cotizado contra costo real de horas contra facturado, todo convertido a
- * COP con la tasa de cambio vigente — sin esto, un proyecto cotizado en
- * USD y facturado en COP se sumaría como si fueran la misma moneda.
- * `quotedAmountOriginal`/`quotedCurrencyOriginal` conservan el monto tal
- * como se cotizó, solo para mostrarlo junto al convertido.
+ * Cotizado contra costo real (horas + gastos) contra facturado, todo
+ * convertido a COP con la tasa de cambio vigente — sin esto, un proyecto
+ * cotizado en USD y facturado en COP se sumaría como si fueran la misma
+ * moneda. `quotedAmountOriginal`/`quotedCurrencyOriginal` conservan el
+ * monto tal como se cotizó, solo para mostrarlo junto al convertido.
+ * `totalCostCop` (horas) y `totalExpensesCop` (licencias/infraestructura/
+ * subcontratos, ver lib/queries/expenses.ts) se exponen por separado para
+ * que la UI pueda mostrarlos como columnas distintas, pero el margen
+ * (`marginVsBilledCop`/`marginVsQuotedCop`) y el desvío ya restan ambos —
+ * antes del módulo de Gastos, un proyecto con subcontratos reales mostraba
+ * un margen inflado porque ese costo no se registraba en ningún lado.
  */
 export async function getProjectProfitability(prefetchedRate?: number): Promise<ProjectProfitability[]> {
   const usdToCopRate = prefetchedRate ?? (await getUsdToCopRate());
+  const expensesByProject = await getExpensesByProjectCop(usdToCopRate);
 
   const res = await query(
     `
@@ -54,6 +62,8 @@ export async function getProjectProfitability(prefetchedRate?: number): Promise<
   return res.rows.map((row) => {
     const totalCostCop = Number(row.total_cost_cop);
     const totalBilledCop = Number(row.total_billed_cop);
+    const totalExpensesCop = expensesByProject.get(Number(row.id)) ?? 0;
+    const totalCostAndExpensesCop = totalCostCop + totalExpensesCop;
     const quotedCurrencyOriginal: Currency | null = row.proposal_id && typeof row.quoted_currency === "string"
       ? (row.quoted_currency as Currency)
       : null;
@@ -75,12 +85,13 @@ export async function getProjectProfitability(prefetchedRate?: number): Promise<
       quotedAmountCop,
       totalHours: Number(row.total_hours),
       totalCostCop,
+      totalExpensesCop,
       totalBilledCop,
-      marginVsQuotedCop: quotedAmountCop !== null ? quotedAmountCop - totalCostCop : null,
-      marginVsBilledCop: totalBilledCop - totalCostCop,
+      marginVsQuotedCop: quotedAmountCop !== null ? quotedAmountCop - totalCostAndExpensesCop : null,
+      marginVsBilledCop: totalBilledCop - totalCostAndExpensesCop,
       deviationPct:
         quotedAmountCop !== null && quotedAmountCop > 0
-          ? ((totalCostCop - quotedAmountCop) / quotedAmountCop) * 100
+          ? ((totalCostAndExpensesCop - quotedAmountCop) / quotedAmountCop) * 100
           : null,
     };
   });

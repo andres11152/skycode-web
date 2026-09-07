@@ -6,6 +6,7 @@ import { hasPermission } from "@/lib/rbac";
 import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { recordInvoicePayment } from "@/lib/queries/invoices";
+import { logError } from "@/lib/logger";
 
 const CreatePaymentSchema = z.object({
   amount: z.number().positive().max(1_000_000_000),
@@ -66,7 +67,7 @@ export async function POST(request: Request, { params }: RouteContext) {
 
     return NextResponse.json({ success: true, payment: { ...payment, amount: Number(payment.amount) } });
   } catch (error) {
-    console.error("❌ [API POST Invoice Payment Error]", error);
+    logError("❌ [API POST Invoice Payment Error]", error);
     return NextResponse.json({ error: "Error al registrar el pago." }, { status: 500 });
   }
 }

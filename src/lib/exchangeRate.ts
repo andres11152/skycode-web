@@ -1,4 +1,5 @@
 import { query } from "./db";
+import { logError } from "./logger";
 
 // La API fuente (open.er-api.com) actualiza sus tasas una vez al día — un
 // TTL de 12h es suficiente margen sin pegarle a la API en cada request.
@@ -14,6 +15,17 @@ interface CachedRate {
 }
 
 let memoryCache: CachedRate | null = null;
+
+/**
+ * Solo para tests de integración: la caché en memoria es un singleton de
+ * módulo (misma instancia entre tests del mismo proceso), así que sin
+ * esto un test que fija una tasa manual "contamina" el siguiente test con
+ * su resultado cacheado durante todo el TTL — el reset entre tests de
+ * `resetTestDb()` limpia la base, no el estado de este módulo en memoria.
+ */
+export function _resetExchangeRateCacheForTests(): void {
+  memoryCache = null;
+}
 
 async function fetchLiveUsdToCopRate(): Promise<number> {
   const res = await fetch("https://open.er-api.com/v6/latest/USD", {
@@ -42,6 +54,22 @@ async function fetchLiveUsdToCopRate(): Promise<number> {
  * `Currency` y `convertCurrency` (usables en cliente), ver lib/currency.ts.
  */
 export async function getUsdToCopRate(): Promise<number> {
+  // Tasa manual (settings.manual_usd_to_cop_rate, /dashboard/configuracion)
+  // manda siempre que esté fijada, sin pasar por la API externa ni la
+  // caché en `exchange_rates` — para fijar una tasa acordada con un
+  // cliente durante la vigencia de un contrato. Se revisa en CADA llamada
+  // (no se guarda en `memoryCache`, que es exclusivo de la tasa en vivo)
+  // — de lo contrario, un admin que fija la tasa manual después de que ya
+  // se cacheó una tasa en vivo no vería el cambio hasta que ese caché de
+  // hasta 12h expirara (bug real, atrapado por
+  // e2e/settings.e2e.test.ts). Es un SELECT de una sola fila por PK, tan
+  // barato que no vale la pena cachearlo aparte.
+  const manualRes = await query(`SELECT manual_usd_to_cop_rate FROM settings WHERE id = 1;`);
+  const manualRate = manualRes.rows[0]?.manual_usd_to_cop_rate;
+  if (manualRate !== null && manualRate !== undefined) {
+    return Number(manualRate);
+  }
+
   if (memoryCache && memoryCache.expiresAtMs > Date.now()) {
     return memoryCache.rate;
   }
@@ -67,7 +95,7 @@ export async function getUsdToCopRate(): Promise<number> {
     memoryCache = { rate, expiresAtMs: Date.now() + RATE_TTL_MS };
     return rate;
   } catch (error) {
-    console.error("⚠️ [Exchange Rate] Falló el fetch en vivo, usando respaldo.", error);
+    logError("⚠️ [Exchange Rate] Falló el fetch en vivo, usando respaldo.", error);
     if (cached) {
       const rate = Number(cached.rate);
       // TTL corto: reintenta el fetch en vivo pronto en vez de quedarse

@@ -12,6 +12,7 @@ import {
   updateProject,
   softDeleteProject,
 } from "@/lib/queries/projects";
+import { logError } from "@/lib/logger";
 
 const ProjectStatusSchema = z.enum(["Planificación", "En Desarrollo", "Fase QA", "Entregado", "Garantía SLA"]);
 const SprintStatusSchema = z.enum(["Completado", "En Progreso", "Pendiente"]);
@@ -72,7 +73,7 @@ export async function GET() {
 
     return NextResponse.json({ success: true, projects });
   } catch (error) {
-    console.error("❌ [API GET Projects Error]", error);
+    logError("❌ [API GET Projects Error]", error);
     return NextResponse.json({ error: "Error de servidor al obtener proyectos." }, { status: 500 });
   }
 }
@@ -110,7 +111,7 @@ export const POST = withAuth("projects:write", async (request, { session }) => {
 
     return NextResponse.json({ success: true, project: newProject });
   } catch (error) {
-    console.error("❌ [API POST Project Error]", error);
+    logError("❌ [API POST Project Error]", error);
     return NextResponse.json({ error: "Error al crear el proyecto." }, { status: 500 });
   }
 });
@@ -152,7 +153,7 @@ export const PATCH = withAuth("projects:write", async (request, { session }) => 
 
     return NextResponse.json({ success: true, project });
   } catch (error) {
-    console.error("❌ [API PATCH Project Error]", error);
+    logError("❌ [API PATCH Project Error]", error);
     return NextResponse.json({ error: "Error al actualizar el proyecto." }, { status: 500 });
   }
 });
@@ -193,7 +194,7 @@ export const DELETE = withAuth("projects:write", async (request, { session }) =>
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("❌ [API DELETE Project Error]", error);
+    logError("❌ [API DELETE Project Error]", error);
     return NextResponse.json({ error: "Error al eliminar el proyecto." }, { status: 500 });
   }
 });

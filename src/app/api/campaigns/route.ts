@@ -11,6 +11,7 @@ import {
   softDeleteCampaign,
 } from "@/lib/queries/campaigns";
 import { CURRENCIES } from "@/lib/currency";
+import { logError } from "@/lib/logger";
 
 const ChannelSchema = z.enum(["google_ads", "meta_ads", "linkedin_ads", "organico", "referido", "otro"]);
 const CampaignStatusSchema = z.enum(["active", "paused", "ended"]);
@@ -46,7 +47,7 @@ export const GET = withAuth("campaigns:read", async () => {
     const campaigns = await getCampaignsWithMetrics();
     return NextResponse.json({ success: true, campaigns });
   } catch (error) {
-    console.error("❌ [API GET Campaigns Error]", error);
+    logError("❌ [API GET Campaigns Error]", error);
     return NextResponse.json({ error: "Error al obtener campañas." }, { status: 500 });
   }
 });
@@ -81,7 +82,7 @@ export const POST = withAuth("campaigns:write", async (request, { session }) => 
 
     return NextResponse.json({ success: true, campaign });
   } catch (error) {
-    console.error("❌ [API POST Campaign Error]", error);
+    logError("❌ [API POST Campaign Error]", error);
     return NextResponse.json({ error: "Error al crear la campaña." }, { status: 500 });
   }
 });
@@ -124,7 +125,7 @@ export const PATCH = withAuth("campaigns:write", async (request, { session }) =>
 
     return NextResponse.json({ success: true, campaign });
   } catch (error) {
-    console.error("❌ [API PATCH Campaign Error]", error);
+    logError("❌ [API PATCH Campaign Error]", error);
     return NextResponse.json({ error: "Error al actualizar la campaña." }, { status: 500 });
   }
 });
@@ -164,7 +165,7 @@ export const DELETE = withAuth("campaigns:write", async (request, { session }) =
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("❌ [API DELETE Campaign Error]", error);
+    logError("❌ [API DELETE Campaign Error]", error);
     return NextResponse.json({ error: "Error al eliminar la campaña." }, { status: 500 });
   }
 });

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { authenticateUserCredentials, SESSION_LIFETIME_MS } from "@/lib/authService";
+import { logError } from "@/lib/logger";
 
 const LoginSchema = z.object({
   email: z.string().email().trim().max(254),
@@ -26,6 +27,17 @@ export async function POST(request: Request) {
       );
     }
     const { email, password } = parsed.data;
+
+    // El límite por IP (arriba) no frena un ataque distribuido contra una
+    // sola cuenta (IPs rotadas, CGNAT). Este segundo límite, por email
+    // normalizado, sí lo hace — independiente del anterior, así que un
+    // atacante necesita evadir ambos a la vez.
+    if (isRateLimited(`login-email:${email.trim().toLowerCase()}`, 5, 10 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Demasiados intentos de inicio de sesión. Intente de nuevo en unos minutos." },
+        { status: 429 }
+      );
+    }
 
     const authResult = await authenticateUserCredentials({
       email,
@@ -59,7 +71,7 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error("❌ [API Login Error]", error);
+    logError("❌ [API Login Error]", error);
     return NextResponse.json(
       { error: "Error de servidor al procesar la autenticación." },
       { status: 500 }

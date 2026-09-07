@@ -78,7 +78,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-gradient-to-br from-foreground/5 to-foreground/[0.01] text-accent shadow-[0_0_25px_rgba(0,137,205,0.12)]">
                   <service.coverIcon size={28} strokeWidth={1.75} aria-hidden="true" />
                 </div>
-                <SectionEyebrow>Solución Enterprise SkyCode</SectionEyebrow>
+                <SectionEyebrow>{servicePageData.enterpriseSolutionBadge}</SectionEyebrow>
               </div>
               <h1 className="text-3xl font-bold tracking-tight text-balance text-foreground sm:text-4xl lg:text-5xl">
                 {service.title}
@@ -95,16 +95,16 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
             {/* Interactive Demo & Environment Simulation Box */}
             <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6 bg-foreground/[0.02]">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60 mb-4 flex items-center gap-2">
-                <Sparkles size={14} className="text-accent" /> Demo Interactiva &amp; Simulación de Entorno
+                <Sparkles size={14} className="text-accent" /> {servicePageData.interactiveDemoHeading}
               </h2>
-              {slug === "desarrollo-software-medida" && <CodeConsoleWidget />}
-              {slug === "desarrollo-aplicaciones-moviles" && <MobileAppPreviewWidget />}
-              {slug === "apis-integraciones" && <ApiInspectorWidget />}
+              {slug === "desarrollo-software-medida" && <CodeConsoleWidget locale={locale} />}
+              {slug === "desarrollo-aplicaciones-moviles" && <MobileAppPreviewWidget locale={locale} />}
+              {slug === "apis-integraciones" && <ApiInspectorWidget locale={locale} />}
               {slug === "frontend-alto-rendimiento" && <PerformanceMeterWidget />}
-              {slug === "seguridad-cumplimiento" && <SecurityComplianceWidget />}
+              {slug === "seguridad-cumplimiento" && <SecurityComplianceWidget locale={locale} />}
               {slug === "arquitectura-documentacion" && <ArchitectureDocWidget />}
-              {slug === "migracion-datos-legacy" && <LegacyMigrationWidget />}
-              {slug === "inteligencia-artificial-aplicada" && <AiAppliedWidget />}
+              {slug === "migracion-datos-legacy" && <LegacyMigrationWidget locale={locale} />}
+              {slug === "inteligencia-artificial-aplicada" && <AiAppliedWidget locale={locale} />}
             </motion.div>
 
             <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6">

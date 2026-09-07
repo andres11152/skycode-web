@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { EmptyState } from "./EmptyState";
+import { logError } from "@/lib/logger";
 import type { Lead, LeadActivity, LeadActivityType, LeadOwner } from "./types";
 
 const STATUS_OPTIONS: Lead["status"][] = ["Nuevo", "En Cotización", "Ganado", "Perdido"];
@@ -164,7 +165,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
         }
       }
     } catch (err) {
-      console.error("Error al actualizar estado:", err);
+      logError("Error al actualizar estado de prospecto", err);
     }
   };
 
@@ -184,7 +185,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
         }
       }
     } catch (err) {
-      console.error("Error al reasignar prospecto:", err);
+      logError("Error al reasignar prospecto", err);
     }
   };
 
@@ -203,7 +204,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
         setNewActivityBody("");
       }
     } catch (err) {
-      console.error("Error al registrar actividad:", err);
+      logError("Error al registrar actividad de prospecto", err);
     } finally {
       setIsAddingActivity(false);
     }

@@ -10,9 +10,11 @@ import { SkipLink } from "@/components/SkipLink";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { AttributionCapture } from "@/components/AttributionCapture";
+import { useLocale } from "@/components/LocaleProvider";
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const locale = useLocale();
   // `startsWith`, no igualdad exacta: /dashboard, /portal, /invitar y
   // /propuesta tienen subrutas propias (/dashboard/leads,
   // /dashboard/equipo, /portal, /invitar/[token], /propuesta/[id]) que
@@ -23,6 +25,8 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   // Proyecto" solo compite con la acción real de la página.
   const isAppShell =
     pathname === "/login" ||
+    pathname === "/olvide-password" ||
+    pathname.startsWith("/resetear-password") ||
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/portal") ||
     pathname.startsWith("/invitar") ||
@@ -54,7 +58,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
       <Footer />
       <HtmlLangSync />
       <CustomCursor />
-      <WhatsAppButton />
+      <WhatsAppButton locale={locale} />
       <CookieBanner />
       <AttributionCapture />
     </>

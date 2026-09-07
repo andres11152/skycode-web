@@ -49,7 +49,7 @@ export function Modal({ open, onClose, title, closeLabel, children, className }:
             aria-modal="true"
             aria-labelledby={title ? titleId : undefined}
             className={cn(
-              "w-full max-w-md rounded-2xl border border-foreground/15 bg-background p-6 sm:p-8 shadow-2xl shadow-black/40 backdrop-blur-2xl relative overflow-hidden",
+              "w-full max-w-md rounded-xl border border-foreground/15 bg-background p-6 sm:p-8 shadow-2xl shadow-black/40 backdrop-blur-2xl relative overflow-hidden",
               className,
             )}
             initial={{ opacity: 0, scale: 0.92, y: 16 }}

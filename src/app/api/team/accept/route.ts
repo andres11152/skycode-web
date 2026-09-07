@@ -9,6 +9,7 @@ import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { findUserByEmail, createSessionRecord } from "@/lib/queries/auth";
 import { findValidInvite, acceptTeamInviteAndCreateUser } from "@/lib/queries/team";
 import { SESSION_LIFETIME_MS } from "@/lib/authService";
+import { logError } from "@/lib/logger";
 
 const AcceptInviteSchema = z.object({
   token: z.uuid(),
@@ -102,7 +103,7 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error("❌ [API POST Team Accept Error]", error);
+    logError("❌ [API POST Team Accept Error]", error);
     return NextResponse.json({ error: "Error al activar la invitación." }, { status: 500 });
   }
 }

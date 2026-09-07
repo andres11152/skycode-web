@@ -27,7 +27,7 @@ export function PortalChrome({ user, children }: { user: SessionUser; children: 
               <Image src="/logo-mark.png" alt="SKYCODE Logo" width={120} height={70} className="h-8 w-auto" />
             </Link>
             <div className="h-4 w-px bg-background/20" />
-            <span className="rounded-full bg-accent/20 px-3 py-1 text-xs font-mono font-bold text-accent">
+            <span className="rounded-full bg-accent/20 px-3 py-1 text-xs font-mono font-bold text-accent-strong">
               Portal de Cliente
             </span>
           </div>

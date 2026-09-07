@@ -7,17 +7,20 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, type Locale } from "@/lib/i18n";
-import { BrainCircuit, Smartphone } from "lucide-react";
+import { BrainCircuit } from "lucide-react";
 import {
   FlutterIcon,
   JavaScriptIcon,
+  LaravelIcon,
   MongoDBIcon,
   NestJsIcon,
   NextJsIcon,
+  PhpIcon,
   PostgreSQLIcon,
   ReactIcon,
   TailwindCSSIcon,
   TypeScriptIcon,
+  WordPressIcon,
 } from "@/components/icons/TechIcons";
 
 const techStack = [
@@ -25,10 +28,12 @@ const techStack = [
   { name: "JavaScript", Icon: JavaScriptIcon },
   { name: "Next.js", Icon: NextJsIcon },
   { name: "React", Icon: ReactIcon },
-  // React Native no tiene marca propia en Simple Icons (usa oficialmente el
-  // mismo átomo de React) — ícono genérico de Lucide, mismo criterio que
-  // "IA & Agentes" más abajo, en vez de duplicar el logo de React.
-  { name: "React Native", Icon: Smartphone },
+  { name: "Laravel", Icon: LaravelIcon },
+  { name: "PHP", Icon: PhpIcon },
+  { name: "WordPress", Icon: WordPressIcon },
+  // React Native usa oficialmente el mismo logo átomo de React (confirmado en
+  // simpleicons.org — no existe un ícono "reactnative" separado).
+  { name: "React Native", Icon: ReactIcon },
   { name: "Flutter", Icon: FlutterIcon },
   { name: "Tailwind CSS", Icon: TailwindCSSIcon },
   { name: "Nest.js / Node", Icon: NestJsIcon },
@@ -94,6 +99,7 @@ function VideoShowcase({
 export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
   const reduced = Boolean(useReducedMotion());
   const highlightsData = getHighlightsContent(locale);
+  const [hoveredTech, setHoveredTech] = useState<string | null>(null);
 
   return (
     <section aria-label={highlightsData.sectionAria} className="px-6 py-20 sm:py-24 lg:py-28">
@@ -142,25 +148,36 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
             <SpotlightCard>
               <div className="rounded-xl border border-foreground/10 bg-background p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
                 <p className="text-sm font-medium text-foreground/60">{highlightsData.techLabel}</p>
-                {/* grid explícito (no flex-wrap): 6 iconos en 3×2 sin importar
-                    el ancho del contenedor — flex-wrap partía 5+1 en algunos
-                    anchos intermedios. `w-fit` evita que las columnas `1fr`
-                    se estiren al ancho completo de la tarjeta — sin esto los
-                    iconos quedaban como puntos sueltos con mucho aire entre
-                    columnas en vez de un bloque compacto. */}
-                <ul className="mt-4 grid w-fit grid-cols-3 gap-4">
-                  {techStack.map(({ name, Icon }) => (
-                    <li
-                      key={name}
-                      title={name}
-                      className="group relative flex h-16 w-16 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/30 hover:bg-accent/[0.04] hover:shadow-lg hover:shadow-accent/5"
-                    >
-                      <Icon
-                        className="h-8 w-8 text-foreground/75 transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-accent group-hover:rotate-3"
-                        aria-label={name}
-                      />
-                    </li>
-                  ))}
+                {/* grid adaptable de iconos con soporte de tooltip pill estrictamente único en hover */}
+                <ul className="mt-8 grid w-fit grid-cols-4 sm:grid-cols-5 md:grid-cols-7 gap-3">
+                  {techStack.map(({ name, Icon }) => {
+                    const isHovered = hoveredTech === name;
+                    return (
+                      <li
+                        key={name}
+                        tabIndex={0}
+                        onMouseEnter={() => setHoveredTech(name)}
+                        onMouseLeave={() => setHoveredTech(null)}
+                        onFocus={() => setHoveredTech(name)}
+                        onBlur={() => setHoveredTech(null)}
+                        className="group relative flex h-14 w-14 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/40 hover:bg-accent/[0.06] hover:shadow-lg hover:shadow-accent/10 focus:outline-none focus:ring-2 focus:ring-accent hover:z-30 focus-visible:z-30"
+                      >
+                        <Icon
+                          className="h-7 w-7 text-foreground/75 transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-accent group-hover:rotate-3"
+                          aria-label={name}
+                        />
+
+                        {/* Tooltip Pill: solo se renderiza y muestra cuando este elemento específico es el hoveredTech */}
+                        {isHovered && (
+                          <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 flex items-center z-50 whitespace-nowrap rounded-full border border-accent/30 bg-background/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-md shadow-accent/10 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150">
+                            {name}
+                            {/* Triángulo inferior del indicador */}
+                            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-accent/40" />
+                          </span>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </SpotlightCard>

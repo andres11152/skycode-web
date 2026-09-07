@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { hasPermission, isValidRole, type Permission, type Role } from "./rbac";
+import {
+  ALL_PERMISSIONS as ALL_PERMISSIONS_SOURCE,
+  ALL_ROLES,
+  getRolePermissions,
+  hasPermission,
+  isValidRole,
+  type Permission,
+  type Role,
+} from "./rbac";
 
 const ALL_PERMISSIONS: Permission[] = [
   "leads:read",
@@ -16,6 +24,17 @@ const ALL_PERMISSIONS: Permission[] = [
   "invoices:read",
   "invoices:write",
   "profitability:read",
+  "clients:read",
+  "clients:write",
+  "tasks:read",
+  "tasks:write",
+  "support:read",
+  "support:write",
+  "documents:read",
+  "documents:write",
+  "expenses:read",
+  "expenses:write",
+  "settings:write",
 ];
 
 // Matriz esperada duplicada a propósito acá: si alguien cambia
@@ -32,6 +51,14 @@ const EXPECTED_MATRIX: Record<Role, Permission[]> = {
     "proposals:read",
     "proposals:write",
     "invoices:read",
+    "clients:read",
+    "clients:write",
+    "tasks:read",
+    "tasks:write",
+    "support:read",
+    "support:write",
+    "documents:read",
+    "documents:write",
   ],
   traffiker: ["campaigns:read", "campaigns:write"],
   client: [],
@@ -76,6 +103,21 @@ describe("rbac", () => {
       expect(hasPermission("traffiker", "profitability:read")).toBe(false);
     });
 
+    it("expenses:* es exclusivo de admin, a diferencia de clients/tasks/support/documents", () => {
+      expect(hasPermission("admin", "expenses:read")).toBe(true);
+      expect(hasPermission("admin", "expenses:write")).toBe(true);
+      expect(hasPermission("sales_manager", "expenses:read")).toBe(false);
+      expect(hasPermission("sales_manager", "expenses:write")).toBe(false);
+      expect(hasPermission("traffiker", "expenses:read")).toBe(false);
+    });
+
+    it("settings:write es exclusivo de admin", () => {
+      expect(hasPermission("admin", "settings:write")).toBe(true);
+      expect(hasPermission("sales_manager", "settings:write")).toBe(false);
+      expect(hasPermission("traffiker", "settings:write")).toBe(false);
+      expect(hasPermission("client", "settings:write")).toBe(false);
+    });
+
     it("invoices:write es exclusivo de admin — sales_manager solo lee cobranza", () => {
       expect(hasPermission("admin", "invoices:write")).toBe(true);
       expect(hasPermission("sales_manager", "invoices:write")).toBe(false);
@@ -96,6 +138,17 @@ describe("rbac", () => {
         "team:write",
         "audit:read",
         "profitability:read",
+        "clients:read",
+        "clients:write",
+        "tasks:read",
+        "tasks:write",
+        "support:read",
+        "support:write",
+        "documents:read",
+        "documents:write",
+        "expenses:read",
+        "expenses:write",
+        "settings:write",
       ];
       for (const permission of forbidden) {
         expect(hasPermission("traffiker", permission)).toBe(false);
@@ -124,6 +177,34 @@ describe("rbac", () => {
       expect(isValidRole("Admin")).toBe(false);
       expect(isValidRole("")).toBe(false);
       expect(isValidRole("sales-manager")).toBe(false);
+    });
+  });
+
+  describe("ALL_PERMISSIONS / ALL_ROLES — usados por /dashboard/roles para mostrar la matriz real", () => {
+    it("ALL_PERMISSIONS (rbac.ts) cubre exactamente el mismo set que la matriz exhaustiva de este archivo", () => {
+      expect(new Set(ALL_PERMISSIONS_SOURCE)).toEqual(new Set(ALL_PERMISSIONS));
+    });
+
+    it("ALL_ROLES son los cuatro roles reales, ninguno inventado", () => {
+      expect(new Set(ALL_ROLES)).toEqual(new Set(["admin", "sales_manager", "traffiker", "client"]));
+    });
+  });
+
+  describe("getRolePermissions", () => {
+    it("coincide exactamente con hasPermission para cada combinación rol/permiso", () => {
+      for (const role of ALL_ROLES) {
+        const granted = new Set(getRolePermissions(role));
+        for (const permission of ALL_PERMISSIONS) {
+          expect(granted.has(permission)).toBe(hasPermission(role, permission));
+        }
+      }
+    });
+
+    it("devuelve un array nuevo cada vez, no la referencia interna del Set", () => {
+      const first = getRolePermissions("admin");
+      first.push("leads:read"); // si esto mutara el estado interno, la siguiente llamada lo reflejaría
+      const second = getRolePermissions("admin");
+      expect(second).toEqual(ALL_PERMISSIONS.filter((p) => hasPermission("admin", p)));
     });
   });
 });

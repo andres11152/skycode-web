@@ -8,6 +8,7 @@ import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { getAllProposals, getProposalById, createProposal } from "@/lib/queries/proposals";
 import { CURRENCIES } from "@/lib/currency";
+import { logError } from "@/lib/logger";
 
 const CreateProposalSchema = z.object({
   client_email: z.email().trim().max(254),
@@ -39,7 +40,7 @@ export const GET = withAuth("proposals:read", async () => {
     const proposals = await getAllProposals();
     return NextResponse.json({ success: true, proposals });
   } catch (error) {
-    console.error("❌ [API GET Proposals Error]", error);
+    logError("❌ [API GET Proposals Error]", error);
     return NextResponse.json({ error: "Error al obtener propuestas." }, { status: 500 });
   }
 });
@@ -92,7 +93,7 @@ export const POST = withAuth("proposals:write", async (request, { session }) => 
           text: `Hola ${client_name},\n\n${session.name} te envió una propuesta: "${title}".\n\nVerla y responder:\n${proposalUrl}`,
         });
       } catch (emailErr) {
-        console.error("⚠️ [Proposal Resend Warning]", emailErr);
+        logError("⚠️ [Proposal Resend Warning]", emailErr);
       }
     }
 
@@ -100,7 +101,7 @@ export const POST = withAuth("proposals:write", async (request, { session }) => 
     // como respaldo si el correo no llega.
     return NextResponse.json({ success: true, proposal, proposalUrl });
   } catch (error) {
-    console.error("❌ [API POST Proposal Error]", error);
+    logError("❌ [API POST Proposal Error]", error);
     return NextResponse.json({ error: "Error al crear la propuesta." }, { status: 500 });
   }
 });

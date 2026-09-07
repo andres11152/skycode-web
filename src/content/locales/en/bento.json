@@ -1,0 +1,54 @@
+{
+  "codeConsole": {
+    "logsInitial": ["[BUILD] Compiling TypeScript...", "[TEST] Running test suite...", "[READY] Ready to deploy"],
+    "logsRunning": ["[BUILD] Compiling services...", "[TEST] Running automated tests..."],
+    "logsSuccessAppend": ["[SUCCESS] Build successful", "[DEPLOY] Deployed to staging environment", "STATUS: 200 OK"],
+    "codeComment": "// Validated on every request, no exceptions",
+    "running": "Running...",
+    "run": "Run"
+  },
+  "mobilePreview": {
+    "appPanelLabel": "App Panel",
+    "sessionLabel": "Session",
+    "authenticated": "Authenticated",
+    "syncEngineLabel": "Offline Sync Engine",
+    "synced": "Synced",
+    "syncing": "Syncing...",
+    "pushNotificationLabel": "Push Notification",
+    "pushOrderUpdated": "Order updated",
+    "ariaViewDashboard": "View dashboard",
+    "ariaViewSync": "View sync",
+    "ariaViewPush": "View push notifications"
+  },
+  "apiInspector": {
+    "testing": "Testing...",
+    "send": "Send"
+  },
+  "security": {
+    "reviewing": "Reviewing...",
+    "viewChecklist": "View checklist",
+    "tlsLabel": "Encryption in transit (TLS)",
+    "tlsValue": "Active",
+    "owaspLabel": "OWASP Top 10 guidelines",
+    "owaspValue": "Applied",
+    "dataFrameworkLabel": "Data protection framework",
+    "dataFrameworkValue": "Considered"
+  },
+  "migration": {
+    "migrating": "Migrating...",
+    "simulate": "Simulate migration",
+    "tablesMigrated": "Tables migrated",
+    "verified": "[OK] Migration verified, data integrity validated",
+    "transferring": "[SYNC] Transferring tables..."
+  },
+  "aiAgent": {
+    "heading": "Autonomous AI Agent",
+    "thinking": "Thinking...",
+    "runAgent": "Run agent",
+    "promptLabel": "Prompt",
+    "promptText": "Optimize customer support workflow",
+    "initialResponse": "Agent: \"Automated workflow.\"",
+    "runningResponse": "LLM agent processing the prompt...",
+    "finalResponse": "Agent: response generated successfully."
+  }
+}

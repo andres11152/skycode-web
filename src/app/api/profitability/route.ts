@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { withAuth } from "@/lib/withAuth";
 import { getProjectProfitability, getCampaignProfitability } from "@/lib/queries/profitability";
+import { logError } from "@/lib/logger";
 
 /**
  * GET /api/profitability - Cotizado vs. costo real de horas vs. facturado
@@ -13,7 +14,7 @@ export const GET = withAuth("profitability:read", async () => {
     const [projects, campaigns] = await Promise.all([getProjectProfitability(), getCampaignProfitability()]);
     return NextResponse.json({ success: true, projects, campaigns });
   } catch (error) {
-    console.error("❌ [API GET Profitability Error]", error);
+    logError("❌ [API GET Profitability Error]", error);
     return NextResponse.json({ error: "Error al obtener el reporte de rentabilidad." }, { status: 500 });
   }
 });

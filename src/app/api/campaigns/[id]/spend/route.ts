@@ -7,6 +7,7 @@ import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { getCampaignSpend, addCampaignSpend } from "@/lib/queries/campaigns";
 import { CURRENCIES } from "@/lib/currency";
+import { logError } from "@/lib/logger";
 
 const CreateSpendSchema = z.object({
   spend_date: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "Fecha inválida (YYYY-MM-DD)."),
@@ -43,7 +44,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
     const entries = await getCampaignSpend(campaignId);
     return NextResponse.json({ success: true, entries });
   } catch (error) {
-    console.error("❌ [API GET Campaign Spend Error]", error);
+    logError("❌ [API GET Campaign Spend Error]", error);
     return NextResponse.json({ error: "Error al obtener la inversión." }, { status: 500 });
   }
 }
@@ -97,7 +98,7 @@ export async function POST(request: Request, { params }: RouteContext) {
 
     return NextResponse.json({ success: true, entry: { ...entry, amount: Number(entry.amount) } });
   } catch (error) {
-    console.error("❌ [API POST Campaign Spend Error]", error);
+    logError("❌ [API POST Campaign Spend Error]", error);
     return NextResponse.json({ error: "Error al registrar la inversión." }, { status: 500 });
   }
 }

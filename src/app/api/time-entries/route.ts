@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireSession } from "@/lib/withAuth";
 import { hasPermission } from "@/lib/rbac";
 import { getUserTimeEntries, createTimeEntry, deleteTimeEntry } from "@/lib/queries/timeEntries";
+import { logError } from "@/lib/logger";
 
 /**
  * Registrar horas exige poder ver proyectos (`projects:read`) — no hay un
@@ -41,7 +42,7 @@ export async function GET() {
     const entries = await getUserTimeEntries(auth.session.id);
     return NextResponse.json({ success: true, entries });
   } catch (error) {
-    console.error("❌ [API GET Time Entries Error]", error);
+    logError("❌ [API GET Time Entries Error]", error);
     return NextResponse.json({ error: "Error al obtener las horas." }, { status: 500 });
   }
 }
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
     const entries = await getUserTimeEntries(session.id);
     return NextResponse.json({ success: true, entries });
   } catch (error) {
-    console.error("❌ [API POST Time Entry Error]", error);
+    logError("❌ [API POST Time Entry Error]", error);
     return NextResponse.json({ error: "Error al registrar las horas." }, { status: 500 });
   }
 }
@@ -103,7 +104,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("❌ [API DELETE Time Entry Error]", error);
+    logError("❌ [API DELETE Time Entry Error]", error);
     return NextResponse.json({ error: "Error al eliminar el registro." }, { status: 500 });
   }
 }

@@ -36,7 +36,7 @@ export function ProfitabilityView({
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-background">Rentabilidad</h1>
           <p className="mt-1 text-xs text-background/70 font-sans">
-            Cotizado, costo real de horas y facturado por proyecto — margen neto por canal.
+            Cotizado, costo de horas, gastos operativos y facturado por proyecto — margen neto por canal.
           </p>
         </div>
         <button
@@ -65,7 +65,8 @@ export function ProfitabilityView({
                     <th className="px-5 py-3.5">Proyecto / Cliente</th>
                     <th className="px-5 py-3.5">Cotizado</th>
                     <th className="px-5 py-3.5">Horas</th>
-                    <th className="px-5 py-3.5">Costo Real</th>
+                    <th className="px-5 py-3.5">Costo Horas</th>
+                    <th className="px-5 py-3.5">Gastos</th>
                     <th className="px-5 py-3.5">Facturado</th>
                     <th className="px-5 py-3.5">Margen</th>
                     <th className="px-5 py-3.5">Desvío</th>
@@ -94,6 +95,7 @@ export function ProfitabilityView({
                       </td>
                       <td className="px-5 py-3.5 font-mono text-background/80">{p.totalHours.toFixed(1)}h</td>
                       <td className="px-5 py-3.5 font-mono text-amber-300">{formatMoney(p.totalCostCop, "COP")}</td>
+                      <td className="px-5 py-3.5 font-mono text-amber-300">{formatMoney(p.totalExpensesCop, "COP")}</td>
                       <td className="px-5 py-3.5 font-mono text-sky-300">{formatMoney(p.totalBilledCop, "COP")}</td>
                       <td className={`px-5 py-3.5 font-mono font-bold ${p.marginVsBilledCop >= 0 ? "text-green-400" : "text-red-400"}`}>
                         {formatMoney(p.marginVsBilledCop, "COP")}

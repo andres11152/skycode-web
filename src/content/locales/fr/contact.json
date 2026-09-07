@@ -8,7 +8,10 @@
     "phone": "Numéro de téléphone de contact",
     "phoneCountry": "Pays du numéro de téléphone",
     "phoneCountryEmpty": "Sélectionnez votre pays",
-    "message": "Décrivez brièvement les besoins ou le défi de votre projet"
+    "message": "Décrivez brièvement les besoins ou le défi de votre projet",
+    "namePlaceholder": "Ex. Jean Dupont ou Société SAS",
+    "emailPlaceholder": "vous@entreprise.com",
+    "messagePlaceholder": "Décrivez brièvement le défi technique ou les besoins de votre projet..."
   },
   "submitLabel": "Envoyer la demande de contact",
   "habeasData": {
@@ -18,9 +21,20 @@
   },
   "successModal": {
     "title": "Message envoyé !",
-    "body": "Merci de nous avoir contactés. Nous reviendrons vers vous très prochainement."
+    "body": "Merci de nous avoir contactés. Nous reviendrons vers vous très prochainement.",
+    "statusCrm": "Statut : enregistré dans notre CRM",
+    "slaGuarantee": "Garantie SLA de réponse : moins de 24h ouvrées",
+    "understood": "Compris",
+    "whatsappCta": "Parler sur WhatsApp"
   },
   "sendingLabel": "Envoi en cours...",
   "errorConnection": "Impossible de se connecter au serveur. Veuillez vérifier votre connexion.",
-  "errorGeneral": "Une erreur est survenue lors de l'envoi du message."
+  "errorGeneral": "Une erreur est survenue lors de l'envoi du message.",
+  "validation": {
+    "nameError": "Le nom ou l'entreprise est requis (minimum 2 caractères).",
+    "emailError": "Saisissez une adresse e-mail réelle et valide (ex : vous@entreprise.com).",
+    "messageError": "Décrivez votre projet en au moins 10 caractères.",
+    "acceptPolicyHint": "Vous devez accepter la politique de traitement des données pour activer l'envoi.",
+    "completeFieldsHint": "Complétez les champs requis avec des données valides pour activer le bouton."
+  }
 }

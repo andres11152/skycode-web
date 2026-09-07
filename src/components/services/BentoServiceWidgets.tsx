@@ -3,18 +3,21 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Terminal, Play, Smartphone, Zap, ShieldCheck, RefreshCw, Send, Sparkles } from "lucide-react";
+import { getBentoContent } from "@/content/bento";
+import { defaultLocale, type Locale } from "@/lib/i18n";
+
+interface WidgetProps {
+  locale?: Locale;
+}
 
 /* -------------------------------------------------------------------------- */
 /*  1. Interactive Code Console Widget (Software a Medida)                      */
 /* -------------------------------------------------------------------------- */
-export function CodeConsoleWidget() {
+export function CodeConsoleWidget({ locale = defaultLocale }: WidgetProps) {
+  const content = getBentoContent(locale).codeConsole;
   const [isRunning, setIsRunning] = useState(false);
   const [activeTab, setActiveTab] = useState<"code" | "output">("code");
-  const [logs, setLogs] = useState<string[]>([
-    "[BUILD] Compilando TypeScript...",
-    "[TEST] Ejecutando suite de pruebas...",
-    "[READY] Listo para desplegar",
-  ]);
+  const [logs, setLogs] = useState<string[]>(content.logsInitial);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -29,15 +32,10 @@ export function CodeConsoleWidget() {
     if (isRunning) return;
     setIsRunning(true);
     setActiveTab("output");
-    setLogs(["[BUILD] Compilando servicios...", "[TEST] Corriendo pruebas automatizadas..."]);
+    setLogs(content.logsRunning);
 
     timerRef.current = setTimeout(() => {
-      setLogs((prev) => [
-        ...prev,
-        "[SUCCESS] Compilación exitosa",
-        "[DEPLOY] Desplegado en el entorno de staging",
-        "STATUS: 200 OK",
-      ]);
+      setLogs((prev) => [...prev, ...content.logsSuccessAppend]);
       setIsRunning(false);
     }, 1200);
   };
@@ -60,7 +58,7 @@ export function CodeConsoleWidget() {
             tabIndex={0}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveTab("code"); }}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("code"); } }}
-            className={`flex min-h-6 items-center px-1.5 sm:px-2 rounded text-[10px] cursor-pointer transition-colors ${
+            className={`flex min-h-6 items-center px-1.5 sm:px-2 rounded text-[10px] cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
               activeTab === "code" ? "bg-background/20 text-background font-bold" : "text-background/50 hover:text-background"
             }`}
           >
@@ -71,7 +69,7 @@ export function CodeConsoleWidget() {
             tabIndex={0}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveTab("output"); }}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("output"); } }}
-            className={`flex min-h-6 items-center px-1.5 sm:px-2 rounded text-[10px] cursor-pointer transition-colors ${
+            className={`flex min-h-6 items-center px-1.5 sm:px-2 rounded text-[10px] cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
               activeTab === "output" ? "bg-background/20 text-background font-bold" : "text-background/50 hover:text-background"
             }`}
           >
@@ -82,12 +80,12 @@ export function CodeConsoleWidget() {
             tabIndex={0}
             onClick={handleRun}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleRun(e); }}
-            className={`ml-1 flex min-h-6 items-center gap-1 rounded bg-accent-strong px-2 sm:px-2.5 text-[10px] font-bold text-white shadow-sm hover:brightness-90 cursor-pointer active:scale-95 transition-all shrink-0 ${
+            className={`ml-1 flex min-h-6 items-center gap-1 rounded bg-accent-strong px-2 sm:px-2.5 text-[10px] font-bold text-white shadow-sm hover:brightness-90 cursor-pointer active:scale-95 transition-all shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
               isRunning ? "opacity-50 pointer-events-none" : ""
             }`}
           >
             <Play size={10} className={isRunning ? "animate-spin" : ""} />
-            {isRunning ? "Running..." : "Run"}
+            {isRunning ? content.running : content.run}
           </span>
         </div>
       </div>
@@ -96,7 +94,7 @@ export function CodeConsoleWidget() {
       {activeTab === "code" ? (
         <div className="space-y-1 text-background/90 font-mono text-[11px] leading-relaxed">
           <div><span className="text-accent">import</span> &#123; z &#125; <span className="text-accent">from</span> <span className="text-background/70">&apos;zod&apos;</span>;</div>
-          <div className="text-background/60">{"// Validado en cada request, sin excepciones"}</div>
+          <div className="text-background/60">{content.codeComment}</div>
           <div><span className="text-accent">const</span> OrderSchema = z.object(&#123;</div>
           <div className="pl-4">customerId: z.string().uuid(),</div>
           <div className="pl-4">items: z.array(ItemSchema).min(1),</div>
@@ -109,7 +107,7 @@ export function CodeConsoleWidget() {
               key={i}
               initial={{ opacity: 0, x: -5 }}
               animate={{ opacity: 1, x: 0 }}
-              className={log.includes("OK") || log.includes("exitosa") ? "text-background" : "text-background/70"}
+              className={log.includes("OK") || content.logsSuccessAppend.includes(log) ? "text-background" : "text-background/70"}
             >
               {log}
             </motion.div>
@@ -123,7 +121,8 @@ export function CodeConsoleWidget() {
 /* -------------------------------------------------------------------------- */
 /*  2. Interactive Smartphone Preview Widget (Apps Móviles)                     */
 /* -------------------------------------------------------------------------- */
-export function MobileAppPreviewWidget() {
+export function MobileAppPreviewWidget({ locale = defaultLocale }: WidgetProps) {
+  const content = getBentoContent(locale).mobilePreview;
   const [activeTab, setActiveTab] = useState<"dashboard" | "sync" | "push">("dashboard");
   const [synced, setSynced] = useState(true);
 
@@ -157,12 +156,12 @@ export function MobileAppPreviewWidget() {
                 className="space-y-2"
               >
                 <div className="flex items-center justify-between text-[10px] font-semibold">
-                  <span>Panel de la App</span>
+                  <span>{content.appPanelLabel}</span>
                   <span className="h-2 w-2 rounded-full bg-accent" />
                 </div>
                 <div className="rounded bg-background/15 p-2 text-center">
-                  <div className="text-[9px] text-background/60">Sesión</div>
-                  <div className="text-sm font-bold text-accent">Autenticada</div>
+                  <div className="text-[9px] text-background/60">{content.sessionLabel}</div>
+                  <div className="text-sm font-bold text-accent">{content.authenticated}</div>
                 </div>
               </motion.div>
             )}
@@ -175,7 +174,7 @@ export function MobileAppPreviewWidget() {
                 exit={{ opacity: 0, y: -5 }}
                 className="space-y-2 text-center py-1"
               >
-                <div className="text-[10px] font-semibold">Motor de Sincronización Offline</div>
+                <div className="text-[10px] font-semibold">{content.syncEngineLabel}</div>
                 <span
                   role="button"
                   tabIndex={0}
@@ -191,10 +190,10 @@ export function MobileAppPreviewWidget() {
                       setSynced(!synced);
                     }
                   }}
-                  className="mx-auto flex items-center justify-center gap-1 rounded-full bg-accent/20 px-2 py-1 text-[9px] text-background font-bold cursor-pointer hover:bg-accent/30 transition-colors"
+                  className="mx-auto flex items-center justify-center gap-1 rounded-full bg-accent/20 px-2 py-1 text-[9px] text-background font-bold cursor-pointer hover:bg-accent/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground"
                 >
                   <RefreshCw size={10} className={!synced ? "animate-spin" : ""} />
-                  {synced ? "Sincronizado" : "Sincronizando..."}
+                  {synced ? content.synced : content.syncing}
                 </span>
               </motion.div>
             )}
@@ -208,8 +207,8 @@ export function MobileAppPreviewWidget() {
                 className="space-y-1.5"
               >
                 <div className="rounded bg-accent/20 border border-accent/30 p-1.5 text-[9px] text-background">
-                  <div className="font-bold text-accent">Notificación Push</div>
-                  <div className="text-background/80 text-[8px]">Pedido actualizado</div>
+                  <div className="font-bold text-accent">{content.pushNotificationLabel}</div>
+                  <div className="text-background/80 text-[8px]">{content.pushOrderUpdated}</div>
                 </div>
               </motion.div>
             )}
@@ -221,30 +220,30 @@ export function MobileAppPreviewWidget() {
           <span
             role="button"
             tabIndex={0}
-            aria-label="Ver panel"
+            aria-label={content.ariaViewDashboard}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveTab("dashboard"); }}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("dashboard"); } }}
-            className={`flex h-6 w-6 items-center justify-center rounded cursor-pointer transition-colors ${activeTab === "dashboard" ? "text-accent font-bold" : "text-background/60"}`}
+            className={`flex h-6 w-6 items-center justify-center rounded cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${activeTab === "dashboard" ? "text-accent font-bold" : "text-background/60"}`}
           >
             <Smartphone size={12} />
           </span>
           <span
             role="button"
             tabIndex={0}
-            aria-label="Ver sincronización"
+            aria-label={content.ariaViewSync}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveTab("sync"); }}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("sync"); } }}
-            className={`flex h-6 w-6 items-center justify-center rounded cursor-pointer transition-colors ${activeTab === "sync" ? "text-accent font-bold" : "text-background/60"}`}
+            className={`flex h-6 w-6 items-center justify-center rounded cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${activeTab === "sync" ? "text-accent font-bold" : "text-background/60"}`}
           >
             <RefreshCw size={12} />
           </span>
           <span
             role="button"
             tabIndex={0}
-            aria-label="Ver notificaciones push"
+            aria-label={content.ariaViewPush}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveTab("push"); }}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("push"); } }}
-            className={`flex h-6 w-6 items-center justify-center rounded cursor-pointer transition-colors ${activeTab === "push" ? "text-accent font-bold" : "text-background/60"}`}
+            className={`flex h-6 w-6 items-center justify-center rounded cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${activeTab === "push" ? "text-accent font-bold" : "text-background/60"}`}
           >
             <Zap size={12} />
           </span>
@@ -257,7 +256,8 @@ export function MobileAppPreviewWidget() {
 /* -------------------------------------------------------------------------- */
 /*  3. Interactive API Inspector Widget (APIs e Integraciones)                 */
 /* -------------------------------------------------------------------------- */
-export function ApiInspectorWidget() {
+export function ApiInspectorWidget({ locale = defaultLocale }: WidgetProps) {
+  const content = getBentoContent(locale).apiInspector;
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<number | null>(200);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -291,12 +291,12 @@ export function ApiInspectorWidget() {
           tabIndex={0}
           onClick={handleTestApi}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleTestApi(e); }}
-          className={`flex items-center gap-1 rounded bg-accent-strong px-2.5 py-1 text-[10px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 shrink-0 ${
+          className={`flex items-center gap-1 rounded bg-accent-strong px-2.5 py-1 text-[10px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
             loading ? "opacity-50 pointer-events-none" : ""
           }`}
         >
           <Send size={10} className={loading ? "animate-ping" : ""} />
-          {loading ? "Testing..." : "Send"}
+          {loading ? content.testing : content.send}
         </span>
       </div>
 
@@ -351,7 +351,8 @@ export function PerformanceMeterWidget() {
 /* -------------------------------------------------------------------------- */
 /*  5. Interactive Security Shield Widget (Seguridad y Cumplimiento)            */
 /* -------------------------------------------------------------------------- */
-export function SecurityComplianceWidget() {
+export function SecurityComplianceWidget({ locale = defaultLocale }: WidgetProps) {
+  const content = getBentoContent(locale).security;
   const [scanning, setScanning] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -382,25 +383,25 @@ export function SecurityComplianceWidget() {
           tabIndex={0}
           onClick={handleAudit}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleAudit(e); }}
-          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 ${
+          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
             scanning ? "opacity-50 pointer-events-none" : ""
           }`}
         >
-          {scanning ? "Revisando..." : "Ver checklist"}
+          {scanning ? content.reviewing : content.viewChecklist}
         </span>
       </div>
       <div className="space-y-1 text-[10px]">
         <div className="flex items-center justify-between rounded bg-background/10 px-2 py-1">
-          <span className="text-background/80">Cifrado en tránsito (TLS)</span>
-          <span className="text-background font-bold">Activo</span>
+          <span className="text-background/80">{content.tlsLabel}</span>
+          <span className="text-background font-bold">{content.tlsValue}</span>
         </div>
         <div className="flex items-center justify-between rounded bg-background/10 px-2 py-1">
-          <span className="text-background/80">Lineamientos OWASP Top 10</span>
-          <span className="text-background font-bold">Aplicados</span>
+          <span className="text-background/80">{content.owaspLabel}</span>
+          <span className="text-background font-bold">{content.owaspValue}</span>
         </div>
         <div className="flex items-center justify-between rounded bg-background/10 px-2 py-1">
-          <span className="text-background/80">Marco de protección de datos</span>
-          <span className="text-background font-bold">Considerado</span>
+          <span className="text-background/80">{content.dataFrameworkLabel}</span>
+          <span className="text-background font-bold">{content.dataFrameworkValue}</span>
         </div>
       </div>
     </div>
@@ -425,7 +426,7 @@ export function ArchitectureDocWidget() {
           tabIndex={0}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("client"); }}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveNode("client"); } }}
-          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all ${
+          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
             activeNode === "client" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
           }`}
         >
@@ -437,7 +438,7 @@ export function ArchitectureDocWidget() {
           tabIndex={0}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("gateway"); }}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveNode("gateway"); } }}
-          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all ${
+          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
             activeNode === "gateway" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
           }`}
         >
@@ -449,7 +450,7 @@ export function ArchitectureDocWidget() {
           tabIndex={0}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("db"); }}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveNode("db"); } }}
-          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all ${
+          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
             activeNode === "db" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
           }`}
         >
@@ -468,7 +469,8 @@ export function ArchitectureDocWidget() {
 /* -------------------------------------------------------------------------- */
 /*  7. Interactive Data Migration Progress Widget (Migración de Datos Legacy)  */
 /* -------------------------------------------------------------------------- */
-export function LegacyMigrationWidget() {
+export function LegacyMigrationWidget({ locale = defaultLocale }: WidgetProps) {
+  const content = getBentoContent(locale).migration;
   const [progress, setProgress] = useState(100);
   const [migrating, setMigrating] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -507,16 +509,16 @@ export function LegacyMigrationWidget() {
           tabIndex={0}
           onClick={handleMigrate}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleMigrate(e); }}
-          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 ${
+          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
             migrating ? "opacity-50 pointer-events-none" : ""
           }`}
         >
-          {migrating ? "Migrando..." : "Simular migración"}
+          {migrating ? content.migrating : content.simulate}
         </span>
       </div>
       <div className="space-y-1.5">
         <div className="flex justify-between text-[10px] text-background/80">
-          <span>Tablas migradas</span>
+          <span>{content.tablesMigrated}</span>
           <span className="text-background font-bold">{progress}%</span>
         </div>
         <div className="h-2 w-full rounded-full bg-background/20 overflow-hidden">
@@ -527,7 +529,7 @@ export function LegacyMigrationWidget() {
           />
         </div>
         <div className="text-[9px] text-background/70 text-center font-bold pt-0.5">
-          {progress === 100 ? "[OK] Migración verificada, integridad de datos validada" : "[SYNC] Transfiriendo tablas..."}
+          {progress === 100 ? content.verified : content.transferring}
         </div>
       </div>
     </div>
@@ -537,9 +539,10 @@ export function LegacyMigrationWidget() {
 /* -------------------------------------------------------------------------- */
 /*  8. Interactive AI Agent Simulator Widget (Inteligencia Artificial)        */
 /* -------------------------------------------------------------------------- */
-export function AiAppliedWidget() {
+export function AiAppliedWidget({ locale = defaultLocale }: WidgetProps) {
+  const content = getBentoContent(locale).aiAgent;
   const [running, setRunning] = useState(false);
-  const [response, setResponse] = useState<string>('Agente: "Flujo de trabajo automatizado."');
+  const [response, setResponse] = useState<string>(content.initialResponse);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -553,9 +556,9 @@ export function AiAppliedWidget() {
     e.stopPropagation();
     if (running) return;
     setRunning(true);
-    setResponse("Agente LLM procesando el prompt...");
+    setResponse(content.runningResponse);
     timerRef.current = setTimeout(() => {
-      setResponse("Agente: respuesta generada correctamente.");
+      setResponse(content.finalResponse);
       setRunning(false);
     }, 700);
   };
@@ -564,22 +567,22 @@ export function AiAppliedWidget() {
     <div className="w-full rounded-xl border border-foreground/10 bg-foreground/95 p-3.5 text-xs text-background font-mono">
       <div className="flex items-center justify-between border-b border-background/10 pb-2 mb-2 text-[11px]">
         <span className="font-bold text-accent flex items-center gap-1">
-          <Sparkles size={12} /> Agente de IA Autónomo
+          <Sparkles size={12} /> {content.heading}
         </span>
         <span
           role="button"
           tabIndex={0}
           onClick={handleRunAi}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleRunAi(e); }}
-          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 ${
+          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
             running ? "opacity-50 pointer-events-none" : ""
           }`}
         >
-          {running ? "Pensando..." : "Ejecutar agente"}
+          {running ? content.thinking : content.runAgent}
         </span>
       </div>
       <div className="rounded bg-background/10 p-2 text-[10px] space-y-1">
-        <div className="text-background/50 text-[9px]">Prompt: &quot;Optimizar flujo de atención al cliente&quot;</div>
+        <div className="text-background/50 text-[9px]">{content.promptLabel}: &quot;{content.promptText}&quot;</div>
         <div className="text-background font-bold leading-relaxed">{response}</div>
       </div>
     </div>

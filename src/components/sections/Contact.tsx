@@ -12,6 +12,7 @@ import { contactEmail, contactPhone, socials, whatsappHref } from "@/lib/site";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { getAttribution } from "@/lib/attribution";
+import { logError } from "@/lib/logger";
 
 function FacebookIcon({ size = 16, className, ...props }: React.SVGProps<SVGSVGElement> & { size?: number }) {
   return (
@@ -60,7 +61,7 @@ const contactLinks = [
     label: contactPhone.startsWith("+57") ? contactPhone.replace("+57", "+57 ") : contactPhone,
     href: whatsappHref,
     icon: MessageCircle,
-    hoverClass: "hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:text-emerald-500",
+    hoverClass: "hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:text-emerald-700",
   },
   {
     label: "Facebook",
@@ -177,7 +178,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
         setErrorMessage(result.error || contactData.errorGeneral);
       }
     } catch (err) {
-      console.error(err);
+      logError("Error al enviar el formulario de contacto", err);
       setErrorMessage(contactData.errorConnection);
     } finally {
       setIsSubmitting(false);
@@ -222,7 +223,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
           {/* Nombre completo */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor={`${idPrefix}-name`} className={labelClasses}>
-              {contactData.placeholders.name} <span className="text-accent">*</span>
+              {contactData.placeholders.name} <span className="text-accent-strong">*</span>
             </label>
             <input
               id={`${idPrefix}-name`}
@@ -233,7 +234,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
               onBlur={() => setTouched((prev) => ({ ...prev, name: true }))}
               autoComplete="name"
               required
-              placeholder="Ej. Juan Pérez o Empresa S.A.S."
+              placeholder={contactData.placeholders.namePlaceholder}
               className={`${baseFieldClasses} ${
                 touched.name && !isNameValid
                   ? "border-red-500/80 focus:border-red-500 focus:ring-red-500/20"
@@ -243,8 +244,8 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
               }`}
             />
             {touched.name && !isNameValid && (
-              <p className="flex items-center gap-1 text-xs text-red-500 font-medium">
-                <AlertCircle size={12} /> El nombre o empresa es obligatorio (mínimo 2 caracteres).
+              <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
+                <AlertCircle size={12} /> {contactData.validation.nameError}
               </p>
             )}
           </div>
@@ -252,7 +253,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
           {/* Correo electrónico */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor={`${idPrefix}-email`} className={labelClasses}>
-              {contactData.placeholders.email} <span className="text-accent">*</span>
+              {contactData.placeholders.email} <span className="text-accent-strong">*</span>
             </label>
             <input
               id={`${idPrefix}-email`}
@@ -263,7 +264,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
               onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
               autoComplete="email"
               required
-              placeholder="ejemplo@empresa.com"
+              placeholder={contactData.placeholders.emailPlaceholder}
               className={`${baseFieldClasses} ${
                 touched.email && !isEmailValid
                   ? "border-red-500/80 focus:border-red-500 focus:ring-red-500/20"
@@ -273,8 +274,8 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
               }`}
             />
             {touched.email && !isEmailValid && (
-              <p className="flex items-center gap-1 text-xs text-red-500 font-medium">
-                <AlertCircle size={12} /> Ingrese un correo electrónico real y válido (ej: usuario@empresa.com).
+              <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
+                <AlertCircle size={12} /> {contactData.validation.emailError}
               </p>
             )}
           </div>
@@ -294,7 +295,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
           {/* Mensaje */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor={`${idPrefix}-message`} className={labelClasses}>
-              {contactData.placeholders.message} <span className="text-accent">*</span>
+              {contactData.placeholders.message} <span className="text-accent-strong">*</span>
             </label>
             <textarea
               id={`${idPrefix}-message`}
@@ -304,7 +305,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
               onBlur={() => setTouched((prev) => ({ ...prev, message: true }))}
               required
               rows={4}
-              placeholder="Describa brevemente el desafío técnico o requerimientos de su proyecto..."
+              placeholder={contactData.placeholders.messagePlaceholder}
               className={`${baseFieldClasses} h-auto py-3 ${
                 touched.message && !isMessageValid
                   ? "border-red-500/80 focus:border-red-500 focus:ring-red-500/20"
@@ -314,8 +315,8 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
               }`}
             />
             {touched.message && !isMessageValid && (
-              <p className="flex items-center gap-1 text-xs text-red-500 font-medium">
-                <AlertCircle size={12} /> Describa su proyecto con al menos 10 caracteres.
+              <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
+                <AlertCircle size={12} /> {contactData.validation.messageError}
               </p>
             )}
           </div>
@@ -337,7 +338,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
                 href={contactData.habeasData.linkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold underline hover:text-accent transition-colors"
+                className="font-semibold underline hover:text-accent-strong transition-colors"
               >
                 {contactData.habeasData.linkText}
               </a>
@@ -345,7 +346,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
           </div>
 
           {errorMessage && (
-            <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3.5 text-sm text-red-500 font-medium flex items-center gap-2">
+            <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3.5 text-sm text-red-600 font-medium flex items-center gap-2">
               <AlertCircle size={16} className="shrink-0" />
               <span>{errorMessage}</span>
             </div>
@@ -367,8 +368,8 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
                 <ShieldCheck size={13} className="text-accent shrink-0" />
                 <span>
                   {!acceptedPolicies
-                    ? "Debe aceptar la política de tratamiento de datos para activar el envío."
-                    : "Complete los campos requeridos con datos válidos para activar el botón."}
+                    ? contactData.validation.acceptPolicyHint
+                    : contactData.validation.completeFieldsHint}
                 </span>
               </div>
             )}
@@ -383,7 +384,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
       >
         <div className="flex flex-col items-center text-center pt-2 pb-1">
           {/* Animated Success Checkmark Badge */}
-          <div className="relative mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 shadow-[0_0_40px_rgba(16,185,129,0.25)]">
+          <div className="relative mb-5 flex h-20 w-20 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 shadow-[0_0_40px_rgba(16,185,129,0.25)]">
             <CheckCircle2 size={42} className="stroke-[2.2]" />
             <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-white shadow-md">
               <ShieldCheck size={16} />
@@ -404,11 +405,11 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
           <div className="mt-6 w-full rounded-xl border border-foreground/10 bg-foreground/[0.03] p-4 text-left space-y-2.5 text-xs text-foreground/80">
             <div className="flex items-center gap-2 font-medium">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Estado: Registrado en nuestro CRM</span>
+              <span>{contactData.successModal.statusCrm}</span>
             </div>
             <div className="flex items-center gap-2 font-medium">
               <span className="h-2 w-2 rounded-full bg-accent" />
-              <span>Garantía SLA de respuesta: Menos de 24h hábiles</span>
+              <span>{contactData.successModal.slaGuarantee}</span>
             </div>
           </div>
 
@@ -421,16 +422,16 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
               onClick={() => setSubmitted(false)}
               className="w-full justify-center"
             >
-              Entendido
+              {contactData.successModal.understood}
             </Button>
             <a
               href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-[2.75rem] items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 text-sm font-bold text-emerald-500 transition-all hover:bg-emerald-500/20 hover:border-emerald-500/50 w-full"
+              className="inline-flex min-h-[2.75rem] items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 text-sm font-bold text-emerald-700 transition-all hover:bg-emerald-500/20 hover:border-emerald-500/50 w-full"
             >
               <MessageCircle size={16} />
-              Hablar por WhatsApp
+              {contactData.successModal.whatsappCta}
             </a>
           </div>
         </div>

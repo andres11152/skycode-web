@@ -8,7 +8,10 @@
     "phone": "Teléfono de contacto",
     "phoneCountry": "País del número de teléfono",
     "phoneCountryEmpty": "Seleccione su país",
-    "message": "Describa brevemente los requerimientos o el desafío de su proyecto"
+    "message": "Describa brevemente los requerimientos o el desafío de su proyecto",
+    "namePlaceholder": "Ej. Juan Pérez o Empresa S.A.S.",
+    "emailPlaceholder": "ejemplo@empresa.com",
+    "messagePlaceholder": "Describa brevemente el desafío técnico o requerimientos de su proyecto..."
   },
   "submitLabel": "Enviar solicitud de contacto",
   "habeasData": {
@@ -18,9 +21,20 @@
   },
   "successModal": {
     "title": "Solicitud de Diagnóstico Registrada",
-    "body": "Hemos recibido los requerimientos de su proyecto. Un ingeniero de software de nuestro equipo revisará la información y le enviará un pre-diagnóstico técnico personalizado."
+    "body": "Hemos recibido los requerimientos de su proyecto. Un ingeniero de software de nuestro equipo revisará la información y le enviará un pre-diagnóstico técnico personalizado.",
+    "statusCrm": "Estado: Registrado en nuestro CRM",
+    "slaGuarantee": "Garantía SLA de respuesta: Menos de 24h hábiles",
+    "understood": "Entendido",
+    "whatsappCta": "Hablar por WhatsApp"
   },
   "sendingLabel": "Enviando...",
   "errorConnection": "No se pudo conectar con el servidor. Revise su conexión.",
-  "errorGeneral": "Hubo un error al enviar el mensaje."
+  "errorGeneral": "Hubo un error al enviar el mensaje.",
+  "validation": {
+    "nameError": "El nombre o empresa es obligatorio (mínimo 2 caracteres).",
+    "emailError": "Ingrese un correo electrónico real y válido (ej: usuario@empresa.com).",
+    "messageError": "Describa su proyecto con al menos 10 caracteres.",
+    "acceptPolicyHint": "Debe aceptar la política de tratamiento de datos para activar el envío.",
+    "completeFieldsHint": "Complete los campos requeridos con datos válidos para activar el botón."
+  }
 }

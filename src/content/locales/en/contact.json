@@ -8,7 +8,10 @@
     "phone": "Contact phone number",
     "phoneCountry": "Phone number country",
     "phoneCountryEmpty": "Select your country",
-    "message": "Briefly describe your project's requirements or challenge"
+    "message": "Briefly describe your project's requirements or challenge",
+    "namePlaceholder": "E.g. John Smith or Company Inc.",
+    "emailPlaceholder": "you@company.com",
+    "messagePlaceholder": "Briefly describe your project's technical challenge or requirements..."
   },
   "submitLabel": "Send contact request",
   "habeasData": {
@@ -18,9 +21,20 @@
   },
   "successModal": {
     "title": "Message sent!",
-    "body": "Thanks for reaching out. We'll be in touch shortly."
+    "body": "Thanks for reaching out. We'll be in touch shortly.",
+    "statusCrm": "Status: Registered in our CRM",
+    "slaGuarantee": "Response SLA guarantee: Under 24 business hours",
+    "understood": "Got it",
+    "whatsappCta": "Talk on WhatsApp"
   },
   "sendingLabel": "Sending...",
   "errorConnection": "Could not connect to the server. Please check your connection.",
-  "errorGeneral": "There was an error sending your message."
+  "errorGeneral": "There was an error sending your message.",
+  "validation": {
+    "nameError": "Name or company is required (minimum 2 characters).",
+    "emailError": "Enter a real, valid email address (e.g. you@company.com).",
+    "messageError": "Describe your project in at least 10 characters.",
+    "acceptPolicyHint": "You must accept the data processing policy to enable submission.",
+    "completeFieldsHint": "Complete the required fields with valid data to enable the button."
+  }
 }

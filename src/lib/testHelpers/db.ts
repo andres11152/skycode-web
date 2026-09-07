@@ -29,10 +29,25 @@ export async function resetTestDb(): Promise<void> {
   assertTestDatabase();
   await query(`
     TRUNCATE TABLE
-      audit_log, sessions, invites, time_entries, payments, invoices,
+      audit_log, sessions, invites, password_resets, time_entries, payments, invoices,
       proposal_items, proposals, lead_activities, leads, campaign_spend,
-      campaigns, sprints, projects, clients, exchange_rates, users
+      campaigns, support_tickets, documents, expenses, tasks, sprints, projects, clients, exchange_rates, users
     RESTART IDENTITY CASCADE;
+  `);
+  // `settings` no está en la lista de arriba: es fila única (id=1, sin
+  // AUTO/serial), pero su FK `updated_by -> users` hace que Postgres la
+  // trunque igual bajo CASCADE (TRUNCATE CASCADE arrastra cualquier tabla
+  // con una FK hacia una tabla truncada, sin importar el ON DELETE que
+  // declare esa FK) — hay que resembrarla con sus valores por defecto en
+  // cada reset, o los tests de facturación/SLA que dependen de ella
+  // arrancarían de un estado corrupto (sin fila) en el segundo test en
+  // adelante.
+  await query(`
+    INSERT INTO settings (id) VALUES (1)
+    ON CONFLICT (id) DO UPDATE SET
+      default_tax_rate_pct = DEFAULT, invoice_number_prefix = DEFAULT, invoice_next_number = DEFAULT,
+      sla_hours_urgente = DEFAULT, sla_hours_alta = DEFAULT, sla_hours_media = DEFAULT, sla_hours_baja = DEFAULT,
+      manual_usd_to_cop_rate = DEFAULT, updated_at = DEFAULT, updated_by = DEFAULT;
   `);
 }
 
@@ -96,6 +111,17 @@ export async function createTestProject(clientId: number, overrides: { title?: s
   const res = await query(
     `INSERT INTO projects (client_id, title, status) VALUES ($1, $2, $3) RETURNING *;`,
     [clientId, overrides.title ?? "Test Project", overrides.status ?? "En Desarrollo"]
+  );
+  return res.rows[0];
+}
+
+export async function createTestSprint(
+  projectId: number,
+  overrides: { title?: string; status?: "Completado" | "En Progreso" | "Pendiente"; progress?: number } = {}
+) {
+  const res = await query(
+    `INSERT INTO sprints (project_id, title, status, progress) VALUES ($1, $2, $3, $4) RETURNING *;`,
+    [projectId, overrides.title ?? "Sprint de prueba", overrides.status ?? "Pendiente", overrides.progress ?? 0]
   );
   return res.rows[0];
 }
@@ -224,6 +250,7 @@ export interface TestProposalOverrides {
   acceptedAt?: Date | null;
   rejectedAt?: Date | null;
   acceptedProjectId?: number | null;
+  createdBy?: number | null;
   items?: { description?: string; quantity?: number; unitPrice: number }[];
 }
 
@@ -232,8 +259,8 @@ export async function createTestProposal(overrides: TestProposalOverrides = {}) 
   const res = await query(
     `INSERT INTO proposals (
        id, client_email, client_name, title, currency, tax_rate, valid_until,
-       viewed_at, accepted_at, rejected_at, accepted_project_id
-     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *;`,
+       viewed_at, accepted_at, rejected_at, accepted_project_id, created_by
+     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *;`,
     [
       id,
       overrides.clientEmail ?? "cliente@test.local",
@@ -246,6 +273,7 @@ export async function createTestProposal(overrides: TestProposalOverrides = {}) 
       overrides.acceptedAt ?? null,
       overrides.rejectedAt ?? null,
       overrides.acceptedProjectId ?? null,
+      overrides.createdBy ?? null,
     ]
   );
 
@@ -281,6 +309,35 @@ export async function createTestInvoice(
       overrides.amount ?? 1000,
       overrides.currency ?? "COP",
       overrides.dueDate ?? new Date().toISOString().slice(0, 10),
+      overrides.deletedAt ?? null,
+    ]
+  );
+  return res.rows[0];
+}
+
+export async function createTestExpense(
+  overrides: {
+    projectId?: number | null;
+    category?: "licencias" | "infraestructura" | "subcontratos" | "otro";
+    description?: string;
+    amount?: number;
+    currency?: "COP" | "USD";
+    expenseDate?: string;
+    createdBy?: number | null;
+    deletedAt?: Date | null;
+  } = {}
+) {
+  const res = await query(
+    `INSERT INTO expenses (project_id, category, description, amount, currency, expense_date, created_by, deleted_at)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *;`,
+    [
+      overrides.projectId ?? null,
+      overrides.category ?? "otro",
+      overrides.description ?? "Gasto de prueba",
+      overrides.amount ?? 1000,
+      overrides.currency ?? "COP",
+      overrides.expenseDate ?? new Date().toISOString().slice(0, 10),
+      overrides.createdBy ?? null,
       overrides.deletedAt ?? null,
     ]
   );

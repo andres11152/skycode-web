@@ -65,7 +65,7 @@ export function LoginView() {
         </div>
 
         <SpotlightCard spotlightSize={350}>
-          <div className="rounded-2xl border border-background/15 bg-background/5 p-6 backdrop-blur-2xl shadow-2xl">
+          <div className="rounded-xl border border-background/15 bg-background/5 p-6 backdrop-blur-2xl shadow-2xl">
             {success ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -110,6 +110,12 @@ export function LoginView() {
                     <label htmlFor="password" className="block text-xs font-semibold text-background/80">
                       Contraseña
                     </label>
+                    <Link
+                      href="/olvide-password"
+                      className="text-[11px] text-background/60 hover:text-accent transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground rounded"
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </Link>
                   </div>
                   <div className="relative">
                     <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-background/40" />

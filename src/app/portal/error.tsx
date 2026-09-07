@@ -2,10 +2,11 @@
 
 import { useEffect } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
+import { logError } from "@/lib/logger";
 
 export default function PortalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    console.error("❌ [Portal Error Boundary]", error);
+    logError("❌ [Portal Error Boundary]", error);
   }, [error]);
 
   return (
