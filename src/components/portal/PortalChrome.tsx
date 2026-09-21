@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
+import { Button } from "@/components/dashboard/ui/Button";
 import type { SessionUser } from "@/components/dashboard/types";
 
 export function PortalChrome({ user, children }: { user: SessionUser; children: React.ReactNode }) {
@@ -17,7 +18,7 @@ export function PortalChrome({ user, children }: { user: SessionUser; children: 
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-foreground/10 bg-foreground/5 backdrop-blur-2xl sticky top-0 z-40">
+      <header className="border-b border-foreground/10 bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl sticky top-0 z-40">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
             <Link
@@ -34,13 +35,10 @@ export function PortalChrome({ user, children }: { user: SessionUser; children: 
 
           <div className="flex items-center gap-4">
             <span className="hidden sm:inline text-xs text-foreground/80 font-mono">{user.name}</span>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 rounded-lg border border-foreground/15 px-3 py-1.5 text-xs text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
+            <Button variant="secondary" onClick={handleLogout}>
               <LogOut size={14} />
               <span className="hidden sm:inline">Salir</span>
-            </button>
+            </Button>
           </div>
         </div>
       </header>

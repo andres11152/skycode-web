@@ -17,6 +17,9 @@ import {
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { EmptyState } from "./EmptyState";
+import { Badge, type BadgeTone } from "./ui/Badge";
+import { Button } from "./ui/Button";
+import { Alert } from "./ui/Alert";
 import { formatMoney } from "@/lib/utils";
 import type { ClientDetail, InvoiceStatus, ProposalStatus } from "./types";
 
@@ -28,12 +31,12 @@ const PROPOSAL_LABELS: Record<ProposalStatus, string> = {
   expired: "Expirada",
 };
 
-const PROPOSAL_STYLES: Record<ProposalStatus, string> = {
-  sent: "bg-sky-500/10 border border-sky-500/20 text-sky-700",
-  viewed: "bg-amber-500/10 border border-amber-500/20 text-amber-700",
-  accepted: "bg-green-500/10 border border-green-500/20 text-green-700",
-  rejected: "bg-red-500/10 border border-red-500/20 text-red-700",
-  expired: "bg-foreground/20 text-foreground/50",
+const PROPOSAL_TONES: Record<ProposalStatus, BadgeTone> = {
+  sent: "info",
+  viewed: "warning",
+  accepted: "success",
+  rejected: "danger",
+  expired: "neutral",
 };
 
 const INVOICE_LABELS: Record<InvoiceStatus, string> = {
@@ -42,16 +45,16 @@ const INVOICE_LABELS: Record<InvoiceStatus, string> = {
   paid: "Cobrada",
 };
 
-const INVOICE_STYLES: Record<InvoiceStatus, string> = {
-  pending: "bg-sky-500/10 border border-sky-500/20 text-sky-700",
-  overdue: "bg-red-500/10 border border-red-500/20 text-red-700",
-  paid: "bg-green-500/10 border border-green-500/20 text-green-700",
+const INVOICE_TONES: Record<InvoiceStatus, BadgeTone> = {
+  pending: "info",
+  overdue: "danger",
+  paid: "success",
 };
 
-const PROJECT_STYLES: Record<string, string> = {
-  "En Desarrollo": "bg-sky-500/10 border border-sky-500/20 text-sky-700",
-  "Fase QA": "bg-amber-500/10 border border-amber-500/20 text-amber-700",
-  "Garantía SLA": "bg-green-500/10 border border-green-500/20 text-green-700",
+const PROJECT_TONES: Record<string, BadgeTone> = {
+  "En Desarrollo": "info",
+  "Fase QA": "warning",
+  "Garantía SLA": "success",
 };
 
 export function ClientDetailView({ client, canWrite }: { client: ClientDetail; canWrite: boolean }) {
@@ -161,34 +164,27 @@ export function ClientDetailView({ client, canWrite }: { client: ClientDetail; c
             <div className="flex items-center gap-2 shrink-0">
               {isEditing ? (
                 <>
-                  <button
-                    onClick={handleSave}
-                    disabled={isSaving}
-                    className="flex items-center gap-1.5 rounded-lg bg-accent-strong px-3 py-1.5 text-xs font-bold text-white hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  >
+                  <Button variant="accent" onClick={handleSave} disabled={isSaving}>
                     <Save size={13} />
                     Guardar
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="secondary"
                     onClick={() => {
                       setIsEditing(false);
                       setError(null);
                       setForm({ name: client.name, company: client.company ?? "", phone: client.phone ?? "", notes: client.notes });
                     }}
-                    className="flex items-center gap-1.5 rounded-lg border border-foreground/15 px-3 py-1.5 text-xs text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <X size={13} />
                     Cancelar
-                  </button>
+                  </Button>
                 </>
               ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-1.5 rounded-lg border border-foreground/15 px-3 py-1.5 text-xs text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
+                <Button variant="secondary" onClick={() => setIsEditing(true)}>
                   <Pencil size={13} />
                   Editar
-                </button>
+                </Button>
               )}
             </div>
           )}
@@ -215,7 +211,7 @@ export function ClientDetailView({ client, canWrite }: { client: ClientDetail; c
           </p>
         )}
 
-        {error && <p className="mt-3 text-xs text-red-700">{error}</p>}
+        {error && <Alert tone="error" className="mt-3">{error}</Alert>}
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -262,13 +258,9 @@ export function ClientDetailView({ client, canWrite }: { client: ClientDetail; c
               <div key={project.id} className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-4 space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-bold text-sm text-foreground truncate">{project.title}</span>
-                  <span
-                    className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                      PROJECT_STYLES[project.status] ?? "bg-foreground/20 text-foreground/60"
-                    }`}
-                  >
+                  <Badge tone={PROJECT_TONES[project.status] ?? "neutral"} className="shrink-0">
                     {project.status}
-                  </span>
+                  </Badge>
                 </div>
                 <div className="h-1.5 w-full rounded-full bg-foreground/15 overflow-hidden">
                   <div className="h-full bg-accent" style={{ width: `${project.progress}%` }} />
@@ -305,9 +297,7 @@ export function ClientDetailView({ client, canWrite }: { client: ClientDetail; c
                     <tr key={proposal.id}>
                       <td className="px-5 py-3 font-medium text-foreground">{proposal.title}</td>
                       <td className="px-5 py-3">
-                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${PROPOSAL_STYLES[proposal.status]}`}>
-                          {PROPOSAL_LABELS[proposal.status]}
-                        </span>
+                        <Badge tone={PROPOSAL_TONES[proposal.status]}>{PROPOSAL_LABELS[proposal.status]}</Badge>
                       </td>
                       <td className="px-5 py-3 text-right font-mono text-foreground">
                         {formatMoney(proposal.total, proposal.currency)}
@@ -348,9 +338,7 @@ export function ClientDetailView({ client, canWrite }: { client: ClientDetail; c
                       <td className="px-5 py-3 font-medium text-foreground">{invoice.project_title}</td>
                       <td className="px-5 py-3 text-foreground/70 truncate max-w-xs">{invoice.description}</td>
                       <td className="px-5 py-3">
-                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${INVOICE_STYLES[invoice.status]}`}>
-                          {INVOICE_LABELS[invoice.status]}
-                        </span>
+                        <Badge tone={INVOICE_TONES[invoice.status]}>{INVOICE_LABELS[invoice.status]}</Badge>
                       </td>
                       <td
                         className={`px-5 py-3 text-right font-mono font-bold ${

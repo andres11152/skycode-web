@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { RefreshCw, TrendingUp, TrendingDown, BarChart3 } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { ExchangeRateNote } from "./ExchangeRateNote";
+import { Button } from "./ui/Button";
 import { formatMoney } from "@/lib/utils";
 import type { ProjectProfitability, CampaignProfitability } from "./types";
 
@@ -39,14 +40,10 @@ export function ProfitabilityView({
             Cotizado, costo de horas, gastos operativos y facturado por proyecto — margen neto por canal.
           </p>
         </div>
-        <button
-          onClick={handleRefresh}
-          disabled={isRefreshing}
-          className="flex items-center gap-2 rounded-xl border border-foreground/20 bg-foreground/5 px-4 py-2 text-xs font-medium text-foreground hover:bg-foreground/15 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background self-start sm:self-auto"
-        >
+        <Button variant="secondary" onClick={handleRefresh} disabled={isRefreshing} className="self-start sm:self-auto">
           <RefreshCw size={14} className={isRefreshing ? "animate-spin" : ""} />
           <span>Actualizar</span>
-        </button>
+        </Button>
       </div>
       <ExchangeRateNote usdToCopRate={usdToCopRate} />
 

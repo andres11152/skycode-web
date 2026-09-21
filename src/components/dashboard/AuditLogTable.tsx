@@ -69,7 +69,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-foreground/5 border border-foreground/15 p-4 rounded-xl">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
           <input

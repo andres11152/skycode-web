@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, XCircle } from "lucide-react";
+import { Alert } from "./ui/Alert";
 import type { Sprint } from "./types";
 
 /**
@@ -62,7 +63,7 @@ export function SprintApproval({ sprint }: { sprint: Sprint }) {
   if (showComment) {
     return (
       <div className="space-y-2">
-        {error && <p className="text-[10px] text-red-700">{error}</p>}
+        {error && <Alert tone="error" className="text-[10px]">{error}</Alert>}
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}

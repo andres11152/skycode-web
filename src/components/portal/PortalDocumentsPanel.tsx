@@ -57,7 +57,7 @@ export function PortalDocumentsPanel({ documents }: { documents: ProjectDocument
                       <a
                         href={`/api/documents/${doc.id}/download`}
                         aria-label={`Descargar ${doc.original_filename}`}
-                        className="inline-flex rounded-lg p-1.5 text-foreground/60 hover:bg-accent/10 hover:text-accent transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        className="ml-auto flex h-11 w-11 items-center justify-center rounded-lg text-foreground/60 hover:bg-accent/10 hover:text-accent transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
                         <Download size={14} />
                       </a>

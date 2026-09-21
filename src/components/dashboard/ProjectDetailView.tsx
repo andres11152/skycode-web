@@ -2,12 +2,13 @@ import Link from "next/link";
 import { ArrowLeft, Code2, Layers, ShieldCheck, Calendar } from "lucide-react";
 import { TasksBoard } from "./TasksBoard";
 import { DocumentsPanel } from "./DocumentsPanel";
+import { Badge, type BadgeTone } from "./ui/Badge";
 import type { Project, ProjectDocument, Task } from "./types";
 
-const PROJECT_STYLES: Record<string, string> = {
-  "En Desarrollo": "bg-sky-500/10 border border-sky-500/20 text-sky-700",
-  "Fase QA": "bg-amber-500/10 border border-amber-500/20 text-amber-700",
-  "Garantía SLA": "bg-green-500/10 border border-green-500/20 text-green-700",
+const PROJECT_TONES: Record<string, BadgeTone> = {
+  "En Desarrollo": "info",
+  "Fase QA": "warning",
+  "Garantía SLA": "success",
 };
 
 export function ProjectDetailView({
@@ -46,13 +47,7 @@ export function ProjectDetailView({
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-2xl font-bold text-foreground">{project.title}</h1>
-              <span
-                className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                  PROJECT_STYLES[project.status] ?? "bg-foreground/20 text-foreground/60"
-                }`}
-              >
-                {project.status}
-              </span>
+              <Badge tone={PROJECT_TONES[project.status] ?? "neutral"}>{project.status}</Badge>
             </div>
             {project.description && <p className="text-xs text-foreground/70 mt-1">{project.description}</p>}
             <p className="text-[10px] text-foreground/40 font-mono mt-1">

@@ -46,7 +46,7 @@ export function PortalView({
             key={key}
             onClick={() => setActiveTab(key)}
             aria-current={activeTab === key ? "page" : undefined}
-            className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+            className={`flex min-h-11 items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
               activeTab === key
                 ? "bg-accent-strong text-white"
                 : "text-foreground/70 hover:bg-foreground/10 hover:text-foreground"

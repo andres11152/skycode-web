@@ -220,7 +220,7 @@ export function SupportTicketsBoard({
         </form>
       )}
 
-      <div className="flex items-center gap-2 bg-foreground/5 border border-foreground/15 p-4 rounded-xl">
+      <div className="flex items-center gap-2 bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
         <span className="text-xs text-foreground/60 font-mono">Estado:</span>
         <select
           value={statusFilter}

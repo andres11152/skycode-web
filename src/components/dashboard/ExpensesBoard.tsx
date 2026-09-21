@@ -113,7 +113,7 @@ export function ExpensesBoard({ expenses, total, page, pageSize, q, category, to
         <div className="text-xl font-bold font-mono text-amber-700">{formatMoney(totalThisMonthCop, "COP")}</div>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-foreground/5 border border-foreground/15 p-4 rounded-xl">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
           <input

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Monitor, MapPin, ShieldCheck, LogOut } from "lucide-react";
+import { Alert } from "./ui/Alert";
 import type { SessionUser, UserSessionRow } from "./types";
 
 /**
@@ -99,9 +100,7 @@ export function SessionsView({
         <div className="text-sm font-mono uppercase text-foreground/80">{user.role}</div>
       </div>
 
-      {error && (
-        <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-700">{error}</div>
-      )}
+      {error && <Alert tone="error">{error}</Alert>}
 
       <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
         <div className="overflow-x-auto">

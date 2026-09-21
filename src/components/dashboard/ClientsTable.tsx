@@ -94,7 +94,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
         </SpotlightCard>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-foreground/5 border border-foreground/15 p-4 rounded-xl">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
           <input
@@ -171,7 +171,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
                 <button
                   onClick={() => pushQuery({ page: page - 1 })}
                   disabled={page === 1 || isNavigating}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label="Página anterior"
                 >
                   <ChevronLeft size={16} />
@@ -180,7 +180,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
                 <button
                   onClick={() => pushQuery({ page: page + 1 })}
                   disabled={page === totalPages || isNavigating}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label="Página siguiente"
                 >
                   <ChevronRight size={16} />

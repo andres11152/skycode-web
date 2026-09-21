@@ -3,14 +3,23 @@
 import { useId, useState } from "react";
 import { Plus, X, Trash2, Clock, ClipboardList } from "lucide-react";
 import { EmptyState } from "./EmptyState";
+import { Badge, type BadgeTone } from "./ui/Badge";
+import { Button } from "./ui/Button";
+import { Alert } from "./ui/Alert";
 import type { Sprint, Task, TaskStatus } from "./types";
 
 const STATUS_OPTIONS: TaskStatus[] = ["Pendiente", "En Progreso", "Completada"];
 
 const STATUS_STYLES: Record<TaskStatus, string> = {
-  Pendiente: "bg-foreground/20 text-foreground/60",
+  Pendiente: "bg-foreground/10 text-foreground/60",
   "En Progreso": "bg-sky-500/10 border border-sky-500/20 text-sky-700",
   Completada: "bg-green-500/10 border border-green-500/20 text-green-700",
+};
+
+const STATUS_TONES: Record<TaskStatus, BadgeTone> = {
+  Pendiente: "neutral",
+  "En Progreso": "info",
+  Completada: "success",
 };
 
 interface TasksBoardProps {
@@ -106,13 +115,10 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
           Tareas
         </h2>
         {canWrite && (
-          <button
-            onClick={() => setShowForm((v) => !v)}
-            className="flex items-center gap-1.5 rounded-lg bg-accent-strong px-3 py-1.5 text-xs font-bold text-white hover:brightness-90 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
+          <Button variant="accent" onClick={() => setShowForm((v) => !v)}>
             {showForm ? <X size={13} /> : <Plus size={13} />}
             {showForm ? "Cancelar" : "Nueva tarea"}
-          </button>
+          </Button>
         )}
       </div>
 
@@ -121,7 +127,7 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
           onSubmit={handleCreate}
           className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-4 space-y-3"
         >
-          {error && <p className="text-xs text-red-700">{error}</p>}
+          {error && <Alert tone="error">{error}</Alert>}
           <div className="space-y-1.5">
             <label htmlFor={titleId} className="text-xs font-medium text-foreground/70">
               Título
@@ -245,9 +251,7 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
                             ))}
                           </select>
                         ) : (
-                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${STATUS_STYLES[task.status]}`}>
-                            {task.status}
-                          </span>
+                          <Badge tone={STATUS_TONES[task.status]}>{task.status}</Badge>
                         )}
                       </td>
                       <td className="px-4 py-3 text-right font-mono">
@@ -274,7 +278,7 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
                             onClick={() => handleDelete(task.id)}
                             disabled={updatingId === task.id}
                             aria-label={`Eliminar tarea ${task.title}`}
-                            className="rounded-lg p-1.5 text-foreground/50 hover:bg-red-500/10 hover:text-red-700 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/50 hover:bg-red-500/10 hover:text-red-700 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ml-auto"
                           >
                             <Trash2 size={13} />
                           </button>

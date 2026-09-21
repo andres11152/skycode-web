@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Upload, Download, Trash2, FileText } from "lucide-react";
 import { EmptyState } from "./EmptyState";
+import { Alert } from "./ui/Alert";
 import type { ProjectDocument } from "./types";
 
 function formatBytes(bytes: number): string {
@@ -84,7 +85,7 @@ export function DocumentsPanel({
             />
             <label
               htmlFor={`upload-${projectId}`}
-              className="flex items-center gap-1.5 rounded-lg bg-accent-strong px-3 py-1.5 text-xs font-bold text-white hover:brightness-90 transition-all cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background has-disabled:opacity-50 has-disabled:pointer-events-none"
+              className="flex min-h-11 items-center gap-1.5 rounded-lg bg-accent-strong px-3 py-1.5 text-xs font-bold text-white hover:brightness-90 transition-all cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background has-disabled:opacity-50 has-disabled:pointer-events-none"
             >
               <Upload size={13} />
               {isUploading ? "Subiendo..." : "Subir documento"}
@@ -93,7 +94,7 @@ export function DocumentsPanel({
         )}
       </div>
 
-      {error && <p className="text-xs text-red-700">{error}</p>}
+      {error && <Alert tone="error">{error}</Alert>}
 
       {documents.length === 0 ? (
         <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
@@ -132,7 +133,7 @@ export function DocumentsPanel({
                         <a
                           href={`/api/documents/${doc.id}/download`}
                           aria-label={`Descargar ${doc.original_filename}`}
-                          className="rounded-lg p-1.5 text-foreground/60 hover:bg-accent/10 hover:text-accent transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/60 hover:bg-accent/10 hover:text-accent transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <Download size={13} />
                         </a>
@@ -141,7 +142,7 @@ export function DocumentsPanel({
                             onClick={() => handleDelete(doc.id)}
                             disabled={deletingId === doc.id}
                             aria-label={`Eliminar ${doc.original_filename}`}
-                            className="rounded-lg p-1.5 text-foreground/50 hover:bg-red-500/10 hover:text-red-700 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/50 hover:bg-red-500/10 hover:text-red-700 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <Trash2 size={13} />
                           </button>

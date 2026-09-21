@@ -1,5 +1,6 @@
 import { Receipt } from "lucide-react";
 import { EmptyState } from "../dashboard/EmptyState";
+import { Badge, type BadgeTone } from "../dashboard/ui/Badge";
 import { formatMoney } from "@/lib/utils";
 import type { Invoice, InvoiceStatus } from "../dashboard/types";
 
@@ -9,10 +10,10 @@ const STATUS_LABELS: Record<InvoiceStatus, string> = {
   paid: "Pagada",
 };
 
-const STATUS_STYLES: Record<InvoiceStatus, string> = {
-  pending: "bg-sky-500/10 border border-sky-500/20 text-sky-700",
-  overdue: "bg-red-500/10 border border-red-500/20 text-red-700",
-  paid: "bg-green-500/10 border border-green-500/20 text-green-700",
+const STATUS_TONES: Record<InvoiceStatus, BadgeTone> = {
+  pending: "info",
+  overdue: "danger",
+  paid: "success",
 };
 
 /**
@@ -70,9 +71,7 @@ export function PortalInvoicesPanel({ invoices }: { invoices: Invoice[] }) {
                       </div>
                     </td>
                     <td className="px-5 py-4">
-                      <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${STATUS_STYLES[inv.status]}`}>
-                        {STATUS_LABELS[inv.status]}
-                      </span>
+                      <Badge tone={STATUS_TONES[inv.status]}>{STATUS_LABELS[inv.status]}</Badge>
                     </td>
                     <td className="px-5 py-4 font-mono text-[10px] text-foreground/60">
                       {new Date(inv.due_date).toLocaleDateString("es-CO")}

@@ -27,6 +27,8 @@ import {
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { EmptyState } from "./EmptyState";
+import { Badge } from "./ui/Badge";
+import { Button } from "./ui/Button";
 import { logError } from "@/lib/logger";
 import type { Lead, LeadActivity, LeadActivityType, LeadOwner } from "./types";
 
@@ -222,25 +224,25 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
     if (diffHours < 2) {
       return (
-        <span className="inline-flex items-center gap-1 rounded bg-green-500/20 px-2 py-0.5 text-[10px] font-bold text-green-700">
+        <Badge tone="success" className="gap-1">
           <CheckCircle2 size={11} />
           Respuesta Inmediata (&lt;2h)
-        </span>
+        </Badge>
       );
     }
     if (diffHours < 24) {
       return (
-        <span className="inline-flex items-center gap-1 rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+        <Badge tone="warning" className="gap-1">
           <Clock size={11} />
           Atención Requerida Hoy
-        </span>
+        </Badge>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1 rounded bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-700 animate-pulse">
+      <Badge tone="danger" className="gap-1 animate-pulse">
         <AlertCircle size={11} />
         SLA Vencido (&gt;24h)
-      </span>
+      </Badge>
     );
   };
 
@@ -261,19 +263,15 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
         <div className="flex items-center gap-3">
           <a
             href={`/api/leads/export${exportParams.size ? `?${exportParams}` : ""}`}
-            className="flex items-center gap-2 rounded-xl border border-foreground/20 bg-foreground/5 px-4 py-2 text-xs font-medium text-foreground hover:bg-foreground/15 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-foreground/15 bg-foreground/[0.02] px-4 py-2 text-xs font-medium text-foreground shadow-sm transition-all hover:bg-foreground/[0.06] outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <Download size={14} />
             <span>Exportar CSV</span>
           </a>
-          <button
-            onClick={handleRefresh}
-            disabled={isNavigating}
-            className="flex items-center gap-2 rounded-xl bg-accent-strong px-4 py-2 text-xs font-bold text-white shadow-lg hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
+          <Button variant="accent" onClick={handleRefresh} disabled={isNavigating}>
             <RefreshCw size={14} className={isNavigating ? "animate-spin" : ""} />
             <span>Actualizar Datos</span>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -323,7 +321,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
         </SpotlightCard>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-foreground/5 border border-foreground/15 p-4 rounded-xl">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
           <input
@@ -479,7 +477,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                 <button
                   onClick={() => pushQuery({ page: page - 1 })}
                   disabled={page === 1}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -487,7 +485,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                 <button
                   onClick={() => pushQuery({ page: page + 1 })}
                   disabled={page === totalPages}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <ChevronRight size={16} />
                 </button>
