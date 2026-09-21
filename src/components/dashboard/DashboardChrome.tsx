@@ -107,8 +107,8 @@ function SidebarNav({ role, pathname, onNavigate }: { role: string; pathname: st
         <Link
           href="/dashboard"
           onClick={onNavigate}
-          className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground ${
-            pathname === "/dashboard" ? "bg-accent/15 text-accent" : "text-background/70 hover:bg-background/10 hover:text-background"
+          className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+            pathname === "/dashboard" ? "bg-accent/15 text-accent" : "text-foreground/70 hover:bg-foreground/10 hover:text-foreground"
           }`}
         >
           <LayoutDashboard size={16} />
@@ -121,8 +121,8 @@ function SidebarNav({ role, pathname, onNavigate }: { role: string; pathname: st
         <Link
           href="/dashboard/cuenta"
           onClick={onNavigate}
-          className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground ${
-            pathname.startsWith("/dashboard/cuenta") ? "bg-accent/15 text-accent" : "text-background/70 hover:bg-background/10 hover:text-background"
+          className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+            pathname.startsWith("/dashboard/cuenta") ? "bg-accent/15 text-accent" : "text-foreground/70 hover:bg-foreground/10 hover:text-foreground"
           }`}
         >
           <UserCircle size={16} />
@@ -132,7 +132,7 @@ function SidebarNav({ role, pathname, onNavigate }: { role: string; pathname: st
 
       {visibleGroups.map((group) => (
         <div key={group.label}>
-          <span className="px-3 text-[10px] font-mono font-bold uppercase tracking-wider text-background/40">
+          <span className="px-3 text-[10px] font-mono font-bold uppercase tracking-wider text-foreground/40">
             {group.label}
           </span>
           <div className="mt-2 flex flex-col gap-0.5">
@@ -143,8 +143,8 @@ function SidebarNav({ role, pathname, onNavigate }: { role: string; pathname: st
                   key={item.href}
                   href={item.href}
                   onClick={onNavigate}
-                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground ${
-                    active ? "bg-accent/15 text-accent font-semibold" : "text-background/70 hover:bg-background/10 hover:text-background"
+                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                    active ? "bg-accent/15 text-accent font-semibold" : "text-foreground/70 hover:bg-foreground/10 hover:text-foreground"
                   }`}
                 >
                   <item.icon size={16} />
@@ -171,40 +171,40 @@ export function DashboardChrome({ user, children }: { user: SessionUser; childre
   };
 
   return (
-    <div className="min-h-screen bg-foreground text-background">
-      <header className="border-b border-background/10 bg-background/5 backdrop-blur-2xl sticky top-0 z-40">
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="border-b border-foreground/10 bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl sticky top-0 z-40">
         <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4 py-4 sm:px-6">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setDrawerOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-background/80 hover:bg-background/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground lg:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden"
               aria-label="Abrir menú del panel"
             >
               <Menu size={20} />
             </button>
             <Link
               href="/"
-              className="rounded outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              className="rounded outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <Image src="/logo-mark.png" alt="SKYCODE Logo" width={120} height={70} className="h-8 w-auto" />
             </Link>
-            <div className="hidden h-4 w-px bg-background/20 sm:block" />
+            <div className="hidden h-4 w-px bg-foreground/20 sm:block" />
             <span className="hidden rounded-full bg-accent/20 px-3 py-1 text-xs font-mono font-bold text-accent sm:inline-block">
               SKYCODE Command Center
             </span>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 text-xs text-background/80 font-mono">
-              <ShieldCheck size={14} className="text-green-400" />
+            <div className="hidden sm:flex items-center gap-2 text-xs text-foreground/80 font-mono">
+              <ShieldCheck size={14} className="text-green-700" />
               <span>{user.name}</span>
-              <span className="rounded bg-background/10 px-1.5 py-0.5 text-[10px] uppercase text-background/60">
+              <span className="rounded bg-foreground/10 px-1.5 py-0.5 text-[10px] uppercase text-foreground/60">
                 {user.role}
               </span>
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 rounded-lg border border-background/15 px-3 py-1.5 text-xs text-background/80 hover:bg-background/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              className="flex items-center gap-1.5 rounded-lg border border-foreground/15 px-3 py-1.5 text-xs text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <LogOut size={14} />
               <span className="hidden sm:inline">Salir</span>
@@ -215,7 +215,7 @@ export function DashboardChrome({ user, children }: { user: SessionUser; childre
 
       <div className="mx-auto flex max-w-[1440px]">
         {/* Sidebar de escritorio — fija, con su propio scroll si el nav crece más que el viewport. */}
-        <aside className="hidden shrink-0 border-r border-background/10 px-4 py-6 lg:block lg:w-64">
+        <aside className="hidden shrink-0 border-r border-foreground/10 bg-background px-4 py-6 lg:block lg:w-64">
           <div className="sticky top-[73px] max-h-[calc(100vh-73px)] overflow-y-auto pb-6">
             <SidebarNav role={user.role} pathname={pathname} />
           </div>
@@ -229,12 +229,12 @@ export function DashboardChrome({ user, children }: { user: SessionUser; childre
               onClick={() => setDrawerOpen(false)}
               aria-hidden="true"
             />
-            <div className="absolute inset-y-0 left-0 w-72 max-w-[85vw] overflow-y-auto border-r border-background/10 bg-foreground px-4 py-6 shadow-2xl">
+            <div className="absolute inset-y-0 left-0 w-72 max-w-[85vw] overflow-y-auto border-r border-foreground/10 bg-background px-4 py-6 shadow-2xl">
               <div className="mb-6 flex items-center justify-between">
                 <Image src="/logo-mark.png" alt="SKYCODE Logo" width={120} height={70} className="h-7 w-auto" />
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-background/80 hover:bg-background/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label="Cerrar menú del panel"
                 >
                   <X size={20} />

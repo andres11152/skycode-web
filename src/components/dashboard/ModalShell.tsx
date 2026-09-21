@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import { useFocusTrap } from "@/lib/useFocusTrap";
+import { scaleUp } from "@/lib/animations";
 
 /**
- * Modal oscuro reutilizable para el panel interno (bg-foreground, no el
- * Modal claro de src/components/ui/ hecho para el sitio público). Usado
- * por TeamTable, CampaignsBoard, ProposalsBoard e InvoicesBoard — mismo
- * patrón de foco/Escape/backdrop en los cuatro, antes duplicado.
+ * Modal del panel interno — mismos tokens claros que src/components/ui/Modal.tsx
+ * del sitio público, en un componente separado porque el dashboard no comparte
+ * layout con la home. Usado por TeamTable, CampaignsBoard, ProposalsBoard e
+ * InvoicesBoard — mismo patrón de foco/Escape/backdrop en los cuatro.
  */
 export function ModalShell({
   titleId,
@@ -26,6 +27,8 @@ export function ModalShell({
 }) {
   const dialogRef = useRef<HTMLDivElement>(null);
   useFocusTrap(true, dialogRef);
+  const reduced = useReducedMotion();
+  const variants = scaleUp(reduced ?? false);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -43,22 +46,22 @@ export function ModalShell({
     >
       <motion.div
         ref={dialogRef}
-        initial={{ opacity: 0, scale: 0.94, y: 12 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.94, y: 12 }}
-        transition={{ duration: 0.18 }}
+        variants={variants}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={`w-full ${maxWidthClassName} rounded-xl border border-background/15 bg-foreground p-6 text-background shadow-2xl outline-none max-h-[85vh] overflow-y-auto`}
+        className={`w-full ${maxWidthClassName} rounded-xl border border-foreground/15 bg-background p-6 text-foreground shadow-2xl outline-none max-h-[85vh] overflow-y-auto`}
       >
         <div className="flex items-center justify-between mb-5">
           <h3 id={titleId} className="text-lg font-bold">{title}</h3>
           <button
             onClick={onClose}
             aria-label="Cerrar"
-            className="flex h-11 w-11 items-center justify-center rounded-full text-background/60 hover:bg-background/10 hover:text-background transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground shrink-0"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/60 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background shrink-0"
           >
             <X size={18} />
           </button>

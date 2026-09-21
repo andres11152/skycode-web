@@ -40,16 +40,16 @@ export function PortalView({
 
   return (
     <div className="space-y-6">
-      <nav aria-label="Secciones del portal" className="flex flex-wrap gap-2 border-b border-background/10 pb-3">
+      <nav aria-label="Secciones del portal" className="flex flex-wrap gap-2 border-b border-foreground/10 pb-3">
         {TABS.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
             onClick={() => setActiveTab(key)}
             aria-current={activeTab === key ? "page" : undefined}
-            className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground ${
+            className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
               activeTab === key
                 ? "bg-accent-strong text-white"
-                : "text-background/70 hover:bg-background/10 hover:text-background"
+                : "text-foreground/70 hover:bg-foreground/10 hover:text-foreground"
             }`}
           >
             <Icon size={14} />

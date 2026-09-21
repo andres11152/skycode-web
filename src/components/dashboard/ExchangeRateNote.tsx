@@ -7,7 +7,7 @@ import { formatMoney } from "@/lib/utils";
  */
 export function ExchangeRateNote({ usdToCopRate }: { usdToCopRate: number }) {
   return (
-    <p className="text-[10px] text-background/40">
+    <p className="text-[10px] text-foreground/40">
       Totales convertidos a COP con la tasa vigente: 1 USD ≈ {formatMoney(usdToCopRate, "COP")}.
     </p>
   );

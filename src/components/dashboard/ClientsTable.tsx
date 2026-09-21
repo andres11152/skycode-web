@@ -54,60 +54,60 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-background">Clientes</h1>
-        <p className="mt-1 text-xs text-background/70 font-sans">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Clientes</h1>
+        <p className="mt-1 text-xs text-foreground/70 font-sans">
           Directorio de clientes — proyectos, facturación y saldo pendiente en una vista
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <SpotlightCard>
-          <div className="rounded-xl border border-background/15 bg-background/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-background/60">
+          <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
+            <div className="flex items-center justify-between text-xs text-foreground/60">
               <span>Total Clientes</span>
               <Building2 size={18} className="text-accent" />
             </div>
-            <div className="text-2xl font-bold font-mono text-background">{total}</div>
+            <div className="text-2xl font-bold font-mono text-foreground">{total}</div>
           </div>
         </SpotlightCard>
         <SpotlightCard>
-          <div className="rounded-xl border border-background/15 bg-background/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-background/60">
+          <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
+            <div className="flex items-center justify-between text-xs text-foreground/60">
               <span>Facturado (esta página)</span>
-              <Receipt size={18} className="text-green-400" />
+              <Receipt size={18} className="text-green-700" />
             </div>
-            <div className="text-lg font-bold font-mono text-green-400">
+            <div className="text-lg font-bold font-mono text-green-700">
               {formatMoney(clients.reduce((sum, c) => sum + c.totalBilledCop, 0), "COP")}
             </div>
           </div>
         </SpotlightCard>
         <SpotlightCard>
-          <div className="rounded-xl border border-background/15 bg-background/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-background/60">
+          <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
+            <div className="flex items-center justify-between text-xs text-foreground/60">
               <span>Saldo pendiente (esta página)</span>
-              <Layers size={18} className="text-amber-400" />
+              <Layers size={18} className="text-amber-700" />
             </div>
-            <div className="text-lg font-bold font-mono text-amber-400">
+            <div className="text-lg font-bold font-mono text-amber-700">
               {formatMoney(clients.reduce((sum, c) => sum + c.totalOutstandingCop, 0), "COP")}
             </div>
           </div>
         </SpotlightCard>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background/5 border border-background/15 p-4 rounded-xl">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-foreground/5 border border-foreground/15 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-background/60" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
           <input
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Buscar por nombre, correo o empresa..."
-            className="w-full rounded-xl border border-background/15 bg-background/10 py-2 pl-10 pr-4 text-xs text-background placeholder:text-background/60 outline-none focus:border-accent"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2 pl-10 pr-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
           />
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-background/15 bg-background/5 backdrop-blur-2xl shadow-2xl">
+      <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
         {clients.length === 0 ? (
           <EmptyState
             icon={Building2}
@@ -117,9 +117,9 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-background/90">
+              <table className="w-full text-left text-xs text-foreground/90">
                 <caption className="sr-only">Directorio de clientes con proyectos activos, facturado y saldo pendiente</caption>
-                <thead className="border-b border-background/10 bg-background/10 font-mono uppercase text-[10px] text-background/60">
+                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
                   <tr>
                     <th scope="col" className="px-5 py-3.5">Cliente</th>
                     <th scope="col" className="px-5 py-3.5">Empresa</th>
@@ -129,21 +129,21 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
                     <th scope="col" className="px-5 py-3.5 text-right">Ver</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-background/10">
+                <tbody className="divide-y divide-foreground/10">
                   {clients.map((client) => (
-                    <tr key={client.id} className="hover:bg-background/10 transition-colors">
+                    <tr key={client.id} className="hover:bg-foreground/10 transition-colors">
                       <td className="px-5 py-4">
-                        <div className="font-bold text-background">{client.name}</div>
-                        <div className="text-[11px] text-background/60 font-mono">{client.email}</div>
+                        <div className="font-bold text-foreground">{client.name}</div>
+                        <div className="text-[11px] text-foreground/60 font-mono">{client.email}</div>
                       </td>
-                      <td className="px-5 py-4 text-background/80">{client.company || "—"}</td>
+                      <td className="px-5 py-4 text-foreground/80">{client.company || "—"}</td>
                       <td className="px-5 py-4 text-center font-mono">{client.projectCount}</td>
-                      <td className="px-5 py-4 text-right font-mono text-background">
+                      <td className="px-5 py-4 text-right font-mono text-foreground">
                         {formatMoney(client.totalBilledCop, "COP")}
                       </td>
                       <td
                         className={`px-5 py-4 text-right font-mono font-bold ${
-                          client.totalOutstandingCop > 0 ? "text-amber-400" : "text-background/50"
+                          client.totalOutstandingCop > 0 ? "text-amber-700" : "text-foreground/50"
                         }`}
                       >
                         {formatMoney(client.totalOutstandingCop, "COP")}
@@ -151,7 +151,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
                       <td className="px-5 py-4 text-right">
                         <Link
                           href={`/dashboard/clientes/${client.id}`}
-                          className="inline-flex items-center gap-1 rounded-lg border border-background/15 px-3 py-1.5 text-[11px] font-semibold text-background hover:bg-background/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                          className="inline-flex items-center gap-1 rounded-lg border border-foreground/15 px-3 py-1.5 text-[11px] font-semibold text-foreground hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           Ver ficha
                           <ArrowRight size={12} />
@@ -163,7 +163,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
               </table>
             </div>
 
-            <div className="flex items-center justify-between border-t border-background/10 px-5 py-3.5 text-xs text-background/60 font-mono">
+            <div className="flex items-center justify-between border-t border-foreground/10 px-5 py-3.5 text-xs text-foreground/60 font-mono">
               <div>
                 Mostrando {((page - 1) * pageSize) + 1} a {Math.min(page * pageSize, total)} de {total} registros
               </div>
@@ -171,7 +171,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
                 <button
                   onClick={() => pushQuery({ page: page - 1 })}
                   disabled={page === 1 || isNavigating}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-background/15 hover:bg-background/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label="Página anterior"
                 >
                   <ChevronLeft size={16} />
@@ -180,7 +180,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
                 <button
                   onClick={() => pushQuery({ page: page + 1 })}
                   disabled={page === totalPages || isNavigating}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-background/15 hover:bg-background/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label="Página siguiente"
                 >
                   <ChevronRight size={16} />

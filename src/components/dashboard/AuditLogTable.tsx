@@ -4,6 +4,7 @@ import { Fragment, useState, useRef, useTransition } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { History, Search, ChevronLeft, ChevronRight, ChevronDown, User } from "lucide-react";
 import { EmptyState } from "./EmptyState";
+import { Badge, type BadgeTone } from "./ui/Badge";
 import type { AuditLogEntry } from "./types";
 
 interface AuditLogTableProps {
@@ -16,14 +17,10 @@ interface AuditLogTableProps {
   actions: string[];
 }
 
-function actionBadgeClass(action: string): string {
-  if (action.endsWith(".delete") || action.endsWith(".reject")) {
-    return "bg-red-500/10 border border-red-500/20 text-red-400";
-  }
-  if (action.endsWith(".create") || action.endsWith(".accept") || action === "user.login") {
-    return "bg-green-500/10 border border-green-500/20 text-green-400";
-  }
-  return "bg-sky-500/10 border border-sky-500/20 text-sky-400";
+function actionBadgeTone(action: string): BadgeTone {
+  if (action.endsWith(".delete") || action.endsWith(".reject")) return "danger";
+  if (action.endsWith(".create") || action.endsWith(".accept") || action === "user.login") return "success";
+  return "info";
 }
 
 export function AuditLogTable({ entries, total, page, pageSize, q, action, actions }: AuditLogTableProps) {
@@ -66,40 +63,40 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-background">Auditoría</h1>
-        <p className="mt-1 text-xs text-background/70 font-sans">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Auditoría</h1>
+        <p className="mt-1 text-xs text-foreground/70 font-sans">
           Bitácora de cambios del sistema — quién hizo qué, cuándo, y con qué contenido anterior/nuevo
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background/5 border border-background/15 p-4 rounded-xl">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-foreground/5 border border-foreground/15 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-background/60" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
           <input
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Buscar por actor o entidad..."
-            className="w-full rounded-xl border border-background/15 bg-background/10 py-2 pl-10 pr-4 text-xs text-background placeholder:text-background/60 outline-none focus:border-accent"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2 pl-10 pr-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs text-background/60 font-mono">Acción:</span>
+          <span className="text-xs text-foreground/60 font-mono">Acción:</span>
           <select
             value={action}
             onChange={(e) => pushQuery({ action: e.target.value })}
-            className="rounded-xl border border-background/15 bg-background/10 py-2 px-3 text-xs text-background outline-none focus:border-accent cursor-pointer"
+            className="rounded-xl border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
           >
-            <option value="ALL" className="bg-foreground text-background">Todas las acciones</option>
+            <option value="ALL" className="bg-background text-foreground">Todas las acciones</option>
             {actions.map((a) => (
-              <option key={a} value={a} className="bg-foreground text-background">{a}</option>
+              <option key={a} value={a} className="bg-background text-foreground">{a}</option>
             ))}
           </select>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-background/15 bg-background/5 backdrop-blur-2xl shadow-2xl">
+      <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
         {entries.length === 0 ? (
           <EmptyState
             icon={History}
@@ -109,9 +106,9 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-background/90">
+              <table className="w-full text-left text-xs text-foreground/90">
                 <caption className="sr-only">Bitácora de auditoría del sistema, con actor, acción y contenido del cambio</caption>
-                <thead className="border-b border-background/10 bg-background/10 font-mono uppercase text-[10px] text-background/60">
+                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
                   <tr>
                     <th scope="col" className="px-5 py-3.5">Actor</th>
                     <th scope="col" className="px-5 py-3.5">Acción</th>
@@ -121,7 +118,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
                     <th scope="col" className="px-5 py-3.5 sr-only">Detalle</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-background/10">
+                <tbody className="divide-y divide-foreground/10">
                   {entries.map((entry) => {
                     const isExpanded = expandedId === entry.id;
                     return (
@@ -137,33 +134,31 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
                           tabIndex={0}
                           role="button"
                           aria-expanded={isExpanded}
-                          className="hover:bg-background/10 cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                          className="hover:bg-foreground/10 cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <td className="px-5 py-3.5">
                             <div className="flex items-center gap-1.5">
-                              <User size={12} className="text-background/40 shrink-0" />
+                              <User size={12} className="text-foreground/40 shrink-0" />
                               <span className="font-mono truncate max-w-[180px]">
                                 {entry.actor_email || "Sistema / público"}
                               </span>
                             </div>
                           </td>
                           <td className="px-5 py-3.5">
-                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${actionBadgeClass(entry.action)}`}>
-                              {entry.action}
-                            </span>
+                            <Badge tone={actionBadgeTone(entry.action)}>{entry.action}</Badge>
                           </td>
-                          <td className="px-5 py-3.5 font-mono text-background/70">
+                          <td className="px-5 py-3.5 font-mono text-foreground/70">
                             {entry.entity_type}
                             {entry.entity_id ? `#${entry.entity_id}` : ""}
                           </td>
-                          <td className="px-5 py-3.5 font-mono text-background/50">{entry.ip || "—"}</td>
-                          <td className="px-5 py-3.5 font-mono text-background/50 whitespace-nowrap">
+                          <td className="px-5 py-3.5 font-mono text-foreground/50">{entry.ip || "—"}</td>
+                          <td className="px-5 py-3.5 font-mono text-foreground/50 whitespace-nowrap">
                             {new Date(entry.created_at).toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" })}
                           </td>
                           <td className="px-5 py-3.5 text-right">
                             <ChevronDown
                               size={14}
-                              className={`text-background/40 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                              className={`text-foreground/40 transition-transform ${isExpanded ? "rotate-180" : ""}`}
                               aria-hidden="true"
                             />
                           </td>
@@ -172,11 +167,11 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
                           <tr>
                             <td colSpan={6} className="bg-background/[0.03] px-5 py-4">
                               {entry.diff ? (
-                                <pre className="overflow-x-auto rounded-lg bg-background/10 p-3 text-[11px] leading-relaxed text-background/80 font-mono">
+                                <pre className="overflow-x-auto rounded-lg bg-foreground/10 p-3 text-[11px] leading-relaxed text-foreground/80 font-mono">
                                   {JSON.stringify(entry.diff, null, 2)}
                                 </pre>
                               ) : (
-                                <p className="text-[11px] text-background/50">Sin contenido adicional para esta entrada.</p>
+                                <p className="text-[11px] text-foreground/50">Sin contenido adicional para esta entrada.</p>
                               )}
                             </td>
                           </tr>
@@ -188,7 +183,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
               </table>
             </div>
 
-            <div className="flex items-center justify-between border-t border-background/10 px-5 py-3.5 text-xs text-background/60 font-mono">
+            <div className="flex items-center justify-between border-t border-foreground/10 px-5 py-3.5 text-xs text-foreground/60 font-mono">
               <div>
                 Mostrando {((page - 1) * pageSize) + 1} a {Math.min(page * pageSize, total)} de {total} registros
               </div>
@@ -196,7 +191,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
                 <button
                   onClick={() => pushQuery({ page: page - 1 })}
                   disabled={page === 1 || isNavigating}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-background/15 hover:bg-background/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label="Página anterior"
                 >
                   <ChevronLeft size={16} />
@@ -205,7 +200,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
                 <button
                   onClick={() => pushQuery({ page: page + 1 })}
                   disabled={page === totalPages || isNavigating}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-background/15 hover:bg-background/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label="Página siguiente"
                 >
                   <ChevronRight size={16} />

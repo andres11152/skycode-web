@@ -7,6 +7,9 @@ import { Users2, RefreshCw, UserPlus, Copy, Check, Ban, PlayCircle } from "lucid
 import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
 import { CurrencySelect } from "./CurrencySelect";
+import { Badge } from "./ui/Badge";
+import { Button } from "./ui/Button";
+import { Alert } from "./ui/Alert";
 import type { Currency } from "@/lib/currency";
 import type { TeamMember, TeamRole } from "./types";
 
@@ -131,37 +134,35 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-background">Equipo Interno</h1>
-          <p className="mt-1 text-xs text-background/70 font-sans">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Equipo Interno</h1>
+          <p className="mt-1 text-xs text-foreground/70 font-sans">
             Quién tiene acceso al panel y con qué rol.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="flex items-center gap-2 rounded-xl border border-background/20 bg-background/5 px-4 py-2 text-xs font-medium text-background hover:bg-background/15 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
-          >
+          <Button variant="secondary" onClick={handleRefresh} disabled={isRefreshing}>
             <RefreshCw size={14} className={isRefreshing ? "animate-spin" : ""} />
             <span>Actualizar</span>
-          </button>
-          <button
-            onClick={() => setInviteOpen(true)}
-            className="flex items-center gap-2 rounded-xl bg-accent-strong px-4 py-2 text-xs font-bold text-white shadow-lg hover:brightness-90 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
-          >
+          </Button>
+          <Button variant="accent" onClick={() => setInviteOpen(true)}>
             <UserPlus size={14} />
             <span>Invitar</span>
-          </button>
+          </Button>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-background/15 bg-background/5 backdrop-blur-2xl shadow-2xl">
+      <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
         {members.length === 0 ? (
-          <EmptyState icon={Users2} title="Sin miembros" description="Invita a la primera persona a tu equipo." />
+          <EmptyState
+            icon={Users2}
+            title="Sin miembros"
+            description="Invita a la primera persona a tu equipo."
+            action={{ label: "Invitar", onClick: () => setInviteOpen(true) }}
+          />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-background/90">
-              <thead className="border-b border-background/10 bg-background/10 font-mono uppercase text-[10px] text-background/60">
+            <table className="w-full text-left text-xs text-foreground/90">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
                 <tr>
                   <th className="px-5 py-3.5">Nombre / Email</th>
                   <th className="px-5 py-3.5">Rol</th>
@@ -171,32 +172,32 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
                   <th className="px-5 py-3.5 text-right">Acción</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-background/10">
+              <tbody className="divide-y divide-foreground/10">
                 {members.map((member) => {
                   const isSelf = String(member.id) === String(currentUserId);
                   const isBusy = busyMemberId === member.id;
                   return (
                     <tr key={member.id}>
                       <td className="px-5 py-4">
-                        <div className="font-bold text-background flex items-center gap-2">
+                        <div className="font-bold text-foreground flex items-center gap-2">
                           <span>{member.name}</span>
                           {isSelf && (
-                            <span className="rounded bg-background/10 px-1.5 py-0.5 text-[10px] uppercase text-background/60">
+                            <span className="rounded bg-foreground/10 px-1.5 py-0.5 text-[10px] uppercase text-foreground/60">
                               Tú
                             </span>
                           )}
                         </div>
-                        <div className="text-[11px] text-background/60 font-mono">{member.email}</div>
+                        <div className="text-[11px] text-foreground/60 font-mono">{member.email}</div>
                       </td>
                       <td className="px-5 py-4">
                         <select
                           value={member.role}
                           disabled={isSelf || isBusy}
                           onChange={(e) => handleRoleChange(member.id, e.target.value as TeamRole)}
-                          className="rounded-lg border border-background/15 bg-background/10 px-2.5 py-1 text-[11px] font-semibold text-background outline-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="rounded-lg border border-foreground/15 bg-foreground/10 px-2.5 py-1 text-[11px] font-semibold text-foreground outline-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           {(Object.keys(ROLE_LABELS) as TeamRole[]).map((role) => (
-                            <option key={role} value={role} className="bg-foreground text-background">
+                            <option key={role} value={role} className="bg-background text-foreground">
                               {ROLE_LABELS[role]}
                             </option>
                           ))}
@@ -210,27 +211,21 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
                         />
                       </td>
                       <td className="px-5 py-4">
-                        <span
-                          className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                            member.status === "active"
-                              ? "bg-green-500/10 border border-green-500/20 text-green-400"
-                              : "bg-red-500/10 border border-red-500/20 text-red-400"
-                          }`}
-                        >
+                        <Badge tone={member.status === "active" ? "success" : "danger"}>
                           {member.status === "active" ? "Activo" : "Desactivado"}
-                        </span>
+                        </Badge>
                       </td>
-                      <td className="px-5 py-4 font-mono text-[10px] text-background/60">
+                      <td className="px-5 py-4 font-mono text-[10px] text-foreground/60">
                         {new Date(member.created_at).toLocaleDateString("es-CO")}
                       </td>
                       <td className="px-5 py-4 text-right">
                         <button
                           onClick={() => handleStatusToggle(member)}
                           disabled={isSelf || isBusy}
-                          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground disabled:opacity-40 disabled:cursor-not-allowed ${
+                          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-40 disabled:cursor-not-allowed ${
                             member.status === "active"
-                              ? "border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20"
-                              : "border-green-500/30 bg-green-500/10 text-green-400 hover:bg-green-500/20"
+                              ? "border-red-500/30 bg-red-500/10 text-red-700 hover:bg-red-500/20"
+                              : "border-green-500/30 bg-green-500/10 text-green-700 hover:bg-green-500/20"
                           }`}
                         >
                           {member.status === "active" ? <Ban size={12} /> : <PlayCircle size={12} />}
@@ -305,12 +300,12 @@ function HourlyCostCell({
         onChange={(e) => setDraft(e.target.value)}
         onBlur={commit}
         placeholder="Sin definir"
-        className="w-20 rounded-lg border border-background/15 bg-background/10 px-2 py-1 text-[11px] text-background placeholder:text-background/40 outline-none focus:border-accent font-mono disabled:opacity-40"
+        className="w-20 rounded-lg border border-foreground/15 bg-foreground/10 px-2 py-1 text-[11px] text-foreground placeholder:text-foreground/40 outline-none focus:border-accent font-mono disabled:opacity-40"
       />
       <CurrencySelect
         value={member.hourly_cost_currency}
         onChange={(currency) => onChange(member.hourly_cost, currency)}
-        className="rounded-lg border border-background/15 bg-background/10 px-1.5 py-1 text-[10px] text-background outline-none focus:border-accent cursor-pointer disabled:opacity-40"
+        className="rounded-lg border border-foreground/15 bg-foreground/10 px-1.5 py-1 text-[10px] text-foreground outline-none focus:border-accent cursor-pointer disabled:opacity-40"
       />
     </div>
   );
@@ -349,35 +344,31 @@ function InviteModal({
     <ModalShell titleId={titleId} title="Invitar al equipo" onClose={onClose}>
         {inviteUrl ? (
           <div className="space-y-4">
-            <p className="text-xs text-background/70">
+            <p className="text-xs text-foreground/70">
               Invitación creada. Compártele este enlace (válido por 3 días) — también se intentó enviar por correo.
             </p>
-            <div className="flex items-center gap-2 rounded-xl border border-background/15 bg-background/10 p-3">
-              <span className="flex-1 truncate text-xs font-mono text-background/90">{inviteUrl}</span>
+            <div className="flex items-center gap-2 rounded-xl border border-foreground/15 bg-foreground/10 p-3">
+              <span className="flex-1 truncate text-xs font-mono text-foreground/90">{inviteUrl}</span>
               <button
                 onClick={onCopyUrl}
-                className="flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                className="flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                {copied ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                {copied ? <Check size={12} className="text-green-700" /> : <Copy size={12} />}
                 <span>{copied ? "Copiado" : "Copiar"}</span>
               </button>
             </div>
             <button
               onClick={onClose}
-              className="w-full rounded-xl border border-background/20 px-4 py-2.5 text-xs font-medium text-background/80 hover:bg-background/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              className="w-full rounded-xl border border-foreground/20 px-4 py-2.5 text-xs font-medium text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               Cerrar
             </button>
           </div>
         ) : (
           <form onSubmit={onSubmit} className="space-y-4">
-            {error && (
-              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300">
-                {error}
-              </div>
-            )}
+            {error && <Alert tone="error">{error}</Alert>}
             <div className="space-y-1.5">
-              <label htmlFor={emailId} className="block text-xs font-semibold text-background/80">
+              <label htmlFor={emailId} className="block text-xs font-semibold text-foreground/80">
                 Correo electrónico
               </label>
               <input
@@ -387,33 +378,29 @@ function InviteModal({
                 value={email}
                 onChange={(e) => onEmailChange(e.target.value)}
                 placeholder="persona@skycode.agency"
-                className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 px-4 text-xs text-background placeholder:text-background/50 outline-none focus:border-accent focus:ring-1 focus:ring-accent font-mono"
+                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent focus:ring-1 focus:ring-accent font-mono"
               />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor={roleId} className="block text-xs font-semibold text-background/80">
+              <label htmlFor={roleId} className="block text-xs font-semibold text-foreground/80">
                 Rol
               </label>
               <select
                 id={roleId}
                 value={role}
                 onChange={(e) => onRoleChange(e.target.value as TeamRole)}
-                className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 px-4 text-xs text-background outline-none focus:border-accent cursor-pointer"
+                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
               >
                 {(Object.keys(ROLE_LABELS) as TeamRole[]).map((r) => (
-                  <option key={r} value={r} className="bg-foreground text-background">
+                  <option key={r} value={r} className="bg-background text-foreground">
                     {ROLE_LABELS[r]}
                   </option>
                 ))}
               </select>
             </div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
-            >
+            <Button type="submit" variant="accent" disabled={isSubmitting} className="w-full py-3">
               {isSubmitting ? "Enviando..." : "Enviar invitación"}
-            </button>
+            </Button>
           </form>
         )}
     </ModalShell>

@@ -222,7 +222,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
     if (diffHours < 2) {
       return (
-        <span className="inline-flex items-center gap-1 rounded bg-green-500/20 px-2 py-0.5 text-[10px] font-bold text-green-400">
+        <span className="inline-flex items-center gap-1 rounded bg-green-500/20 px-2 py-0.5 text-[10px] font-bold text-green-700">
           <CheckCircle2 size={11} />
           Respuesta Inmediata (&lt;2h)
         </span>
@@ -230,14 +230,14 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
     }
     if (diffHours < 24) {
       return (
-        <span className="inline-flex items-center gap-1 rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-400">
+        <span className="inline-flex items-center gap-1 rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-700">
           <Clock size={11} />
           Atención Requerida Hoy
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1 rounded bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-400 animate-pulse">
+      <span className="inline-flex items-center gap-1 rounded bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-700 animate-pulse">
         <AlertCircle size={11} />
         SLA Vencido (&gt;24h)
       </span>
@@ -253,15 +253,15 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-background">Prospectos y Cotizaciones Recibidas</h1>
-          <p className="mt-1 text-xs text-background/70 font-sans">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Prospectos y Cotizaciones Recibidas</h1>
+          <p className="mt-1 text-xs text-foreground/70 font-sans">
             Base de datos PostgreSQL en Render — Leads capturados en tiempo real
           </p>
         </div>
         <div className="flex items-center gap-3">
           <a
             href={`/api/leads/export${exportParams.size ? `?${exportParams}` : ""}`}
-            className="flex items-center gap-2 rounded-xl border border-background/20 bg-background/5 px-4 py-2 text-xs font-medium text-background hover:bg-background/15 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+            className="flex items-center gap-2 rounded-xl border border-foreground/20 bg-foreground/5 px-4 py-2 text-xs font-medium text-foreground hover:bg-foreground/15 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <Download size={14} />
             <span>Exportar CSV</span>
@@ -269,7 +269,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
           <button
             onClick={handleRefresh}
             disabled={isNavigating}
-            className="flex items-center gap-2 rounded-xl bg-accent-strong px-4 py-2 text-xs font-bold text-white shadow-lg hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+            className="flex items-center gap-2 rounded-xl bg-accent-strong px-4 py-2 text-xs font-bold text-white shadow-lg hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <RefreshCw size={14} className={isNavigating ? "animate-spin" : ""} />
             <span>Actualizar Datos</span>
@@ -279,79 +279,79 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <SpotlightCard>
-          <div className="rounded-xl border border-background/15 bg-background/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-background/60">
+          <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
+            <div className="flex items-center justify-between text-xs text-foreground/60">
               <span>Total Cotizaciones</span>
               <Users size={18} className="text-accent" />
             </div>
-            <div className="text-2xl font-bold font-mono text-background">{stats.total}</div>
-            <div className="text-[10px] text-background/50">Capturados en plataforma</div>
+            <div className="text-2xl font-bold font-mono text-foreground">{stats.total}</div>
+            <div className="text-[10px] text-foreground/50">Capturados en plataforma</div>
           </div>
         </SpotlightCard>
 
         <SpotlightCard>
-          <div className="rounded-xl border border-background/15 bg-background/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-background/60">
+          <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
+            <div className="flex items-center justify-between text-xs text-foreground/60">
               <span>Leads Nuevos</span>
-              <Clock size={18} className="text-amber-400" />
+              <Clock size={18} className="text-amber-700" />
             </div>
-            <div className="text-2xl font-bold font-mono text-amber-400">{stats.newCount}</div>
-            <div className="text-[10px] text-amber-400/70">Requieren contacto prioritario</div>
+            <div className="text-2xl font-bold font-mono text-amber-700">{stats.newCount}</div>
+            <div className="text-[10px] text-amber-700/70">Requieren contacto prioritario</div>
           </div>
         </SpotlightCard>
 
         <SpotlightCard>
-          <div className="rounded-xl border border-background/15 bg-background/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-background/60">
+          <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
+            <div className="flex items-center justify-between text-xs text-foreground/60">
               <span>Clientes Ganados</span>
-              <CheckCircle2 size={18} className="text-green-400" />
+              <CheckCircle2 size={18} className="text-green-700" />
             </div>
-            <div className="text-2xl font-bold font-mono text-green-400">{stats.wonCount}</div>
-            <div className="text-[10px] text-green-400/70">Proyectos en desarrollo</div>
+            <div className="text-2xl font-bold font-mono text-green-700">{stats.wonCount}</div>
+            <div className="text-[10px] text-green-700/70">Proyectos en desarrollo</div>
           </div>
         </SpotlightCard>
 
         <SpotlightCard>
-          <div className="rounded-xl border border-background/15 bg-background/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-background/60">
+          <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
+            <div className="flex items-center justify-between text-xs text-foreground/60">
               <span>Base de Datos</span>
-              <TrendingUp size={18} className="text-sky-400" />
+              <TrendingUp size={18} className="text-sky-700" />
             </div>
-            <div className="text-sm font-bold font-mono text-sky-400 truncate">PostgreSQL Render</div>
-            <div className="text-[10px] text-background/50">Conexión cifrada SSL</div>
+            <div className="text-sm font-bold font-mono text-sky-700 truncate">PostgreSQL Render</div>
+            <div className="text-[10px] text-foreground/50">Conexión cifrada SSL</div>
           </div>
         </SpotlightCard>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background/5 border border-background/15 p-4 rounded-xl">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-foreground/5 border border-foreground/15 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-background/60" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
           <input
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Buscar por cliente, email o servicio..."
-            className="w-full rounded-xl border border-background/15 bg-background/10 py-2 pl-10 pr-4 text-xs text-background placeholder:text-background/60 outline-none focus:border-accent"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2 pl-10 pr-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <SlidersHorizontal size={14} className="text-background/60" />
-          <span className="text-xs text-background/60 font-mono">Estado:</span>
+          <SlidersHorizontal size={14} className="text-foreground/60" />
+          <span className="text-xs text-foreground/60 font-mono">Estado:</span>
           <select
             value={status}
             onChange={(e) => pushQuery({ status: e.target.value })}
-            className="rounded-xl border border-background/15 bg-background/10 py-2 px-3 text-xs text-background outline-none focus:border-accent cursor-pointer"
+            className="rounded-xl border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
           >
-            <option value="ALL" className="bg-foreground text-background">Todos los estados</option>
+            <option value="ALL" className="bg-background text-foreground">Todos los estados</option>
             {STATUS_OPTIONS.map((s) => (
-              <option key={s} value={s} className="bg-foreground text-background">{s}</option>
+              <option key={s} value={s} className="bg-background text-foreground">{s}</option>
             ))}
           </select>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-background/15 bg-background/5 backdrop-blur-2xl shadow-2xl">
+      <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
         {leads.length === 0 ? (
           <EmptyState
             icon={Users}
@@ -361,8 +361,8 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-background/90">
-                <thead className="border-b border-background/10 bg-background/10 font-mono uppercase text-[10px] text-background/60">
+              <table className="w-full text-left text-xs text-foreground/90">
+                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
                   <tr>
                     <th className="px-5 py-3.5">Cliente / Email</th>
                     <th className="px-5 py-3.5">Servicio Solicitado</th>
@@ -372,7 +372,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                     <th className="px-5 py-3.5 text-right">Acción</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-background/10">
+                <tbody className="divide-y divide-foreground/10">
                   {leads.map((lead) => {
                     const cleanPhone = lead.phone ? lead.phone.replace(/[^0-9+]/g, "") : "";
                     const waText = encodeURIComponent(
@@ -392,25 +392,25 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                         }}
                         tabIndex={0}
                         role="button"
-                        className="hover:bg-background/10 cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                        className="hover:bg-foreground/10 cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
                         <td className="px-5 py-4">
-                          <div className="font-bold text-background">{lead.name}</div>
-                          <div className="text-[11px] text-background/60 font-mono">{lead.email}</div>
+                          <div className="font-bold text-foreground">{lead.name}</div>
+                          <div className="text-[11px] text-foreground/60 font-mono">{lead.email}</div>
                         </td>
 
                         <td className="px-5 py-4 max-w-xs">
-                          <div className="font-medium text-background truncate">
+                          <div className="font-medium text-foreground truncate">
                             {lead.service || "Desarrollo General"}
                           </div>
                           {lead.message && (
-                            <div className="text-[10px] text-background/50 line-clamp-1 mt-0.5">
+                            <div className="text-[10px] text-foreground/50 line-clamp-1 mt-0.5">
                               {lead.message}
                             </div>
                           )}
                         </td>
 
-                        <td className="px-5 py-4 font-mono font-bold text-green-400">
+                        <td className="px-5 py-4 font-mono font-bold text-green-700">
                           {lead.budget || "A convenir"}
                         </td>
 
@@ -422,16 +422,16 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                             onChange={(e) => handleStatusChange(lead.id, e.target.value)}
                             className={`rounded-lg border px-2.5 py-1 text-[11px] font-semibold outline-none cursor-pointer ${
                               lead.status === "Nuevo"
-                                ? "border-amber-400/40 bg-amber-400/10 text-amber-300"
+                                ? "border-amber-200 bg-amber-50 text-amber-700"
                                 : lead.status === "En Cotización"
-                                ? "border-sky-400/40 bg-sky-400/10 text-sky-300"
+                                ? "border-sky-200 bg-sky-50 text-sky-700"
                                 : lead.status === "Ganado"
-                                ? "border-green-400/40 bg-green-400/10 text-green-300"
-                                : "border-red-400/40 bg-red-400/10 text-red-300"
+                                ? "border-green-200 bg-green-50 text-green-700"
+                                : "border-red-200 bg-red-50 text-red-700"
                             }`}
                           >
                             {STATUS_OPTIONS.map((s) => (
-                              <option key={s} value={s} className="bg-foreground text-background">{s}</option>
+                              <option key={s} value={s} className="bg-background text-foreground">{s}</option>
                             ))}
                           </select>
                         </td>
@@ -440,11 +440,11 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                           <select
                             value={lead.owner?.id ?? ""}
                             onChange={(e) => handleOwnerChange(lead.id, e.target.value)}
-                            className="rounded-lg border border-background/15 bg-background/10 px-2.5 py-1 text-[11px] font-semibold text-background outline-none cursor-pointer max-w-[9rem]"
+                            className="rounded-lg border border-foreground/15 bg-foreground/10 px-2.5 py-1 text-[11px] font-semibold text-foreground outline-none cursor-pointer max-w-[9rem]"
                           >
-                            <option value="" className="bg-foreground text-background">Sin asignar</option>
+                            <option value="" className="bg-background text-foreground">Sin asignar</option>
                             {owners.map((o) => (
-                              <option key={o.id} value={o.id} className="bg-foreground text-background">{o.name}</option>
+                              <option key={o.id} value={o.id} className="bg-background text-foreground">{o.name}</option>
                             ))}
                           </select>
                         </td>
@@ -455,13 +455,13 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                               href={waUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 rounded-lg bg-green-500/20 border border-green-500/30 px-3 py-1.5 text-[11px] font-semibold text-green-400 hover:bg-green-500/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                              className="inline-flex items-center gap-1 rounded-lg bg-green-500/20 border border-green-500/30 px-3 py-1.5 text-[11px] font-semibold text-green-700 hover:bg-green-500/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                             >
                               <span>WhatsApp</span>
                               <ExternalLink size={12} />
                             </a>
                           ) : (
-                            <span className="text-[10px] text-background/40 font-mono">Ver Detalle →</span>
+                            <span className="text-[10px] text-foreground/40 font-mono">Ver Detalle →</span>
                           )}
                         </td>
                       </tr>
@@ -471,7 +471,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
               </table>
             </div>
 
-            <div className="flex items-center justify-between border-t border-background/10 px-5 py-3.5 text-xs text-background/60 font-mono">
+            <div className="flex items-center justify-between border-t border-foreground/10 px-5 py-3.5 text-xs text-foreground/60 font-mono">
               <div>
                 Mostrando {((page - 1) * pageSize) + 1} a {Math.min(page * pageSize, total)} de {total} registros
               </div>
@@ -479,7 +479,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                 <button
                   onClick={() => pushQuery({ page: page - 1 })}
                   disabled={page === 1}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-background/15 hover:bg-background/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -487,7 +487,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                 <button
                   onClick={() => pushQuery({ page: page + 1 })}
                   disabled={page === totalPages}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-background/15 hover:bg-background/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <ChevronRight size={16} />
                 </button>
@@ -513,78 +513,78 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
               onKeyDown={(e) => {
                 if (e.key === "Escape") setSelectedLead(null);
               }}
-              className="w-full max-w-lg bg-foreground border-l border-background/20 p-6 overflow-y-auto space-y-6 text-background shadow-2xl flex flex-col justify-between outline-none"
+              className="w-full max-w-lg bg-background border-l border-foreground/20 p-6 overflow-y-auto space-y-6 text-foreground shadow-2xl flex flex-col justify-between outline-none"
               role="dialog"
               aria-modal="true"
               aria-labelledby={`lead-detail-${selectedLead.id}`}
               tabIndex={-1}
             >
               <div className="space-y-6">
-                <div className="flex items-start justify-between border-b border-background/10 pb-4">
+                <div className="flex items-start justify-between border-b border-foreground/10 pb-4">
                   <div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-background/50">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/50">
                       Detalle de Prospecto #{selectedLead.id}
                     </span>
-                    <h2 id={`lead-detail-${selectedLead.id}`} className="text-xl font-bold text-background mt-0.5">{selectedLead.name}</h2>
+                    <h2 id={`lead-detail-${selectedLead.id}`} className="text-xl font-bold text-foreground mt-0.5">{selectedLead.name}</h2>
                   </div>
                   <button
                     onClick={() => setSelectedLead(null)}
-                    className="rounded-full p-1 text-background/60 hover:bg-background/10 hover:text-background transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                    className="rounded-full p-1 text-foreground/60 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <X size={20} />
                   </button>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 font-mono text-xs">
-                  <div className="rounded-xl border border-background/15 bg-background/5 p-3">
-                    <span className="text-[10px] text-background/50 block">Presupuesto</span>
-                    <span className="font-bold text-green-400">{selectedLead.budget || "A convenir"}</span>
+                  <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-3">
+                    <span className="text-[10px] text-foreground/50 block">Presupuesto</span>
+                    <span className="font-bold text-green-700">{selectedLead.budget || "A convenir"}</span>
                   </div>
-                  <div className="rounded-xl border border-background/15 bg-background/5 p-3">
-                    <span className="text-[10px] text-background/50 block">Tiempo Est.</span>
+                  <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-3">
+                    <span className="text-[10px] text-foreground/50 block">Tiempo Est.</span>
                     <span className="font-bold text-accent">{selectedLead.estimated_weeks || 4} Semanas</span>
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-background/15 bg-background/5 p-4 space-y-3 text-xs">
+                <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-4 space-y-3 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-background/60">Correo Electrónico:</span>
+                    <span className="text-foreground/60">Correo Electrónico:</span>
                     <button
                       onClick={() => handleCopy(selectedLead.email, "email")}
-                      className="flex items-center gap-1 font-mono text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground rounded"
+                      className="flex items-center gap-1 font-mono text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
                     >
                       <span>{selectedLead.email}</span>
-                      {copiedField === "email" ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                      {copiedField === "email" ? <Check size={12} className="text-green-700" /> : <Copy size={12} />}
                     </button>
                   </div>
                   {selectedLead.phone && (
-                    <div className="flex items-center justify-between border-t border-background/10 pt-2">
-                      <span className="text-background/60">Teléfono / WhatsApp:</span>
+                    <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
+                      <span className="text-foreground/60">Teléfono / WhatsApp:</span>
                       <button
                         onClick={() => handleCopy(selectedLead.phone || "", "phone")}
-                        className="flex items-center gap-1 font-mono text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground rounded"
+                        className="flex items-center gap-1 font-mono text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
                       >
                         <span>{selectedLead.phone}</span>
-                        {copiedField === "phone" ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                        {copiedField === "phone" ? <Check size={12} className="text-green-700" /> : <Copy size={12} />}
                       </button>
                     </div>
                   )}
-                  <div className="flex items-center justify-between border-t border-background/10 pt-2">
-                    <span className="text-background/60">Origen de Captación:</span>
-                    <span className="font-mono text-background/90">{selectedLead.source || "Web Directo"}</span>
+                  <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
+                    <span className="text-foreground/60">Origen de Captación:</span>
+                    <span className="font-mono text-foreground/90">{selectedLead.source || "Web Directo"}</span>
                   </div>
                   {selectedLead.utm_source && (
-                    <div className="flex items-center justify-between border-t border-background/10 pt-2">
-                      <span className="text-background/60">Campaña (UTM):</span>
-                      <span className="font-mono text-background/90 text-right">
+                    <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
+                      <span className="text-foreground/60">Campaña (UTM):</span>
+                      <span className="font-mono text-foreground/90 text-right">
                         {selectedLead.utm_source}
                         {selectedLead.utm_campaign ? ` / ${selectedLead.utm_campaign}` : ""}
                       </span>
                     </div>
                   )}
-                  <div className="flex items-center justify-between border-t border-background/10 pt-2">
-                    <span className="text-background/60">Fecha de Registro:</span>
-                    <span className="font-mono text-background/70">
+                  <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
+                    <span className="text-foreground/60">Fecha de Registro:</span>
+                    <span className="font-mono text-foreground/70">
                       {new Date(selectedLead.created_at).toLocaleString("es-CO")}
                     </span>
                   </div>
@@ -592,34 +592,34 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
                 {selectedLead.message && (
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-semibold text-background/80">
+                    <label className="block text-xs font-semibold text-foreground/80">
                       Mensaje / Configuración del Cotizador
                     </label>
-                    <div className="rounded-xl border border-background/15 bg-background/10 p-4 text-xs font-mono whitespace-pre-wrap text-background/90 max-h-48 overflow-y-auto">
+                    <div className="rounded-xl border border-foreground/15 bg-foreground/10 p-4 text-xs font-mono whitespace-pre-wrap text-foreground/90 max-h-48 overflow-y-auto">
                       {selectedLead.message}
                     </div>
                   </div>
                 )}
 
                 <div className="space-y-1.5">
-                  <label className="flex items-center gap-1.5 text-xs font-semibold text-background/80">
+                  <label className="flex items-center gap-1.5 text-xs font-semibold text-foreground/80">
                     <UserCog size={14} className="text-accent" />
                     <span>Dueño del prospecto</span>
                   </label>
                   <select
                     value={selectedLead.owner?.id ?? ""}
                     onChange={(e) => handleOwnerChange(selectedLead.id, e.target.value)}
-                    className="w-full rounded-xl border border-background/15 bg-background/10 py-2 px-3 text-xs text-background outline-none focus:border-accent cursor-pointer"
+                    className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
                   >
-                    <option value="" className="bg-foreground text-background">Sin asignar</option>
+                    <option value="" className="bg-background text-foreground">Sin asignar</option>
                     {owners.map((o) => (
-                      <option key={o.id} value={o.id} className="bg-foreground text-background">{o.name}</option>
+                      <option key={o.id} value={o.id} className="bg-background text-foreground">{o.name}</option>
                     ))}
                   </select>
                 </div>
 
-                <div className="space-y-3 border-t border-background/10 pt-4">
-                  <label className="text-xs font-semibold text-background/80 flex items-center gap-1.5">
+                <div className="space-y-3 border-t border-foreground/10 pt-4">
+                  <label className="text-xs font-semibold text-foreground/80 flex items-center gap-1.5">
                     <History size={14} className="text-accent" />
                     <span>Historial de Interacción</span>
                   </label>
@@ -628,11 +628,11 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                     <select
                       value={newActivityType}
                       onChange={(e) => setNewActivityType(e.target.value as Exclude<LeadActivityType, "status_change">)}
-                      className="rounded-lg border border-background/15 bg-background/10 px-2 py-2 text-xs text-background outline-none focus:border-accent cursor-pointer shrink-0"
+                      className="rounded-lg border border-foreground/15 bg-foreground/10 px-2 py-2 text-xs text-foreground outline-none focus:border-accent cursor-pointer shrink-0"
                     >
-                      <option value="note" className="bg-foreground text-background">Nota</option>
-                      <option value="call" className="bg-foreground text-background">Llamada</option>
-                      <option value="email" className="bg-foreground text-background">Correo</option>
+                      <option value="note" className="bg-background text-foreground">Nota</option>
+                      <option value="call" className="bg-background text-foreground">Llamada</option>
+                      <option value="email" className="bg-background text-foreground">Correo</option>
                     </select>
                     <input
                       type="text"
@@ -645,12 +645,12 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                         }
                       }}
                       placeholder="Registrar llamada, correo enviado o nota..."
-                      className="flex-1 min-w-0 rounded-lg border border-background/15 bg-background/10 px-3 py-2 text-xs text-background placeholder:text-background/50 outline-none focus:border-accent"
+                      className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-foreground/10 px-3 py-2 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
                     />
                     <button
                       onClick={handleAddActivity}
                       disabled={isAddingActivity || !newActivityBody.trim()}
-                      className="rounded-lg bg-accent/20 border border-accent/30 px-3 py-2 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all disabled:opacity-50 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                      className="rounded-lg bg-accent/20 border border-accent/30 px-3 py-2 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all disabled:opacity-50 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     >
                       Agregar
                     </button>
@@ -658,26 +658,26 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
                   <div className="space-y-2 max-h-64 overflow-y-auto">
                     {activitiesLoading ? (
-                      <p className="text-[11px] text-background/50 text-center py-4">Cargando historial...</p>
+                      <p className="text-[11px] text-foreground/50 text-center py-4">Cargando historial...</p>
                     ) : activities.length === 0 ? (
-                      <p className="text-[11px] text-background/50 text-center py-4">Sin actividad registrada todavía.</p>
+                      <p className="text-[11px] text-foreground/50 text-center py-4">Sin actividad registrada todavía.</p>
                     ) : (
                       activities.map((activity) => {
                         const Icon = ACTIVITY_ICONS[activity.type];
                         return (
-                          <div key={activity.id} className="rounded-xl border border-background/10 bg-background/5 p-3 text-xs">
+                          <div key={activity.id} className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-3 text-xs">
                             <div className="flex items-center justify-between mb-1">
-                              <span className="flex items-center gap-1.5 font-semibold text-background/80">
+                              <span className="flex items-center gap-1.5 font-semibold text-foreground/80">
                                 <Icon size={12} className="text-accent" />
                                 {ACTIVITY_LABELS[activity.type]}
                               </span>
-                              <span className="text-[10px] text-background/50 font-mono">
+                              <span className="text-[10px] text-foreground/50 font-mono">
                                 {new Date(activity.created_at).toLocaleString("es-CO")}
                               </span>
                             </div>
-                            <p className="text-background/90 whitespace-pre-wrap">{activity.body}</p>
+                            <p className="text-foreground/90 whitespace-pre-wrap">{activity.body}</p>
                             {activity.actor_name && (
-                              <p className="text-[10px] text-background/40 mt-1">— {activity.actor_name}</p>
+                              <p className="text-[10px] text-foreground/40 mt-1">— {activity.actor_name}</p>
                             )}
                           </div>
                         );
@@ -687,7 +687,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-background/10 flex items-center gap-3">
+              <div className="pt-4 border-t border-foreground/10 flex items-center gap-3">
                 {selectedLead.phone && (
                   <a
                     href={`https://wa.me/${selectedLead.phone.replace(/[^0-9+]/g, "")}?text=${encodeURIComponent(
@@ -695,7 +695,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-2.5 text-xs font-bold text-black hover:bg-green-400 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-2.5 text-xs font-bold text-black hover:bg-green-400 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <span>Abrir Chat en WhatsApp</span>
                     <ExternalLink size={14} />
@@ -703,7 +703,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                 )}
                 <button
                   onClick={() => setSelectedLead(null)}
-                  className="rounded-xl border border-background/20 px-4 py-2.5 text-xs font-medium text-background/80 hover:bg-background/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="rounded-xl border border-foreground/20 px-4 py-2.5 text-xs font-medium text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   Cerrar
                 </button>

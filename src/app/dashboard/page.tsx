@@ -7,26 +7,41 @@ import { getCampaignsWithMetrics } from "@/lib/queries/campaigns";
 import { getAllProposals } from "@/lib/queries/proposals";
 import { getAllInvoices } from "@/lib/queries/invoices";
 import { getProjectProfitability } from "@/lib/queries/profitability";
+import { getAllTickets } from "@/lib/queries/supportTickets";
+import { getExpensesPage } from "@/lib/queries/expenses";
+import { getClientsPage } from "@/lib/queries/clients";
+import { getTeamMembers } from "@/lib/queries/team";
 import { getUsdToCopRate } from "@/lib/exchangeRate";
 import { convertCurrency } from "@/lib/currency";
 import { ExecutiveSummary } from "@/components/dashboard/ExecutiveSummary";
+import type { SupportTicket } from "@/components/dashboard/types";
+
+function countOverdueTickets(openTickets: SupportTicket[]): number {
+  const now = Date.now();
+  return openTickets.filter((t) => new Date(t.sla_due_at).getTime() < now).length;
+}
 
 export default async function DashboardIndexPage() {
   const session = await requireSessionOrRedirect();
 
-  // Solo el admin tiene permiso para los seis módulos a la vez, así que
+  // Solo el admin tiene permiso para todos los módulos a la vez, así que
   // solo el admin ve el resumen ejecutivo — el resto va directo a la
   // primera sección a la que sí tiene acceso.
   if (session.role === "admin") {
     const usdToCopRate = await getUsdToCopRate();
-    const [leadStats, projects, campaigns, proposals, invoices, profitability] = await Promise.all([
-      getLeadStats(),
-      getAllActiveProjects(),
-      getCampaignsWithMetrics(),
-      getAllProposals(),
-      getAllInvoices(),
-      getProjectProfitability(usdToCopRate),
-    ]);
+    const [leadStats, projects, campaigns, proposals, invoices, profitability, tickets, expensesPage, clientsPage, team] =
+      await Promise.all([
+        getLeadStats(),
+        getAllActiveProjects(),
+        getCampaignsWithMetrics(),
+        getAllProposals(),
+        getAllInvoices(),
+        getProjectProfitability(usdToCopRate),
+        getAllTickets(),
+        getExpensesPage({ q: "", category: "ALL", page: 1, pageSize: 1 }),
+        getClientsPage({ q: "", page: 1, pageSize: 1, usdToCopRate }),
+        getTeamMembers(),
+      ]);
 
     // Convertido a COP antes de sumar — una campaña en USD y otra en COP,
     // o una factura en cada moneda, no se pueden acumular directamente.
@@ -42,6 +57,9 @@ export default async function DashboardIndexPage() {
       .reduce((sum, i) => sum + convertCurrency(i.balance, i.currency, "COP", usdToCopRate), 0);
     const totalMargin = profitability.reduce((sum, p) => sum + p.marginVsBilledCop, 0);
 
+    const openTickets = tickets.filter((t) => t.status !== "Resuelto" && t.status !== "Cerrado");
+    const overdueTicketsCount = countOverdueTickets(openTickets);
+
     return (
       <ExecutiveSummary
         leadStats={{ total: leadStats.total, newCount: leadStats.newCount }}
@@ -52,6 +70,11 @@ export default async function DashboardIndexPage() {
         totalReceivable={totalReceivable}
         totalOverdue={totalOverdue}
         totalMargin={totalMargin}
+        clientsCount={clientsPage.total}
+        openTicketsCount={openTickets.length}
+        overdueTicketsCount={overdueTicketsCount}
+        expensesThisMonth={expensesPage.totalThisMonthCop}
+        activeTeamCount={team.filter((m) => m.status === "active").length}
         usdToCopRate={usdToCopRate}
       />
     );
@@ -66,8 +89,8 @@ export default async function DashboardIndexPage() {
 
   return (
     <div className="py-20 text-center space-y-2">
-      <h1 className="text-lg font-bold text-background">Sin módulos disponibles todavía</h1>
-      <p className="text-xs text-background/60">
+      <h1 className="text-lg font-bold text-foreground">Sin módulos disponibles todavía</h1>
+      <p className="text-xs text-foreground/60">
         Tu rol ({session.role}) no tiene acceso a ninguna sección del panel por ahora.
       </p>
     </div>

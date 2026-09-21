@@ -16,27 +16,27 @@ export function PortalChrome({ user, children }: { user: SessionUser; children: 
   };
 
   return (
-    <div className="min-h-screen bg-foreground text-background">
-      <header className="border-b border-background/10 bg-background/5 backdrop-blur-2xl sticky top-0 z-40">
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="border-b border-foreground/10 bg-foreground/5 backdrop-blur-2xl sticky top-0 z-40">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="rounded outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              className="rounded outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <Image src="/logo-mark.png" alt="SKYCODE Logo" width={120} height={70} className="h-8 w-auto" />
             </Link>
-            <div className="h-4 w-px bg-background/20" />
+            <div className="h-4 w-px bg-foreground/20" />
             <span className="rounded-full bg-accent/20 px-3 py-1 text-xs font-mono font-bold text-accent-strong">
               Portal de Cliente
             </span>
           </div>
 
           <div className="flex items-center gap-4">
-            <span className="hidden sm:inline text-xs text-background/80 font-mono">{user.name}</span>
+            <span className="hidden sm:inline text-xs text-foreground/80 font-mono">{user.name}</span>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 rounded-lg border border-background/15 px-3 py-1.5 text-xs text-background/80 hover:bg-background/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              className="flex items-center gap-1.5 rounded-lg border border-foreground/15 px-3 py-1.5 text-xs text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <LogOut size={14} />
               <span className="hidden sm:inline">Salir</span>

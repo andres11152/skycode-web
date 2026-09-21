@@ -68,7 +68,7 @@ export function DocumentsPanel({
   return (
     <section aria-labelledby="documents-heading" className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 id="documents-heading" className="text-sm font-bold uppercase tracking-wide text-background/60">
+        <h2 id="documents-heading" className="text-sm font-bold uppercase tracking-wide text-foreground/60">
           Documentos
         </h2>
         {canWrite && (
@@ -84,7 +84,7 @@ export function DocumentsPanel({
             />
             <label
               htmlFor={`upload-${projectId}`}
-              className="flex items-center gap-1.5 rounded-lg bg-accent-strong px-3 py-1.5 text-xs font-bold text-white hover:brightness-90 transition-all cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground has-disabled:opacity-50 has-disabled:pointer-events-none"
+              className="flex items-center gap-1.5 rounded-lg bg-accent-strong px-3 py-1.5 text-xs font-bold text-white hover:brightness-90 transition-all cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background has-disabled:opacity-50 has-disabled:pointer-events-none"
             >
               <Upload size={13} />
               {isUploading ? "Subiendo..." : "Subir documento"}
@@ -93,18 +93,18 @@ export function DocumentsPanel({
         )}
       </div>
 
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs text-red-700">{error}</p>}
 
       {documents.length === 0 ? (
-        <div className="rounded-xl border border-background/15 bg-background/5">
+        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
           <EmptyState icon={FileText} title="Sin documentos" description="Este proyecto todavía no tiene documentos subidos." />
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-background/15 bg-background/5 backdrop-blur-2xl shadow-2xl">
+        <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-background/90">
+            <table className="w-full text-left text-xs text-foreground/90">
               <caption className="sr-only">Documentos subidos a este proyecto, con tamaño y quién los subió</caption>
-              <thead className="border-b border-background/10 bg-background/10 font-mono uppercase text-[10px] text-background/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
                 <tr>
                   <th scope="col" className="px-4 py-3">Archivo</th>
                   <th scope="col" className="px-4 py-3">Subido por</th>
@@ -113,18 +113,18 @@ export function DocumentsPanel({
                   <th scope="col" className="px-4 py-3 sr-only">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-background/10">
+              <tbody className="divide-y divide-foreground/10">
                 {documents.map((doc) => (
                   <tr key={doc.id}>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-2 font-medium text-background">
-                        <FileText size={13} className="text-background/40 shrink-0" />
+                      <div className="flex items-center gap-2 font-medium text-foreground">
+                        <FileText size={13} className="text-foreground/40 shrink-0" />
                         <span className="truncate max-w-xs">{doc.original_filename}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-background/70">{doc.uploaded_by?.name ?? "—"}</td>
-                    <td className="px-4 py-3 text-right font-mono text-background/60">{formatBytes(doc.size_bytes)}</td>
-                    <td className="px-4 py-3 font-mono text-background/60 whitespace-nowrap">
+                    <td className="px-4 py-3 text-foreground/70">{doc.uploaded_by?.name ?? "—"}</td>
+                    <td className="px-4 py-3 text-right font-mono text-foreground/60">{formatBytes(doc.size_bytes)}</td>
+                    <td className="px-4 py-3 font-mono text-foreground/60 whitespace-nowrap">
                       {new Date(doc.created_at).toLocaleDateString("es-CO")}
                     </td>
                     <td className="px-4 py-3">
@@ -132,7 +132,7 @@ export function DocumentsPanel({
                         <a
                           href={`/api/documents/${doc.id}/download`}
                           aria-label={`Descargar ${doc.original_filename}`}
-                          className="rounded-lg p-1.5 text-background/60 hover:bg-accent/10 hover:text-accent transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                          className="rounded-lg p-1.5 text-foreground/60 hover:bg-accent/10 hover:text-accent transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <Download size={13} />
                         </a>
@@ -141,7 +141,7 @@ export function DocumentsPanel({
                             onClick={() => handleDelete(doc.id)}
                             disabled={deletingId === doc.id}
                             aria-label={`Eliminar ${doc.original_filename}`}
-                            className="rounded-lg p-1.5 text-background/50 hover:bg-red-500/10 hover:text-red-400 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                            className="rounded-lg p-1.5 text-foreground/50 hover:bg-red-500/10 hover:text-red-700 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <Trash2 size={13} />
                           </button>

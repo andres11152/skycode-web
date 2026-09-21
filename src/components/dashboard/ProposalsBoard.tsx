@@ -7,6 +7,9 @@ import { FileText, Plus, RefreshCw, Copy, Check, Trash2 } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
 import { CurrencySelect } from "./CurrencySelect";
+import { Badge, type BadgeTone } from "./ui/Badge";
+import { Button } from "./ui/Button";
+import { Alert } from "./ui/Alert";
 import { formatMoney } from "@/lib/utils";
 import type { Currency } from "@/lib/currency";
 import type { Proposal, ProposalStatus } from "./types";
@@ -19,12 +22,12 @@ const STATUS_LABELS: Record<ProposalStatus, string> = {
   expired: "Expirada",
 };
 
-const STATUS_STYLES: Record<ProposalStatus, string> = {
-  sent: "bg-sky-500/10 border border-sky-500/20 text-sky-400",
-  viewed: "bg-amber-500/10 border border-amber-500/20 text-amber-400",
-  accepted: "bg-green-500/10 border border-green-500/20 text-green-400",
-  rejected: "bg-red-500/10 border border-red-500/20 text-red-400",
-  expired: "bg-background/20 text-background/50",
+const STATUS_TONES: Record<ProposalStatus, BadgeTone> = {
+  sent: "info",
+  viewed: "warning",
+  accepted: "success",
+  rejected: "danger",
+  expired: "neutral",
 };
 
 interface DraftItem {
@@ -68,37 +71,35 @@ export function ProposalsBoard({
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-background">Propuestas Comerciales</h1>
-          <p className="mt-1 text-xs text-background/70 font-sans">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Propuestas Comerciales</h1>
+          <p className="mt-1 text-xs text-foreground/70 font-sans">
             Enlace público por propuesta — el cliente ve, acepta o rechaza sin necesitar cuenta.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="flex items-center gap-2 rounded-xl border border-background/20 bg-background/5 px-4 py-2 text-xs font-medium text-background hover:bg-background/15 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
-          >
+          <Button variant="secondary" onClick={handleRefresh} disabled={isRefreshing}>
             <RefreshCw size={14} className={isRefreshing ? "animate-spin" : ""} />
             <span>Actualizar</span>
-          </button>
-          <button
-            onClick={() => setCreateOpen(true)}
-            className="flex items-center gap-2 rounded-xl bg-accent-strong px-4 py-2 text-xs font-bold text-white shadow-lg hover:brightness-90 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
-          >
+          </Button>
+          <Button variant="accent" onClick={() => setCreateOpen(true)}>
             <Plus size={14} />
             <span>Nueva Propuesta</span>
-          </button>
+          </Button>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-background/15 bg-background/5 backdrop-blur-2xl shadow-2xl">
+      <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
         {proposals.length === 0 ? (
-          <EmptyState icon={FileText} title="Sin propuestas todavía" description="Crea la primera para empezar a cerrar proyectos." />
+          <EmptyState
+            icon={FileText}
+            title="Sin propuestas todavía"
+            description="Crea la primera para empezar a cerrar proyectos."
+            action={{ label: "Nueva Propuesta", onClick: () => setCreateOpen(true) }}
+          />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-background/90">
-              <thead className="border-b border-background/10 bg-background/10 font-mono uppercase text-[10px] text-background/60">
+            <table className="w-full text-left text-xs text-foreground/90">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
                 <tr>
                   <th className="px-5 py-3.5">Propuesta / Cliente</th>
                   <th className="px-5 py-3.5">Total</th>
@@ -107,30 +108,28 @@ export function ProposalsBoard({
                   <th className="px-5 py-3.5 text-right">Enlace</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-background/10">
+              <tbody className="divide-y divide-foreground/10">
                 {proposals.map((p) => (
                   <tr key={p.id}>
                     <td className="px-5 py-4">
-                      <div className="font-bold text-background">{p.title}</div>
-                      <div className="text-[11px] text-background/60 font-mono">{p.client_name} · {p.client_email}</div>
+                      <div className="font-bold text-foreground">{p.title}</div>
+                      <div className="text-[11px] text-foreground/60 font-mono">{p.client_name} · {p.client_email}</div>
                     </td>
-                    <td className="px-5 py-4 font-mono font-bold text-green-400">
+                    <td className="px-5 py-4 font-mono font-bold text-green-700">
                       {formatMoney(p.total, p.currency)}
                     </td>
                     <td className="px-5 py-4">
-                      <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${STATUS_STYLES[p.status]}`}>
-                        {STATUS_LABELS[p.status]}
-                      </span>
+                      <Badge tone={STATUS_TONES[p.status]}>{STATUS_LABELS[p.status]}</Badge>
                     </td>
-                    <td className="px-5 py-4 font-mono text-[10px] text-background/60">
+                    <td className="px-5 py-4 font-mono text-[10px] text-foreground/60">
                       {p.valid_until ? new Date(p.valid_until).toLocaleDateString("es-CO") : "Sin vencimiento"}
                     </td>
                     <td className="px-5 py-4 text-right">
                       <button
                         onClick={() => handleCopy(p.id)}
-                        className="inline-flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                        className="inline-flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
-                        {copiedId === p.id ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                        {copiedId === p.id ? <Check size={12} className="text-green-700" /> : <Copy size={12} />}
                         <span>{copiedId === p.id ? "Copiado" : "Copiar enlace"}</span>
                       </button>
                     </td>
@@ -226,73 +225,71 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
     <ModalShell titleId={titleId} title="Nueva propuesta" onClose={handleClose} maxWidthClassName="max-w-xl">
       {proposalUrl ? (
         <div className="space-y-4">
-          <p className="text-xs text-background/70">
+          <p className="text-xs text-foreground/70">
             Propuesta creada. Compártele este enlace — también se intentó enviar por correo.
           </p>
-          <div className="flex items-center gap-2 rounded-xl border border-background/15 bg-background/10 p-3">
-            <span className="flex-1 truncate text-xs font-mono text-background/90">{proposalUrl}</span>
+          <div className="flex items-center gap-2 rounded-xl border border-foreground/15 bg-foreground/10 p-3">
+            <span className="flex-1 truncate text-xs font-mono text-foreground/90">{proposalUrl}</span>
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              className="flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              {copied ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+              {copied ? <Check size={12} className="text-green-700" /> : <Copy size={12} />}
               <span>{copied ? "Copiado" : "Copiar"}</span>
             </button>
           </div>
           <button
             onClick={handleClose}
-            className="w-full rounded-xl border border-background/20 px-4 py-2.5 text-xs font-medium text-background/80 hover:bg-background/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+            className="w-full rounded-xl border border-foreground/20 px-4 py-2.5 text-xs font-medium text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             Cerrar
           </button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300">{error}</div>
-          )}
+          {error && <Alert tone="error">{error}</Alert>}
           <div className="grid sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-background/80">Nombre del cliente</label>
+              <label className="block text-xs font-semibold text-foreground/80">Nombre del cliente</label>
               <input
                 type="text"
                 required
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 px-4 text-xs text-background outline-none focus:border-accent"
+                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-background/80">Correo del cliente</label>
+              <label className="block text-xs font-semibold text-foreground/80">Correo del cliente</label>
               <input
                 type="email"
                 required
                 value={clientEmail}
                 onChange={(e) => setClientEmail(e.target.value)}
-                className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 px-4 text-xs text-background outline-none focus:border-accent font-mono"
+                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent font-mono"
               />
             </div>
           </div>
           <div className="grid sm:grid-cols-[1fr_7rem] gap-3">
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-background/80">Título de la propuesta</label>
+              <label className="block text-xs font-semibold text-foreground/80">Título de la propuesta</label>
               <input
                 type="text"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ej. Plataforma de gestión de inventario"
-                className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 px-4 text-xs text-background placeholder:text-background/50 outline-none focus:border-accent"
+                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-background/80">Moneda</label>
-              <CurrencySelect value={currency} onChange={setCurrency} className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 px-3 text-xs text-background outline-none focus:border-accent cursor-pointer" />
+              <label className="block text-xs font-semibold text-foreground/80">Moneda</label>
+              <CurrencySelect value={currency} onChange={setCurrency} className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer" />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-xs font-semibold text-background/80">Partidas</label>
+            <label className="block text-xs font-semibold text-foreground/80">Partidas</label>
             {items.map((item, i) => (
               <div key={i} className="flex gap-2 items-start">
                 <input
@@ -301,14 +298,14 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
                   value={item.description}
                   onChange={(e) => updateItem(i, { description: e.target.value })}
                   placeholder="Descripción"
-                  className="flex-1 min-w-0 rounded-lg border border-background/15 bg-background/10 py-2 px-3 text-xs text-background placeholder:text-background/50 outline-none focus:border-accent"
+                  className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
                 />
                 <input
                   type="number"
                   min="1"
                   value={item.quantity}
                   onChange={(e) => updateItem(i, { quantity: e.target.value })}
-                  className="w-16 rounded-lg border border-background/15 bg-background/10 py-2 px-2 text-xs text-background outline-none focus:border-accent font-mono"
+                  className="w-16 rounded-lg border border-foreground/15 bg-foreground/10 py-2 px-2 text-xs text-foreground outline-none focus:border-accent font-mono"
                 />
                 <input
                   type="number"
@@ -318,14 +315,14 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
                   value={item.unit_price}
                   onChange={(e) => updateItem(i, { unit_price: e.target.value })}
                   placeholder="Precio"
-                  className="w-28 rounded-lg border border-background/15 bg-background/10 py-2 px-2 text-xs text-background placeholder:text-background/50 outline-none focus:border-accent font-mono"
+                  className="w-28 rounded-lg border border-foreground/15 bg-foreground/10 py-2 px-2 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent font-mono"
                 />
                 {items.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeItem(i)}
                     aria-label="Quitar partida"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg text-red-400 hover:bg-red-500/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground shrink-0"
+                    className="flex h-9 w-9 items-center justify-center rounded-lg text-red-700 hover:bg-red-500/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background shrink-0"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -335,7 +332,7 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
             <button
               type="button"
               onClick={addItem}
-              className="text-[11px] font-semibold text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground rounded"
+              className="text-[11px] font-semibold text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
             >
               + Agregar partida
             </button>
@@ -343,39 +340,35 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
 
           <div className="grid sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-background/80">IVA / Impuesto (%)</label>
+              <label className="block text-xs font-semibold text-foreground/80">IVA / Impuesto (%)</label>
               <input
                 type="number"
                 min="0"
                 max="100"
                 value={taxRate}
                 onChange={(e) => setTaxRate(e.target.value)}
-                className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 px-4 text-xs text-background outline-none focus:border-accent font-mono"
+                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent font-mono"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-background/80">Vigente hasta (opcional)</label>
+              <label className="block text-xs font-semibold text-foreground/80">Vigente hasta (opcional)</label>
               <input
                 type="date"
                 value={validUntil}
                 onChange={(e) => setValidUntil(e.target.value)}
-                className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 px-4 text-xs text-background outline-none focus:border-accent font-mono"
+                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent font-mono"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-xl border border-background/15 bg-background/10 p-3 text-xs font-mono">
-            <span className="text-background/60">Total estimado</span>
-            <span className="font-bold text-green-400">{formatMoney(total, currency)}</span>
+          <div className="flex items-center justify-between rounded-xl border border-foreground/15 bg-foreground/10 p-3 text-xs font-mono">
+            <span className="text-foreground/60">Total estimado</span>
+            <span className="font-bold text-green-700">{formatMoney(total, currency)}</span>
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
-          >
+          <Button type="submit" variant="accent" disabled={isSubmitting} className="w-full py-3">
             {isSubmitting ? "Creando..." : "Crear propuesta"}
-          </button>
+          </Button>
         </form>
       )}
     </ModalShell>

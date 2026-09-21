@@ -24,11 +24,11 @@ export function CurrencySelect({
       onChange={(e) => onChange(e.target.value as Currency)}
       className={
         className ??
-        "rounded-xl border border-background/15 bg-background/10 py-2.5 px-3 text-xs text-background outline-none focus:border-accent cursor-pointer"
+        "rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
       }
     >
       {CURRENCIES.map((c) => (
-        <option key={c} value={c} className="bg-foreground text-background">{c}</option>
+        <option key={c} value={c} className="bg-background text-foreground">{c}</option>
       ))}
     </select>
   );
