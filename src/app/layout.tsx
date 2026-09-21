@@ -152,6 +152,8 @@ function OrganizationJsonLd() {
   );
 }
 
+const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
+
 const BROWSER_LOCALE_REDIRECT_SCRIPT = `
 (function () {
   try {
@@ -201,6 +203,23 @@ export default function RootLayout({
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: BROWSER_LOCALE_REDIRECT_SCRIPT }}
         />
+        {googleAdsId && (
+          <>
+            <Script
+              id="google-ads-tag"
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
+            />
+            <Script id="google-ads-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${googleAdsId}');
+              `}
+            </Script>
+          </>
+        )}
       </head>
       <body className="min-h-full flex flex-col">
         <LocaleProvider>
