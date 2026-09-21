@@ -1,9 +1,9 @@
 "use client";
 
 import { useId, useState } from "react";
-import { AlertCircle, CheckCircle2, Mail, MessageCircle, ShieldCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { AlertCircle, Mail, MessageCircle, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Modal } from "@/components/ui/Modal";
 import { PhoneField } from "@/components/ui/PhoneField";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getContactContent } from "@/content/contact";
@@ -113,8 +113,14 @@ function isValidRealEmail(emailStr: string): boolean {
 }
 
 export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
+  const router = useRouter();
   const contactData = getContactContent(locale);
   const uiData = getUiContent(locale);
+  // Ruta de gracias por locale — mismo criterio que localeHomePath (es sin
+  // prefijo, el resto con /{locale}), pero /blog y lo legal son las únicas
+  // rutas sin prefijo hoy documentadas en CLAUDE.md; esta sí tiene versión
+  // por idioma (ver src/app/{en,fr}/gracias/page.tsx).
+  const thankYouPath = locale === defaultLocale ? "/gracias" : `/${locale}/gracias`;
 
   // Controlled form state
   const [name, setName] = useState("");
@@ -128,10 +134,8 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
     message: false,
   });
 
-  const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [phoneFieldKey, setPhoneFieldKey] = useState(0);
   const idPrefix = useId();
 
   // Validations
@@ -167,13 +171,7 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
       const result = await response.json();
 
       if (response.ok) {
-        setSubmitted(true);
-        setName("");
-        setEmail("");
-        setMessage("");
-        setAcceptedPolicies(false);
-        setTouched({ name: false, email: false, message: false });
-        setPhoneFieldKey((value) => value + 1);
+        router.push(thankYouPath);
       } else {
         setErrorMessage(result.error || contactData.errorGeneral);
       }
@@ -282,7 +280,6 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
 
           {/* Teléfono */}
           <PhoneField
-            key={phoneFieldKey}
             locale={locale}
             id={`${idPrefix}-phone`}
             label={contactData.placeholders.phone}
@@ -376,66 +373,6 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
           </div>
         </form>
       </div>
-
-      <Modal
-        open={submitted}
-        onClose={() => setSubmitted(false)}
-        closeLabel={uiData.modalClose}
-      >
-        <div className="flex flex-col items-center text-center pt-2 pb-1">
-          {/* Animated Success Checkmark Badge */}
-          <div className="relative mb-5 flex h-20 w-20 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 shadow-[0_0_40px_rgba(16,185,129,0.25)]">
-            <CheckCircle2 size={42} className="stroke-[2.2]" />
-            <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-white shadow-md">
-              <ShieldCheck size={16} />
-            </div>
-          </div>
-
-          {/* Title */}
-          <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            {contactData.successModal.title}
-          </h3>
-
-          {/* Body */}
-          <p className="mt-3 text-sm text-foreground/80 leading-relaxed max-w-sm">
-            {contactData.successModal.body}
-          </p>
-
-          {/* Enterprise SLA Details Box */}
-          <div className="mt-6 w-full rounded-xl border border-foreground/10 bg-foreground/[0.03] p-4 text-left space-y-2.5 text-xs text-foreground/80">
-            <div className="flex items-center gap-2 font-medium">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>{contactData.successModal.statusCrm}</span>
-            </div>
-            <div className="flex items-center gap-2 font-medium">
-              <span className="h-2 w-2 rounded-full bg-accent" />
-              <span>{contactData.successModal.slaGuarantee}</span>
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="mt-7 flex flex-col sm:flex-row gap-3 w-full">
-            <Button
-              type="button"
-              variant="accent"
-              size="md"
-              onClick={() => setSubmitted(false)}
-              className="w-full justify-center"
-            >
-              {contactData.successModal.understood}
-            </Button>
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-[2.75rem] items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 text-sm font-bold text-emerald-700 transition-all hover:bg-emerald-500/20 hover:border-emerald-500/50 w-full"
-            >
-              <MessageCircle size={16} />
-              {contactData.successModal.whatsappCta}
-            </a>
-          </div>
-        </div>
-      </Modal>
     </section>
   );
 }

@@ -23,5 +23,6 @@
   "whatsappClose": "Cerrar chat",
   "whatsappPreview": "Estimado cliente: ¿Tiene dudas sobre su proyecto o requiere una valoración técnica inmediata? Chatee directamente con nuestro equipo de ingeniería.",
   "whatsappOpenChat": "Abrir Chat de WhatsApp",
-  "whatsappTriggerAria": "Contactar por WhatsApp"
+  "whatsappTriggerAria": "Contactar por WhatsApp",
+  "backToHome": "Volver al inicio"
 }
