@@ -1,6 +1,3 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
 import { getTrustContent } from "@/content/trust";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 
@@ -64,13 +61,9 @@ const TransferIcon = () => (
 const icons = [OwaspIcon, ComplianceIcon, DocIcon, TransferIcon];
 
 export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
-  const reduced = Boolean(useReducedMotion());
   const trustData = getTrustContent(locale);
   const items = trustData.items.map((item, index) => ({ ...item, icon: icons[index] || icons[0] }));
-
-  // Duplicamos los elementos para el bucle infinito — con reduced-motion no hay
-  // bucle que cerrar, así que basta con una sola pasada estática.
-  const marqueeItems = reduced ? items : [...items, ...items, ...items, ...items];
+  const marqueeItems = [...items, ...items, ...items, ...items];
 
   return (
     <div
@@ -82,20 +75,8 @@ export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-foreground to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-foreground to-transparent" />
 
-      <div className={reduced ? "flex flex-wrap justify-center gap-x-10 gap-y-3 px-4" : "flex w-max"}>
-        <motion.div
-          animate={reduced ? undefined : { x: [0, "-50%"] }}
-          transition={
-            reduced
-              ? undefined
-              : {
-                  ease: "linear",
-                  duration: 25,
-                  repeat: Infinity,
-                }
-          }
-          className={reduced ? "flex flex-wrap items-center justify-center gap-x-10 gap-y-3" : "flex items-center gap-16 pr-16"}
-        >
+      <div className="flex w-max">
+        <div className="animate-marquee flex items-center gap-16 pr-16">
           {marqueeItems.map(({ icon: Icon, label }, index) => (
             <div
               key={`${label}-${index}`}
@@ -111,7 +92,7 @@ export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
               <span>{label}</span>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </div>
   );

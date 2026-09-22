@@ -83,28 +83,18 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
       />
       <div className="relative mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-center lg:gap-10 xl:gap-16">
         <div className="flex flex-col items-start gap-3 text-left">
-          <SectionEyebrow className="animate-hero-fade-up mb-2">{heroData.badge}</SectionEyebrow>
+          <SectionEyebrow className="mb-2">{heroData.badge}</SectionEyebrow>
 
           {/*
-           * H1 — LCP element. Color sólido #0089CD (text-accent), sin gradiente animado.
-           *
-           * Por qué no usar GradientShimmer aquí:
-           *   GradientShimmer aplica post-hydration `-webkit-text-fill-color: transparent`,
-           *   lo que hace el texto "invisible" para el algoritmo LCP de Chrome.
-           *   Chrome no puede medir texto transparente → LCP Discovery/Breakdown errors.
-           *   Color sólido = Chrome lo detecta en el primer paint SSR → LCP perfecto.
+           * H1 — LCP element principal.
+           * Sin animaciones que inicien en opacity: 0 ni delays.
+           * Se pinta instantáneamente en el primer frame (FCP = LCP).
            */}
-          <h1
-            className="animate-hero-fade-up text-3xl leading-[1.1] font-bold tracking-tight text-balance text-accent sm:text-5xl lg:text-6xl"
-            style={{ animationDelay: "0.1s" }}
-          >
+          <h1 className="text-3xl leading-[1.1] font-bold tracking-tight text-balance text-accent sm:text-5xl lg:text-6xl">
             {heroData.title}
           </h1>
 
-          <p
-            className="animate-hero-fade-up max-w-xl text-lg font-medium text-foreground/80"
-            style={{ animationDelay: "0.2s" }}
-          >
+          <p className="max-w-xl text-lg font-medium text-foreground/80 sm:text-xl">
             {heroData.subtitle}
           </p>
 
@@ -115,8 +105,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           <div
             role="group"
             aria-label={heroData.actionsAria}
-            className="animate-hero-fade-up mt-2 flex flex-col gap-4 sm:flex-row"
-            style={{ animationDelay: "0.3s" }}
+            className="mt-2 flex flex-col gap-4 sm:flex-row"
           >
             <div className="hero-cta inline-flex">
               <Button

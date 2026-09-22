@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/components/LocaleProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -13,7 +12,6 @@ import { getNavContent } from "@/content/nav";
 import { localeHomePath } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
 
-const SPRING = { type: "spring", stiffness: 400, damping: 34 } as const;
 const GLASS = "border border-foreground/10 bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl";
 const MOBILE_GLASS = "border border-foreground/15 bg-background/95 shadow-2xl shadow-black/30 backdrop-blur-2xl";
 
@@ -60,7 +58,15 @@ export function Navbar() {
             <span
               className="flex h-8 items-center rounded-full transition-transform duration-300 ease-out group-hover:scale-110"
             >
-              <Image src="/logo-mark.png" alt="" width={110} height={63} priority className="h-6 w-auto" />
+              <Image
+                src="/logo-mark.png"
+                alt=""
+                width={110}
+                height={63}
+                priority
+                fetchPriority="high"
+                className="h-6 w-auto"
+              />
             </span>
           </Link>
         </div>
@@ -118,46 +124,42 @@ export function Navbar() {
 
 
         {/* Mobile Navigation Drawer */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className={cn("absolute inset-x-0 top-14 z-40 flex flex-col gap-3 rounded-xl p-4 sm:hidden", MOBILE_GLASS)}
+        {isOpen && (
+          <div
+            className={cn(
+              "absolute inset-x-0 top-14 z-40 flex flex-col gap-3 rounded-xl p-4 sm:hidden animate-in fade-in zoom-in-95 duration-200",
+              MOBILE_GLASS,
+            )}
+          >
+            <ul className="flex flex-col gap-2">
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-1.5 rounded-xl px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
+                  >
+                    {link.label}
+                    {link.esOnly && (
+                      <span className="rounded border border-foreground/15 px-1 text-[10px] font-semibold text-foreground/60">
+                        ES
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Button
+              href={contactHref}
+              variant="accent"
+              size="md"
+              onClick={() => setIsOpen(false)}
+              className="w-full justify-center"
             >
-              <ul className="flex flex-col gap-2">
-                {navLinks.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center gap-1.5 rounded-xl px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
-                    >
-                      {link.label}
-                      {link.esOnly && (
-                        <span className="rounded border border-foreground/15 px-1 text-[10px] font-semibold text-foreground/60">
-                          ES
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                href={contactHref}
-                variant="accent"
-                size="md"
-                onClick={() => setIsOpen(false)}
-                className="w-full justify-center"
-              >
-                {navData.contacto}
-              </Button>
-            </motion.div>
-
-          )}
-        </AnimatePresence>
+              {navData.contacto}
+            </Button>
+          </div>
+        )}
       </div>
     </header>
   );

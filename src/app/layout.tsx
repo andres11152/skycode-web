@@ -19,7 +19,7 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-heading",
   subsets: ["latin"],
   weight: ["600", "700"],
-  display: "swap",
+  display: "optional",
   preload: true,
 });
 
@@ -27,7 +27,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  display: "swap",
+  display: "optional",
   preload: true,
 });
 
@@ -203,6 +203,7 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${plusJakartaSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        <link rel="preload" as="image" href="/logo-mark.png" fetchPriority="high" />
         <OrganizationJsonLd />
         <script
           id="locale-redirect"
