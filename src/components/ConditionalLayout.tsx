@@ -38,7 +38,21 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   // la animación puede no completarse y la nueva página queda abierta a mitad
   // de scroll, a veces directo en el footer. Se fuerza instantáneo solo cuando
   // cambia la ruta (no en anclas dentro de la misma página, que sí deben ser suaves).
+  //
+  // Si la navegación entre rutas trae un ancla (ej. "Hablar con un ingeniero"
+  // en el blog/portafolio, con href="/#contacto"), este forzado a (0,0) le
+  // ganaba la carrera al scroll-to-hash nativo de Next — la página siempre
+  // aterrizaba arriba del todo, nunca en la sección real. Bug real, no
+  // hipotético. Si hay hash y el elemento existe, se salta el forzado a top.
   useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const target = document.getElementById(hash.slice(1));
+      if (target) {
+        target.scrollIntoView({ behavior: "instant" });
+        return;
+      }
+    }
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [pathname]);
 
