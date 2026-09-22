@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { GridPattern } from "@/components/ui/GridPattern";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
@@ -9,29 +9,20 @@ import { GradientShimmer } from "@/components/ui/gradient-shimmer";
 import { getHeroContent } from "@/content/hero";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 
-const CTA_TRANSITION = { duration: 0.15, ease: "easeOut" } as const;
-
+// ─── CodeMockup ────────────────────────────────────────────────────────────────
+// El panel decorativo de código del Hero.
+//
+// Cambios de rendimiento para mobile (LCP / main thread):
+//  1. Se eliminó el 3D-tilt (useMotionValue + useTransform) — en dispositivos
+//     táctiles no funciona y costaba 2 MotionValues + 2 transforms por frame.
+//  2. La animación de float pasó de `motion.animate` a CSS @keyframes
+//     (ver globals.css .animate-float) — corre 100% en el compositor de GPU
+//     sin trabajo de JS en el main thread.
+//  3. Los motion.div del typing-animation se mantienen: son purely decorativos,
+//     empiezan 0.5 s después del LCP y no bloquean el paint inicial.
 function CodeMockup({ locale }: { locale: Locale }) {
   const { comment } = getHeroContent(locale).codeMockup;
   const reduced = Boolean(useReducedMotion());
-  const x = useMotionValue(200);
-  const y = useMotionValue(200);
-
-  const rotateX = useTransform(y, [0, 400], [8, -8]);
-  const rotateY = useTransform(x, [0, 400], [-8, 8]);
-
-  function handleMouse(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
-    x.set(mouseX);
-    y.set(mouseY);
-  }
-
-  function handleMouseLeave() {
-    x.set(200);
-    y.set(200);
-  }
 
   const codeLines: { length: number; isBreak?: boolean; jsx: React.ReactNode }[] = [
     {
@@ -78,14 +69,28 @@ function CodeMockup({ locale }: { locale: Locale }) {
     },
     {
       length: 38,
-      jsx: <span className="pl-4 text-background/80">{"items: z.array(ItemSchema).min(1),"}</span>,
+      jsx: (
+        <>
+          <span className="pl-4">
+            <span className="text-accent">{"productId"}</span>
+            <span className="text-background/80">{": z.string().uuid(),"}</span>
+          </span>
+        </>
+      ),
     },
     {
       length: 31,
-      jsx: <span className="pl-4 text-background/80">{"customerId: z.string().uuid(),"}</span>,
+      jsx: (
+        <>
+          <span className="pl-4">
+            <span className="text-accent">{"qty"}</span>
+            <span className="text-background/80">{": z.number().int().min(1),"}</span>
+          </span>
+        </>
+      ),
     },
     {
-      length: 5,
+      length: 2,
       jsx: <span className="text-background/80">{"});"}</span>,
     },
     {
@@ -94,36 +99,32 @@ function CodeMockup({ locale }: { locale: Locale }) {
       jsx: <span className="text-background/20">{"\n"}</span>,
     },
     {
-      length: 40,
+      length: 50,
       jsx: (
         <>
-          <span className="text-accent">export async function</span>
-          <span className="text-background/80">{" POST(req: Request) {"}</span>
+          <span className="text-accent">export</span>
+          <span className="text-background/80">{" async function POST(req: Request) {"}</span>
         </>
       ),
     },
     {
-      length: 41,
+      length: 36,
       jsx: (
         <>
           <span className="pl-4">
             <span className="text-accent">const</span>
-            <span className="text-background/80">{" user = "}</span>
-            <span className="text-accent">await</span>
-            <span className="text-background/80">{" requireAuth(req);"}</span>
+            <span className="text-background/80">{" user = await requireAuth(req);"}</span>
           </span>
         </>
       ),
     },
     {
-      length: 56,
+      length: 52,
       jsx: (
         <>
           <span className="pl-4">
             <span className="text-accent">const</span>
-            <span className="text-background/80">{" body = OrderSchema.parse("}</span>
-            <span className="text-accent">await</span>
-            <span className="text-background/80">{" req.json());"}</span>
+            <span className="text-background/80">{" body = OrderSchema.parse(await req.json());"}</span>
           </span>
         </>
       ),
@@ -197,26 +198,13 @@ function CodeMockup({ locale }: { locale: Locale }) {
   }, [currentDelay, reduced]);
 
   return (
-    <motion.div
-      style={{
-        perspective: 1000,
-      }}
-      className="w-full max-w-md select-none"
+    // Float: CSS @keyframes animate-float (globals.css) — GPU compositor,
+    // sin JS, sin Framer Motion. El tilt 3D fue eliminado (no funciona en
+    // táctil y costaba 2 MotionValues + useTransform en el main thread).
+    <div
+      className={`w-full max-w-md select-none ${!reduced ? "animate-float" : ""}`}
     >
-      <motion.div
-        style={{
-          rotateX,
-          rotateY,
-          transformStyle: "preserve-3d",
-        }}
-        onMouseMove={handleMouse}
-        onMouseLeave={handleMouseLeave}
-        animate={reduced ? undefined : { y: [0, -6, 0] }}
-        transition={{
-          duration: 5,
-          ease: "easeInOut",
-          repeat: Infinity,
-        }}
+      <div
         className="group relative w-full overflow-hidden rounded-xl bg-foreground border border-background/10 shadow-2xl shadow-black/40 transition-all duration-300 hover:shadow-accent/5 hover:border-accent/20"
       >
         {/* Línea de escaneo láser que barre el código — acelerada 100% por GPU */}
@@ -295,11 +283,12 @@ function CodeMockup({ locale }: { locale: Locale }) {
             })}
           </code>
         </pre>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
 
+// ─── Hero ───────────────────────────────────────────────────────────────────────
 export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
   const heroData = getHeroContent(locale);
 
@@ -351,18 +340,19 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
             {heroData.subtitle}
           </p>
 
+          {/*
+           * CTAs: se eliminaron los <motion.div whileHover/whileTap> — Framer Motion
+           * requiere hidratación + event listeners por cada botón. En su lugar,
+           * .hero-cta en globals.css usa CSS :hover y :active con transform:scale(),
+           * que corre en el compositor de GPU sin ningún JS en el main thread.
+           */}
           <div
             role="group"
             aria-label={heroData.actionsAria}
             className="animate-hero-fade-up mt-2 flex flex-col gap-4 sm:flex-row"
             style={{ animationDelay: "0.3s" }}
           >
-            <motion.div
-              className="inline-flex"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={CTA_TRANSITION}
-            >
+            <div className="hero-cta inline-flex">
               <Button
                 href={heroData.ctaPrimary.href}
                 variant="accent"
@@ -371,14 +361,9 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
               >
                 {heroData.ctaPrimary.label}
               </Button>
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="inline-flex"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={CTA_TRANSITION}
-            >
+            <div className="hero-cta inline-flex">
               <Button
                 href={heroData.ctaSecondary.href}
                 variant="secondary"
@@ -387,7 +372,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
               >
                 {heroData.ctaSecondary.label}
               </Button>
-            </motion.div>
+            </div>
           </div>
         </div>
 

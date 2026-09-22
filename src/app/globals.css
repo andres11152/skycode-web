@@ -83,6 +83,41 @@ h6 {
 }
 
 /*
+ * Hero CTAs — hover/active en CSS puro, sin Framer Motion.
+ * Antes: <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+ *        requería hidratación JS + event listeners de Framer Motion.
+ * Ahora: transform:scale() en :hover/:active — GPU composited, cero JS.
+ */
+.hero-cta {
+  transition: transform 0.15s ease-out;
+}
+.hero-cta:hover {
+  transform: scale(1.02);
+}
+.hero-cta:active {
+  transform: scale(0.98);
+}
+
+/*
+ * CodeMockup float — CSS puro, reemplaza motion.animate de Framer Motion.
+ * Antes: animate={{ y: [0, -6, 0] }} con Framer Motion JS loop.
+ * Ahora: @keyframes en el compositor de GPU, sin trabajo de JS por frame.
+ */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/*
  * GradientShimmer — animación compuesta por GPU via @property.
  * El problema con animar background-position directamente es que el navegador
  * debe recalcular el layout en el hilo principal cada frame (no compositable).
@@ -140,8 +175,13 @@ h6 {
   .animate-hero-fade-up,
   .animate-hero-scale-in,
   .animate-gs-sweep,
-  .animate-laser {
+  .animate-laser,
+  .animate-float {
     animation: none !important;
+  }
+
+  .hero-cta {
+    transition: none !important;
   }
 
   /* Resetear la posición del shimmer al centro cuando se detiene la animación */
