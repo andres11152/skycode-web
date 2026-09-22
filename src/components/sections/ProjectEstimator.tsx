@@ -109,7 +109,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
           <div className="mt-6 flex items-center gap-2 rounded-full border border-foreground/15 bg-background p-1.5 shadow-sm">
             <button
               onClick={() => setCurrency("COP")}
-              className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-colors ${
                 currency === "COP"
                   ? "bg-accent-strong text-white shadow-sm"
                   : "text-foreground/70 hover:text-foreground"
@@ -119,7 +119,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
             </button>
             <button
               onClick={() => setCurrency("USD")}
-              className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-colors ${
                 currency === "USD"
                   ? "bg-accent-strong text-white shadow-sm"
                   : "text-foreground/70 hover:text-foreground"
