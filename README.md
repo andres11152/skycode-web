@@ -1,93 +1,93 @@
 # SkyCode Agency
 
-Sitio de marketing trilingüe (español/inglés/francés) + panel interno de CRM/proyectos con autenticación real, construido en Next.js 16 (App Router) y PostgreSQL.
+Trilingual (Spanish/English/French) marketing site + internal CRM/project dashboard with real authentication, built with Next.js 16 (App Router) and PostgreSQL.
 
-El sitio público (home, servicios, blog, portafolio) es contenido estático servido con runtime de Node — no es un export estático (`output: "export"` se removió deliberadamente, ver [CLAUDE.md](CLAUDE.md)). El panel interno (`/dashboard`, `/portal`) es una aplicación server-rendered con sesiones persistentes, RBAC y Postgres.
+The public site (home, services, blog, portfolio) is static content served through the Node runtime — it is not a static export (`output: "export"` was deliberately removed, see `CLAUDE.md`). The internal dashboard (`/dashboard`, `/portal`) is a server-rendered application with persistent sessions, RBAC and Postgres.
 
-## Requisitos
+## Requirements
 
 - Node.js 20+
-- PostgreSQL (local, o una instancia gestionada como Render)
-- Docker, solo si vas a correr los tests de integración/E2E
+- PostgreSQL (local, or a managed instance such as Render)
+- Docker, only if you're going to run the integration/E2E tests
 
-## Puesta en marcha
+## Getting started
 
-```bash
+```
 npm install
-cp .env.example .env.local   # completa DATABASE_URL, JWT_SECRET, etc. — ver el archivo para el detalle de cada variable
-npm run db:migrate           # aplica las migraciones de db/migrations/ contra DATABASE_URL
+cp .env.example .env.local # fill in DATABASE_URL, JWT_SECRET, etc. — see the file for details on each variable
+npm run db:migrate # applies the migrations in db/migrations/ against DATABASE_URL
 npm run dev
 ```
 
-En el primer arranque, si la tabla `users` está vacía y definiste `ADMIN_SEED_EMAIL`/`ADMIN_SEED_PASSWORD` en `.env.local`, se siembra automáticamente el primer usuario admin la primera vez que algo golpea la base de datos. Cualquier cuenta después de esa se crea por invitación desde `/dashboard/equipo` (solo admin) — no hay otra forma de crear cuentas internas. Para desarrollo, `npm run db:seed-dev-users` crea una cuenta de cada rol (admin, sales_manager, traffiker, client) con una contraseña compartida impresa en terminal — no usar en producción.
+On first boot, if the `users` table is empty and you defined `ADMIN_SEED_EMAIL`/`ADMIN_SEED_PASSWORD` in `.env.local`, the first admin user is automatically seeded the first time anything hits the database. Any account created after that is created by invitation from `/dashboard/equipo` (admin only) — there's no other way to create internal accounts. For development, `npm run db:seed-dev-users` creates one account per role (admin, sales_manager, traffiker, client) with a shared password printed to the terminal — do not use in production.
 
-Abre [http://localhost:3000](http://localhost:3000) para el sitio público, o `/login` para el panel interno.
+Open http://localhost:3000 for the public site, or `/login` for the internal dashboard.
 
 ## Scripts
 
-| Script | Qué hace |
-|---|---|
-| `npm run dev` | Servidor de desarrollo (Turbopack) |
-| `npm run build` | Build de producción |
-| `npm start` | Sirve el build de producción (`npm run build` primero) |
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Dev server (Turbopack) |
+| `npm run build` | Production build |
+| `npm start` | Serves the production build (run `npm run build` first) |
 | `npm run lint` | ESLint |
-| `npm test` | Tests unitarios (vitest, sin Postgres) |
-| `npm run test:integration` | Tests de queries/lib contra Postgres real desechable — requiere `test:db:up` primero |
-| `npm run test:e2e` | Tests end-to-end contra un servidor Next real — requiere `test:db:up && test:db:migrate` primero |
-| `npm run test:all` | Encadena las tres capas de test de arriba, levantando y migrando la base de test |
-| `npm run db:migrate` | Aplica migraciones pendientes de `db/migrations/` contra `DATABASE_URL` |
-| `npm run db:seed-dev-users` | Crea una cuenta de cada rol para desarrollo local |
-| `node scripts/reset-admin-password.mjs <email> <password>` | Rota la contraseña de un usuario existente por línea de comandos — respaldo si el flujo de "olvidé mi contraseña" (`/olvide-password`) no es viable (ej. Resend caído) |
+| `npm test` | Unit tests (vitest, no Postgres) |
+| `npm run test:integration` | Query/lib tests against a disposable real Postgres — requires `test:db:up` first |
+| `npm run test:e2e` | End-to-end tests against a real Next server — requires `test:db:up && test:db:migrate` first |
+| `npm run test:all` | Chains the three test layers above, spinning up and migrating the test database |
+| `npm run db:migrate` | Applies pending migrations from `db/migrations/` against `DATABASE_URL` |
+| `npm run db:seed-dev-users` | Creates one account per role for local development |
+| `node scripts/reset-admin-password.mjs <email> <password>` | Rotates an existing user's password from the command line — a fallback when the "forgot my password" flow (`/olvide-password`) isn't viable (e.g. Resend is down) |
 
-## Estructura del proyecto
+## Project structure
 
 ```
 src/
-  app/                    # Rutas (App Router) — sitio público, /dashboard, /portal, /api/**
+  app/                # Routes (App Router) — public site, /dashboard, /portal, /api/**
   components/
-    sections/             # Secciones de la home (Hero, Services, Contact, ...)
-    dashboard/, portal/   # UI del panel interno
-    ui/                   # Componentes base reutilizables (Button, Modal, Card, ...)
-  content/                # Copy tipado; content/locales/{es,en,fr}/*.json son la fuente real
-  lib/                    # Auth, RBAC, rate limiting, acceso a datos (lib/queries/), utilidades
-db/migrations/            # Migraciones SQL, aplicadas por scripts/migrate.mjs
-e2e/                      # Tests end-to-end
-scripts/                  # CLIs de mantenimiento (migrar, sembrar usuarios, resetear contraseña)
+    sections/          # Home page sections (Hero, Services, Contact, ...)
+    dashboard/, portal/ # Internal dashboard UI
+    ui/                 # Reusable base components (Button, Modal, Card, ...)
+  content/             # Typed copy; content/locales/{es,en,fr}/*.json is the source of truth
+  lib/                 # Auth, RBAC, rate limiting, data access (lib/queries/), utilities
+  db/migrations/       # SQL migrations, applied by scripts/migrate.mjs
+  e2e/                 # End-to-end tests
+  scripts/             # Maintenance CLIs (migrate, seed users, reset password)
 ```
 
-Para el detalle real de arquitectura — sistema de diseño, i18n, RBAC/autenticación, modelo de datos, flujos de negocio y el flujo de verificación obligatorio antes de cualquier cambio — ver [CLAUDE.md](CLAUDE.md). Ese archivo es la referencia viva del proyecto, no este README.
+For the real architecture detail — design system, i18n, RBAC/auth, data model, business flows and the mandatory verification flow before any change — see `CLAUDE.md`. That file is the project's living reference, not this README.
 
-## Variables de entorno
+## Environment variables
 
-Ver [.env.example](.env.example) para la lista completa con explicación de cada una (base de datos, JWT, Resend, sitio, Sentry). El monitoreo de errores (Sentry) es opcional — sin `SENTRY_DSN`/`NEXT_PUBLIC_SENTRY_DSN`, el SDK queda inactivo automáticamente.
+See `.env.example` for the full list with an explanation of each one (database, JWT, Resend, site, Sentry). Error monitoring (Sentry) is optional — without `SENTRY_DSN`/`NEXT_PUBLIC_SENTRY_DSN`, the SDK stays inactive automatically.
 
 ## CI
 
-[.github/workflows/ci.yml](.github/workflows/ci.yml) corre en cada push/PR a `main`: tipos, lint, tests unitarios y build primero (rápido, sin Postgres); si eso pasa, un segundo job levanta un Postgres de servicio y corre integración + E2E — los mismos scripts de arriba, sin lógica especial de CI.
+`.github/workflows/ci.yml` runs on every push/PR to `main`: types, lint, unit tests and build first (fast, no Postgres); if that passes, a second job spins up a Postgres service and runs integration + E2E — the same scripts as above, no special CI logic.
 
 ## Testing
 
-Tres capas independientes, cada una probando algo distinto — ver la sección "Sistema interno" de [CLAUDE.md](CLAUDE.md) para el detalle de qué corre contra qué:
+Three independent layers, each testing something different — see the "Internal system" section of `CLAUDE.md` for exactly what runs against what:
 
-```bash
-npm test                    # unitarios, instantáneo, sin dependencias externas
-npm run test:db:up          # levanta Postgres desechable en :5433 (docker-compose.test.yml)
-npm run test:integration    # queries/lib contra esa base
-npm run test:db:migrate     # aplica el esquema a la base de test
-npm run test:e2e            # servidor Next real + HTTP real
-npm run test:db:down        # apaga y destruye la base de test
+```
+npm test                  # unit tests, instant, no external dependencies
+npm run test:db:up        # spins up a disposable Postgres on :5433 (docker-compose.test.yml)
+npm run test:integration  # queries/lib tests against that database
+npm run test:db:migrate   # applies the schema to the test database
+npm run test:e2e          # real Next server + real HTTP
+npm run test:db:down      # tears down and destroys the test database
 ```
 
 ## Deploy
 
-Requiere un host con runtime de Node para Next.js (Vercel, o cualquier otro que no sea hosting de archivos estáticos puro) — el sitio sirve rutas de API reales (`/api/contact`, `/api/leads`, todo el CRM). Define las variables de `.env.example` en el panel del hosting y corre `npm run db:migrate` contra la base de datos de producción antes del primer deploy.
+Requires a host with a Node runtime for Next.js (Vercel, or anything other than pure static-file hosting) — the site serves real API routes (`/api/contact`, `/api/leads`, the whole CRM). Set the variables from `.env.example` in the hosting panel and run `npm run db:migrate` against the production database before the first deploy.
 
-El módulo de Documentos (`/dashboard/proyectos/[id]`) necesita almacenamiento persistente: `DOCUMENTS_STORAGE_PATH` debe apuntar a un disco montado que sobreviva a los deploys (ej. un Render Persistent Disk), nunca al filesystem efímero del contenedor — sin esa variable, cualquier archivo subido desaparece en el siguiente deploy.
+The Documents module (`/dashboard/proyectos/[id]`) needs persistent storage: `DOCUMENTS_STORAGE_PATH` must point to a mounted disk that survives deploys (e.g. a Render Persistent Disk), never the container's ephemeral filesystem — without that variable, any uploaded file disappears on the next deploy.
 
-Las notificaciones por correo (propuesta vista, factura vencida, SLA por vencer) requieren un **Render Cron Job** aparte que pegue periódicamente (ej. cada hora) a `POST /api/cron/check-notifications` con el header `x-cron-secret` igual a la variable `CRON_SECRET`, ej.:
+Email notifications (proposal viewed, overdue invoice, SLA about to expire) require a separate Render Cron Job that periodically hits (e.g. hourly) `POST /api/cron/check-notifications` with the `x-cron-secret` header set to the `CRON_SECRET` variable, e.g.:
 
-```bash
-curl -f -X POST -H "x-cron-secret: $CRON_SECRET" https://su-dominio.com/api/cron/check-notifications
+```
+curl -f -X POST -H "x-cron-secret: $CRON_SECRET" https://your-domain.com/api/cron/check-notifications
 ```
 
-Sin `CRON_SECRET` configurada, esa ruta responde 503 y no hace nada — las notificaciones simplemente no se activan hasta que se configure el Cron Job.
+Without `CRON_SECRET` configured, that route responds `503` and does nothing — notifications simply won't fire until the Cron Job is configured.
