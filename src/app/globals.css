@@ -118,35 +118,27 @@ h6 {
 }
 
 /*
- * GradientShimmer — animación compuesta por GPU via @property.
- * El problema con animar background-position directamente es que el navegador
- * debe recalcular el layout en el hilo principal cada frame (no compositable).
- * Al registrar --gs-x como <percentage> con @property, Chrome puede
- * interpolar el valor en el compositor (compositor-driven animation),
- * eliminando el trabajo del main thread y el warning de Lighthouse.
- * Soporte: Chrome 111+, Safari 16.4+, Firefox 128+ (Baseline 2024).
+ * GradientShimmer — animación de texto con gradiente.
+ *
+ * NOTA: background-position NO es compositable por GPU, ni siquiera con @property.
+ * Solo transform y opacity corren en el compositor. El shimmer queda en el
+ * main thread pero SOLO se usa en elementos below-fold (H2, H3 de secciones),
+ * NO en el H1 (LCP element) — por eso no afecta el score de performance.
+ *
+ * Para el H1 se usa color sólido text-accent que SÍ es LCP-friendly.
  */
-@property --gs-x {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 200%;
-}
-
 @keyframes gs-sweep {
   from {
-    --gs-x: 200%;
+    background-position: 200% center;
   }
   to {
-    --gs-x: -200%;
+    background-position: -200% center;
   }
 }
 
 .animate-gs-sweep {
   background-size: 250% 100%;
-  background-position-x: var(--gs-x);
-  background-position-y: center;
   animation: gs-sweep var(--gs-duration, 3.5s) var(--gs-easing, cubic-bezier(0.45, 0, 0.55, 1)) infinite;
-  will-change: background-position-x;
 }
 
 @keyframes laser-sweep {
@@ -182,12 +174,6 @@ h6 {
 
   .hero-cta {
     transition: none !important;
-  }
-
-  /* Resetear la posición del shimmer al centro cuando se detiene la animación */
-  .animate-gs-sweep {
-    --gs-x: 50%;
-    will-change: auto;
   }
 }
 

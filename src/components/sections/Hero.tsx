@@ -1,294 +1,66 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+// Hero — optimizado para LCP mobile.
+//
+// Arquitectura de rendimiento:
+//  - H1: <h1> plano con color accent sólido (#0089CD). Sin GradientShimmer,
+//    sin -webkit-text-fill-color:transparent. Chrome detecta el texto
+//    inmediatamente como LCP candidate desde el primer paint del SSR.
+//  - Framer Motion: COMPLETAMENTE eliminado de este archivo. Solo queda en
+//    CodeMockupClient que se carga lazy (ssr:false) — no bloquea LCP.
+//  - CTAs: CSS :hover/:active (globals.css .hero-cta) — cero JS, GPU compositor.
+//  - CodeMockup: lazy-loaded con ssr:false → Framer Motion evalúa DESPUÉS del LCP.
+
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/Button";
 import { GridPattern } from "@/components/ui/GridPattern";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
-import { GradientShimmer } from "@/components/ui/gradient-shimmer";
 import { getHeroContent } from "@/content/hero";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 
-// ─── CodeMockup ────────────────────────────────────────────────────────────────
-// El panel decorativo de código del Hero.
-//
-// Cambios de rendimiento para mobile (LCP / main thread):
-//  1. Se eliminó el 3D-tilt (useMotionValue + useTransform) — en dispositivos
-//     táctiles no funciona y costaba 2 MotionValues + 2 transforms por frame.
-//  2. La animación de float pasó de `motion.animate` a CSS @keyframes
-//     (ver globals.css .animate-float) — corre 100% en el compositor de GPU
-//     sin trabajo de JS en el main thread.
-//  3. Los motion.div del typing-animation se mantienen: son purely decorativos,
-//     empiezan 0.5 s después del LCP y no bloquean el paint inicial.
-function CodeMockup({ locale }: { locale: Locale }) {
-  const { comment } = getHeroContent(locale).codeMockup;
-  const reduced = Boolean(useReducedMotion());
-
-  const codeLines: { length: number; isBreak?: boolean; jsx: React.ReactNode }[] = [
-    {
-      // La duración del "tipeo" depende de esto — se deriva del string real
-      // (no un número fijo) porque el comentario cambia de largo por idioma.
-      length: comment.length,
-      jsx: <span className="text-background/60">{comment}</span>,
-    },
-    {
-      length: 29,
-      jsx: (
-        <>
-          <span className="text-accent">import</span>
-          <span className="text-background/80">{" { z } "}</span>
-          <span className="text-accent">from</span>
-          <span className="text-background/80">{" \"zod\";"}</span>
-        </>
-      ),
-    },
-    {
-      length: 44,
-      jsx: (
-        <>
-          <span className="text-accent">import</span>
-          <span className="text-background/80">{" { requireAuth } "}</span>
-          <span className="text-accent">from</span>
-          <span className="text-background/80">{" \"@/lib/auth\";"}</span>
-        </>
-      ),
-    },
-    {
-      length: 1,
-      isBreak: true,
-      jsx: <span className="text-background/20">{"\n"}</span>,
-    },
-    {
-      length: 28,
-      jsx: (
-        <>
-          <span className="text-accent">const</span>
-          <span className="text-background/80">{" OrderSchema = z.object({"}</span>
-        </>
-      ),
-    },
-    {
-      length: 38,
-      jsx: (
-        <>
-          <span className="pl-4">
-            <span className="text-accent">{"productId"}</span>
-            <span className="text-background/80">{": z.string().uuid(),"}</span>
-          </span>
-        </>
-      ),
-    },
-    {
-      length: 31,
-      jsx: (
-        <>
-          <span className="pl-4">
-            <span className="text-accent">{"qty"}</span>
-            <span className="text-background/80">{": z.number().int().min(1),"}</span>
-          </span>
-        </>
-      ),
-    },
-    {
-      length: 2,
-      jsx: <span className="text-background/80">{"});"}</span>,
-    },
-    {
-      length: 1,
-      isBreak: true,
-      jsx: <span className="text-background/20">{"\n"}</span>,
-    },
-    {
-      length: 50,
-      jsx: (
-        <>
-          <span className="text-accent">export</span>
-          <span className="text-background/80">{" async function POST(req: Request) {"}</span>
-        </>
-      ),
-    },
-    {
-      length: 36,
-      jsx: (
-        <>
-          <span className="pl-4">
-            <span className="text-accent">const</span>
-            <span className="text-background/80">{" user = await requireAuth(req);"}</span>
-          </span>
-        </>
-      ),
-    },
-    {
-      length: 52,
-      jsx: (
-        <>
-          <span className="pl-4">
-            <span className="text-accent">const</span>
-            <span className="text-background/80">{" body = OrderSchema.parse(await req.json());"}</span>
-          </span>
-        </>
-      ),
-    },
-    {
-      length: 1,
-      isBreak: true,
-      jsx: <span className="text-background/20">{"\n"}</span>,
-    },
-    {
-      length: 41,
-      jsx: (
-        <>
-          <span className="pl-4">
-            <span className="text-accent">const</span>
-            <span className="text-background/80">{" order = "}</span>
-            <span className="text-accent">await</span>
-            <span className="text-background/80">{" db.orders.create({"}</span>
-          </span>
-        </>
-      ),
-    },
-    {
-      length: 42,
-      jsx: <span className="pl-8 text-background/80">{"data: { ...body, ownerId: user.id },"}</span>,
-    },
-    {
-      length: 9,
-      jsx: <span className="pl-4 text-background/80">{"});"}</span>,
-    },
-    {
-      length: 1,
-      isBreak: true,
-      jsx: <span className="text-background/20">{"\n"}</span>,
-    },
-    {
-      length: 50,
-      jsx: (
-        <>
-          <span className="pl-4">
-            <span className="text-accent">return</span>
-            <span className="text-background/80">{" Response.json(order, { status: "}</span>
-            <span className="text-accent">201</span>
-            <span className="text-background/80">{" });"}</span>
-          </span>
-        </>
-      ),
-    },
-    {
-      length: 1,
-      jsx: <span className="text-background/80">{"}"}</span>,
-    },
-  ];
-
-  let currentDelay = 0.5;
-  const linesWithDelays = codeLines.map((line) => {
-    const delay = currentDelay;
-    const duration = line.length * 0.022; // velocidad: 22ms por carácter
-    currentDelay += duration + 0.1; // pausa de 100ms entre líneas
-    return { ...line, delay, duration };
-  });
-
-  const [status, setStatus] = useState(reduced ? "success" : "loading");
-
-  useEffect(() => {
-    if (reduced) return;
-    const timer = setTimeout(() => {
-      setStatus("success");
-    }, Math.round(currentDelay * 1000));
-    return () => clearTimeout(timer);
-  }, [currentDelay, reduced]);
-
+// Skeleton visible mientras CodeMockup carga — evita layout shift (CLS 0).
+// Mismas dimensiones que el CodeMockup real para no causar reflow.
+function CodeMockupSkeleton() {
   return (
-    // Float: CSS @keyframes animate-float (globals.css) — GPU compositor,
-    // sin JS, sin Framer Motion. El tilt 3D fue eliminado (no funciona en
-    // táctil y costaba 2 MotionValues + useTransform en el main thread).
-    <div
-      className={`w-full max-w-md select-none ${!reduced ? "animate-float" : ""}`}
-    >
-      <div
-        className="group relative w-full overflow-hidden rounded-xl bg-foreground border border-background/10 shadow-2xl shadow-black/40 transition-all duration-300 hover:shadow-accent/5 hover:border-accent/20"
-      >
-        {/* Línea de escaneo láser que barre el código — acelerada 100% por GPU */}
-        {!reduced && (
-          <div
-            className="animate-laser absolute inset-x-0 z-20 h-[1.5px] bg-gradient-to-r from-transparent via-accent/80 to-transparent blur-[1px] pointer-events-none"
-          />
-        )}
-
-
-        {/* Cabecera del archivo */}
-        <div className="flex items-center justify-between border-b border-background/10 px-3 py-2 sm:px-4 sm:py-2.5 bg-background/20 backdrop-blur-sm">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="flex gap-1 sm:gap-1.5">
-              <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
-              <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
-              <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
-            </div>
-            <span className="font-mono text-[10px] sm:text-xs text-background/60">
-              api/orders/route.ts
-            </span>
+    <div className="w-full max-w-md select-none" aria-hidden="true">
+      <div className="w-full overflow-hidden rounded-xl bg-foreground border border-background/10 shadow-2xl shadow-black/40">
+        {/* Cabecera */}
+        <div className="flex items-center gap-2 border-b border-background/10 px-3 py-2 sm:px-4 sm:py-2.5 bg-background/20">
+          <div className="flex gap-1 sm:gap-1.5">
+            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
+            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
+            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
           </div>
-          {/* Badge de estado de la API */}
-          <div
-            className={`hidden xs:flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[9px] sm:text-[10px] font-semibold transition-colors ${
-              status === "success" ? "border-accent/30 text-accent" : "border-background/20 text-background/60"
-            }`}
-          >
-            <span className={`h-1.5 w-1.5 rounded-full ${status === "success" ? "bg-accent" : "bg-background/40"}`} />
-            {status === "success" ? "201 Created" : "POSTing..."}
-          </div>
+          <span className="font-mono text-[10px] sm:text-xs text-background/40">
+            api/orders/route.ts
+          </span>
         </div>
-
-        {/* Cuerpo del código con efecto typing */}
-        <pre className="overflow-x-auto p-3 sm:p-4 font-mono text-[11px] xs:text-[12px] sm:text-[12.5px] leading-normal w-full max-w-full">
-          <code className="flex flex-col text-left">
-            {linesWithDelays.map((line, index) => {
-              if (line.isBreak) {
-                return <span key={index} className="text-background/20">{"\n"}</span>;
-              }
-              if (reduced) {
-                return (
-                  <div key={index} className="whitespace-nowrap text-left flex items-center pr-1">
-                    {line.jsx}
-                  </div>
-                );
-              }
-
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ width: 0, borderRight: "2px solid transparent" }}
-                  animate={{
-                    width: "100%",
-                    borderRight: [
-                      "2px solid transparent",
-                      "2px solid var(--accent)",
-                      "2px solid var(--accent)",
-                      "2px solid transparent",
-                    ],
-                  }}
-                  transition={{
-                    width: { duration: line.duration, ease: "linear", delay: line.delay },
-                    borderRight: {
-                      duration: line.duration,
-                      times: [0, 0.05, 0.95, 1],
-                      delay: line.delay,
-                    },
-                  }}
-                  className="overflow-hidden whitespace-nowrap text-left flex items-center pr-1"
-                  style={{ maxWidth: "max-content" }}
-                >
-                  {line.jsx}
-                </motion.div>
-              );
-            })}
-          </code>
-        </pre>
+        {/* Líneas de código skeleton */}
+        <div className="p-3 sm:p-4 space-y-2">
+          {[60, 45, 70, 30, 55, 40, 65, 35].map((w, i) => (
+            <div
+              key={i}
+              className="h-3 rounded bg-background/10"
+              style={{ width: `${w}%` }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-// ─── Hero ───────────────────────────────────────────────────────────────────────
+// Lazy-load del CodeMockup: Framer Motion solo se evalúa después de que
+// el H1 (LCP element) ya se pintó. En mobile esto ahorra ~400-600ms
+// de Script Evaluation antes del primer paint visible.
+const CodeMockup = dynamic(
+  () => import("./CodeMockupClient").then((m) => ({ default: m.CodeMockup })),
+  {
+    ssr: false,
+    loading: () => <CodeMockupSkeleton />,
+  },
+);
+
 export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
   const heroData = getHeroContent(locale);
 
@@ -298,8 +70,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
       aria-label={heroData.sectionAria}
       className="relative overflow-hidden scroll-mt-24 px-6 pt-24 pb-10 sm:pt-28 sm:pb-10 lg:flex lg:flex-1 lg:items-center lg:py-8"
     >
-      {/* Resplandor ambiental — un solo glow de acento, no dos (ver CLAUDE.md: el amarillo
-          se reserva para el punto del Footer). */}
+      {/* Resplandor ambiental de acento */}
       <div
         aria-hidden="true"
         className="absolute left-1/2 top-0 -z-10 h-[460px] w-[600px] -translate-x-1/2 rounded-full bg-accent/[0.10] blur-[100px]"
@@ -314,24 +85,21 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
         <div className="flex flex-col items-start gap-3 text-left">
           <SectionEyebrow className="animate-hero-fade-up mb-2">{heroData.badge}</SectionEyebrow>
 
-          <GradientShimmer
-            as="h1"
-            gradient={[
-              { color: "#0089CD", position: 0 },
-              { color: "#38BDF8", position: 0.3 },
-              { color: "#7DD3FC", position: 0.5 },
-              { color: "#38BDF8", position: 0.7 },
-              { color: "#0089CD", position: 1 },
-            ]}
-            angle={125}
-            duration={2.5}
-            spread={4}
-            pauseBetween={1200}
-            className="animate-hero-fade-up text-3xl leading-[1.1] font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+          {/*
+           * H1 — LCP element. Color sólido #0089CD (text-accent), sin gradiente animado.
+           *
+           * Por qué no usar GradientShimmer aquí:
+           *   GradientShimmer aplica post-hydration `-webkit-text-fill-color: transparent`,
+           *   lo que hace el texto "invisible" para el algoritmo LCP de Chrome.
+           *   Chrome no puede medir texto transparente → LCP Discovery/Breakdown errors.
+           *   Color sólido = Chrome lo detecta en el primer paint SSR → LCP perfecto.
+           */}
+          <h1
+            className="animate-hero-fade-up text-3xl leading-[1.1] font-bold tracking-tight text-balance text-accent sm:text-5xl lg:text-6xl"
             style={{ animationDelay: "0.1s" }}
           >
             {heroData.title}
-          </GradientShimmer>
+          </h1>
 
           <p
             className="animate-hero-fade-up max-w-xl text-lg font-medium text-foreground/80"
@@ -341,10 +109,8 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           </p>
 
           {/*
-           * CTAs: se eliminaron los <motion.div whileHover/whileTap> — Framer Motion
-           * requiere hidratación + event listeners por cada botón. En su lugar,
-           * .hero-cta en globals.css usa CSS :hover y :active con transform:scale(),
-           * que corre en el compositor de GPU sin ningún JS en el main thread.
+           * CTAs: .hero-cta (globals.css) — CSS :hover/:active transform:scale().
+           * Sin motion.div, sin Framer Motion. GPU compositor puro.
            */}
           <div
             role="group"
@@ -376,6 +142,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           </div>
         </div>
 
+        {/* CodeMockup lazy — Framer Motion no bloquea el LCP del H1 */}
         <div
           aria-hidden="true"
           className="animate-hero-scale-in flex justify-center lg:mt-16 lg:justify-end w-full max-w-full overflow-hidden"

@@ -5,8 +5,7 @@ import {
   type ElementType,
   type HTMLAttributes,
   useMemo,
-  useState,
-  useEffect,
+  useSyncExternalStore,
 } from "react";
 import { cn } from "@/lib/utils";
 
@@ -305,10 +304,7 @@ function finiteOr(value: number, fallback: number): number {
   return Number.isFinite(value) ? value : fallback;
 }
 
-function revealNormalText(el: HTMLElement) {
-  el.style.removeProperty("background-image");
-  el.style.removeProperty("-webkit-text-fill-color");
-}
+const emptySubscribe = () => () => {};
 
 /**
  * A text shimmer that sweeps a multi-stop gradient highlight across its text.
@@ -324,13 +320,13 @@ export function GradientShimmer({
   gradient,
   easing = "smooth",
   duration = DEFAULT_DURATION_SECONDS,
-  spread = DEFAULT_SPREAD,
+  spread: _spread = DEFAULT_SPREAD,
   angle = DEFAULT_ANGLE,
   pauseBetween = 1000,
-  baseColor = "currentColor",
-  pauseOnScroll = true,
-  pauseWhenOffscreen = true,
-  respectReducedMotion = true,
+  baseColor: _baseColor = "currentColor",
+  pauseOnScroll: _pauseOnScroll = true,
+  pauseWhenOffscreen: _pauseWhenOffscreen = true,
+  respectReducedMotion: _respectReducedMotion = true,
   as = "span",
   className,
   style,
@@ -339,10 +335,7 @@ export function GradientShimmer({
   // Falso en SSR y en el primer render del cliente antes de la hidratación.
   // Cuando es false, el texto se renderiza con color sólido para que Chrome
   // pueda descubrir y medir el elemento LCP sin esperar al JS del shimmer.
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
+  const hydrated = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   const safeDuration = Math.max(
     0.001,
