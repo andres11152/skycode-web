@@ -158,40 +158,6 @@ function OrganizationJsonLd() {
 
 const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 
-const BROWSER_LOCALE_REDIRECT_SCRIPT = `
-(function () {
-  try {
-    if (window.location.pathname !== "/") return;
-    if (/bot|crawler|spider|lighthouse|pagespeed|googlebot|chrome-lighthouse/i.test(navigator.userAgent)) return;
-    var KEY = "skycode-locale-redirect-done";
-    if (localStorage.getItem(KEY)) return;
-    localStorage.setItem(KEY, "1");
-
-
-    var savedLocale = localStorage.getItem("skycode-locale");
-    if (savedLocale) {
-      if (savedLocale !== "es") {
-        window.location.replace("/" + savedLocale);
-      }
-      return;
-    }
-
-    var supported = ["en", "fr"];
-    var langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language];
-    for (var i = 0; i < langs.length; i++) {
-      var code = (langs[i] || "").slice(0, 2).toLowerCase();
-      if (code === "es") {
-        return;
-      }
-      if (supported.indexOf(code) !== -1) {
-        window.location.replace("/" + code);
-        return;
-      }
-    }
-  } catch (e) {}
-})();
-`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -205,10 +171,6 @@ export default function RootLayout({
       <head>
         <link rel="preload" as="image" href="/logo-mark.png" fetchPriority="high" />
         <OrganizationJsonLd />
-        <script
-          id="locale-redirect"
-          dangerouslySetInnerHTML={{ __html: BROWSER_LOCALE_REDIRECT_SCRIPT }}
-        />
         {googleAdsId && (
           <>
             <Script
