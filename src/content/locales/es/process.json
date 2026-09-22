@@ -1,24 +1,25 @@
 {
-  "badge": "Nuestro Proceso",
+  "badge": "Paso a Paso",
   "sectionAria": "Nuestro proceso de trabajo",
-  "title": "Cómo trabajamos",
-  "description": "Un proceso claro, sin sorpresas, desde el primer diagnóstico hasta la entrega final.",
+  "title": "Cómo trabajamos contigo",
+  "description": "Cero sorpresas ni tecnicismos confusos. Sabes exactamente qué pasa con tu dinero y con tu proyecto en cada etapa.",
   "steps": [
     {
-      "title": "Diagnóstico de arquitectura",
-      "description": "Evaluamos sus requerimientos o su sistema actual, y entregamos la arquitectura técnica y propuesta formal sin costo ni compromiso."
+      "title": "1. Charlamos y aterrizamos tu idea",
+      "description": "Nos cuentas qué necesitas resolver y evaluamos la viabilidad técnica. Te damos un plan claro y un presupuesto honesto, sin compromisos."
     },
     {
-      "title": "Inicio & 50% Anticipo",
-      "description": "Definimos entregables y damos inicio al desarrollo con el 50% de anticipo bajo contrato formal."
+      "title": "2. Hoja de ruta clara y 50% inicial",
+      "description": "Definimos fechas exactas y firmamos contrato. Iniciamos el desarrollo con el 50% de anticipo y repositorios a tu nombre desde el primer día."
     },
     {
-      "title": "Desarrollo & Sprints Ágiles",
-      "description": "Entregas funcionales probadas en repositorios compartidos con visibilidad total en tiempo real."
+      "title": "3. Avances reales cada semana",
+      "description": "Nada de esperar meses a ciegas. Tienes un enlace privado donde pruebas cada pantalla y función a medida que las vamos construyendo."
     },
     {
-      "title": "50% Final & Despliegue en Producción",
-      "description": "El 50% restante se abona únicamente contra entrega probada, despliegue en la nube y transferencia de código 100% suyo."
+      "title": "4. Lanzamiento y 50% final",
+      "description": "El saldo restante se abona únicamente cuando todo esté probado, funcionando en tus servidores y tú nos des el visto bueno definitivo."
     }
   ]
 }
+

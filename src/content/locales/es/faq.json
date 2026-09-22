@@ -1,31 +1,32 @@
 {
-  "badge": "Preguntas Frecuentes",
-  "title": "Preguntas Frecuentes",
-  "description": "Resolvemos sus inquietudes sobre nuestra metodología de ingeniería de software, propiedad intelectual y cumplimiento normativo, sin importar el país donde opere su empresa.",
+  "badge": "Dudas Frecuentes",
+  "title": "Preguntas que seguro te estás haciendo",
+  "description": "Respuestas directas y sin rodeos sobre cómo cobramos, quién es dueño del código y qué pasa después del lanzamiento.",
   "items": [
     {
-      "question": "¿Quién es el propietario del código una vez entregado el software?",
-      "answer": "La propiedad intelectual del código fuente desarrollado le pertenece al 100% a su empresa. Al finalizar el proyecto, realizamos un proceso de transferencia formal y completo de los repositorios y credenciales. No implementamos sistemas propietarios de licenciamiento mensual ni dependencias técnicas (vendor lock-in) que impidan a su equipo continuar con el desarrollo."
+      "question": "¿El código realmente me pertenece al 100% o quedo amarrado a ustedes?",
+      "answer": "El código es 100% tuyo desde el primer día. Los repositorios quedan a tu nombre y te entregamos todas las credenciales y accesos. No cobramos mensualidades forzadas por usar tu propio software ni ponemos 'candados' para obligarte a seguir con nosotros. Si en el futuro quieres trabajar con otro equipo o contratar desarrolladores internos, lo podrán continuar sin problemas."
     },
     {
-      "question": "¿Cómo garantizan el cumplimiento de la normativa de protección de datos?",
-      "answer": "Diseñamos todos nuestros sistemas bajo la premisa de privacidad desde el diseño (Privacy by Design). Implementamos flujos de consentimiento explícitos, control de accesos basado en roles (RBAC), cifrado de datos personales sensibles (at-rest y in-transit) y logs de auditoría inmutables, adaptados al marco normativo de cada país — Ley 1581 en Colombia, RGPD en la Unión Europea, y marcos equivalentes en otros mercados."
+      "question": "¿Qué pasa si después de lanzar encontramos un error o algo falla?",
+      "answer": "Cuentas con 90 días de garantía total después del lanzamiento. Si algo no funciona como acordamos o aparece algún bug, lo corregimos de inmediato sin cobrarte un solo centavo extra. No te dejamos solo una vez entregado el proyecto."
     },
     {
-      "question": "¿Se pueden integrar sus desarrollos con pasarelas de pago y sistemas ERP?",
-      "answer": "Sí, nos especializamos en la integración robusta de APIs. Conectamos su software a la medida con pasarelas de pago (Stripe, PayPal, Wompi, PayU, Mercado Pago, entre otras) y sistemas ERP/contables como SAP, Siigo, Alegra o desarrollos propios, garantizando la automatización de la facturación y la sincronización de inventarios."
+      "question": "¿Cómo son las formas de pago? ¿Tengo que pagar todo por adelantado?",
+      "answer": "Para nada. Trabajamos con un esquema justo para ambas partes: 50% de anticipo para arrancar (con contrato firmado y cronograma claro) y el 50% restante únicamente cuando veas el sistema funcionando, probado de punta a punta y con tu visto bueno final."
     },
     {
-      "question": "¿Qué tipo de soporte y garantía ofrecen post-entrega?",
-      "answer": "Todos nuestros desarrollos incluyen un período de garantía de estabilidad técnica de 90 días SLA para resolver cualquier incidente sin costo adicional. Adicionalmente, realizamos la transferencia de conocimiento completa a su equipo interno y ofrecemos Acuerdos de Nivel de Servicio (SLA) para soporte preventivo y escalamiento en la nube."
+      "question": "¿Se puede conectar con lo que ya uso (pasarelas de pago, facturación, WhatsApp)?",
+      "answer": "Sí, totalmente. Conectamos tu plataforma con pasarelas de pago (Wompi, Stripe, PayU, Mercado Pago), sistemas contables y ERPs (Siigo, Alegra, SAP) y la API de WhatsApp para que tu información se sincronice automáticamente sin duplicar trabajo manual."
     },
     {
-      "question": "¿Cuál es el esquema y modalidad de pago para los proyectos?",
-      "answer": "Trabajamos bajo un esquema de hitos 100% transparente y seguro para su empresa: 50% de anticipo para formalizar el contrato e iniciar el desarrollo de arquitectura, y el 50% final únicamente contra entrega funcional probada y desplegada en producción. Para proyectos empresariales de gran envergadura, habilitamos modalidades de pago por Sprints quincenales."
+      "question": "¿Cómo sé cómo va mi proyecto durante las semanas de desarrollo?",
+      "answer": "No vas a esperar semanas a ciegas. Cada semana te mostramos avances funcionales a través de un enlace privado donde puedes tocar y probar las pantallas tú mismo. Hablas directo con los ingenieros que están escribiendo el código."
     },
     {
-      "question": "¿Cómo manejan el proceso de comunicación y gestión del proyecto?",
-      "answer": "Trabajamos bajo marcos de trabajo ágiles adaptados. Su empresa tendrá visibilidad total del progreso en tiempo real a través de repositorios compartidos y herramientas de gestión. Realizamos entregas funcionales iterativas para recibir su retroalimentación de manera temprana, asegurando que el producto final responda exactamente a las necesidades de su operación."
+      "question": "¿Cómo cuidan la seguridad y los datos de mis usuarios?",
+      "answer": "Nos tomamos la seguridad muy en serio. Ciframos contraseñas y datos confidenciales, configuramos permisos estrictos para que nadie vea lo que no debe y seguimos buenas prácticas de protección de datos (Ley 1581 / RGPD). Construimos software blindado desde la raíz."
     }
   ]
 }
+

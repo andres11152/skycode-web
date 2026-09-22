@@ -1,11 +1,12 @@
 {
   "breadcrumbAria": "Ruta de navegación",
-  "includesHeading": "Qué incluye este servicio",
-  "approachHeading": "En este servicio, como en todos, aplicamos",
-  "ctaQuestion": "¿Necesita este servicio para su proyecto?",
-  "ctaButton": "Hablar con un ingeniero",
+  "includesHeading": "Qué incluye este desarrollo",
+  "approachHeading": "En cada proyecto aplicamos",
+  "ctaQuestion": "¿Te gustaría implementar esto en tu empresa?",
+  "ctaButton": "Hablar directamente con el equipo",
   "nextServiceLabel": "Siguiente servicio",
   "backToServices": "Volver a servicios",
-  "enterpriseSolutionBadge": "Solución Enterprise SkyCode",
-  "interactiveDemoHeading": "Demo Interactiva & Simulación de Entorno"
+  "enterpriseSolutionBadge": "Desarrollo a la medida SkyCode",
+  "interactiveDemoHeading": "Prueba interactiva del entorno"
 }
+

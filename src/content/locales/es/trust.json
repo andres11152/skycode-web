@@ -1,10 +1,11 @@
 {
-  "ariaLabel": "Estándares de ingeniería de software",
+  "ariaLabel": "Compromisos de confianza de SkyCode",
   "items": [
-    { "label": "Buenas prácticas OWASP" },
-    { "label": "Garantía 90 Días SLA · Corrección de Defectos Incluida" },
-    { "label": "Cumplimiento normativo de datos" },
-    { "label": "Documentación técnica incluida" },
-    { "label": "Código 100% transferible" }
+    { "label": "Garantía de 90 días ante cualquier falla" },
+    { "label": "El código es 100% tuyo desde el día 1" },
+    { "label": "Sin intermediarios: hablas con los programadores" },
+    { "label": "Documentación clara para tu equipo" },
+    { "label": "Seguridad y privacidad en cada línea" }
   ]
 }
+

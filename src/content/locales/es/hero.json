@@ -1,21 +1,22 @@
 {
   "sectionAria": "Presentación de la agencia",
   "actionsAria": "Acciones principales",
-  "badge": "SOFTWARE A LA MEDIDA 100% CÓDIGO PROPIO",
-  "title": "Construimos el Software de su Empresa sin Dependencia Tecnológica. 100% Código Propio.",
-  "subtitle": "Desarrollamos plataformas empresariales listas para escalar, con documentación impecable y entrega total de propiedad intelectual. Su software, sin dependencia técnica de nuestro equipo una vez finalizado el proyecto.",
-  "description": "Garantice la continuidad y seguridad de su operación digital. Diseñamos de acuerdo a estándares internacionales de seguridad (OWASP) y los marcos de protección de datos vigentes en su país, entregando documentación técnica rigurosa para que su equipo mantenga el control total sin depender de terceros.",
+  "badge": "DESARROLLO DE SOFTWARE HONESTO Y SIN AMARRAS",
+  "title": "Creamos el software de tu empresa. El código es tuyo, limpio y sin depender de nosotros.",
+  "subtitle": "Desarrollamos sistemas y aplicaciones a tu medida, con entregas claras cada semana y comunicación directa con los ingenieros que programan. Sin intermediarios comerciales ni cajas negras.",
+  "description": "Sabemos lo difícil que es confiar un proyecto tecnológico: agencias que desaparecen, retrasos eternos o código imposible de mantener. En SkyCode te entregamos el 100% de la propiedad, repositorios a tu nombre y documentación paso a paso para que tengas el control absoluto.",
   "ctaPrimary": {
-    "label": "Cotizar Proyecto",
+    "label": "Hablemos de tu proyecto",
     "href": "#cotizador",
-    "ariaLabel": "Cotizar proyecto de software: ir al cotizador interactivo"
+    "ariaLabel": "Hablemos de tu proyecto de software: ir al cotizador interactivo"
   },
   "ctaSecondary": {
-    "label": "Ver portafolio",
+    "label": "Ver proyectos reales",
     "href": "#portfolio",
-    "ariaLabel": "Ver portafolio de proyectos"
+    "ariaLabel": "Ver proyectos y casos reales"
   },
   "codeMockup": {
-    "comment": "// valida, autentica y documenta"
+    "comment": "// código limpio, probado y 100% tuyo"
   }
 }
+

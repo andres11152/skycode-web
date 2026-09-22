@@ -1,78 +1,79 @@
 {
   "sectionAria": "Cotizador interactivo de proyectos",
-  "badge": "Cotizador de Proyectos",
-  "title": "Calcula la Inversión y Tiempos de tu Proyecto",
-  "subtitle": "Seleccione las opciones de su proyecto para obtener un estimado de tiempo e inversión en tiempo real.",
+  "badge": "Presupuesto Transparente",
+  "title": "Calcula el costo y tiempo de tu proyecto",
+  "subtitle": "Elige lo que necesitas para hacerte una idea realista de tiempos e inversión. Sin números inflados ni sorpresas.",
   "currency": {
-    "copLabel": "COP (Pesos)",
+    "copLabel": "COP (Pesos colombianos)",
     "usdLabel": "USD (Dólares)"
   },
   "steps": {
-    "type": "Tipo de Solución",
-    "addons": "Módulos & Capacidades Especiales",
-    "pace": "Ritmo de Desarrollo"
+    "type": "¿Qué quieres construir?",
+    "addons": "Módulos adicionales",
+    "pace": "Ritmo de entrega"
   },
   "projectTypes": [
     {
       "id": "software",
       "iconName": "Code2",
-      "title": "Software a Medida / SaaS",
-      "desc": "Backend multi-inquilino, arquitectura hexagonal, panel web y base de datos."
+      "title": "Software a la Medida / Plataforma Web",
+      "desc": "Panel administrativo, base de datos y la lógica exacta que necesita tu negocio."
     },
     {
       "id": "mobile",
       "iconName": "Smartphone",
       "title": "App Móvil (Android & iOS)",
-      "desc": "Aplicación nativa o multiplataforma con React Native / Flutter."
+      "desc": "Aplicación fluida para teléfonos, lista para publicar y fácil de usar."
     },
     {
       "id": "ai",
       "iconName": "BrainCircuit",
       "title": "Inteligencia Artificial Aplicada",
-      "desc": "Integración de LLMs, bases vectoriales y agentes autónomos."
+      "desc": "Asistentes inteligentes, lectura automática de documentos y automatizaciones."
     },
     {
       "id": "apis",
       "iconName": "Plug",
-      "title": "APIs & Integraciones REST",
-      "desc": "Microservicios, conexión con ERPs y pasarelas de pago."
+      "title": "Integraciones & Conexión de Sistemas",
+      "desc": "Conectar tus sistemas actuales con pasarelas de pago, facturación o WhatsApp."
     },
     {
       "id": "web",
       "iconName": "AppWindow",
-      "title": "Web / Frontend Ultra-Rápido",
-      "desc": "Next.js con 100/100 Core Web Vitals y SEO optimizado."
+      "title": "Página Web o Portal Ultra-Rápido",
+      "desc": "Sitio web veloz, optimizado para celulares y diseñado para conseguir clientes."
     }
   ],
   "addons": [
-    { "id": "auth", "title": "Autenticación OAuth / RBAC Multi-Rol" },
-    { "id": "payments", "title": "Pasarela de Pagos (Stripe / Wompi)" },
-    { "id": "offline", "title": "Sincronización Offline-First" },
-    { "id": "security", "title": "Auditoría de Seguridad OWASP & Ley 1581" },
-    { "id": "ai_bot", "title": "Asistente Virtual / Bot de IA Personalizado" }
+    { "id": "auth", "title": "Inicio de sesión seguro y roles de usuarios (admin, cliente, etc.)" },
+    { "id": "payments", "title": "Pasarela de pagos en línea (Stripe, Wompi, PayU)" },
+    { "id": "offline", "title": "Modo sin conexión (sincronización automática)" },
+    { "id": "security", "title": "Blindaje de seguridad y protección rigurosa de datos" },
+    { "id": "ai_bot", "title": "Asistente inteligente para atención 24/7" }
   ],
   "fromLabel": "Desde",
   "pace": {
-    "standardTitle": "Estándar (Sprints continuos)",
-    "standardDesc": "Tiempos normales de arquitectura.",
-    "expressTitle": "Prioritario Express (-25% tiempo)",
-    "expressDesc": "Equipo dedicado de alto ritmo."
+    "standardTitle": "Ritmo normal (Paso firme)",
+    "standardDesc": "Desarrollo continuo y ordenado semana a semana.",
+    "expressTitle": "Prioritario Express (-25% de tiempo)",
+    "expressDesc": "Dedicación acelerada si necesitas salir al mercado cuanto antes."
   },
   "summary": {
-    "title": "Resumen de Proyecto",
-    "investmentLabel": "Inversión Estimada:",
-    "competitiveRateLabel": "Tarifa Competitiva",
-    "timeLabel": "Tiempo Estimado:",
+    "title": "Resumen de tu estimado",
+    "investmentLabel": "Inversión aproximada:",
+    "competitiveRateLabel": "Precio justo y transparente",
+    "timeLabel": "Tiempo estimado:",
     "weeksSuffix": "Semanas",
-    "ipLabel": "Propiedad Intelectual:",
-    "ipValue": "100% Transferible",
-    "paymentLabel": "Modalidad de Pago:",
-    "paymentValue": "50% Inicial / 50% Final",
-    "warrantyLabel": "Garantía de Código:",
-    "warrantyValue": "90 Días SLA Incluidos",
-    "ctaLabel": "Solicitar Propuesta Oficial",
-    "disclaimer": "*Estimación preliminar sin IMPUESTOS. Se ratifica mediante propuesta técnica formal."
+    "ipLabel": "Propiedad del código:",
+    "ipValue": "100% tuyo desde el día 1",
+    "paymentLabel": "Esquema de pago:",
+    "paymentValue": "50% inicial / 50% contra entrega probada",
+    "warrantyLabel": "Garantía incluida:",
+    "warrantyValue": "90 días de soporte y correcciones",
+    "ctaLabel": "Quiero revisar este estimado con ustedes",
+    "disclaimer": "*Este cálculo es una guía inicial. Nos sentamos contigo a revisar los detalles para darte un presupuesto exacto y definitivo."
   },
-  "whatsappMessageTemplate": "Hola equipo SKYCODE, configuré mi proyecto con el cotizador interactivo:\n- Tipo: {type}\n- Módulos adicionales: {addons}\n- Modalidad: {pace}\n- Estimado: {total} (~{weeks} semanas).\nMe gustaría solicitar una propuesta formal y agendar una llamada de valoración.",
+  "whatsappMessageTemplate": "¡Hola equipo SkyCode! Estuve usando el cotizador en su web para un proyecto de {type}:\n- Adicionales: {addons}\n- Ritmo: {pace}\n- Estimado: {total} (~{weeks} semanas).\n\nMe gustaría charlar con ustedes para ver cómo podemos aterrizarlo.",
   "noAddonsLabel": "Ninguno"
 }
+

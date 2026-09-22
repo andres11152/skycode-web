@@ -1,95 +1,96 @@
 {
-  "badge": "Nuestros Servicios",
-  "title": "Nuestros servicios",
-  "description": "Desarrollamos soluciones robustas con arquitectura empresarial, seguridad rigurosa y documentación técnica detallada para respaldar el crecimiento y la autonomía de su organización.",
+  "badge": "En Qué Podemos Ayudarte",
+  "title": "Lo que construimos para ti",
+  "description": "Software pensado para la realidad de tu negocio: rápido, seguro, fácil de usar y con código limpio que te pertenece al 100%.",
   "items": [
     {
       "slug": "desarrollo-software-medida",
-      "title": "Sistemas Propios y Escalables a la Medida",
-      "description": "Diseñamos la estructura central de su negocio con backend de alto rendimiento. Entregamos propiedad intelectual absoluta y bases de datos optimizadas para que no pague licencias infinitas ni dependa de builders limitados.",
+      "title": "Sistemas y Plataformas a la Medida",
+      "description": "Deja atrás los excels interminables y los programas rígidos. Creamos la herramienta exacta que tu operación necesita, optimizada para crecer sin pagar licencias mensuales abusivas.",
       "iconName": "Code2",
       "features": [
-        "Código propio y transferible",
-        "Bases de datos estructuradas para su negocio",
-        "Lógica de negocio personalizada"
+        "Código 100% tuyo y transferible",
+        "Bases de datos rápidas y estructuradas",
+        "Diseñado para tus flujos reales de trabajo"
       ]
     },
     {
       "slug": "desarrollo-aplicaciones-moviles",
-      "title": "Desarrollo Móvil (Android & iOS)",
-      "description": "Creación de aplicaciones móviles nativas y multiplataforma (React Native y Flutter) de alto rendimiento, optimizadas para las tiendas App Store y Google Play.",
+      "title": "Aplicaciones Móviles (Android & iOS)",
+      "description": "Apps fluidas, intuitivas y publicadas en las tiendas. Pensadas para que tus clientes o tu equipo en campo puedan usarlas con facilidad, incluso sin conexión a internet.",
       "iconName": "Smartphone",
       "features": [
-        "Aplicaciones multiplataforma (React Native / Flutter)",
-        "Publicación y optimización en tiendas (ASO)",
-        "Sincronización sin conexión (Offline-first)"
+        "Apps multiplataforma (React Native / Flutter)",
+        "Acompañamiento en publicación en App Store y Google Play",
+        "Sincronización automática y funcionamiento offline"
       ]
     },
     {
       "slug": "apis-integraciones",
-      "title": "APIs & Integraciones",
-      "description": "Diseño y desarrollo de APIs REST documentadas para conectar sus sistemas con pasarelas de pago, ERPs, CRMs y cualquier plataforma clave en su operación.",
+      "title": "Integraciones & Conexión de Sistemas",
+      "description": "Conectamos tu software con lo que ya usas a diario: pasarelas de pago (Stripe, Wompi, PayU), sistemas contables (Siigo, Alegra, SAP) y canales de mensajería.",
       "iconName": "Plug",
       "features": [
-        "APIs REST estandarizadas y documentadas",
-        "Integración con ERPs y pasarelas de pago",
-        "Arquitectura de microservicios"
+        "Conexión con pasarelas de pago y bancos",
+        "Integración con ERPs, CRMs y facturación",
+        "Automatización de procesos repetitivos"
       ]
     },
     {
       "slug": "frontend-alto-rendimiento",
-      "title": "Interfaces Ultra-rápidas y Optimización de Conversión",
-      "description": "El rendimiento web es rentabilidad. Desarrollamos con React y Next.js optimizando para puntajes excelentes en Core Web Vitals, maximizando sus tasas de conversión y posicionamiento SEO orgánico.",
+      "title": "Páginas Web y Aplicaciones Ultra-Rápidas",
+      "description": "A nadie le gusta esperar una web lenta. Diseñamos experiencias visualmente impecables que cargan al instante en cualquier teléfono y convierten visitas en clientes.",
       "iconName": "AppWindow",
       "features": [
-        "Aplicaciones con React y Next.js",
-        "Optimización de Core Web Vitals y SEO",
-        "Accesibilidad web (WCAG) desde el diseño"
+        "Desarrollo moderno con React y Next.js",
+        "Carga ultra-rápida y optimización para Google (SEO)",
+        "Diseño que se adapta perfecto a cualquier pantalla"
       ]
     },
     {
       "slug": "seguridad-cumplimiento",
-      "title": "Blindaje de Datos y Cumplimiento Normativo (OWASP)",
-      "description": "Protegemos la reputación de su marca. Aplicamos metodologías OWASP contra vulnerabilidades y estructuramos su software bajo la Ley 1581 (Colombia) y el RGPD (Europa), asegurando auditorías de seguridad exitosas.",
+      "title": "Seguridad y Protección de Datos",
+      "description": "Dormir tranquilo no tiene precio. Protegemos tu plataforma contra accesos no autorizados, cuidamos la información confidencial de tus clientes y cumplimos con la ley.",
       "iconName": "ShieldCheck",
       "features": [
-        "Estándares de seguridad OWASP",
-        "Cumplimiento normativo de protección de datos (Ley 1581, RGPD y equivalentes)",
-        "Cifrado de información y control de accesos"
+        "Cifrado de contraseñas y datos sensibles",
+        "Cumplimiento normativo de protección de datos (Ley 1581 / RGPD)",
+        "Protección contra vulnerabilidades comunes y fugas"
       ]
     },
     {
       "slug": "arquitectura-documentacion",
-      "title": "Arquitectura & Documentación",
-      "description": "Entregamos documentación técnica exhaustiva y transferencia de conocimiento estructurada para que su equipo mantenga el control y la autonomía sobre el código.",
+      "title": "Documentación Clara y Transferencia Total",
+      "description": "No creemos en las cajas negras ni en retener clientes a la fuerza. Te entregamos guías claras y bien explicadas para que cualquier desarrollador pueda continuar el proyecto.",
       "iconName": "Layers",
       "features": [
-        "Documentación técnica detallada",
-        "Diseño de sistemas preparado para escalar",
-        "Transferencia completa de propiedad intelectual"
+        "Guías paso a paso de uso y mantenimiento",
+        "Entrega total de repositorios, contraseñas y accesos",
+        "Cero dependencias forzadas ni contratos trampa"
       ]
     },
     {
       "slug": "migracion-datos-legacy",
-      "title": "Migración y Modernización de Datos Legacy",
-      "description": "Transformamos información fragmentada y archivos estructurados complejos (XML, CSV, bases de datos obsoletas) de sistemas heredados a almacenes de datos modernos y optimizados para la toma de decisiones estratégicas.",
+      "title": "Modernización y Rescate de Datos Antiguos",
+      "description": "¿Tienes información valiosa atrapada en sistemas viejos, excels desordenados o bases de datos obsoletas? La limpiamos, estructuramos y migramos a tu nueva plataforma.",
       "iconName": "Database",
       "features": [
-        "Migración segura desde sistemas legacy y XML",
-        "Estructuración de datos para Business Intelligence",
-        "Integración de pipelines de datos y ETLs"
+        "Migración segura y sin pérdida de información",
+        "Limpieza y ordenamiento de datos históricos",
+        "Información lista para tomar mejores decisiones"
       ]
     },
     {
       "slug": "inteligencia-artificial-aplicada",
-      "title": "Inteligencia Artificial Aplicada (IA)",
-      "description": "Diseñamos e integramos modelos de IA, LLMs y agentes autónomos para optimizar flujos de trabajo, automatizar tareas repetitivas y potenciar la toma de decisiones basada en datos.",
+      "title": "Inteligencia Artificial con Propósito Real",
+      "description": "Sin humo ni promesas mágicas. Integramos modelos de IA y asistentes inteligentes que realmente ahorran tiempo en tu operación diaria y mejoran la atención a clientes.",
       "iconName": "BrainCircuit",
       "features": [
-        "Integración de LLMs y modelos de IA de terceros",
-        "Agentes autónomos para automatización de procesos",
-        "Análisis de datos para decisiones basadas en datos"
+        "Asistentes inteligentes para atención y soporte",
+        "Automatización de clasificación y lectura de documentos",
+        "Herramientas de IA conectadas a los datos de tu empresa"
       ]
     }
   ]
 }
+

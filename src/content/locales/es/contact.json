@@ -1,40 +1,41 @@
 {
-  "badge": "Contacto & Diagnóstico",
-  "title": "Hablemos de su proyecto",
-  "description": "Deje de aplazar el desarrollo de su plataforma. Cuéntenos su desafío técnico hoy y reciba un pre-diagnóstico de arquitectura directamente de nuestro equipo de ingeniería, no una respuesta automática.",
+  "badge": "Conversemos",
+  "title": "Hablemos de tu idea",
+  "description": "Cuéntanos qué tienes en mente. Lo revisaremos directamente Andrés, César o Ximena y te daremos una respuesta sincera sobre cómo encararlo, en menos de 24 horas.",
   "placeholders": {
-    "name": "Nombre completo o nombre de la empresa",
-    "email": "Correo electrónico de contacto",
-    "phone": "Teléfono de contacto",
+    "name": "Tu nombre o el de tu empresa",
+    "email": "Tu correo electrónico",
+    "phone": "Teléfono / WhatsApp",
     "phoneCountry": "País del número de teléfono",
-    "phoneCountryEmpty": "Seleccione su país",
-    "message": "Describa brevemente los requerimientos o el desafío de su proyecto",
-    "namePlaceholder": "Ej. Juan Pérez o Empresa S.A.S.",
-    "emailPlaceholder": "ejemplo@empresa.com",
-    "messagePlaceholder": "Describa brevemente el desafío técnico o requerimientos de su proyecto..."
+    "phoneCountryEmpty": "Selecciona tu país",
+    "message": "Cuéntanos sobre tu proyecto",
+    "namePlaceholder": "Ej. Carlos Gómez o Mi Empresa S.A.S.",
+    "emailPlaceholder": "tu-correo@empresa.com",
+    "messagePlaceholder": "Cuéntanos brevemente qué necesitas construir, qué funciones imaginas o qué problema quieres resolver..."
   },
-  "submitLabel": "Enviar solicitud de contacto",
+  "submitLabel": "Enviar mensaje",
   "habeasData": {
-    "label": "Acepto la política de tratamiento de datos personales.",
+    "label": "Acepto el tratamiento de mis datos de contacto para responder mi consulta.",
     "linkText": "Ver política de privacidad",
     "linkUrl": "/politica-privacidad"
   },
   "successModal": {
-    "title": "Solicitud de Diagnóstico Registrada",
-    "body": "Hemos recibido los requerimientos de su proyecto. Un ingeniero de software de nuestro equipo revisará la información y le enviará un pre-diagnóstico técnico personalizado.",
-    "statusCrm": "Estado: Registrado en nuestro CRM",
-    "slaGuarantee": "Garantía SLA de respuesta: Menos de 24h hábiles",
-    "understood": "Entendido",
-    "whatsappCta": "Hablar por WhatsApp"
+    "title": "¡Mensaje recibido! 🎉",
+    "body": "Ya tenemos los detalles de tu proyecto. Uno de nosotros los revisará hoy mismo y te responderemos con una valoración honesta (nada de respuestas genéricas de bots).",
+    "statusCrm": "Recibido directamente por el equipo técnico",
+    "slaGuarantee": "Te respondemos en menos de 24 horas hábiles",
+    "understood": "¡Listo, gracias!",
+    "whatsappCta": "Escribirnos directo a WhatsApp"
   },
-  "sendingLabel": "Enviando...",
-  "errorConnection": "No se pudo conectar con el servidor. Revise su conexión.",
-  "errorGeneral": "Hubo un error al enviar el mensaje.",
+  "sendingLabel": "Enviando tu mensaje...",
+  "errorConnection": "No pudimos conectar con el servidor. Revisa tu conexión a internet.",
+  "errorGeneral": "Hubo un problema al enviar el mensaje. Por favor intenta de nuevo o escríbenos a WhatsApp.",
   "validation": {
-    "nameError": "El nombre o empresa es obligatorio (mínimo 2 caracteres).",
-    "emailError": "Ingrese un correo electrónico real y válido (ej: usuario@empresa.com).",
-    "messageError": "Describa su proyecto con al menos 10 caracteres.",
-    "acceptPolicyHint": "Debe aceptar la política de tratamiento de datos para activar el envío.",
-    "completeFieldsHint": "Complete los campos requeridos con datos válidos para activar el botón."
+    "nameError": "Por favor escribe tu nombre o el de tu empresa (mínimo 2 letras).",
+    "emailError": "Escribe un correo electrónico válido para que podamos responderte.",
+    "messageError": "Cuéntanos un poco más sobre tu idea (al menos 10 caracteres).",
+    "acceptPolicyHint": "Acepta la política de datos para habilitar el botón.",
+    "completeFieldsHint": "Completa los campos requeridos para enviar tu mensaje."
   }
 }
+

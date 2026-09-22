@@ -1,25 +1,26 @@
 {
   "sectionAria": "Por qué elegirnos",
   "badge": "Por Qué Skycode",
-  "title": "Software que su equipo puede mantener sin nosotros",
-  "description": "Entregamos el código, la documentación y las credenciales completas. Los productos que construimos están en producción hoy.",
-  "techLabel": "Nuestro stack tecnológico",
+  "title": "Software para solucionar tus problemas, no para crearte ataduras",
+  "description": "La mejor prueba de que hacemos bien nuestro trabajo es que no necesitas quedarte con nosotros por obligación. Al terminar, te entregamos los accesos, el código ordenado y una guía clara para que tú o tu equipo tengan el control absoluto.",
+  "techLabel": "Las herramientas que dominamos",
   "videoAria": "Video de muestra de nuestro trabajo",
   "items": [
     {
       "iconName": "Users",
-      "title": "Comunicación directa",
-      "description": "Habla con los ingenieros que construyen su software, no con gestores de cuenta. Visibilidad total del progreso en tiempo real."
+      "title": "Hablas directo con quien programa",
+      "description": "Cero intermediarios comerciales que te prometen lo imposible. Hablas con nosotros de frente, con avances reales y visibles cada semana."
     },
     {
       "iconName": "BadgeCheck",
-      "title": "Garantía post-entrega",
-      "description": "Periodo de garantía de estabilidad técnica sin costo adicional, más SLA de soporte preventivo continuo."
+      "title": "Garantía real de 90 días",
+      "description": "No nos desentendemos al entregar. Si surge algún detalle o falla en los primeros tres meses de producción, lo resolvemos sin cobrarte extra."
     },
     {
       "iconName": "ShieldCheck",
-      "title": "Privacidad desde el diseño",
-      "description": "RBAC, cifrado de datos sensibles y logs de auditoría inmutables — no como parche posterior a un incidente."
+      "title": "Seguridad y privacidad desde el día uno",
+      "description": "Cuidamos las contraseñas, los accesos y los datos de tus clientes con estándares serios. Nada de parches improvisados de última hora."
     }
   ]
 }
+

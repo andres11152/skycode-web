@@ -1,29 +1,30 @@
 {
   "sectionAria": "Nuestro equipo",
-  "title": "El equipo detrás del código",
-  "description": "Un equipo senior, sin intermediarios comerciales entre usted y quienes construyen su software. Hable directamente con los ingenieros a cargo de su proyecto.",
-  "ctaLabel": "Hablar con el equipo",
+  "title": "Las personas detrás de cada línea de código",
+  "description": "Aquí no hay comerciales vendiendo humo ni intermediarios innecesarios. Trabajas de la mano con quienes pensamos, diseñamos y programamos tu solución.",
+  "ctaLabel": "Hablar directamente con el equipo",
   "members": [
     {
       "slug": "andres-betancourt",
       "name": "Andrés Betancourt",
-      "role": "Backend Developer",
-      "description": "Diseña sistemas de alto rendimiento, arquitecturas de APIs robustas y soluciones de datos que soportan la operación crítica de cada cliente.",
+      "role": "Backend & Arquitectura",
+      "description": "Se asegura de que las bases de datos no colapsen, las APIs respondan en milisegundos y todo funcione tras bambalinas como un reloj. Odia el código desordenado.",
       "photo": "/team/andres-betancourt.webp"
     },
     {
       "slug": "cesar-leon",
       "name": "César León",
-      "role": "Frontend Developer",
-      "description": "Construye interfaces rápidas, accesibles y optimizadas para conversión, con foco en rendimiento y Core Web Vitals.",
+      "role": "Frontend & Rendimiento",
+      "description": "Obsesionado con que cada pantalla cargue al instante y se sienta súper fluida. Si algo tarda medio segundo de más en tu celular, César no se queda tranquilo.",
       "photo": "/team/cesar-leon.webp"
     },
     {
       "slug": "ximena-calderon",
       "name": "Ximena Calderón",
-      "role": "UI/UX Designer",
-      "description": "Diseña experiencias de usuario que equilibran estética y funcionalidad, alineando cada entregable con los objetivos de negocio del cliente.",
+      "role": "Diseño UI/UX",
+      "description": "Diseña interfaces limpias y fáciles de navegar. Su meta es que cualquier persona aprenda a usar tu plataforma a la primera, sin tener que leer ningún manual.",
       "photo": "/team/ximena-calderon.webp"
     }
   ]
 }
+

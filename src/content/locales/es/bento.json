@@ -2,10 +2,10 @@
   "codeConsole": {
     "logsInitial": ["[BUILD] Compilando TypeScript...", "[TEST] Ejecutando suite de pruebas...", "[READY] Listo para desplegar"],
     "logsRunning": ["[BUILD] Compilando servicios...", "[TEST] Corriendo pruebas automatizadas..."],
-    "logsSuccessAppend": ["[SUCCESS] Compilación exitosa", "[DEPLOY] Desplegado en el entorno de staging", "STATUS: 200 OK"],
-    "codeComment": "// Validado en cada request, sin excepciones",
-    "running": "Running...",
-    "run": "Run"
+    "logsSuccessAppend": ["[SUCCESS] Compilación exitosa", "[DEPLOY] Desplegado en el entorno de pruebas", "STATUS: 200 OK"],
+    "codeComment": "// Código probado y documentado para tu equipo",
+    "running": "Ejecutando...",
+    "run": "Probar"
   },
   "mobilePreview": {
     "appPanelLabel": "Panel de la App",
@@ -21,34 +21,35 @@
     "ariaViewPush": "Ver notificaciones push"
   },
   "apiInspector": {
-    "testing": "Testing...",
-    "send": "Send"
+    "testing": "Probando...",
+    "send": "Enviar"
   },
   "security": {
     "reviewing": "Revisando...",
     "viewChecklist": "Ver checklist",
-    "tlsLabel": "Cifrado en tránsito (TLS)",
+    "tlsLabel": "Cifrado seguro (TLS)",
     "tlsValue": "Activo",
-    "owaspLabel": "Lineamientos OWASP Top 10",
-    "owaspValue": "Aplicados",
-    "dataFrameworkLabel": "Marco de protección de datos",
-    "dataFrameworkValue": "Considerado"
+    "owaspLabel": "Buenas prácticas de seguridad",
+    "owaspValue": "Aplicadas",
+    "dataFrameworkLabel": "Protección de datos (Ley 1581 / RGPD)",
+    "dataFrameworkValue": "Cumplido"
   },
   "migration": {
     "migrating": "Migrando...",
     "simulate": "Simular migración",
     "tablesMigrated": "Tablas migradas",
-    "verified": "[OK] Migración verificada, integridad de datos validada",
-    "transferring": "[SYNC] Transfiriendo tablas..."
+    "verified": "[OK] Datos migrados con éxito y verificados",
+    "transferring": "[SYNC] Transfiriendo información..."
   },
   "aiAgent": {
-    "heading": "Agente de IA Autónomo",
+    "heading": "Asistente Inteligente",
     "thinking": "Pensando...",
-    "runAgent": "Ejecutar agente",
-    "promptLabel": "Prompt",
+    "runAgent": "Probar asistente",
+    "promptLabel": "Instrucción",
     "promptText": "Optimizar flujo de atención al cliente",
-    "initialResponse": "Agente: \"Flujo de trabajo automatizado.\"",
-    "runningResponse": "Agente LLM procesando el prompt...",
-    "finalResponse": "Agente: respuesta generada correctamente."
+    "initialResponse": "Asistente: \"Listo para responder consultas de tus clientes.\"",
+    "runningResponse": "Procesando respuesta en tiempo real...",
+    "finalResponse": "Asistente: respuesta generada con base en los datos de tu empresa."
   }
 }
+
