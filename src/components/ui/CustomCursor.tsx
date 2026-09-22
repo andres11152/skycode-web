@@ -1,23 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 
 export function CustomCursor() {
-  const reduced = Boolean(useReducedMotion());
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [cursorText, setCursorText] = useState<string | null>(null);
 
-  // Mouse Coordinates
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
-
-  // High Precision Spring Physics for smooth trailing ring
-  const springConfig = { damping: 30, stiffness: 400, mass: 0.4 };
-  const cursorX = useSpring(mouseX, springConfig);
-  const cursorY = useSpring(mouseY, springConfig);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Only enable on non-touch devices with fine pointer
@@ -25,10 +17,28 @@ export function CustomCursor() {
       return;
     }
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    let targetX = -100;
+    let targetY = -100;
+    let currentX = -100;
+    let currentY = -100;
+    let rafId: number;
+
     const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-      if (!isVisible) setIsVisible(true);
+      targetX = e.clientX;
+      targetY = e.clientY;
+
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)`;
+      }
+
+      setIsVisible((prev) => {
+        if (!prev) return true;
+        return prev;
+      });
 
       const target = e.target as HTMLElement | null;
       if (!target) return;
@@ -48,69 +58,67 @@ export function CustomCursor() {
       }
     };
 
+    const loop = () => {
+      // Smooth lerp trailing ring
+      currentX += (targetX - currentX) * 0.18;
+      currentY += (targetY - currentY) * 0.18;
+
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      }
+
+      rafId = requestAnimationFrame(loop);
+    };
+
+    rafId = requestAnimationFrame(loop);
+
     const handleMouseLeave = () => setIsVisible(false);
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.body.addEventListener("mouseleave", handleMouseLeave, { passive: true });
 
     return () => {
+      cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       document.body.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [mouseX, mouseY, isVisible]);
+  }, []);
 
-  if (reduced || !isVisible) return null;
+  if (!isVisible) return null;
 
   return (
-    // z-[80]: por encima de todo lo demás en la escala (Modal en z-[70] es lo más alto
-    // hasta ahora) — un cursor reemplazado nunca debe quedar oculto detrás de un modal.
+    // z-[80]: por encima de todo lo demás en la escala — un cursor nunca debe quedar oculto.
     <div className="pointer-events-none fixed inset-0 z-[80] overflow-hidden hidden md:block">
       {/* Precision Center Dot */}
-      <motion.div
-        style={{
-          x: mouseX,
-          y: mouseY,
-        }}
-        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[80]"
+      <div
+        ref={dotRef}
+        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[80] will-change-transform"
       >
         <div className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_#0089CD]" />
-      </motion.div>
+      </div>
 
       {/* Trailing Ring & Glassmorphism Badge */}
-      <motion.div
-        style={{
-          x: cursorX,
-          y: cursorY,
-        }}
-        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[75]"
+      <div
+        ref={ringRef}
+        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[75] will-change-transform"
       >
-        <motion.div
-          animate={{
-            scale: cursorText ? 1 : isHovered ? 1.25 : 1,
-            width: cursorText ? "auto" : isHovered ? "32px" : "24px",
-            height: cursorText ? "auto" : isHovered ? "32px" : "24px",
-          }}
-          transition={{ type: "spring", stiffness: 450, damping: 28 }}
-          className={`flex items-center justify-center rounded-full transition-all ${
+        <div
+          className={`flex items-center justify-center rounded-full transition-all duration-200 ${
             cursorText
               ? "px-3.5 py-1.5 bg-background/90 text-foreground border border-accent/40 shadow-[0_8px_25px_rgba(0,137,205,0.25)] backdrop-blur-md"
               : isHovered
-                ? "bg-accent/5 border border-accent/40 shadow-[0_0_10px_rgba(0,137,205,0.15)]"
-                : "border border-foreground/20 bg-transparent"
+                ? "h-8 w-8 bg-accent/5 border border-accent/40 shadow-[0_0_10px_rgba(0,137,205,0.15)] scale-110"
+                : "h-6 w-6 border border-foreground/20 bg-transparent"
           }`}
         >
           {cursorText ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex items-center gap-1 font-mono text-[10px] font-bold tracking-widest text-accent-strong uppercase"
-            >
+            <div className="flex items-center gap-1 font-mono text-[10px] font-bold tracking-widest text-accent-strong uppercase animate-in fade-in zoom-in-95 duration-150">
               <span>{cursorText}</span>
               <ArrowUpRight size={12} className="text-accent stroke-[2.5]" />
-            </motion.div>
+            </div>
           ) : null}
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 }

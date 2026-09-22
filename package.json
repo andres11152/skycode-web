@@ -52,9 +52,9 @@
     "ip-address": "^10.4.0"
   },
   "browserslist": [
-    "chrome >= 94",
-    "edge >= 94",
-    "firefox >= 93",
-    "safari >= 15.4"
+    "chrome >= 109",
+    "edge >= 109",
+    "firefox >= 109",
+    "safari >= 16.4"
   ]
 }

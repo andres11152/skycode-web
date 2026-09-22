@@ -9,14 +9,33 @@
 // - El H1, subtítulo y CTAs del Hero se hidrudan y pintan sin esperar a Framer Motion.
 // - En mobile esto ahorra ~400-600ms de Script Evaluation antes del LCP.
 
-import { useState, useEffect } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { getHeroContent } from "@/content/hero";
 import { type Locale } from "@/lib/i18n";
 
+function subscribeReducedMotion(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mql.addEventListener("change", callback);
+  return () => mql.removeEventListener("change", callback);
+}
+
+function getReducedMotionSnapshot() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function getReducedMotionServerSnapshot() {
+  return false;
+}
+
 export function CodeMockup({ locale }: { locale: Locale }) {
   const { comment } = getHeroContent(locale).codeMockup;
-  const reduced = Boolean(useReducedMotion());
+  const reduced = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getReducedMotionServerSnapshot,
+  );
 
   const codeLines: { length: number; isBreak?: boolean; jsx: React.ReactNode }[] = [
     {
@@ -191,39 +210,17 @@ export function CodeMockup({ locale }: { locale: Locale }) {
               if (line.isBreak) {
                 return <span key={index} className="text-background/20">{"\n"}</span>;
               }
-              if (reduced) {
-                return (
-                  <div key={index} className="whitespace-nowrap text-left flex items-center pr-1">
-                    {line.jsx}
-                  </div>
-                );
-              }
               return (
-                <motion.div
+                <div
                   key={index}
-                  initial={{ width: 0, borderRight: "2px solid transparent" }}
-                  animate={{
-                    width: "100%",
-                    borderRight: [
-                      "2px solid transparent",
-                      "2px solid var(--accent)",
-                      "2px solid var(--accent)",
-                      "2px solid transparent",
-                    ],
+                  className="animate-codeline overflow-hidden whitespace-nowrap text-left flex items-center pr-1"
+                  style={{
+                    maxWidth: "max-content",
+                    animation: `codeline-type ${line.duration}s linear ${line.delay}s forwards`,
                   }}
-                  transition={{
-                    width: { duration: line.duration, ease: "linear", delay: line.delay },
-                    borderRight: {
-                      duration: line.duration,
-                      times: [0, 0.05, 0.95, 1],
-                      delay: line.delay,
-                    },
-                  }}
-                  className="overflow-hidden whitespace-nowrap text-left flex items-center pr-1"
-                  style={{ maxWidth: "max-content" }}
                 >
                   {line.jsx}
-                </motion.div>
+                </div>
               );
             })}
           </code>

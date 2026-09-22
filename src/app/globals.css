@@ -177,6 +177,28 @@ h6 {
   will-change: transform;
 }
 
+@keyframes codeline-type {
+  0% {
+    width: 0;
+    border-right: 2px solid transparent;
+  }
+  5% {
+    border-right: 2px solid var(--accent);
+  }
+  95% {
+    border-right: 2px solid var(--accent);
+  }
+  100% {
+    width: 100%;
+    border-right: 2px solid transparent;
+  }
+}
+
+.animate-codeline {
+  width: 0;
+  border-right: 2px solid transparent;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-hero-fade-up,
   .animate-hero-scale-in,
@@ -185,6 +207,12 @@ h6 {
   .animate-float,
   .animate-marquee {
     animation: none !important;
+  }
+
+  .animate-codeline {
+    width: 100% !important;
+    animation: none !important;
+    border-right: none !important;
   }
 
   .hero-cta {

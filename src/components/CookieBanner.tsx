@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Cookie } from "lucide-react";
 import { useLocale } from "@/components/LocaleProvider";
 import { getCookieBannerContent } from "@/content/cookieBanner";
@@ -12,7 +11,6 @@ const STORAGE_KEY = "skycode-cookie-notice-ack";
 
 export function CookieBanner() {
   const locale = useLocale();
-  const reduced = Boolean(useReducedMotion());
   const cookieData = getCookieBannerContent(locale);
   const [visible, setVisible] = useState(false);
 
@@ -34,47 +32,41 @@ export function CookieBanner() {
     setVisible(false);
   }
 
+  if (!visible) return null;
+
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          role="region"
-          aria-label={cookieData.ariaLabel}
-          initial={{ opacity: 0, y: reduced ? 0 : 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: reduced ? 0 : 24 }}
-          transition={{ duration: reduced ? 0.01 : 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-x-0 bottom-0 z-[65] border-t border-foreground/10 bg-background/95 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl"
-        >
-          <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
-            <div className="flex items-start gap-3">
-              <span
-                aria-hidden="true"
-                className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent"
-              >
-                <Cookie size={18} />
-              </span>
-              <p className="text-sm text-foreground/80 leading-relaxed">
-                {cookieData.message}{" "}
-                <Link
-                  href={cookieData.linkUrl}
-                  className="underline decoration-foreground/30 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground"
-                >
-                  {cookieData.linkText}
-                </Link>
-                {locale !== "es" && <EsBadge className="ml-1.5" />}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={dismiss}
-              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-accent-strong px-6 text-sm font-semibold text-accent-foreground outline-none transition-colors hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:ml-4"
+    <div
+      role="region"
+      aria-label={cookieData.ariaLabel}
+      className="fixed inset-x-0 bottom-0 z-[65] border-t border-foreground/10 bg-background/95 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl animate-in fade-in slide-in-from-bottom-5 duration-300"
+    >
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+        <div className="flex items-start gap-3">
+          <span
+            aria-hidden="true"
+            className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent"
+          >
+            <Cookie size={18} />
+          </span>
+          <p className="text-sm text-foreground/80 leading-relaxed">
+            {cookieData.message}{" "}
+            <Link
+              href={cookieData.linkUrl}
+              className="underline decoration-foreground/30 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground"
             >
-              {cookieData.accept}
-            </button>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+              {cookieData.linkText}
+            </Link>
+            {locale !== "es" && <EsBadge className="ml-1.5" />}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={dismiss}
+          className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-accent-strong px-6 text-sm font-semibold text-accent-foreground outline-none transition-colors hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:ml-4"
+        >
+          {cookieData.accept}
+        </button>
+      </div>
+    </div>
   );
 }
