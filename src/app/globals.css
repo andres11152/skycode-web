@@ -82,10 +82,26 @@ h6 {
   animation: hero-scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animate-hero-fade-up,
-  .animate-hero-scale-in {
-    animation: none;
+@keyframes gs-sweep {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
   }
 }
+
+.animate-gs-sweep {
+  background-size: 250% 100%;
+  animation: gs-sweep var(--gs-duration, 3.5s) var(--gs-easing, cubic-bezier(0.45, 0, 0.55, 1)) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-fade-up,
+  .animate-hero-scale-in,
+  .animate-gs-sweep {
+    animation: none !important;
+  }
+}
+
 

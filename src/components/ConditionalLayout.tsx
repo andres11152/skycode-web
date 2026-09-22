@@ -1,16 +1,28 @@
 "use client";
 
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
-import { CookieBanner } from "@/components/CookieBanner";
 import { SkipLink } from "@/components/SkipLink";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
-import { CustomCursor } from "@/components/ui/CustomCursor";
 import { AttributionCapture } from "@/components/AttributionCapture";
 import { useLocale } from "@/components/LocaleProvider";
+
+const WhatsAppButton = dynamic(
+  () => import("@/components/ui/WhatsAppButton").then((mod) => mod.WhatsAppButton),
+  { ssr: false }
+);
+const CookieBanner = dynamic(
+  () => import("@/components/CookieBanner").then((mod) => mod.CookieBanner),
+  { ssr: false }
+);
+const CustomCursor = dynamic(
+  () => import("@/components/ui/CustomCursor").then((mod) => mod.CustomCursor),
+  { ssr: false }
+);
+
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

@@ -18,8 +18,9 @@ import "./globals.css";
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["600", "700"],
   display: "swap",
+  preload: true,
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -27,13 +28,16 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
+
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -198,19 +202,18 @@ export default function RootLayout({
     >
       <head>
         <OrganizationJsonLd />
-        <Script
+        <script
           id="locale-redirect"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: BROWSER_LOCALE_REDIRECT_SCRIPT }}
         />
         {googleAdsId && (
           <>
             <Script
               id="google-ads-tag"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
               src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
             />
-            <Script id="google-ads-init" strategy="afterInteractive">
+            <Script id="google-ads-init" strategy="lazyOnload">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -220,6 +223,7 @@ export default function RootLayout({
             </Script>
           </>
         )}
+
       </head>
       <body className="min-h-full flex flex-col">
         <LocaleProvider>

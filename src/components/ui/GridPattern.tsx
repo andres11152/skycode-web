@@ -49,6 +49,7 @@ export function GridPattern({
     const element = containerRef.current;
     if (!element || reduced) return;
 
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const resizeObserver = new ResizeObserver((entries) => {
       const entry = entries[0];
       if (!entry) return;
@@ -58,17 +59,23 @@ export function GridPattern({
         return;
       }
       measuredRef.current = { width: nextWidth, height: nextHeight };
-      setSquares(
-        Array.from({ length: numSquares }, (_, i) => ({
-          id: i,
-          pos: randomPos(nextWidth, nextHeight, width, height),
-          iteration: 0,
-        })),
-      );
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setSquares(
+          Array.from({ length: numSquares }, (_, i) => ({
+            id: i,
+            pos: randomPos(nextWidth, nextHeight, width, height),
+            iteration: 0,
+          })),
+        );
+      }, 60);
     });
 
     resizeObserver.observe(element);
-    return () => resizeObserver.disconnect();
+    return () => {
+      clearTimeout(timer);
+      resizeObserver.disconnect();
+    };
   }, [reduced, numSquares, width, height]);
 
   function updateSquarePosition(squareId: number) {

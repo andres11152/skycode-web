@@ -4,10 +4,10 @@ import {
   type CSSProperties,
   type ElementType,
   type HTMLAttributes,
-  useEffect,
   useMemo,
-  useRef,
 } from "react";
+import { cn } from "@/lib/utils";
+
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
@@ -329,128 +329,35 @@ export function GradientShimmer({
   style,
   ...restProps
 }: GradientShimmerProps) {
-  const ref = useRef<HTMLElement | null>(null);
   const safeDuration = Math.max(
     0.001,
     finiteOr(duration, DEFAULT_DURATION_SECONDS),
   );
-  const safeSpread = Math.max(0, finiteOr(spread, DEFAULT_SPREAD));
   const safeAngle = finiteOr(angle, DEFAULT_ANGLE);
   const stops = useMemo(() => resolveStops(gradient), [gradient]);
-  const backgroundImage = useMemo(
-    () => buildBandGradient(stops, safeAngle),
-    [stops, safeAngle],
-  );
+  
+  const gradientCss = useMemo(() => {
+    const sorted = [...stops].sort((a, b) => a.position - b.position);
+    const stopsStr = sorted.map((s) => `${s.color} ${(s.position * 100).toFixed(1)}%`).join(", ");
+    return `linear-gradient(${safeAngle}deg, ${stopsStr})`;
+  }, [stops, safeAngle]);
+
   const easingValue = easingPresets[easing] ?? easingPresets.smooth;
-
-  const initialSpread = Math.min(children.length * safeSpread, MAX_SPREAD_PX);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const measure = () => {
-      const textWidth =
-        el.getBoundingClientRect().width || FALLBACK_TEXT_WIDTH_PX;
-      const fontSize =
-        Number.parseFloat(getComputedStyle(el).fontSize) || BASE_FONT_PX;
-      const fontScale = fontSize / BASE_FONT_PX;
-      const spreadPx = Math.min(
-        children.length * safeSpread * fontScale,
-        MAX_SPREAD_PX * fontScale,
-      );
-      const layerWidth = Math.max(1, textWidth + spreadPx * 2);
-      const start = -spreadPx - layerWidth / 2;
-      const end = textWidth + spreadPx - layerWidth / 2;
-      const durationMs = safeDuration * 1000;
-      el.style.setProperty("--gs-spread", `${spreadPx}px`);
-      el.style.setProperty(
-        "--gs-spread-mid",
-        `${spreadPx * SPREAD_MID_RATIO}px`,
-      );
-      el.style.backgroundSize = `${layerWidth}px 100%`;
-      return { start, end, durationMs };
-    };
-
-    if (!supportsBackgroundClipText()) {
-      revealNormalText(el);
-      return;
-    }
-
-    measure();
-
-    if (respectReducedMotion && prefersReducedMotion()) return;
-    if (typeof el.animate !== "function") return;
-
-    let anim: Animation | null = null;
-    let pauseTimer: ReturnType<typeof setTimeout> | undefined;
-    let active = true;
-    let cancelled = false;
-
-    const runSweep = () => {
-      if (cancelled) return;
-      const { start, end, durationMs } = measure();
-      const next = el.animate(
-        [
-          { backgroundPosition: `${start}px center` },
-          { backgroundPosition: `${end}px center` },
-        ],
-        { duration: durationMs, easing: easingValue, fill: "forwards" },
-      );
-      if (!active) next.pause();
-      anim?.cancel();
-      anim = next;
-      next.onfinish = () => {
-        pauseTimer = setTimeout(runSweep, Math.max(0, pauseBetween));
-      };
-    };
-
-    const stopVisibility = observeShimmerActive(
-      el,
-      { pauseOnScroll, pauseWhenOffscreen },
-      (next) => {
-        active = next;
-        if (anim) {
-          if (active) anim.play();
-          else anim.pause();
-        }
-      },
-    );
-
-    runSweep();
-
-    return () => {
-      cancelled = true;
-      anim?.cancel();
-      clearTimeout(pauseTimer);
-      stopVisibility();
-    };
-  }, [
-    children,
-    safeSpread,
-    safeDuration,
-    easingValue,
-    pauseBetween,
-    pauseOnScroll,
-    pauseWhenOffscreen,
-    respectReducedMotion,
-  ]);
+  const totalDuration = safeDuration + pauseBetween / 1000;
 
   const mergedStyle: CSSProperties = {
     position: "relative",
     display: "inline",
-    backgroundImage,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "100% 100%",
-    backgroundColor: "var(--gs-base)",
+    backgroundImage: gradientCss,
+    backgroundRepeat: "repeat",
+    backgroundSize: "250% 100%",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
     WebkitBoxDecorationBreak: "clone",
     boxDecorationBreak: "clone",
-    ["--gs-base" as string]: baseColor,
-    ["--gs-spread" as string]: `${initialSpread}px`,
-    ["--gs-spread-mid" as string]: `${initialSpread * SPREAD_MID_RATIO}px`,
+    ["--gs-duration" as string]: `${totalDuration.toFixed(2)}s`,
+    ["--gs-easing" as string]: easingValue,
     ...style,
   };
 
@@ -458,8 +365,7 @@ export function GradientShimmer({
 
   return (
     <Component
-      ref={ref}
-      className={className}
+      className={cn("animate-gs-sweep", className)}
       style={mergedStyle}
       {...(restProps as HTMLAttributes<HTMLElement>)}
     >
@@ -469,3 +375,4 @@ export function GradientShimmer({
 }
 
 export default GradientShimmer;
+

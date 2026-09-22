@@ -53,12 +53,26 @@ const SECURITY_HEADERS = [
 ];
 
 const nextConfig: NextConfig = {
+  compress: true,
+  poweredByHeader: false,
   images: {
     unoptimized: true,
   },
   async headers() {
-    return [{ source: "/(.*)", headers: SECURITY_HEADERS }];
+    return [
+      { source: "/(.*)", headers: SECURITY_HEADERS },
+      {
+        source: "/:all*(svg|jpg|jpeg|png|webp|ico|woff|woff2)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
   },
+
   // `geoip-country` (usada en app/api/geo) lee su base de datos desde disco
   // con una ruta relativa a `__dirname` — si Next.js la empaqueta junto con
   // la Route Handler, esa ruta queda rota (falla con ENOENT contra un

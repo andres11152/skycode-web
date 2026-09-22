@@ -44,37 +44,31 @@ export function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-4 z-50 px-4 sm:px-6 lg:px-8">
-      <motion.div
-        layout
-        transition={SPRING}
+      <div
         className={cn(
-          "mx-auto flex items-center justify-between gap-2 rounded-full",
+          "mx-auto flex items-center justify-between gap-2 rounded-full transition-all duration-300 ease-out",
           scrolled ? cn("max-w-4xl py-2 pl-3 pr-2", GLASS) : "max-w-7xl bg-transparent py-1",
         )}
       >
-        <motion.div layout="position" transition={SPRING}>
+        <div>
           <Link
             href={homePath}
             className="group flex items-center gap-2 rounded-full py-1.5 pr-1.5 text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label={navData.logoAria}
             onClick={() => setIsOpen(false)}
           >
-            <motion.span
-              layout
-              transition={SPRING}
+            <span
               className="flex h-8 items-center rounded-full transition-transform duration-300 ease-out group-hover:scale-110"
             >
               <Image src="/logo-mark.png" alt="" width={110} height={63} priority className="h-6 w-auto" />
-            </motion.span>
+            </span>
           </Link>
-        </motion.div>
+        </div>
 
         {/* Desktop Links — su propia tarjeta de vidrio cuando flota sola, se funde con el contenedor al hacer scroll */}
-        <motion.ul
-          layout
-          transition={SPRING}
+        <ul
           className={cn(
-            "hidden items-center gap-1 rounded-full sm:flex",
+            "hidden items-center gap-1 rounded-full transition-all duration-300 ease-out sm:flex",
             scrolled ? "bg-transparent p-0 shadow-none" : cn("p-1.5", GLASS),
           )}
         >
@@ -89,9 +83,10 @@ export function Navbar() {
               </Link>
             </li>
           ))}
-        </motion.ul>
+        </ul>
 
-        <motion.div layout="position" transition={SPRING} className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5">
+
           <LanguageSwitcher locale={locale} className="flex items-center" />
 
           {/* Desktop Contact button */}
@@ -116,8 +111,11 @@ export function Navbar() {
             aria-label={isOpen ? navData.closeMenu : navData.openMenu}
           >
             {isOpen ? <X size={18} /> : <Menu size={18} />}
+
           </button>
-        </motion.div>
+        </div>
+
+
 
         {/* Mobile Navigation Drawer */}
         <AnimatePresence>
@@ -157,9 +155,11 @@ export function Navbar() {
                 {navData.contacto}
               </Button>
             </motion.div>
+
           )}
         </AnimatePresence>
-      </motion.div>
+      </div>
     </header>
   );
 }
+
