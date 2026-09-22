@@ -1,7 +1,10 @@
+"use client";
+
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { TrustStrip } from "@/components/sections/TrustStrip";
 import type { Locale } from "@/lib/i18n";
+
 
 const Highlights = dynamic(() =>
   import("@/components/sections/Highlights").then((mod) => mod.Highlights)
@@ -15,8 +18,9 @@ const Process = dynamic(() =>
 const Portfolio = dynamic(() =>
   import("@/components/sections/Portfolio").then((mod) => mod.Portfolio)
 );
-const Testimonials = dynamic(() =>
-  import("@/components/sections/Testimonials").then((mod) => mod.Testimonials)
+const Testimonials = dynamic(
+  () => import("@/components/sections/Testimonials").then((mod) => mod.Testimonials),
+  { ssr: false }
 );
 const BlogTeaser = dynamic(() =>
   import("@/components/sections/BlogTeaser").then((mod) => mod.BlogTeaser)
@@ -24,15 +28,19 @@ const BlogTeaser = dynamic(() =>
 const Faq = dynamic(() =>
   import("@/components/sections/Faq").then((mod) => mod.Faq)
 );
-const ClosingStatement = dynamic(() =>
-  import("@/components/sections/ClosingStatement").then((mod) => mod.ClosingStatement)
+const ClosingStatement = dynamic(
+  () => import("@/components/sections/ClosingStatement").then((mod) => mod.ClosingStatement),
+  { ssr: false }
 );
-const ProjectEstimator = dynamic(() =>
-  import("@/components/sections/ProjectEstimator").then((mod) => mod.ProjectEstimator)
+const ProjectEstimator = dynamic(
+  () => import("@/components/sections/ProjectEstimator").then((mod) => mod.ProjectEstimator),
+  { ssr: false }
 );
-const Contact = dynamic(() =>
-  import("@/components/sections/Contact").then((mod) => mod.Contact)
+const Contact = dynamic(
+  () => import("@/components/sections/Contact").then((mod) => mod.Contact),
+  { ssr: false }
 );
+
 
 export function HomeSections({ locale }: { locale: Locale }) {
   return (

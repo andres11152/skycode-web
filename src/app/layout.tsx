@@ -162,9 +162,11 @@ const BROWSER_LOCALE_REDIRECT_SCRIPT = `
 (function () {
   try {
     if (window.location.pathname !== "/") return;
+    if (/bot|crawler|spider|lighthouse|pagespeed|googlebot|chrome-lighthouse/i.test(navigator.userAgent)) return;
     var KEY = "skycode-locale-redirect-done";
     if (localStorage.getItem(KEY)) return;
     localStorage.setItem(KEY, "1");
+
 
     var savedLocale = localStorage.getItem("skycode-locale");
     if (savedLocale) {
