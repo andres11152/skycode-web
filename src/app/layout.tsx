@@ -18,17 +18,13 @@ import "./globals.css";
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["600", "700"],
   display: "swap",
-  preload: true,
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   display: "swap",
-  preload: true,
 });
 
 const geistMono = Geist_Mono({
