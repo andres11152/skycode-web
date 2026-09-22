@@ -58,6 +58,18 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  experimental: {
+    // Inyecta el CSS de cada página directamente como <style> en el <head>
+    // en lugar de un <link> externo. Elimina el round-trip que bloquea el
+    // render antes de que Chrome pueda pintar el LCP element (el <h1> del Hero).
+    // Documentación: node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/inlineCss.md
+    // Ideal para sitios con Tailwind (atomic CSS, tamaño de hoja pequeño).
+    inlineCss: true,
+    // framer-motion exporta cientos de módulos — sin esta opción, Next.js
+    // importa el barrel completo incluso si solo usamos motion.div + useReducedMotion.
+    // lucide-react ya está optimizado por defecto en Next.js 16.
+    optimizePackageImports: ["framer-motion"],
+  },
   async headers() {
     return [
       { source: "/(.*)", headers: SECURITY_HEADERS },

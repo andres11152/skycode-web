@@ -5,6 +5,8 @@ import {
   type ElementType,
   type HTMLAttributes,
   useMemo,
+  useState,
+  useEffect,
 } from "react";
 import { cn } from "@/lib/utils";
 
@@ -311,6 +313,11 @@ function revealNormalText(el: HTMLElement) {
 /**
  * A text shimmer that sweeps a multi-stop gradient highlight across its text.
  * Web-Animations-API driven, zero runtime dependencies, no CSS import.
+ *
+ * LCP-safe: en SSR y antes de la hidratación, el texto se renderiza con
+ * un color sólido (el primer stop del gradiente) para que Chrome pueda
+ * medir el LCP element inmediatamente. El shimmer animado se activa solo
+ * después de la hidratación del cliente — progressive enhancement.
  */
 export function GradientShimmer({
   children,
@@ -329,43 +336,68 @@ export function GradientShimmer({
   style,
   ...restProps
 }: GradientShimmerProps) {
+  // Falso en SSR y en el primer render del cliente antes de la hidratación.
+  // Cuando es false, el texto se renderiza con color sólido para que Chrome
+  // pueda descubrir y medir el elemento LCP sin esperar al JS del shimmer.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
   const safeDuration = Math.max(
     0.001,
     finiteOr(duration, DEFAULT_DURATION_SECONDS),
   );
   const safeAngle = finiteOr(angle, DEFAULT_ANGLE);
   const stops = useMemo(() => resolveStops(gradient), [gradient]);
-  
+
   const gradientCss = useMemo(() => {
     const sorted = [...stops].sort((a, b) => a.position - b.position);
     const stopsStr = sorted.map((s) => `${s.color} ${(s.position * 100).toFixed(1)}%`).join(", ");
     return `linear-gradient(${safeAngle}deg, ${stopsStr})`;
   }, [stops, safeAngle]);
 
+  // Color sólido de fallback para SSR: primer stop del gradiente.
+  // Garantiza que el texto sea legible y medible por el browser sin JS.
+  const solidColor = useMemo(() => {
+    const sorted = [...stops].sort((a, b) => a.position - b.position);
+    return sorted[0]?.color ?? "currentColor";
+  }, [stops]);
+
   const easingValue = easingPresets[easing] ?? easingPresets.smooth;
   const totalDuration = safeDuration + pauseBetween / 1000;
 
-  const mergedStyle: CSSProperties = {
-    position: "relative",
-    display: "inline",
-    backgroundImage: gradientCss,
-    backgroundRepeat: "repeat",
-    backgroundSize: "250% 100%",
-    WebkitBackgroundClip: "text",
-    backgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    WebkitBoxDecorationBreak: "clone",
-    boxDecorationBreak: "clone",
-    ["--gs-duration" as string]: `${totalDuration.toFixed(2)}s`,
-    ["--gs-easing" as string]: easingValue,
-    ...style,
-  };
+  // En SSR / pre-hidratación: texto con color sólido (LCP-friendly).
+  // Post-hidratación: shimmer completo con gradiente y -webkit-text-fill-color.
+  const mergedStyle: CSSProperties = hydrated
+    ? {
+        position: "relative",
+        display: "inline",
+        backgroundImage: gradientCss,
+        backgroundRepeat: "repeat",
+        backgroundSize: "250% 100%",
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        WebkitBoxDecorationBreak: "clone",
+        boxDecorationBreak: "clone",
+        ["--gs-duration" as string]: `${totalDuration.toFixed(2)}s`,
+        ["--gs-easing" as string]: easingValue,
+        ...style,
+      }
+    : {
+        // Color sólido en SSR: Chrome lo detecta como LCP text inmediatamente.
+        // Sin -webkit-text-fill-color: transparent, que impide la medición LCP.
+        color: solidColor,
+        display: "inline",
+        ...style,
+      };
 
   const Component = (as || "span") as ElementType;
 
   return (
     <Component
-      className={cn("animate-gs-sweep", className)}
+      className={cn(hydrated ? "animate-gs-sweep" : "", className)}
       style={mergedStyle}
       {...(restProps as HTMLAttributes<HTMLElement>)}
     >
