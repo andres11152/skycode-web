@@ -369,18 +369,21 @@ export function GradientShimmer({
 
   // En SSR / pre-hidratación: texto con color sólido (LCP-friendly).
   // Post-hidratación: shimmer completo con gradiente y -webkit-text-fill-color.
+  // NOTA: backgroundSize y backgroundPosition los controla la clase CSS
+  // `.animate-gs-sweep` via @property --gs-x (compositor-driven). No se
+  // setean en inline style para no interferir con la animación del compositor.
   const mergedStyle: CSSProperties = hydrated
     ? {
         position: "relative",
         display: "inline",
         backgroundImage: gradientCss,
         backgroundRepeat: "repeat",
-        backgroundSize: "250% 100%",
         WebkitBackgroundClip: "text",
         backgroundClip: "text",
         WebkitTextFillColor: "transparent",
         WebkitBoxDecorationBreak: "clone",
         boxDecorationBreak: "clone",
+        // Variables CSS dinámicas por instancia (duración y easing)
         ["--gs-duration" as string]: `${totalDuration.toFixed(2)}s`,
         ["--gs-easing" as string]: easingValue,
         ...style,
