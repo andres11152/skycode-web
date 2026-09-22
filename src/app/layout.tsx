@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Geist_Mono, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
+import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { services } from "@/content/services";
@@ -25,13 +25,6 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-body",
   subsets: ["latin"],
   display: "optional",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "optional",
-  preload: false,
 });
 
 
@@ -162,7 +155,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${spaceGrotesk.variable} ${plusJakartaSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
       <head>
         <link rel="preload" as="image" href="/logo-mark.png" fetchPriority="high" />

@@ -199,6 +199,14 @@ h6 {
   border-right: 2px solid transparent;
 }
 
+@media (max-width: 768px) {
+  .animate-codeline {
+    width: 100% !important;
+    animation: none !important;
+    border-right: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-hero-fade-up,
   .animate-hero-scale-in,

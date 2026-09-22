@@ -159,13 +159,14 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
     const ref = scrollRef.current;
     if (ref) {
       ref.addEventListener("scroll", checkScroll, { passive: true });
-      checkScroll();
-    }
-    return () => {
-      if (ref) {
+      const rafId = requestAnimationFrame(() => {
+        checkScroll();
+      });
+      return () => {
+        cancelAnimationFrame(rafId);
         ref.removeEventListener("scroll", checkScroll);
-      }
-    };
+      };
+    }
   }, [checkScroll]);
 
   const scroll = (direction: "left" | "right") => {
