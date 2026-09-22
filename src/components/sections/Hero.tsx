@@ -1,65 +1,16 @@
-"use client";
-
-// Hero — optimizado para LCP mobile.
+// Hero — Server Component optimizado para LCP mobile.
 //
 // Arquitectura de rendimiento:
-//  - H1: <h1> plano con color accent sólido (#0089CD). Sin GradientShimmer,
-//    sin -webkit-text-fill-color:transparent. Chrome detecta el texto
-//    inmediatamente como LCP candidate desde el primer paint del SSR.
-//  - Framer Motion: COMPLETAMENTE eliminado de este archivo. Solo queda en
-//    CodeMockupClient que se carga lazy (ssr:false) — no bloquea LCP.
+//  - H1 y P: renderizados como HTML estático puro del servidor sin hydration delay.
 //  - CTAs: CSS :hover/:active (globals.css .hero-cta) — cero JS, GPU compositor.
-//  - CodeMockup: lazy-loaded con ssr:false → Framer Motion evalúa DESPUÉS del LCP.
+//  - CodeMockup: cargado en HeroCodeMockup ("use client", lazy ssr:false).
 
-import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/Button";
 import { GridPattern } from "@/components/ui/GridPattern";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
+import { HeroCodeMockup } from "./HeroCodeMockup";
 import { getHeroContent } from "@/content/hero";
 import { defaultLocale, type Locale } from "@/lib/i18n";
-
-// Skeleton visible mientras CodeMockup carga — evita layout shift (CLS 0).
-// Mismas dimensiones que el CodeMockup real para no causar reflow.
-function CodeMockupSkeleton() {
-  return (
-    <div className="w-full max-w-md select-none" aria-hidden="true">
-      <div className="w-full overflow-hidden rounded-xl bg-foreground border border-background/10 shadow-2xl shadow-black/40">
-        {/* Cabecera */}
-        <div className="flex items-center gap-2 border-b border-background/10 px-3 py-2 sm:px-4 sm:py-2.5 bg-background/20">
-          <div className="flex gap-1 sm:gap-1.5">
-            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
-            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
-            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-background/20" />
-          </div>
-          <span className="font-mono text-[10px] sm:text-xs text-background/40">
-            api/orders/route.ts
-          </span>
-        </div>
-        {/* Líneas de código skeleton */}
-        <div className="p-3 sm:p-4 space-y-2">
-          {[60, 45, 70, 30, 55, 40, 65, 35].map((w, i) => (
-            <div
-              key={i}
-              className="h-3 rounded bg-background/10"
-              style={{ width: `${w}%` }}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Lazy-load del CodeMockup: Framer Motion solo se evalúa después de que
-// el H1 (LCP element) ya se pintó. En mobile esto ahorra ~400-600ms
-// de Script Evaluation antes del primer paint visible.
-const CodeMockup = dynamic(
-  () => import("./CodeMockupClient").then((m) => ({ default: m.CodeMockup })),
-  {
-    ssr: false,
-    loading: () => <CodeMockupSkeleton />,
-  },
-);
 
 export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
   const heroData = getHeroContent(locale);
@@ -136,7 +87,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           aria-hidden="true"
           className="animate-hero-scale-in flex justify-center lg:mt-16 lg:justify-end w-full max-w-full overflow-hidden"
         >
-          <CodeMockup locale={locale} />
+          <HeroCodeMockup locale={locale} />
         </div>
       </div>
     </section>
