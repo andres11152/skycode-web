@@ -10,7 +10,6 @@
       "description": "Plateforme SaaS entreprise multi-locataire de gestion omnicanale des conversations: intégration officielle avec l'API WhatsApp Business, agents IA autonomes, boîte de réception unifiée, routage intelligent et analytique d'entonnoir de vente en temps réel.",
       "tags": ["SaaS Multitenant", "WhatsApp API", "Agents IA", "Omnicanalité", "Next.js & Cloud DB"],
       "iconName": "BrainCircuit",
-      "link": "https://app.sentrycrm.cloud/",
       "coverImage": "/projects/sentry-crm/dashboard.webp",
       "gallery": [
         "/projects/sentry-crm/dashboard.webp",
