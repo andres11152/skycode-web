@@ -45,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${siteUrl}/portafolio`,
       changeFrequency: "monthly",
-      priority: 0.7,
+      priority: 0.8,
     },
   ];
 
@@ -96,10 +96,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.3,
   }));
 
+  // Prioridad deliberadamente por debajo de las páginas internas
+  // (servicios/blog/equipo): siguen indexados y rankeando por sus propias
+  // queries, pero no deberían competir con ellas como sitelinks. Ver la
+  // nota en SiteNavigationJsonLd de app/layout.tsx — el sitemap es una
+  // señal débil para esto, el enlazado interno pesa mucho más.
   const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
     url: `${siteUrl}/portafolio/${project.slug}`,
     changeFrequency: "monthly",
-    priority: 0.6,
+    priority: 0.4,
   }));
 
   const serviceRoutes: MetadataRoute.Sitemap = services.flatMap((service) => {
@@ -139,7 +144,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const teamRoutes: MetadataRoute.Sitemap = (["es", "en", "fr"] as const).map((locale) => ({
     url: `${siteUrl}${teamPath(locale)}`,
     changeFrequency: "monthly",
-    priority: 0.5,
+    priority: 0.7,
     alternates: { languages: teamLanguages },
   }));
 
