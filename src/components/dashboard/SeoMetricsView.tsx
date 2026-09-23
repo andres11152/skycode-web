@@ -1,4 +1,4 @@
-import { Search, MousePointerClick, Eye, Target, Lightbulb } from "lucide-react";
+import { Search, MousePointerClick, Eye, Target, Lightbulb, Clock } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import type { SeoPageRow, SeoQueryRow, SeoSummary } from "@/lib/queries/seoMetrics";
 
@@ -14,6 +14,8 @@ function formatPosition(n: number): string {
 
 interface Props {
   hasData: boolean;
+  /** Solo relevante cuando `hasData` es `false` — si las 3 variables de GSC están presentes en el servidor, el cron sí puede correr; 0 filas ahí es "todavía sin datos de Google", no "mal configurado". */
+  gscConfigured?: boolean;
   summary: SeoSummary | null;
   topQueries: SeoQueryRow[];
   contentGaps: SeoQueryRow[];
@@ -21,7 +23,7 @@ interface Props {
   windowDays: number;
 }
 
-export function SeoMetricsView({ hasData, summary, topQueries, contentGaps, topPages, windowDays }: Props) {
+export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQueries, contentGaps, topPages, windowDays }: Props) {
   return (
     <div className="space-y-8">
       <div>
@@ -34,11 +36,19 @@ export function SeoMetricsView({ hasData, summary, topQueries, contentGaps, topP
 
       {!hasData || !summary ? (
         <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
-          <EmptyState
-            icon={Search}
-            title="Sin datos de Search Console todavía"
-            description="El cron POST /api/cron/seo-pulse no ha cargado ninguna fila. Configura GSC_SITE_URL, GSC_SERVICE_ACCOUNT_EMAIL y GSC_SERVICE_ACCOUNT_PRIVATE_KEY (ver .env.example), agrega la cuenta de servicio como usuario en Search Console, y programa el cron en el hosting."
-          />
+          {gscConfigured ? (
+            <EmptyState
+              icon={Clock}
+              title="Cron configurado, esperando datos de Google"
+              description="Las credenciales de Search Console están puestas y el cron POST /api/cron/seo-pulse corre sin error, pero todavía no hay ninguna fila cargada. Es normal en una propiedad recién verificada — Google tarda unos días en empezar a reportar impresiones reales. Revisa de nuevo en 3-5 días; si sigue vacío después de eso, ahí sí conviene revisar las credenciales."
+            />
+          ) : (
+            <EmptyState
+              icon={Search}
+              title="Sin datos de Search Console todavía"
+              description="El cron POST /api/cron/seo-pulse no puede correr porque faltan variables de entorno. Configura GSC_SITE_URL, GSC_SERVICE_ACCOUNT_EMAIL y GSC_SERVICE_ACCOUNT_PRIVATE_KEY (ver .env.example), agrega la cuenta de servicio como usuario en Search Console, y programa el cron en el hosting."
+            />
+          )}
         </div>
       ) : (
         <>

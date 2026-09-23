@@ -24,7 +24,29 @@ export default async function DashboardSeoPage() {
 
   const hasData = await hasAnyGscData();
   if (!hasData) {
-    return <SeoMetricsView hasData={false} summary={null} topQueries={[]} contentGaps={[]} topPages={[]} windowDays={WINDOW_DAYS} />;
+    // Distingue "el cron nunca pudo correr porque faltan variables" de
+    // "está bien configurado pero Google todavía no acumuló impresiones"
+    // — antes el estado vacío siempre decía "configura las variables",
+    // aunque ya estuvieran puestas y el cron corriera bien (una propiedad
+    // recién verificada en Search Console tarda días en mostrar datos,
+    // ver CLAUDE.md). El chequeo es solo de presencia de las variables,
+    // no valida que las credenciales sean correctas — si lo están pero el
+    // cron sigue sin cargar filas después de varios días, ahí sí hay que
+    // revisar la configuración real.
+    const gscConfigured = Boolean(
+      process.env.GSC_SITE_URL && process.env.GSC_SERVICE_ACCOUNT_EMAIL && process.env.GSC_SERVICE_ACCOUNT_PRIVATE_KEY
+    );
+    return (
+      <SeoMetricsView
+        hasData={false}
+        gscConfigured={gscConfigured}
+        summary={null}
+        topQueries={[]}
+        contentGaps={[]}
+        topPages={[]}
+        windowDays={WINDOW_DAYS}
+      />
+    );
   }
 
   const [summary, topQueries, contentGaps, topPages] = await Promise.all([
