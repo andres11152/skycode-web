@@ -29,7 +29,6 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
       <GridPattern
         width={40}
         height={40}
-        numSquares={40}
         className="[mask-image:radial-gradient(ellipse_65%_55%_at_50%_0%,white,transparent)] opacity-95"
       />
       <div className="relative mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-center lg:gap-10 xl:gap-16">

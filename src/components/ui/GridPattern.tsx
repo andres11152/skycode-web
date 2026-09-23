@@ -1,16 +1,21 @@
 import { useId, type ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
+// `numSquares`/`maxOpacity`/`duration`/`repeatDelay` venían del
+// `AnimatedGridPattern` original de Magic UI, que dibujaba cuadros
+// apareciendo al azar. Esta versión ya no los anima (se simplificó al sacar
+// framer-motion del critical path, ver commit 2610226) — pero las props
+// seguían declaradas acá y sin destructurar, así que `{...props}` las
+// filtraba al `<svg>` del DOM. Eso rompía la hidratación: el servidor
+// serializaba `numSquares="40"` (string) y el cliente lo reponía como
+// `numSquares={40}` (número), y React abortaba con el error #418 en
+// producción. No las vuelvas a declarar si no se usan de verdad.
 export interface GridPatternProps extends ComponentPropsWithoutRef<"svg"> {
   width?: number;
   height?: number;
   x?: number;
   y?: number;
   strokeDasharray?: number;
-  numSquares?: number;
-  maxOpacity?: number;
-  duration?: number;
-  repeatDelay?: number;
 }
 
 export function GridPattern({

@@ -50,7 +50,6 @@ export function ProjectCover({
       <GridPattern
         width={36}
         height={36}
-        numSquares={18}
         className="[mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,white,transparent)] opacity-80"
       />
       <div
