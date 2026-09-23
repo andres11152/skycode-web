@@ -35,6 +35,7 @@ const ALL_PERMISSIONS: Permission[] = [
   "expenses:read",
   "expenses:write",
   "settings:write",
+  "seo:read",
 ];
 
 // Matriz esperada duplicada a propósito acá: si alguien cambia
@@ -103,6 +104,13 @@ describe("rbac", () => {
       expect(hasPermission("traffiker", "profitability:read")).toBe(false);
     });
 
+    it("seo:read es exclusivo de admin (métricas de Search Console de todo el sitio)", () => {
+      expect(hasPermission("admin", "seo:read")).toBe(true);
+      expect(hasPermission("sales_manager", "seo:read")).toBe(false);
+      expect(hasPermission("traffiker", "seo:read")).toBe(false);
+      expect(hasPermission("client", "seo:read")).toBe(false);
+    });
+
     it("expenses:* es exclusivo de admin, a diferencia de clients/tasks/support/documents", () => {
       expect(hasPermission("admin", "expenses:read")).toBe(true);
       expect(hasPermission("admin", "expenses:write")).toBe(true);
@@ -149,6 +157,7 @@ describe("rbac", () => {
         "expenses:read",
         "expenses:write",
         "settings:write",
+        "seo:read",
       ];
       for (const permission of forbidden) {
         expect(hasPermission("traffiker", permission)).toBe(false);

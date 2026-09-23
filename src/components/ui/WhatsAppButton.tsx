@@ -7,11 +7,19 @@ import { defaultLocale, type Locale } from "@/lib/i18n";
 
 const WHATSAPP_PHONE = "573138081081"; // Número de la agencia
 
-export function WhatsAppButton({ locale = defaultLocale }: { locale?: Locale }) {
+export function WhatsAppButton({
+  locale = defaultLocale,
+  message,
+}: {
+  locale?: Locale;
+  /** Sobreescribe el mensaje precargado (ej. /landing usa un texto calibrado
+   * para tráfico de Google Ads en vez del genérico de la home). */
+  message?: string;
+}) {
   const uiData = getUiContent(locale);
   const [isOpen, setIsOpen] = useState(false);
 
-  const waLink = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(uiData.whatsappDefaultMessage)}`;
+  const waLink = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message ?? uiData.whatsappDefaultMessage)}`;
 
   return (
     // z-40: por debajo de Navbar (50), ScrollProgress (55), skip-link (60) y CookieBanner

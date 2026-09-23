@@ -26,6 +26,7 @@ import {
   Settings2,
   Menu,
   X,
+  Search,
 } from "lucide-react";
 import { hasPermission, type Permission } from "@/lib/rbac";
 import type { SessionUser } from "./types";
@@ -55,6 +56,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/dashboard/leads", label: "Leads y Ventas", icon: TrendingUp, permission: "leads:read" },
       { href: "/dashboard/propuestas", label: "Propuestas", icon: FileText, permission: "proposals:read" },
       { href: "/dashboard/campanas", label: "Campañas", icon: Megaphone, permission: "campaigns:read" },
+      { href: "/dashboard/seo", label: "SEO", icon: Search, permission: "seo:read" },
     ],
   },
   {

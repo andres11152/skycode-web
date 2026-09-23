@@ -44,8 +44,10 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/invitar") ||
     pathname.startsWith("/propuesta");
 
-  // Landing de campaña (Google Ads): sin Navbar/Footer ni ningún enlace de
-  // salida — la única acción posible en la página es enviar el formulario.
+  // Landing de campaña (Google Ads): sin Navbar/Footer ni enlaces de salida
+  // que compitan con el formulario — salvo el botón flotante de WhatsApp
+  // (agregado a propósito: tráfico pago que prefiere escribir directo en vez
+  // de llenar el formulario no debe quedar sin ninguna salida de contacto).
   // No es un "app shell" (no lleva el fondo oscuro de dashboard/login), solo
   // se queda sin el chrome público normal.
   const isCampaignLanding = pathname === "/landing";
@@ -83,7 +85,15 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   }
 
   if (isCampaignLanding) {
-    return <main className="min-h-screen">{children}</main>;
+    return (
+      <main className="min-h-screen">
+        {children}
+        <WhatsAppButton
+          locale={locale}
+          message="Hola, vi su anuncio y quiero más información sobre desarrollo de software"
+        />
+      </main>
+    );
   }
 
   return (

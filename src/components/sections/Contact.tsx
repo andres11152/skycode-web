@@ -1,7 +1,6 @@
 "use client";
 
 import { useId, useState } from "react";
-import { useRouter } from "next/navigation";
 import { AlertCircle, Mail, MessageCircle, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { PhoneField } from "@/components/ui/PhoneField";
@@ -124,7 +123,6 @@ export function Contact({
    * H1/subtítulo: quita el padding de sección y el bloque badge/H2/descripción duplicado. */
   compact?: boolean;
 }) {
-  const router = useRouter();
   const contactData = getContactContent(locale);
   const uiData = getUiContent(locale);
   // Ruta de gracias por locale — mismo criterio que localeHomePath (es sin
@@ -182,7 +180,16 @@ export function Contact({
       const result = await response.json();
 
       if (response.ok) {
-        router.push(thankYouPath);
+        // Navegación completa del navegador (no router.push): la acción de
+        // conversión de Google Ads "Envío de formulario para clientes
+        // potenciales" es de tipo "Carga de página" con condición de URL
+        // sobre /gracias — el tag de Google (gtag.js, ver layout.tsx) solo
+        // reevalúa la URL actual en una carga de documento real. Un
+        // router.push (navegación SPA de Next.js) no dispara esa carga, así
+        // que la conversión nunca se registraba aunque el formulario
+        // funcionara. No reemplazar por router.push sin agregar un disparo
+        // manual de gtag('config'|'event', ...) equivalente.
+        window.location.href = thankYouPath;
       } else {
         setErrorMessage(result.error || contactData.errorGeneral);
       }

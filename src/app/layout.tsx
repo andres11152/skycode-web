@@ -58,6 +58,18 @@ export const metadata: Metadata = {
       "x-default": `${siteUrl}/`,
     },
   },
+  // Códigos de verificación de propiedad de Search Console/Bing Webmaster
+  // Tools, vía meta tag en vez de subir el archivo HTML que ofrecen como
+  // alternativa — así no hay que tocar `public/` cada vez que se rota o se
+  // agrega un motor de búsqueda nuevo. Sin las variables configuradas,
+  // Next.js simplemente no renderiza el tag correspondiente (no hace falta
+  // desactivarlo a mano) — ver .env.example para dónde obtenerlos.
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+      : undefined,
+  },
   robots: {
     index: true,
     follow: true,
@@ -162,17 +174,26 @@ export default function RootLayout({
         <OrganizationJsonLd />
         {googleAdsId && (
           <>
+            {/* afterInteractive (no lazyOnload): la acción de conversión de
+                Google Ads "Envío de formulario para clientes potenciales" es
+                de tipo "Carga de página" sobre /gracias — el tag necesita
+                estar cargado y haber corrido 'config' apenas esa página
+                monta, sin depender de que el navegador quede idle (una
+                página de agradecimiento suele tener muy poco dwell time). */}
             <Script
               id="google-ads-tag"
-              strategy="lazyOnload"
+              strategy="afterInteractive"
               src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
             />
-            <Script id="google-ads-init" strategy="lazyOnload">
+            <Script id="google-ads-init" strategy="afterInteractive">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', '${googleAdsId}');
+                if (window.location.pathname.indexOf('/gracias') !== -1) {
+                  console.log('[GAds] gtag config ejecutado en', window.location.pathname, '- revisa la pestaña Network filtrando por "googleads" o "pagead" para confirmar el disparo de la conversión.');
+                }
               `}
             </Script>
           </>

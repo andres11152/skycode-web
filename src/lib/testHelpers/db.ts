@@ -31,7 +31,8 @@ export async function resetTestDb(): Promise<void> {
     TRUNCATE TABLE
       audit_log, sessions, invites, password_resets, time_entries, payments, invoices,
       proposal_items, proposals, lead_activities, leads, campaign_spend,
-      campaigns, support_tickets, documents, expenses, tasks, sprints, projects, clients, exchange_rates, users
+      campaigns, support_tickets, documents, expenses, tasks, sprints, projects, clients, exchange_rates, users,
+      gsc_metrics
     RESTART IDENTITY CASCADE;
   `);
   // `settings` no está en la lista de arriba: es fila única (id=1, sin

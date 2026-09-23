@@ -25,7 +25,8 @@ export type Permission =
   | "documents:write"
   | "expenses:read"
   | "expenses:write"
-  | "settings:write";
+  | "settings:write"
+  | "seo:read";
 
 export const ALL_ROLES = ["admin", "sales_manager", "traffiker", "client"] as const satisfies readonly Role[];
 
@@ -60,6 +61,7 @@ export const ALL_PERMISSIONS = [
   "expenses:read",
   "expenses:write",
   "settings:write",
+  "seo:read",
 ] as const satisfies readonly Permission[];
 
 /**
@@ -108,6 +110,12 @@ export const ALL_PERMISSIONS = [
  * `/dashboard/configuracion` completo, tanto para ver como para editar,
  * porque solo admin necesita verlo alguna vez. No hay `settings:read`
  * separado a propósito, a diferencia de todos los demás módulos.
+ * `seo:read` gatea `/dashboard/seo` (métricas de Google Search Console
+ * ingeridas por el cron `/api/cron/seo-pulse`, ver lib/queries/seoMetrics.ts)
+ * — exclusivo de admin, mismo criterio que `profitability:read`/`expenses:*`:
+ * es visibilidad estratégica de todo el sitio, no un módulo operativo de
+ * un rol concreto. Sin `seo:write` a propósito, como `audit:read` — es un
+ * reporte de solo lectura, los datos solo entran vía el cron.
  */
 const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Permission>> = {
   admin: new Set([
@@ -136,6 +144,7 @@ const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Permission>> = {
     "expenses:read",
     "expenses:write",
     "settings:write",
+    "seo:read",
   ]),
   sales_manager: new Set([
     "leads:read",

@@ -5,11 +5,13 @@ import { Contact } from "@/components/sections/Contact";
 import { siteName } from "@/lib/site";
 
 // Landing dedicada a tráfico de Google Ads (búsqueda, Colombia). Separada de
-// la home a propósito: sin Navbar/Footer/WhatsApp ni ningún enlace de salida
-// (ver ConditionalLayout.tsx, isCampaignLanding) — la única acción posible en
-// la página es enviar el formulario, que es el mismo <Contact /> de la home
-// (misma ruta /api/contact, mismo redirect a /gracias) para no romper el
-// tracking de conversión ya configurado en Google Ads.
+// la home a propósito: sin Navbar/Footer ni enlaces de salida que compitan
+// con el formulario (ver ConditionalLayout.tsx, isCampaignLanding) — la
+// única excepción es el botón flotante de WhatsApp (mismo componente que la
+// home, con un mensaje precargado calibrado para este tráfico). La acción
+// principal sigue siendo el mismo <Contact /> de la home (misma ruta
+// /api/contact, mismo redirect a /gracias) para no romper el tracking de
+// conversión ya configurado en Google Ads.
 export const metadata: Metadata = {
   title: "Desarrollo de Software, Apps y Páginas Web a la Medida",
   description:
