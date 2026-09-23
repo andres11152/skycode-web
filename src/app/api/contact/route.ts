@@ -117,8 +117,17 @@ export async function POST(request: Request) {
           error.message?.includes("not verified") ||
           (error as { statusCode?: number }).statusCode === 403)
       ) {
+        // `RESEND_SANDBOX_EMAIL` primero, y el regex solo como último
+        // recurso. Antes era al revés y por eso se rompió el envío: ese
+        // regex busca un correo entre paréntesis, que era el formato del
+        // mensaje viejo de Resend ("...to your own email address
+        // (tu@correo.com)"). Resend cambió el texto — el error actual de
+        // dominio sin verificar no trae paréntesis — así que `match` quedó
+        // en null, no había variable de entorno configurada, y el respaldo
+        // dejó de actuar en silencio. Una variable explícita no depende de
+        // cómo redacte el error un tercero.
         const match = error.message?.match(/\(([^)]+)\)/);
-        const ownerEmail = match ? match[1] : process.env.RESEND_SANDBOX_EMAIL;
+        const ownerEmail = process.env.RESEND_SANDBOX_EMAIL?.trim() || match?.[1];
 
         if (ownerEmail) {
           console.warn(`⚠️ [Resend Sandbox Fallback] Reenviando a ${ownerEmail} desde onboarding@resend.dev.`);
