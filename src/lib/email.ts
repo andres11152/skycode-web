@@ -22,7 +22,16 @@ export async function sendEmail({ to, subject, text }: { to: string; subject: st
   try {
     const resend = new Resend(apiKey);
     const fromAddress = process.env.RESEND_FROM_EMAIL || "SKYCODE Web <contact@skycode.agency>";
-    await resend.emails.send({ from: fromAddress, to, subject, text });
+    const { error } = await resend.emails.send({ from: fromAddress, to, subject, text });
+
+    // El SDK de Resend NO lanza excepción cuando la API responde con error:
+    // devuelve `{ data, error }`. Antes solo existía el try/catch de abajo,
+    // así que un 403 (ej. dominio sin verificar) pasaba como envío exitoso y
+    // el correo nunca salía, sin dejar rastro. El catch sigue ahí para
+    // fallos de red reales, que esos sí lanzan.
+    if (error) {
+      logError("⚠️ [Email Send Warning] Resend devolvió un error", error, { to, subject });
+    }
   } catch (error) {
     logError("⚠️ [Email Send Warning]", error, { to, subject });
   }

@@ -134,8 +134,21 @@ export async function POST(request: Request) {
         }
       }
 
+      // El error de Resend se reporta SIEMPRE, no solo cuando además falló
+      // la base de datos. Antes estaba dentro del `if (error && !dbSaved)`,
+      // así que mientras el lead se guardara bien —el caso normal— un fallo
+      // de correo no dejaba rastro en Sentry y nadie se enteraba: los leads
+      // entraban al CRM y el aviso por correo nunca llegaba, en silencio.
+      // Pasó de verdad: el dominio no estaba verificado en Resend y llevaba
+      // semanas devolviendo 403 sin una sola alerta.
+      if (error) {
+        logError("❌ [Resend] No se pudo enviar el aviso de nuevo lead", error);
+      }
+
+      // Si el lead sí quedó guardado, la respuesta al visitante sigue siendo
+      // de éxito aunque el correo falle — su mensaje no se perdió, está en
+      // el CRM. Solo se le devuelve error si no se guardó en ningún lado.
       if (error && !dbSaved) {
-        logError("Error de Resend al enviar correo:", error);
         return NextResponse.json(
           { error: "Inconveniente con el servidor de correo. Intente más tarde o contáctenos por WhatsApp." },
           { status: 400 }
