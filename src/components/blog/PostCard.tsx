@@ -1,22 +1,26 @@
 import Link from "next/link";
-import type { BlogPost } from "@/content/blog";
-import { readingTime } from "@/content/blog";
+import type { BlogPost } from "@/content/blogShared";
+import { readingTime } from "@/content/blogShared";
+import { blogPostPath } from "@/lib/blogPaths";
+import { defaultLocale, type Locale } from "@/lib/i18n";
 import { formatDate, cn } from "@/lib/utils";
 
 export function PostCard({
   post,
   headingLevel = "h3",
   readingTimeSuffix,
+  locale = defaultLocale,
 }: {
   post: BlogPost;
   headingLevel?: "h2" | "h3";
   readingTimeSuffix: string;
+  locale?: Locale;
 }) {
   const Heading = headingLevel;
 
   return (
     <Link
-      href={`/blog/${post.slug}`}
+      href={blogPostPath(locale, post.slug)}
       className="group flex h-full flex-col rounded-xl border border-foreground/10 p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] outline-none transition-shadow hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-foreground/60">

@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "indexTitle": "Blog Technique",
+    "indexDescription": "Articles spécialisés sur l'architecture logicielle, la sécurité applicative selon les standards OWASP, et la conformité en matière de protection des données (loi 1581 colombienne, RGPD et cadres équivalents).",
+    "badge": "Blog technique",
+    "heading": "Ressources techniques",
+    "intro": "Architecture, sécurité et bonnes pratiques — écrit par l'équipe qui construit le logiciel, sans remplissage générique.",
+    "readingTimeSuffix": "min de lecture",
+    "breadcrumbAria": "Fil d'Ariane",
+    "breadcrumbHome": "Accueil",
+    "breadcrumbBlog": "Blog",
+    "backToBlog": "Retour au blog",
+    "tocHeading": "Dans cet article",
+    "ctaQuestion": "Besoin de le mettre en œuvre, pas seulement de l'expliquer ?",
+    "ctaButton": "Parler à un ingénieur"
+  }
+}

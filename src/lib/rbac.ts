@@ -26,7 +26,9 @@ export type Permission =
   | "expenses:read"
   | "expenses:write"
   | "settings:write"
-  | "seo:read";
+  | "seo:read"
+  | "content:read"
+  | "content:write";
 
 export const ALL_ROLES = ["admin", "sales_manager", "traffiker", "client"] as const satisfies readonly Role[];
 
@@ -62,6 +64,8 @@ export const ALL_PERMISSIONS = [
   "expenses:write",
   "settings:write",
   "seo:read",
+  "content:read",
+  "content:write",
 ] as const satisfies readonly Permission[];
 
 /**
@@ -116,6 +120,11 @@ export const ALL_PERMISSIONS = [
  * es visibilidad estratégica de todo el sitio, no un módulo operativo de
  * un rol concreto. Sin `seo:write` a propósito, como `audit:read` — es un
  * reporte de solo lectura, los datos solo entran vía el cron.
+ * `content:*` gatea `/dashboard/contenido` (borradores de blog generados
+ * por el cron `/api/cron/content-pulse` o creados a mano, revisión y
+ * publicación — ver lib/queries/articles.ts) — exclusivo de admin, mismo
+ * criterio que `seo:*`: publicar contenido público del sitio es una
+ * decisión estratégica de marca, no un módulo operativo delegable.
  */
 const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Permission>> = {
   admin: new Set([
@@ -145,6 +154,8 @@ const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Permission>> = {
     "expenses:write",
     "settings:write",
     "seo:read",
+    "content:read",
+    "content:write",
   ]),
   sales_manager: new Set([
     "leads:read",

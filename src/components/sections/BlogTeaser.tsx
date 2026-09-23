@@ -1,17 +1,18 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { blogPosts } from "@/content/blog";
+import type { BlogPost } from "@/content/blogShared";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { getBlogTeaserContent } from "@/content/blogTeaser";
+import { blogIndexPath } from "@/lib/blogPaths";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { PostCard } from "@/components/blog/PostCard";
 import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 
-export function BlogTeaser({ locale = defaultLocale }: { locale?: Locale }) {
+/** `posts` llega ya resuelto desde el servidor (HomeSections) — `getBlogPosts` lee de Postgres desde la Fase 3, un componente cliente no puede llamarlo directo. */
+export function BlogTeaser({ locale = defaultLocale, posts }: { locale?: Locale; posts: BlogPost[] }) {
   const reduced = Boolean(useReducedMotion());
-  const posts = blogPosts.slice(0, 3);
   const blogTeaserData = getBlogTeaserContent(locale);
 
   return (
@@ -28,7 +29,7 @@ export function BlogTeaser({ locale = defaultLocale }: { locale?: Locale }) {
             </p>
           </div>
           <Button
-            href="/blog"
+            href={blogIndexPath(locale)}
             variant="secondary"
             size="sm"
           >
@@ -45,7 +46,7 @@ export function BlogTeaser({ locale = defaultLocale }: { locale?: Locale }) {
         >
           {posts.map((post) => (
             <motion.article key={post.slug} variants={fadeUp(reduced)}>
-              <PostCard post={post} readingTimeSuffix={blogTeaserData.readingTimeSuffix} />
+              <PostCard post={post} readingTimeSuffix={blogTeaserData.readingTimeSuffix} locale={locale} />
             </motion.article>
           ))}
         </motion.div>

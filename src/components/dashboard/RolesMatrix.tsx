@@ -19,6 +19,7 @@ const DOMAIN_LABELS: Record<string, string> = {
   audit: "Auditoría",
   profitability: "Rentabilidad",
   seo: "SEO",
+  content: "Contenido",
 };
 
 const ACTION_LABELS: Record<string, string> = {

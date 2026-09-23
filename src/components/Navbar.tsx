@@ -10,6 +10,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { EsBadge } from "@/components/ui/EsBadge";
 import { getNavContent } from "@/content/nav";
 import { localeHomePath } from "@/lib/i18n";
+import { blogIndexPath } from "@/lib/blogPaths";
 import { Button } from "@/components/ui/Button";
 
 const GLASS = "border border-foreground/10 bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl";
@@ -21,14 +22,15 @@ export function Navbar() {
   const locale = useLocale();
   const navData = getNavContent(locale);
   const homePath = localeHomePath(locale);
-  // Blog es la única ruta compartida sin prefijo de locale (todavía no está traducida).
   const prefix = homePath === "/" ? "" : homePath;
   const navLinks = [
     { label: navData.inicio, href: `${prefix}/#inicio`, esOnly: false },
     { label: navData.servicios, href: `${prefix}/#servicios`, esOnly: false },
     { label: navData.portafolio, href: `${prefix}/#portfolio`, esOnly: false },
     { label: navData.equipo, href: `${prefix}/equipo`, esOnly: false },
-    { label: navData.blog, href: "/blog", esOnly: locale !== "es" },
+    // El blog ya tiene versión en los tres idiomas (ver CLAUDE.md) — deja
+    // de ser esOnly, su ruta usa el mismo helper que servicios/equipo.
+    { label: navData.blog, href: blogIndexPath(locale), esOnly: false },
     { label: navData.faq, href: `${prefix}/#faq`, esOnly: false },
   ];
   const contactHref = `${prefix}/#contacto`;

@@ -3,17 +3,23 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
-import type { BlogPost } from "@/content/blog";
-import { readingTime } from "@/content/blog";
+import type { BlogPost } from "@/content/blogShared";
+import { getBlogMeta, readingTime } from "@/content/blogShared";
+import { blogIndexPath } from "@/lib/blogPaths";
+import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { formatDate, slugify } from "@/lib/utils";
 import { ArticleBody } from "@/components/blog/ArticleBody";
 
-export function ArticleView({ post }: { post: BlogPost }) {
+export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; locale?: Locale }) {
   const reduced = Boolean(useReducedMotion());
   const headings = post.content.filter((block) => block.type === "heading");
+  const meta = getBlogMeta(locale);
+  const homePath = localeHomePath(locale);
+  const blogPath = blogIndexPath(locale);
+  const contactHref = `${homePath === "/" ? "" : homePath}/#contacto`;
 
   return (
     <main id="main-content" className="px-6 pt-28 pb-24 sm:pt-36 sm:pb-32">
@@ -24,23 +30,23 @@ export function ArticleView({ post }: { post: BlogPost }) {
         animate="visible"
         className="mx-auto flex max-w-6xl flex-col gap-10"
       >
-        <motion.nav variants={fadeUp(reduced)} aria-label="Ruta de navegación">
+        <motion.nav variants={fadeUp(reduced)} aria-label={meta.breadcrumbAria}>
           <ol className="flex items-center gap-2 text-sm text-foreground/60">
             <li>
               <Link
-                href="/"
+                href={homePath}
                 className="rounded outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                Inicio
+                {meta.breadcrumbHome}
               </Link>
             </li>
             <li aria-hidden="true">/</li>
             <li>
               <Link
-                href="/blog"
+                href={blogPath}
                 className="rounded outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                Blog
+                {meta.breadcrumbBlog}
               </Link>
             </li>
           </ol>
@@ -67,7 +73,9 @@ export function ArticleView({ post }: { post: BlogPost }) {
                 <span aria-hidden="true">·</span>
                 <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
                 <span aria-hidden="true">·</span>
-                <span>{readingTime(post)} min de lectura</span>
+                <span>
+                  {readingTime(post)} {meta.readingTimeSuffix}
+                </span>
               </div>
             </motion.header>
 
@@ -77,11 +85,11 @@ export function ArticleView({ post }: { post: BlogPost }) {
 
             <motion.div variants={fadeUp(reduced)}>
               <Link
-                href="/blog"
+                href={blogPath}
                 className="inline-flex items-center gap-1.5 rounded-full text-sm font-medium text-foreground/70 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <ArrowLeft size={14} />
-                Volver al blog
+                {meta.backToBlog}
               </Link>
             </motion.div>
           </div>
@@ -91,9 +99,9 @@ export function ArticleView({ post }: { post: BlogPost }) {
             className="flex flex-col gap-6 lg:sticky lg:top-28 lg:h-fit"
           >
             {headings.length > 0 && (
-              <nav aria-label="Tabla de contenidos" className="rounded-xl border border-foreground/10 p-6">
+              <nav aria-label={meta.tocHeading} className="rounded-xl border border-foreground/10 p-6">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/70">
-                  En este artículo
+                  {meta.tocHeading}
                 </h2>
                 <ul className="mt-4 flex flex-col gap-2.5">
                   {headings.map((heading) => (
@@ -111,11 +119,9 @@ export function ArticleView({ post }: { post: BlogPost }) {
             )}
 
             <div className="rounded-xl border border-foreground/10 bg-foreground/[0.02] p-6">
-              <p className="text-base font-medium text-foreground">
-                ¿Necesita esto implementado, no solo explicado?
-              </p>
-              <Button href="/#contacto" variant="accent" size="md" className="mt-4 w-full">
-                Hablar con un ingeniero
+              <p className="text-base font-medium text-foreground">{meta.ctaQuestion}</p>
+              <Button href={contactHref} variant="accent" size="md" className="mt-4 w-full">
+                {meta.ctaButton}
               </Button>
             </div>
           </motion.aside>

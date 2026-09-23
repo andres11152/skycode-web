@@ -12,7 +12,35 @@ import type { NextConfig } from "next";
 // (`next build` + `next start`), así que ahí sí se puede — y se debe — dejar
 // afuera del CSP; agregarlo solo en dev mantiene la protección real donde
 // importa (el sitio servido a usuarios reales).
-const SCRIPT_SRC = ["'self'", "'unsafe-inline'", ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : [])];
+// gtag.js (Google Ads, ver app/layout.tsx) se sirve desde googletagmanager.com
+// y necesita poder hacer sus propias requests de conversión/beacon hacia el
+// resto de dominios de Google Ads — sin estos, el script se bloquea por CSP
+// antes de ejecutar (bug real: la conversión "Envío de formulario para
+// clientes potenciales" medía 0 en Google Ads con el formulario funcionando
+// normal, porque script-src bloqueaba la carga de gtag.js por completo, no
+// por un problema de tracking en sí). Se agregan explícitamente en vez de
+// abrir script-src/connect-src a 'self' + '*' para no perder la protección
+// real que da el CSP.
+const GOOGLE_ADS_SCRIPT_SRC = ["https://www.googletagmanager.com"];
+const GOOGLE_ADS_CONNECT_SRC = [
+  "https://www.googletagmanager.com",
+  "https://www.google-analytics.com",
+  "https://www.google.com",
+  "https://googleads.g.doubleclick.net",
+  "https://www.googleadservices.com",
+];
+const GOOGLE_ADS_IMG_SRC = [
+  "https://www.googletagmanager.com",
+  "https://www.google.com",
+  "https://googleads.g.doubleclick.net",
+];
+
+const SCRIPT_SRC = [
+  "'self'",
+  "'unsafe-inline'",
+  ...GOOGLE_ADS_SCRIPT_SRC,
+  ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : []),
+];
 
 const SECURITY_HEADERS = [
   {
@@ -29,12 +57,13 @@ const SECURITY_HEADERS = [
       // ver lib/animations.ts) — 'unsafe-inline' es necesario para eso, no
       // hay hojas de estilo de terceros que lo requieran.
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data:",
+      `img-src 'self' data: ${GOOGLE_ADS_IMG_SRC.join(" ")}`,
       "font-src 'self' data:",
-      // Ninguna llamada desde el navegador sale del propio origen — la
-      // única API externa (open.er-api.com, tasa de cambio) se consulta
-      // solo desde el servidor (lib/exchangeRate.ts), nunca desde el cliente.
-      "connect-src 'self'",
+      // La única llamada de red que sale del navegador hacia un tercero es
+      // la del propio gtag.js (conversión de Google Ads, ver arriba) — el
+      // resto de APIs externas (open.er-api.com, tasa de cambio) se
+      // consultan solo desde el servidor (lib/exchangeRate.ts).
+      `connect-src 'self' ${GOOGLE_ADS_CONNECT_SRC.join(" ")}`,
       // Reemplaza y refuerza X-Frame-Options en navegadores modernos.
       "frame-ancestors 'none'",
       "object-src 'none'",

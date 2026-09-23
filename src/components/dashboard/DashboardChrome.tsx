@@ -27,6 +27,7 @@ import {
   Menu,
   X,
   Search,
+  PenSquare,
 } from "lucide-react";
 import { hasPermission, type Permission } from "@/lib/rbac";
 import type { SessionUser } from "./types";
@@ -57,6 +58,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/dashboard/propuestas", label: "Propuestas", icon: FileText, permission: "proposals:read" },
       { href: "/dashboard/campanas", label: "Campañas", icon: Megaphone, permission: "campaigns:read" },
       { href: "/dashboard/seo", label: "SEO", icon: Search, permission: "seo:read" },
+      { href: "/dashboard/contenido", label: "Contenido", icon: PenSquare, permission: "content:read" },
     ],
   },
   {

@@ -75,7 +75,14 @@ export function TeamView({ locale = defaultLocale }: { locale?: Locale }) {
           className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
         >
           {teamData.members.map((member) => (
-            <motion.div key={member.slug} variants={fadeUp(reduced)} className="h-full">
+            <motion.div
+              key={member.slug}
+              id={member.slug}
+              variants={fadeUp(reduced)}
+              className="h-full scroll-mt-24"
+            >
+              {/* El id ancla es el destino del JSON-LD `Person.url` del
+                  autor de cada post del blog (ver lib/blogMetadata.ts::authorUrl). */}
               <SpotlightCard className="h-full">
                 <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background transition-all duration-500 hover:border-accent/25 hover:shadow-[0_20px_60px_rgba(0,137,205,0.1)]">
 

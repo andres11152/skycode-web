@@ -1,4 +1,4 @@
-import type { BlogBlock } from "@/content/blog";
+import type { BlogBlock } from "@/content/blogShared";
 import { slugify } from "@/lib/utils";
 
 export function ArticleBody({ blocks }: { blocks: BlogBlock[] }) {

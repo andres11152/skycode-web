@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "indexTitle": "Technical Blog",
+    "indexDescription": "Specialized articles on software architecture, OWASP-standard application security, and data-protection compliance (Colombia's Law 1581, GDPR, and equivalent frameworks).",
+    "badge": "Technical blog",
+    "heading": "Technical resources",
+    "intro": "Architecture, security, and engineering practices — written by the team that builds the software, no generic filler.",
+    "readingTimeSuffix": "min read",
+    "breadcrumbAria": "Breadcrumb",
+    "breadcrumbHome": "Home",
+    "breadcrumbBlog": "Blog",
+    "backToBlog": "Back to blog",
+    "tocHeading": "In this article",
+    "ctaQuestion": "Need this implemented, not just explained?",
+    "ctaButton": "Talk to an engineer"
+  }
+}

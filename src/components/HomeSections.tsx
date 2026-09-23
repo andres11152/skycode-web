@@ -7,6 +7,7 @@ import {
   HomeInteractiveEstimator,
   HomeInteractiveTestimonials,
 } from "@/components/HomeInteractiveSections";
+import { getBlogPosts } from "@/content/blog";
 import type { Locale } from "@/lib/i18n";
 
 const Highlights = dynamic(() =>
@@ -28,7 +29,13 @@ const Faq = dynamic(() =>
   import("@/components/sections/Faq").then((m) => m.Faq)
 );
 
-export function HomeSections({ locale }: { locale: Locale }) {
+export async function HomeSections({ locale }: { locale: Locale }) {
+  // Server Component — se resuelve al renderizar, `BlogTeaser` (cliente)
+  // recibe los posts ya listos por prop en vez de leerlos él mismo, porque
+  // desde la Fase 3 del plan de SEO `getBlogPosts` lee de Postgres y ya no
+  // es síncrono (ver content/blog.ts).
+  const recentPosts = (await getBlogPosts(locale)).slice(0, 3);
+
   return (
     <main id="main-content" className="flex flex-1 flex-col">
       <div className="flex flex-col lg:min-h-svh">
@@ -41,7 +48,7 @@ export function HomeSections({ locale }: { locale: Locale }) {
       <HomeInteractiveEstimator locale={locale} />
       <Portfolio locale={locale} />
       <HomeInteractiveTestimonials locale={locale} />
-      <BlogTeaser locale={locale} />
+      <BlogTeaser locale={locale} posts={recentPosts} />
       <Faq locale={locale} />
       <HomeInteractiveClosing locale={locale} />
       <HomeInteractiveContact locale={locale} />

@@ -5,7 +5,8 @@ import Image from "next/image";
 import { ArrowRight, Phone } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { getServicesContent } from "@/content/services";
-import { blogPosts } from "@/content/blog";
+import { useRecentArticles } from "@/lib/useRecentArticles";
+import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
 import { contactPhone, siteName, socials, whatsappHref } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { getFooterContent } from "@/content/footer";
@@ -65,11 +66,9 @@ const socialLinks = [
   },
 ];
 
-const recentPosts = [...blogPosts]
-  .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
-  .slice(0, 4);
-
-// Las páginas legales y el blog todavía solo existen en español (ver CLAUDE.md).
+// Las páginas legales siguen solo en español (ver CLAUDE.md) — el blog ya
+// no, así que `recentPosts` se calcula dentro del componente con el
+// locale real, no a nivel de módulo (ahí no hay locale todavía).
 const legalLinks = [
   { label: "Política de Privacidad", href: "/politica-privacidad" },
   { label: "Política de Cookies", href: "/politica-cookies" },
@@ -98,14 +97,19 @@ export function Footer() {
   const { services } = getServicesContent(locale);
   const homePath = localeHomePath(locale);
   const prefix = homePath === "/" ? "" : homePath;
+  // Ya vienen del más reciente al más antiguo (GET /api/articles/recent),
+  // no hace falta reordenar acá.
+  const recentPosts = useRecentArticles(locale, 4);
 
+  // Portfolio sigue sin traducir (a diferencia del blog) — es la única
+  // ruta que queda esOnly acá.
   const esOnly = locale !== "es";
   const exploreLinks = [
     { label: footerData.homeLabel, href: homePath, esOnly: false },
     { label: footerData.servicesHeading, href: `${prefix}/servicios`, esOnly: false },
     { label: "Portfolio", href: "/portafolio", esOnly },
     { label: navData.equipo, href: `${prefix}/equipo`, esOnly: false },
-    { label: "Blog", href: "/blog", esOnly },
+    { label: "Blog", href: blogIndexPath(locale), esOnly: false },
     { label: footerData.getInTouchHeading, href: `${prefix}/#contacto`, esOnly: false },
   ];
 
@@ -159,17 +163,17 @@ export function Footer() {
             </nav>
 
             <nav aria-label={footerData.resourcesHeading}>
-              <ColumnHeading esOnly={esOnly}>{footerData.resourcesHeading}</ColumnHeading>
+              <ColumnHeading>{footerData.resourcesHeading}</ColumnHeading>
               <ul className="mt-4 flex flex-col gap-3">
                 <li>
-                  <Link href="/blog" className={linkClasses}>
+                  <Link href={blogIndexPath(locale)} className={linkClasses}>
                     {footerData.allArticles}
                   </Link>
                 </li>
                 {recentPosts.map((post) => (
                   <li key={post.slug}>
                     <Link
-                      href={`/blog/${post.slug}`}
+                      href={blogPostPath(locale, post.slug)}
                       className={cn(linkClasses, "line-clamp-1")}
                       title={post.title}
                     >
