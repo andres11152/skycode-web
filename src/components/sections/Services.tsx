@@ -8,6 +8,7 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
+import { Button } from "@/components/ui/Button";
 import {
   CodeConsoleWidget,
   MobileAppPreviewWidget,
@@ -205,8 +206,24 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
             </p>
           </div>
 
-          {/* Botones de navegación del carrusel */}
-          <div className="flex gap-2">
+          {/* Enlace al índice real de servicios. Existe sobre todo por SEO:
+              el Navbar apunta al ancla de esta sección (`/#servicios`), no a
+              la página `/servicios`, así que sin esto el índice casi no
+              recibe enlaces internos y Google terminaba eligiendo páginas de
+              detalle de proyecto como sitelinks. Ver la nota en
+              SiteNavigationJsonLd de app/layout.tsx. */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              href={`${servicesPrefix}/servicios`}
+              variant="secondary"
+              size="sm"
+              className="focus-visible:ring-offset-foreground"
+            >
+              {servicesSection.viewAll}
+            </Button>
+
+            {/* Botones de navegación del carrusel */}
+            <div className="flex gap-2">
             <Magnetic strength={0.3} range={50}>
               <button
                 onClick={() => scroll("left")}
@@ -227,6 +244,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                 <ArrowRight size={18} />
               </button>
             </Magnetic>
+            </div>
           </div>
         </div>
 

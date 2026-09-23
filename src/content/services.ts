@@ -61,6 +61,7 @@ export function getServicesContent(locale: Locale) {
       badge: servicesData.badge,
       title: servicesData.title,
       description: servicesData.description,
+      viewAll: servicesData.viewAll,
     },
     services: servicesData.items.map((item) => ({
       slug: item.slug,

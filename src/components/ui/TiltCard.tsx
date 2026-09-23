@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import { motion, useMotionTemplate, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { usePointerFine } from "@/lib/usePointerFine";
 
 interface TiltCardProps {
   children: React.ReactNode;
@@ -19,11 +20,7 @@ export function TiltCard({
 }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const [canHover, setCanHover] = useState(false);
-
-  useEffect(() => {
-    setCanHover(window.matchMedia("(pointer: fine)").matches);
-  }, []);
+  const canHover = usePointerFine();
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);

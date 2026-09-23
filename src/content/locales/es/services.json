@@ -2,6 +2,7 @@
   "badge": "En Qué Podemos Ayudarte",
   "title": "Lo que construimos para ti",
   "description": "Software pensado para la realidad de tu negocio: rápido, seguro, fácil de usar y con código limpio que te pertenece al 100%.",
+  "viewAll": "Ver todos los servicios",
   "items": [
     {
       "slug": "desarrollo-software-medida",

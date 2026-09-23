@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { motion, useSpring, useReducedMotion } from "framer-motion";
+import { usePointerFine } from "@/lib/usePointerFine";
 
 interface MagneticProps {
   children: React.ReactNode;
@@ -18,11 +19,7 @@ export function Magnetic({
 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const [canHover, setCanHover] = useState(false);
-
-  useEffect(() => {
-    setCanHover(window.matchMedia("(pointer: fine)").matches);
-  }, []);
+  const canHover = usePointerFine();
 
   const springConfig = { stiffness: 180, damping: 14, mass: 0.1 };
   const x = useSpring(0, springConfig);

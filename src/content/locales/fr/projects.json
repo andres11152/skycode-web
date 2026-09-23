@@ -2,6 +2,7 @@
   "badge": "Portfolio & Succès",
   "title": "Portfolio",
   "description": "Projets phares et succès clients : des solutions technologiques déployées avec succès pour résoudre de vrais défis métier.",
+  "viewAll": "Voir tous les projets",
   "items": [
     {
       "slug": "sentry-crm",

@@ -7,6 +7,7 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { ProjectCover } from "@/components/ui/ProjectCover";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
+import { Button } from "@/components/ui/Button";
 import { EsBadge } from "@/components/ui/EsBadge";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { cn } from "@/lib/utils";
@@ -113,12 +114,23 @@ export function Portfolio({ locale = defaultLocale }: { locale?: Locale }) {
       className="scroll-mt-24 bg-foreground/[0.03] px-6 py-20 sm:py-24 lg:py-28"
     >
       <div className="mx-auto max-w-5xl">
-        <div className="mb-12 max-w-xl">
-          <SectionEyebrow className="mb-3">{projectsSection.badge}</SectionEyebrow>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            {projectsSection.title}
-          </h2>
-          <p className="mt-3 text-foreground/80">{projectsSection.description}</p>
+        <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-xl">
+            <SectionEyebrow className="mb-3">{projectsSection.badge}</SectionEyebrow>
+            <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
+              {projectsSection.title}
+            </h2>
+            <p className="mt-3 text-foreground/80">{projectsSection.description}</p>
+          </div>
+
+          {/* Enlace al índice real del portafolio — mismo motivo que en
+              Services: el Navbar apunta al ancla (`/#portfolio`), así que sin
+              esto `/portafolio` casi no recibe enlaces internos frente a las
+              páginas de detalle de cada proyecto. Ver SiteNavigationJsonLd
+              en app/layout.tsx. */}
+          <Button href="/portafolio" variant="secondary" size="sm" className="shrink-0">
+            {projectsSection.viewAll}
+          </Button>
         </div>
 
         <motion.div

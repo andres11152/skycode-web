@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import NumberFlow, { type Format } from "@number-flow/react";
 import { useInView, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -25,13 +25,12 @@ export function NumberTicker({
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
   const reduced = useReducedMotion();
-  const [currentValue, setCurrentValue] = useState(reduced ? value : initialValue);
-
-  useEffect(() => {
-    if (isInView && !reduced) {
-      setCurrentValue(value);
-    }
-  }, [isInView, value, reduced]);
+  // Estado derivado: se calcula en el render, no con useState + useEffect.
+  // Ese patrón dispara `react-hooks/set-state-in-effect` y acá además era
+  // innecesario — el valor solo depende de props y de `isInView`, que con
+  // `once: true` nunca vuelve a false. `NumberFlow` anima la transición
+  // cuando `value` cambia, así que no hace falta guardarlo en estado.
+  const currentValue = reduced || isInView ? value : initialValue;
 
   return (
     <span ref={ref} className={cn("inline-flex items-baseline font-mono tracking-tight", className)}>
