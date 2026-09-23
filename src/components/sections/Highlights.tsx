@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { getHighlightsContent } from "@/content/highlights";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { BorderBeam } from "@/components/ui/BorderBeam";
+import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, type Locale } from "@/lib/i18n";
@@ -131,7 +133,8 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
         >
           <motion.div variants={fadeUp(reduced)}>
             <SpotlightCard className="h-full">
-              <div className="h-full rounded-xl border border-foreground/10 bg-background p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
+              <div className="relative overflow-hidden h-full rounded-xl border border-foreground/10 bg-background p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
+                <BorderBeam size={260} duration={12} borderWidth={1.5} colorFrom="#0089cd" colorTo="#006998" />
                 <VideoShowcase videoAria={highlightsData.videoAria} />
               </div>
             </SpotlightCard>
@@ -153,29 +156,30 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
                   {techStack.map(({ name, Icon }) => {
                     const isHovered = hoveredTech === name;
                     return (
-                      <li
-                        key={name}
-                        tabIndex={0}
-                        onMouseEnter={() => setHoveredTech(name)}
-                        onMouseLeave={() => setHoveredTech(null)}
-                        onFocus={() => setHoveredTech(name)}
-                        onBlur={() => setHoveredTech(null)}
-                        className="group relative flex h-14 w-14 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/40 hover:bg-accent/[0.06] hover:shadow-lg hover:shadow-accent/10 focus:outline-none focus:ring-2 focus:ring-accent hover:z-30 focus-visible:z-30"
-                      >
-                        <Icon
-                          className="h-7 w-7 text-foreground/75 transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-accent group-hover:rotate-3"
-                          aria-label={name}
-                        />
+                      <Magnetic key={name} strength={0.25} range={40}>
+                        <li
+                          tabIndex={0}
+                          onMouseEnter={() => setHoveredTech(name)}
+                          onMouseLeave={() => setHoveredTech(null)}
+                          onFocus={() => setHoveredTech(name)}
+                          onBlur={() => setHoveredTech(null)}
+                          className="group relative flex h-14 w-14 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/40 hover:bg-accent/[0.06] hover:shadow-lg hover:shadow-accent/10 focus:outline-none focus:ring-2 focus:ring-accent hover:z-30 focus-visible:z-30"
+                        >
+                          <Icon
+                            className="h-7 w-7 text-foreground/75 transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-accent group-hover:rotate-3"
+                            aria-label={name}
+                          />
 
-                        {/* Tooltip Pill: solo se renderiza y muestra cuando este elemento específico es el hoveredTech */}
-                        {isHovered && (
-                          <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 flex items-center z-50 whitespace-nowrap rounded-full border border-accent/30 bg-background/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-md shadow-accent/10 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150">
-                            {name}
-                            {/* Triángulo inferior del indicador */}
-                            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-accent/40" />
-                          </span>
-                        )}
-                      </li>
+                          {/* Tooltip Pill: solo se renderiza y muestra cuando este elemento específico es el hoveredTech */}
+                          {isHovered && (
+                            <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 flex items-center z-50 whitespace-nowrap rounded-full border border-accent/30 bg-background/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-md shadow-accent/10 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150">
+                              {name}
+                              {/* Triángulo inferior del indicador */}
+                              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-accent/40" />
+                            </span>
+                          )}
+                        </li>
+                      </Magnetic>
                     );
                   })}
                 </ul>

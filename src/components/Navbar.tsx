@@ -12,6 +12,7 @@ import { getNavContent } from "@/content/nav";
 import { localeHomePath } from "@/lib/i18n";
 import { blogIndexPath } from "@/lib/blogPaths";
 import { Button } from "@/components/ui/Button";
+import { Magnetic } from "@/components/ui/Magnetic";
 
 const GLASS = "bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl";
 const MOBILE_GLASS = "border border-foreground/15 bg-background/95 shadow-2xl shadow-black/30 backdrop-blur-2xl";
@@ -98,15 +99,17 @@ export function Navbar() {
           <LanguageSwitcher locale={locale} className="flex items-center" />
 
           {/* Desktop Contact button */}
-          <Button
-            href={contactHref}
-            variant="accent"
-            size="sm"
-            aria-label={navData.contactoAria}
-            className="hidden sm:inline-flex shadow-[0_0_20px_rgba(0,137,205,0.35)] animate-pulse-glow"
-          >
-            {navData.contacto}
-          </Button>
+          <Magnetic strength={0.25} range={70} className="hidden sm:inline-flex">
+            <Button
+              href={contactHref}
+              variant="accent"
+              size="sm"
+              aria-label={navData.contactoAria}
+              className="shadow-[0_0_20px_rgba(0,137,205,0.35)] animate-pulse-glow"
+            >
+              {navData.contacto}
+            </Button>
+          </Magnetic>
 
           {/* Hamburger Menu Button (Mobile) */}
           <button

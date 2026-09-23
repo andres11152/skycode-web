@@ -47,13 +47,13 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
                   <span className="text-base font-semibold text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-lg">
                     {item.question}
                   </span>
-                  <span className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-foreground/60 transition-all duration-350 group-hover:bg-accent-strong group-hover:text-white">
+                  <span className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-foreground/60 transition-all duration-300 group-hover:bg-accent-strong group-hover:text-white group-hover:scale-110 active:scale-95 group-hover:shadow-[0_0_15px_rgba(0,137,205,0.25)]">
                     <motion.span
-                      animate={{ rotate: isOpen ? 135 : 0 }}
-                      transition={{ duration: reduced ? 0.01 : 0.25, ease: "easeOut" }}
+                      animate={{ rotate: isOpen ? 135 : 0, scale: isOpen ? 1.05 : 1 }}
+                      transition={{ duration: reduced ? 0.01 : 0.3, ease: [0.16, 1, 0.3, 1] }}
                       className="flex items-center justify-center"
                     >
-                      <Plus size={16} />
+                      <Plus size={16} weight="bold" />
                     </motion.span>
                   </span>
                 </button>
@@ -62,10 +62,10 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
                   {isOpen && (
                     <motion.div
                       id={`faq-answer-${index}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: reduced ? 0.01 : 0.25, ease: "easeInOut" }}
+                      initial={{ height: 0, opacity: 0, y: -6 }}
+                      animate={{ height: "auto", opacity: 1, y: 0 }}
+                      exit={{ height: 0, opacity: 0, y: -4 }}
+                      transition={{ duration: reduced ? 0.01 : 0.35, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
                     >
                       <div className="pb-6 pr-12 text-sm text-foreground/85 leading-relaxed sm:text-base">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowSquareOut, ArrowUpRight } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { Magnetic } from "@/components/ui/Magnetic";
 import { ProjectCover } from "@/components/ui/ProjectCover";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { EsBadge } from "@/components/ui/EsBadge";
@@ -83,15 +84,17 @@ function ProjectRow({
               <ArrowSquareOut size={16} />
             </span>
           )}
-          <span
-            className={cn(
-              "flex h-9 w-9 items-center justify-center rounded-full border border-foreground/10 text-foreground/50 transition-all duration-200 ease-out",
-              "group-hover:border-accent/30 group-hover:bg-accent/10 group-hover:text-accent",
-              reduced ? "" : "group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
-            )}
-          >
-            <ArrowUpRight size={16} />
-          </span>
+          <Magnetic strength={0.35} range={50}>
+            <span
+              className={cn(
+                "flex h-9 w-9 items-center justify-center rounded-full border border-foreground/10 text-foreground/50 transition-all duration-300 ease-out",
+                "group-hover:border-accent/40 group-hover:bg-accent/10 group-hover:text-accent group-hover:scale-110",
+                reduced ? "" : "group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
+              )}
+            >
+              <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:rotate-12" />
+            </span>
+          </Magnetic>
         </div>
       </Link>
     </SpotlightCard>

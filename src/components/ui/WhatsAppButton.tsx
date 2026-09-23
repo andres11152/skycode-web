@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChatCircle, PaperPlaneTilt, X } from "@phosphor-icons/react";
+import { Magnetic } from "@/components/ui/Magnetic";
 import { getUiContent } from "@/content/ui";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 
@@ -68,13 +69,21 @@ export function WhatsAppButton({
       )}
 
       {/* Floating Trigger Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="group flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-all hover:scale-105 active:scale-95 hover:shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2"
-        aria-label={uiData.whatsappTriggerAria}
-      >
-        <ChatCircle size={28} className="text-white transition-transform duration-300 group-hover:scale-110" />
-      </button>
+      <Magnetic strength={0.35} range={100}>
+        <div className="relative">
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 rounded-full bg-[#25D366] opacity-30 animate-ping pointer-events-none duration-1000"
+          />
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 active:scale-95 hover:shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2"
+            aria-label={uiData.whatsappTriggerAria}
+          >
+            <ChatCircle size={28} className="text-white transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6" />
+          </button>
+        </div>
+      </Magnetic>
     </div>
   );
 }

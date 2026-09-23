@@ -177,6 +177,30 @@ h6 {
   will-change: transform;
 }
 
+@keyframes border-beam {
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+.animate-border-beam {
+  animation: border-beam var(--duration, 12s) infinite linear;
+}
+
+@keyframes shiny-text {
+  0%, 10% {
+    background-position: 180% 0;
+  }
+  40%, 100% {
+    background-position: -80% 0;
+  }
+}
+
+.animate-shiny-text {
+  background-size: 200% 100%;
+  animation: shiny-text 5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
 @keyframes codeline-type {
   0% {
     width: 0;

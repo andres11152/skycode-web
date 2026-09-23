@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { ArrowRight, CheckCircle, Clock, Lightning, Tag } from "@phosphor-icons/react";
+import NumberFlow from "@number-flow/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { BorderBeam } from "@/components/ui/BorderBeam";
+import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProjectEstimatorContent, getDefaultCurrency } from "@/content/projectEstimator";
 import { defaultLocale, t, type Locale } from "@/lib/i18n";
@@ -253,7 +256,8 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
 
           {/* Estimation Summary Box */}
           <div className="lg:sticky lg:top-28 h-fit">
-            <SpotlightCard className="rounded-xl border border-foreground/15 bg-foreground/95 p-6 text-background shadow-2xl">
+            <SpotlightCard className="relative overflow-hidden rounded-xl border border-foreground/15 bg-foreground/95 p-6 text-background shadow-2xl">
+              <BorderBeam size={240} duration={10} borderWidth={1.5} colorFrom="#0089cd" colorTo="#006998" />
               <div className="flex items-center justify-between border-b border-background/10 pb-4 mb-4">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-background/60">
                   {content.summary.title}
@@ -271,8 +275,15 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                     <Tag size={10} /> {content.summary.competitiveRateLabel}
                   </span>
                 </div>
-                <div className="text-2xl sm:text-3xl font-bold font-mono text-accent leading-tight">
-                  {formatPrice(totalPrice)}
+                <div className="text-2xl sm:text-3xl font-bold font-mono text-accent leading-tight flex items-baseline gap-1">
+                  <span>$</span>
+                  <NumberFlow
+                    value={totalPrice}
+                    format={{ maximumFractionDigits: 0 }}
+                    transformTiming={{ duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                    spinTiming={{ duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                  />
+                  <span className="text-sm font-semibold text-background/70">{currency}</span>
                 </div>
                 <div className="text-[10px] text-background/50">
                   {currency === "COP"
@@ -287,7 +298,13 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   <span className="flex items-center gap-1.5 text-background/60">
                     <Clock size={14} className="text-accent" /> {content.summary.timeLabel}
                   </span>
-                  <span className="font-bold text-background">{totalWeeks} {content.summary.weeksSuffix}</span>
+                  <span className="font-bold text-background flex items-center gap-1">
+                    <NumberFlow
+                      value={totalWeeks}
+                      transformTiming={{ duration: 500, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                    />
+                    <span>{content.summary.weeksSuffix}</span>
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-background/80">
                   <span className="text-background/60">{content.summary.ipLabel}</span>
@@ -304,13 +321,15 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
               </div>
 
               {/* CTA Button */}
-              <button
-                onClick={handlePreFillContact}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 active:scale-98 transition-all"
-              >
-                <span>{content.summary.ctaLabel}</span>
-                <ArrowRight size={14} />
-              </button>
+              <Magnetic strength={0.25} range={60}>
+                <button
+                  onClick={handlePreFillContact}
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 active:scale-98 transition-all"
+                >
+                  <span>{content.summary.ctaLabel}</span>
+                  <ArrowRight size={14} />
+                </button>
+              </Magnetic>
 
               <p className="mt-3 text-center text-[10px] text-background/50">{content.summary.disclaimer}</p>
             </SpotlightCard>

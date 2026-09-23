@@ -5,6 +5,8 @@ import Link from "next/link";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { TiltCard } from "@/components/ui/TiltCard";
+import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import {
   CodeConsoleWidget,
@@ -205,22 +207,26 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
 
           {/* Botones de navegación del carrusel */}
           <div className="flex gap-2">
-            <button
-              onClick={() => scroll("left")}
-              disabled={!canScrollLeft}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-background/20 bg-background/5 text-background transition-all duration-200 hover:bg-background/10 active:scale-95 disabled:pointer-events-none disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              aria-label={uiData.servicesScrollPrev}
-            >
-              <ArrowLeft size={18} />
-            </button>
-            <button
-              onClick={() => scroll("right")}
-              disabled={!canScrollRight}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-background/20 bg-background/5 text-background transition-all duration-200 hover:bg-background/10 active:scale-95 disabled:pointer-events-none disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              aria-label={uiData.servicesScrollNext}
-            >
-              <ArrowRight size={18} />
-            </button>
+            <Magnetic strength={0.3} range={50}>
+              <button
+                onClick={() => scroll("left")}
+                disabled={!canScrollLeft}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-background/20 bg-background/5 text-background transition-all duration-200 hover:bg-background/15 hover:border-background/40 active:scale-95 disabled:pointer-events-none disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                aria-label={uiData.servicesScrollPrev}
+              >
+                <ArrowLeft size={18} />
+              </button>
+            </Magnetic>
+            <Magnetic strength={0.3} range={50}>
+              <button
+                onClick={() => scroll("right")}
+                disabled={!canScrollRight}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-background/20 bg-background/5 text-background transition-all duration-200 hover:bg-background/15 hover:border-background/40 active:scale-95 disabled:pointer-events-none disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                aria-label={uiData.servicesScrollNext}
+              >
+                <ArrowRight size={18} />
+              </button>
+            </Magnetic>
           </div>
         </div>
 
@@ -252,7 +258,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                   whileHover="hover"
                   className="w-[320px] sm:w-[360px] shrink-0 snap-start h-full"
                 >
-                  <SpotlightCard className="h-full">
+                  <TiltCard maxTilt={5} className="h-full">
                     <Link
                       href={`${servicesPrefix}/servicios/${service.slug}`}
                       aria-labelledby={`service-title-${service.slug}`}
@@ -304,7 +310,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                         ))}
                       </motion.ul>
                     </Link>
-                  </SpotlightCard>
+                  </TiltCard>
                 </motion.div>
               );
             })}

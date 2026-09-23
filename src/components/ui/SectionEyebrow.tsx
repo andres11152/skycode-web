@@ -22,8 +22,11 @@ export function SectionEyebrow({
   return (
     <p
       className={cn(
-        "font-mono text-xs font-bold uppercase tracking-[0.2em]",
-        onDark ? "text-accent" : "text-accent-strong",
+        "inline-block font-mono text-xs font-bold uppercase tracking-[0.2em]",
+        "bg-clip-text text-transparent animate-shiny-text",
+        onDark
+          ? "bg-gradient-to-r from-accent via-white to-accent"
+          : "bg-gradient-to-r from-accent-strong via-[#38bdf8] to-accent-strong",
         className,
       )}
     >

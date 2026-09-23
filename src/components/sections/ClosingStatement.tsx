@@ -8,6 +8,7 @@ import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { cn } from "@/lib/utils";
 import { getClosingContent } from "@/content/closing";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
+import { Magnetic } from "@/components/ui/Magnetic";
 
 function RevealWord({
   word,
@@ -84,15 +85,17 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
             </p>
           )}
 
-          <Button
-            href={contactHref}
-            variant="accent"
-            size="lg"
-            className="focus-visible:ring-offset-foreground"
-          >
-            {closingData.cta}
-            <ArrowRight size={16} />
-          </Button>
+          <Magnetic strength={0.3} range={80}>
+            <Button
+              href={contactHref}
+              variant="accent"
+              size="lg"
+              className="focus-visible:ring-offset-foreground"
+            >
+              {closingData.cta}
+              <ArrowRight size={16} />
+            </Button>
+          </Magnetic>
         </div>
       </div>
     </section>
