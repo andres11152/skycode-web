@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Layers, Receipt, FileText, LifeBuoy } from "lucide-react";
+import { FileText, Lifebuoy, Receipt, Stack } from "@phosphor-icons/react";
 import { ProjectsBoard } from "../dashboard/ProjectsBoard";
 import { PortalInvoicesPanel } from "./PortalInvoicesPanel";
 import { PortalDocumentsPanel } from "./PortalDocumentsPanel";
@@ -9,10 +9,10 @@ import { PortalSupportPanel } from "./PortalSupportPanel";
 import type { Project, Invoice, ProjectDocument, SupportTicket, ProjectOption } from "../dashboard/types";
 
 const TABS = [
-  { key: "proyectos", label: "Proyectos", icon: Layers },
+  { key: "proyectos", label: "Proyectos", icon: Stack },
   { key: "facturas", label: "Facturas", icon: Receipt },
   { key: "documentos", label: "Documentos", icon: FileText },
-  { key: "soporte", label: "Soporte", icon: LifeBuoy },
+  { key: "soporte", label: "Soporte", icon: Lifebuoy },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];

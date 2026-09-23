@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import {
@@ -263,7 +263,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                           {/* Contenedor del icono con borde vidriado y brillo radial en hover */}
                           <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-foreground/5 to-foreground/[0.01] border border-foreground/10 text-foreground/60 transition-all duration-300 group-hover:from-accent/15 group-hover:to-accent/5 group-hover:border-accent/30 group-hover:text-accent group-hover:shadow-[0_0_20px_rgba(0,137,205,0.15)]">
                             <motion.span variants={iconVariants} className="flex items-center justify-center">
-                              <service.coverIcon size={22} strokeWidth={1.75} aria-hidden="true" />
+                              <service.coverIcon size={24} weight="duotone" aria-hidden="true" />
                             </motion.span>
                           </div>
                           <h3 id={`service-title-${service.slug}`} className="text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-accent">

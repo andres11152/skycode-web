@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { CheckCircle2, XCircle, Clock, AlertTriangle } from "lucide-react";
+import { CheckCircle, Clock, Warning, XCircle } from "@phosphor-icons/react";
 import { formatMoney } from "@/lib/utils";
 import type { Proposal } from "@/components/dashboard/types";
 
@@ -115,7 +115,7 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
 
         {status === "accepted" && (
           <div className="flex items-center justify-center gap-2 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm font-semibold text-green-400">
-            <CheckCircle2 size={18} />
+            <CheckCircle size={18} />
             <span>Propuesta aceptada. Nos pondremos en contacto para arrancar el proyecto.</span>
           </div>
         )}
@@ -127,7 +127,7 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
         )}
         {status === "expired" && (
           <div className="flex items-center justify-center gap-2 rounded-xl border border-background/20 bg-background/5 p-4 text-sm font-semibold text-background/60">
-            <AlertTriangle size={18} />
+            <Warning size={18} />
             <span>Esta propuesta ya expiró — contáctanos si sigue interesado.</span>
           </div>
         )}
@@ -139,7 +139,7 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
               disabled={isSubmitting}
               className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-sm font-bold text-white shadow-lg hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
             >
-              <CheckCircle2 size={16} />
+              <CheckCircle size={16} />
               <span>Aceptar Propuesta</span>
             </button>
             <button

@@ -1,4 +1,4 @@
-import { Download, FileText } from "lucide-react";
+import { DownloadSimple, FileText } from "@phosphor-icons/react/ssr";
 import { EmptyState } from "../dashboard/EmptyState";
 import type { ProjectDocument } from "../dashboard/types";
 
@@ -59,7 +59,7 @@ export function PortalDocumentsPanel({ documents }: { documents: ProjectDocument
                         aria-label={`Descargar ${doc.original_filename}`}
                         className="ml-auto flex h-11 w-11 items-center justify-center rounded-lg text-foreground/60 hover:bg-accent/10 hover:text-accent transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
-                        <Download size={14} />
+                        <DownloadSimple size={14} />
                       </a>
                     </td>
                   </tr>

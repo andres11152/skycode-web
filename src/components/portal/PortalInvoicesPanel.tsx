@@ -1,4 +1,4 @@
-import { Receipt } from "lucide-react";
+import { Receipt } from "@phosphor-icons/react/ssr";
 import { EmptyState } from "../dashboard/EmptyState";
 import { Badge, type BadgeTone } from "../dashboard/ui/Badge";
 import { formatMoney } from "@/lib/utils";

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { SignOut } from "@phosphor-icons/react";
 import { Button } from "@/components/dashboard/ui/Button";
 import type { SessionUser } from "@/components/dashboard/types";
 
@@ -36,7 +36,7 @@ export function PortalChrome({ user, children }: { user: SessionUser; children: 
           <div className="flex items-center gap-4">
             <span className="hidden sm:inline text-xs text-foreground/80 font-mono">{user.name}</span>
             <Button variant="secondary" onClick={handleLogout}>
-              <LogOut size={14} />
+              <SignOut size={14} />
               <span className="hidden sm:inline">Salir</span>
             </Button>
           </div>

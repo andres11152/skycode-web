@@ -7,17 +7,17 @@
   "videoAria": "Vidéo de démonstration de notre travail",
   "items": [
     {
-      "iconName": "Users",
+      "iconName": "UsersThree",
       "title": "Communication directe",
       "description": "Parlez directement aux ingénieurs qui construisent votre logiciel, pas à des gestionnaires de compte. Visibilité totale sur l'avancement en temps réel."
     },
     {
-      "iconName": "BadgeCheck",
+      "iconName": "SealCheck",
       "title": "Garantie post-livraison",
       "description": "Une période de garantie de stabilité technique sans coût supplémentaire, plus un SLA de support préventif continu."
     },
     {
-      "iconName": "ShieldCheck",
+      "iconName": "LockKey",
       "title": "Confidentialité dès la conception",
       "description": "RBAC, chiffrement des données sensibles et journaux d'audit immuables — pas un correctif après incident."
     }

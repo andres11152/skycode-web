@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { CaretDown } from "@phosphor-icons/react";
 import { findCountry, flagEmoji, getCountryOptions, getFallbackCountryOptions } from "@/lib/countries";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -120,7 +120,7 @@ export function PhoneField({
             ) : (
               <span className="text-foreground/50">—</span>
             )}
-            <ChevronDown
+            <CaretDown
               size={16}
               className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-foreground/50"
             />

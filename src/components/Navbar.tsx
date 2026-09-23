@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { List, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/components/LocaleProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -13,7 +13,7 @@ import { localeHomePath } from "@/lib/i18n";
 import { blogIndexPath } from "@/lib/blogPaths";
 import { Button } from "@/components/ui/Button";
 
-const GLASS = "border border-foreground/10 bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl";
+const GLASS = "bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl";
 const MOBILE_GLASS = "border border-foreground/15 bg-background/95 shadow-2xl shadow-black/30 backdrop-blur-2xl";
 
 export function Navbar() {
@@ -118,7 +118,7 @@ export function Navbar() {
             )}
             aria-label={isOpen ? navData.closeMenu : navData.openMenu}
           >
-            {isOpen ? <X size={18} /> : <Menu size={18} />}
+            {isOpen ? <X size={18} /> : <List size={18} />}
 
           </button>
         </div>

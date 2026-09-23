@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Lock, Eye, EyeOff, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle, Eye, EyeSlash, Lock } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function ResetPasswordView({ token }: { token: string }) {
@@ -79,7 +79,7 @@ export function ResetPasswordView({ token }: { token: string }) {
                 className="py-8 text-center space-y-3"
               >
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/20 text-green-400 mx-auto">
-                  <CheckCircle2 size={32} />
+                  <CheckCircle size={32} />
                 </div>
                 <h3 className="text-lg font-bold text-background">¡Contraseña actualizada!</h3>
                 <p className="text-xs text-background/70">Redirigiendo...</p>
@@ -115,7 +115,7 @@ export function ResetPasswordView({ token }: { token: string }) {
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-background/40 hover:text-background transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground rounded p-1"
                       aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                     >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      {showPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
                 </div>

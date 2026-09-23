@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { CheckCircle2, MessageCircle, ShieldCheck } from "lucide-react";
+import { ChatCircle, CheckCircle, ShieldCheck } from "@phosphor-icons/react";
 import { getContactContent } from "@/content/contact";
 import { getUiContent } from "@/content/ui";
 import { whatsappHref } from "@/lib/site";
@@ -31,7 +31,7 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
         className="mx-auto max-w-md text-center"
       >
         <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-[0_0_40px_rgba(16,185,129,0.25)]">
-          <CheckCircle2 size={42} className="stroke-[2.2]" />
+          <CheckCircle size={42} className="stroke-[2.2]" />
           <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-white shadow-md">
             <ShieldCheck size={16} />
           </div>
@@ -66,7 +66,7 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
             rel="noopener noreferrer"
             className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 text-sm font-bold text-emerald-700 outline-none transition-all hover:border-emerald-500/50 hover:bg-emerald-500/20 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            <MessageCircle size={16} />
+            <ChatCircle size={16} />
             {contactData.successModal.whatsappCta}
           </a>
         </div>

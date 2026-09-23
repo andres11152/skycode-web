@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { AlertCircle, Mail, MessageCircle, ShieldCheck } from "lucide-react";
+import { ChatCircle, Envelope, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/Button";
 import { PhoneField } from "@/components/ui/PhoneField";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
@@ -53,13 +53,13 @@ const contactLinks = [
   {
     label: contactEmail,
     href: `mailto:${contactEmail}`,
-    icon: Mail,
+    icon: Envelope,
     hoverClass: "hover:bg-accent/10 hover:border-accent/30 hover:text-accent",
   },
   {
     label: contactPhone.startsWith("+57") ? contactPhone.replace("+57", "+57 ") : contactPhone,
     href: whatsappHref,
-    icon: MessageCircle,
+    icon: ChatCircle,
     hoverClass: "hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:text-emerald-700",
   },
   {
@@ -274,7 +274,7 @@ export function Contact({
             />
             {touched.name && !isNameValid && (
               <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
-                <AlertCircle size={12} /> {contactData.validation.nameError}
+                <WarningCircle size={12} /> {contactData.validation.nameError}
               </p>
             )}
           </div>
@@ -304,7 +304,7 @@ export function Contact({
             />
             {touched.email && !isEmailValid && (
               <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
-                <AlertCircle size={12} /> {contactData.validation.emailError}
+                <WarningCircle size={12} /> {contactData.validation.emailError}
               </p>
             )}
           </div>
@@ -344,7 +344,7 @@ export function Contact({
             />
             {touched.message && !isMessageValid && (
               <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
-                <AlertCircle size={12} /> {contactData.validation.messageError}
+                <WarningCircle size={12} /> {contactData.validation.messageError}
               </p>
             )}
           </div>
@@ -375,7 +375,7 @@ export function Contact({
 
           {errorMessage && (
             <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3.5 text-sm text-red-600 font-medium flex items-center gap-2">
-              <AlertCircle size={16} className="shrink-0" />
+              <WarningCircle size={16} className="shrink-0" />
               <span>{errorMessage}</span>
             </div>
           )}

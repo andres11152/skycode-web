@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle, Sparkle } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   CodeConsoleWidget,
@@ -76,7 +76,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
             <motion.header variants={fadeUp(reduced)} className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-gradient-to-br from-foreground/5 to-foreground/[0.01] text-accent shadow-[0_0_25px_rgba(0,137,205,0.12)]">
-                  <service.coverIcon size={28} strokeWidth={1.75} aria-hidden="true" />
+                  <service.coverIcon size={30} weight="duotone" aria-hidden="true" />
                 </div>
                 <SectionEyebrow>{servicePageData.enterpriseSolutionBadge}</SectionEyebrow>
               </div>
@@ -95,7 +95,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
             {/* Interactive Demo & Environment Simulation Box */}
             <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6 bg-foreground/[0.02]">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60 mb-4 flex items-center gap-2">
-                <Sparkles size={14} className="text-accent" /> {servicePageData.interactiveDemoHeading}
+                <Sparkle size={14} className="text-accent" /> {servicePageData.interactiveDemoHeading}
               </h2>
               {slug === "desarrollo-software-medida" && <CodeConsoleWidget locale={locale} />}
               {slug === "desarrollo-aplicaciones-moviles" && <MobileAppPreviewWidget locale={locale} />}
@@ -114,7 +114,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
               <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                 {service.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2.5 text-sm text-foreground/80">
-                    <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
+                    <CheckCircle size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -128,7 +128,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
               <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                 {approachItems.map((item) => (
                   <li key={item.label} className="flex items-start gap-2.5 text-sm text-foreground/80">
-                    <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
+                    <CheckCircle size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
                     <span>{item.label}</span>
                   </li>
                 ))}

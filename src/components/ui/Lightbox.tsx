@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react";
+import { CaretLeft, CaretRight, MagnifyingGlassMinus, MagnifyingGlassPlus, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { useFocusTrap } from "@/lib/useFocusTrap";
 
@@ -74,7 +74,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange }: Lightb
                 aria-label="Imagen anterior"
                 className="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-background/70 outline-none transition-colors hover:bg-background/10 hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground sm:left-4"
               >
-                <ChevronLeft size={22} />
+                <CaretLeft size={22} />
               </button>
               <button
                 type="button"
@@ -85,7 +85,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange }: Lightb
                 aria-label="Imagen siguiente"
                 className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-background/70 outline-none transition-colors hover:bg-background/10 hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground sm:right-4"
               >
-                <ChevronRight size={22} />
+                <CaretRight size={22} />
               </button>
             </>
           )}
@@ -120,7 +120,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange }: Lightb
               aria-label={zoomed ? "Alejar" : "Acercar"}
               className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-background/10 text-background outline-none backdrop-blur-sm transition-colors hover:bg-background/20 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
             >
-              {zoomed ? <ZoomOut size={18} /> : <ZoomIn size={18} />}
+              {zoomed ? <MagnifyingGlassMinus size={18} /> : <MagnifyingGlassPlus size={18} />}
             </button>
           </motion.div>
 

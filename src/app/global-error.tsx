@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { AlertTriangle, RefreshCw } from "lucide-react";
+import { ArrowsClockwise, Warning } from "@phosphor-icons/react";
 import { Geist_Mono, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import { getErrorsContent } from "@/content/errors";
 import { defaultLocale, isLocale, localeHomePath } from "@/lib/i18n";
@@ -54,7 +54,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
       <body className="min-h-full flex items-center justify-center bg-background px-6">
         <div className="max-w-md text-center">
           <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 text-red-600">
-            <AlertTriangle size={26} strokeWidth={1.75} aria-hidden="true" />
+            <Warning size={26} aria-hidden="true" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl">
             {content.title}
@@ -66,7 +66,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
               onClick={reset}
               className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent-strong px-6 text-sm font-semibold text-accent-foreground outline-none transition-colors hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              <RefreshCw size={16} />
+              <ArrowsClockwise size={16} />
               {content.ctaRetry}
             </button>
             <a

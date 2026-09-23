@@ -7,7 +7,7 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, type Locale } from "@/lib/i18n";
-import { BrainCircuit } from "lucide-react";
+import { Brain } from "@phosphor-icons/react";
 import {
   FlutterIcon,
   JavaScriptIcon,
@@ -39,7 +39,7 @@ const techStack = [
   { name: "Nest.js / Node", Icon: NestJsIcon },
   { name: "PostgreSQL", Icon: PostgreSQLIcon },
   { name: "MongoDB", Icon: MongoDBIcon },
-  { name: "IA & Agentes", Icon: BrainCircuit },
+  { name: "IA & Agentes", Icon: Brain },
 ];
 
 function VideoShowcase({
@@ -193,7 +193,7 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
                 {highlightsData.items.map((item) => (
                   <div key={item.title} className="group flex items-start gap-4 py-6 first:pt-0 last:pb-0 sm:block sm:gap-0 sm:py-0">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-foreground/5 to-foreground/[0.01] border border-foreground/10 text-foreground/60 transition-all duration-300 group-hover:from-accent/15 group-hover:to-accent/5 group-hover:border-accent/30 group-hover:text-accent">
-                      <item.icon size={20} strokeWidth={1.75} aria-hidden="true" />
+                      <item.icon size={22} weight="duotone" aria-hidden="true" />
                     </div>
                     <div className="min-w-0 sm:mt-4">
                       <h3 className="font-heading text-base font-bold text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-lg">

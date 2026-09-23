@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
-import { LifeBuoy, Plus } from "lucide-react";
+import { Lifebuoy, Plus } from "@phosphor-icons/react";
 import { EmptyState } from "../dashboard/EmptyState";
 import { ModalShell } from "../dashboard/ModalShell";
 import { Badge, type BadgeTone } from "../dashboard/ui/Badge";
@@ -52,7 +52,7 @@ export function PortalSupportPanel({ tickets, projects }: { tickets: SupportTick
       <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
         {tickets.length === 0 ? (
           <EmptyState
-            icon={LifeBuoy}
+            icon={Lifebuoy}
             title="Sin incidencias"
             description="No has reportado ninguna incidencia todavía."
             action={projects.length > 0 ? { label: "Abrir incidencia", onClick: () => setCreateOpen(true) } : undefined}

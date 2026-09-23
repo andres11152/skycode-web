@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Compass, ArrowRight } from "lucide-react";
+import { ArrowRight, Compass } from "@phosphor-icons/react";
 import { useLocale } from "@/components/LocaleProvider";
 import { getErrorsContent } from "@/content/errors";
 import { localeHomePath } from "@/lib/i18n";
@@ -16,7 +16,7 @@ export default function NotFound() {
     <main id="main-content" className="flex min-h-[70vh] items-center justify-center px-6 py-24">
       <div className="max-w-md text-center">
         <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] text-accent">
-          <Compass size={26} strokeWidth={1.75} aria-hidden="true" />
+          <Compass size={26} aria-hidden="true" />
         </div>
         <span className="text-xs font-mono font-bold uppercase tracking-wider text-foreground/50">
           {content.eyebrow}

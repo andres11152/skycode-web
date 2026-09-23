@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Cookie } from "lucide-react";
+import { Cookie } from "@phosphor-icons/react";
 import { useLocale } from "@/components/LocaleProvider";
 import { getCookieBannerContent } from "@/content/cookieBanner";
 import { EsBadge } from "@/components/ui/EsBadge";

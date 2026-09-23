@@ -78,7 +78,7 @@ export function ServicesIndexView({ locale }: { locale: Locale }) {
                 >
                   <div>
                     <div className="mb-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-gradient-to-br from-foreground/5 to-foreground/[0.01] text-foreground/60 transition-all duration-300 group-hover:border-accent/30 group-hover:from-accent/15 group-hover:to-accent/5 group-hover:text-accent">
-                      <service.coverIcon size={22} strokeWidth={1.75} aria-hidden="true" />
+                      <service.coverIcon size={24} weight="duotone" aria-hidden="true" />
                     </div>
                     <h2 className="text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-accent">
                       {service.title}

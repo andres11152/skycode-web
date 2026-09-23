@@ -7,7 +7,7 @@
       "slug": "desarrollo-software-medida",
       "title": "Scalable Custom Proprietary Systems",
       "description": "We design your business core with high-performance backends. We deliver absolute intellectual property and optimized databases so you don't pay endless licenses or rely on limited builders.",
-      "iconName": "Code2",
+      "iconName": "Blueprint",
       "features": [
         "Proprietary, transferable code",
         "Databases structured for your business",
@@ -18,7 +18,7 @@
       "slug": "desarrollo-aplicaciones-moviles",
       "title": "Mobile Development (Android & iOS)",
       "description": "Creation of native and cross-platform mobile apps (React Native and Flutter) with high performance, fully optimized for the App Store and Google Play.",
-      "iconName": "Smartphone",
+      "iconName": "DeviceMobile",
       "features": [
         "Cross-platform apps (React Native / Flutter)",
         "App Store and Google Play optimization (ASO)",
@@ -29,7 +29,7 @@
       "slug": "apis-integraciones",
       "title": "APIs & Integrations",
       "description": "Design and development of documented REST APIs to connect your systems with payment gateways, ERPs, CRMs, and any platform critical to your operation.",
-      "iconName": "Plug",
+      "iconName": "TreeStructure",
       "features": [
         "Standardized, documented REST APIs",
         "Integration with ERPs and payment gateways",
@@ -40,7 +40,7 @@
       "slug": "frontend-alto-rendimiento",
       "title": "Ultra-fast Interfaces & Conversion Optimization",
       "description": "Web performance is profitability. We develop with React and Next.js, optimizing for excellent Core Web Vitals scores to maximize your conversion rates and organic SEO rankings.",
-      "iconName": "AppWindow",
+      "iconName": "Lightning",
       "features": [
         "Applications built with React and Next.js",
         "Core Web Vitals and SEO optimization",
@@ -62,7 +62,7 @@
       "slug": "arquitectura-documentacion",
       "title": "Architecture & Documentation",
       "description": "We deliver thorough technical documentation and structured knowledge transfer so your team retains control and autonomy over the code.",
-      "iconName": "Layers",
+      "iconName": "Handshake",
       "features": [
         "Detailed technical documentation",
         "System design built to scale",
@@ -73,7 +73,7 @@
       "slug": "migracion-datos-legacy",
       "title": "Legacy Data Migration & Modernization",
       "description": "We transform fragmented information and complex structured files (XML, CSV, obsolete databases) from legacy systems into modern data warehouses optimized for strategic, analytics-driven decision-making.",
-      "iconName": "Database",
+      "iconName": "Swap",
       "features": [
         "Secure migration from legacy systems and XML",
         "Data structuring for Business Intelligence",
@@ -84,7 +84,7 @@
       "slug": "inteligencia-artificial-aplicada",
       "title": "Applied Artificial Intelligence (AI)",
       "description": "We design and integrate AI models, LLMs, and autonomous agents to optimize workflows, automate repetitive tasks, and power data-driven decision-making.",
-      "iconName": "BrainCircuit",
+      "iconName": "Graph",
       "features": [
         "Integration of third-party LLMs and AI models",
         "Autonomous agents for process automation",

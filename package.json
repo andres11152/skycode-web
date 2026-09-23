@@ -19,6 +19,7 @@
     "test:all": "npm run test:db:up && npm run test:db:migrate && npm run test && npm run test:integration && npm run test:e2e"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "@sentry/nextjs": "^10.73.0",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",

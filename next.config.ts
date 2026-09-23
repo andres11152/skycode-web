@@ -88,7 +88,12 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   experimental: {
-    optimizePackageImports: ["framer-motion"],
+    // `@phosphor-icons/react` exporta 3.000+ iconos desde un solo índice —
+    // sin esto, importar 3 iconos arrastra el barrel completo al bundle.
+    // `lucide-react` sigue en la lista porque el panel interno
+    // (/dashboard, ver CLAUDE.md) no se migró a Phosphor: ahí los iconos
+    // son chrome funcional denso, no identidad de marca.
+    optimizePackageImports: ["framer-motion", "@phosphor-icons/react", "lucide-react"],
   },
   async headers() {
     return [

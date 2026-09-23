@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle2, ArrowRight, Clock, Tag, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle, Clock, Lightning, Tag } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProjectEstimatorContent, getDefaultCurrency } from "@/content/projectEstimator";
@@ -163,7 +163,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                           }`}>
                             <Icon size={18} />
                           </div>
-                          {isSelected && <CheckCircle2 size={16} className="text-accent" />}
+                          {isSelected && <CheckCircle size={16} className="text-accent" />}
                         </div>
                         <h4 className="font-bold text-sm text-foreground">{type.title}</h4>
                         <p className="mt-1 text-xs text-foreground/70 leading-relaxed">{type.desc}</p>
@@ -205,7 +205,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                         <div className={`flex h-4 w-4 items-center justify-center rounded border ${
                           isChecked ? "border-accent bg-accent-strong text-white" : "border-foreground/30"
                         }`}>
-                          {isChecked && <CheckCircle2 size={12} />}
+                          {isChecked && <CheckCircle size={12} />}
                         </div>
                         <span>{addon.title}</span>
                       </div>
@@ -243,7 +243,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   }`}
                 >
                   <div className="font-bold mb-0.5 text-accent-strong flex items-center gap-1">
-                    <Zap size={12} /> {content.pace.expressTitle}
+                    <Lightning size={12} /> {content.pace.expressTitle}
                   </div>
                   <div className="text-[11px] text-foreground/60">{content.pace.expressDesc}</div>
                 </button>

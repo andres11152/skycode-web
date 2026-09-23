@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Pause, Play, Quote } from "lucide-react";
+import { ArrowLeft, ArrowRight, Pause, Play, Quotes } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getTestimonialsContent } from "@/content/testimonials";
@@ -115,7 +115,7 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
                   transition={{ duration: reduced ? 0.01 : 0.4, ease: [0.16, 1, 0.3, 1] }}
                   className="flex flex-col items-center px-6 py-7 text-center sm:px-10 sm:py-9"
                 >
-                  <Quote className="text-accent/40" size={24} aria-hidden="true" />
+                  <Quotes className="text-accent/40" size={24} aria-hidden="true" />
                   <blockquote className="mt-4 max-w-xl text-base leading-relaxed font-medium text-balance text-foreground sm:text-lg">
                     &ldquo;{active.quote}&rdquo;
                   </blockquote>

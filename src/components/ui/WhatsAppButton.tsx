@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { ChatCircle, PaperPlaneTilt, X } from "@phosphor-icons/react";
 import { getUiContent } from "@/content/ui";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 
@@ -35,7 +35,7 @@ export function WhatsAppButton({
           <div className="flex items-center justify-between border-b border-background/10 pb-3 mb-3">
             <div className="flex items-center gap-2.5">
               <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#25D366] text-white shadow-md">
-                <MessageCircle size={20} />
+                <ChatCircle size={20} />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-background leading-tight">{uiData.whatsappHeading}</h4>
@@ -62,7 +62,7 @@ export function WhatsAppButton({
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-xs font-bold text-white shadow-lg hover:bg-[#20bd5a] active:scale-95 transition-all"
           >
             <span>{uiData.whatsappOpenChat}</span>
-            <Send size={14} />
+            <PaperPlaneTilt size={14} />
           </a>
         </div>
       )}
@@ -73,7 +73,7 @@ export function WhatsAppButton({
         className="group flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-all hover:scale-105 active:scale-95 hover:shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2"
         aria-label={uiData.whatsappTriggerAria}
       >
-        <MessageCircle size={28} className="text-white transition-transform duration-300 group-hover:scale-110" />
+        <ChatCircle size={28} className="text-white transition-transform duration-300 group-hover:scale-110" />
       </button>
     </div>
   );

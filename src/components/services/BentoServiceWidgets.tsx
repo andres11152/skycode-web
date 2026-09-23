@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, Play, Smartphone, Zap, ShieldCheck, RefreshCw, Send, Sparkles } from "lucide-react";
+import { ArrowsClockwise, DeviceMobile, Lightning, PaperPlaneTilt, Play, ShieldCheck, Sparkle, Terminal } from "@phosphor-icons/react";
 import { getBentoContent } from "@/content/bento";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 
@@ -140,7 +140,7 @@ export function MobileAppPreviewWidget({ locale = defaultLocale }: WidgetProps) 
         <div className="flex items-center justify-between text-[9px] font-bold text-background/60 mb-2 px-1">
           <span>9:41</span>
           <div className="flex items-center gap-1 text-accent">
-            <Zap size={10} /> 5G
+            <Lightning size={10} /> 5G
           </div>
         </div>
 
@@ -192,7 +192,7 @@ export function MobileAppPreviewWidget({ locale = defaultLocale }: WidgetProps) 
                   }}
                   className="mx-auto flex items-center justify-center gap-1 rounded-full bg-accent/20 px-2 py-1 text-[9px] text-background font-bold cursor-pointer hover:bg-accent/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground"
                 >
-                  <RefreshCw size={10} className={!synced ? "animate-spin" : ""} />
+                  <ArrowsClockwise size={10} className={!synced ? "animate-spin" : ""} />
                   {synced ? content.synced : content.syncing}
                 </span>
               </motion.div>
@@ -225,7 +225,7 @@ export function MobileAppPreviewWidget({ locale = defaultLocale }: WidgetProps) 
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("dashboard"); } }}
             className={`flex h-6 w-6 items-center justify-center rounded cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${activeTab === "dashboard" ? "text-accent font-bold" : "text-background/60"}`}
           >
-            <Smartphone size={12} />
+            <DeviceMobile size={12} />
           </span>
           <span
             role="button"
@@ -235,7 +235,7 @@ export function MobileAppPreviewWidget({ locale = defaultLocale }: WidgetProps) 
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("sync"); } }}
             className={`flex h-6 w-6 items-center justify-center rounded cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${activeTab === "sync" ? "text-accent font-bold" : "text-background/60"}`}
           >
-            <RefreshCw size={12} />
+            <ArrowsClockwise size={12} />
           </span>
           <span
             role="button"
@@ -245,7 +245,7 @@ export function MobileAppPreviewWidget({ locale = defaultLocale }: WidgetProps) 
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveTab("push"); } }}
             className={`flex h-6 w-6 items-center justify-center rounded cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${activeTab === "push" ? "text-accent font-bold" : "text-background/60"}`}
           >
-            <Zap size={12} />
+            <Lightning size={12} />
           </span>
         </div>
       </div>
@@ -295,7 +295,7 @@ export function ApiInspectorWidget({ locale = defaultLocale }: WidgetProps) {
             loading ? "opacity-50 pointer-events-none" : ""
           }`}
         >
-          <Send size={10} className={loading ? "animate-ping" : ""} />
+          <PaperPlaneTilt size={10} className={loading ? "animate-ping" : ""} />
           {loading ? content.testing : content.send}
         </span>
       </div>
@@ -567,7 +567,7 @@ export function AiAppliedWidget({ locale = defaultLocale }: WidgetProps) {
     <div className="w-full rounded-xl border border-foreground/10 bg-foreground/95 p-3.5 text-xs text-background font-mono">
       <div className="flex items-center justify-between border-b border-background/10 pb-2 mb-2 text-[11px]">
         <span className="font-bold text-accent flex items-center gap-1">
-          <Sparkles size={12} /> {content.heading}
+          <Sparkle size={12} /> {content.heading}
         </span>
         <span
           role="button"

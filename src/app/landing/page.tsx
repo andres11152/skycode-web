@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Building2, Code2, ShieldCheck } from "lucide-react";
+import { Buildings, Code, ShieldCheck } from "@phosphor-icons/react/ssr";
 import { Contact } from "@/components/sections/Contact";
 import { siteName } from "@/lib/site";
 
@@ -27,12 +27,12 @@ const trustPoints = [
     description: "Ante cualquier falla, sin letra pequeña ni costos ocultos.",
   },
   {
-    icon: Code2,
+    icon: Code,
     title: "El código es 100% tuyo",
     description: "Repositorio a tu nombre desde el día 1, sin depender de nosotros.",
   },
   {
-    icon: Building2,
+    icon: Buildings,
     title: "Proyectos reales en producción",
     description:
       "Plataformas como Sentry CRM (SaaS multi-tenant) y ServiFuturo (gestión de flotas) funcionando hoy.",

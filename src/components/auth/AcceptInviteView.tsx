@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Lock, User, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle, Lock, User } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function AcceptInviteView({ token }: { token: string }) {
@@ -73,7 +73,7 @@ export function AcceptInviteView({ token }: { token: string }) {
                 className="py-8 text-center space-y-3"
               >
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/20 text-green-400 mx-auto">
-                  <CheckCircle2 size={32} />
+                  <CheckCircle size={32} />
                 </div>
                 <h3 className="text-lg font-bold text-background">¡Cuenta activada!</h3>
                 <p className="text-xs text-background/70">Redirigiendo al panel...</p>

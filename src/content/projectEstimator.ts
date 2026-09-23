@@ -1,15 +1,16 @@
-import { AppWindow, BrainCircuit, Code2, Plug, Smartphone, type LucideIcon } from "lucide-react";
+import { Blueprint, DeviceMobile, Graph, Lightning, TreeStructure } from "@phosphor-icons/react/ssr";
+import type { Icon } from "@phosphor-icons/react";
 import projectEstimatorDataEs from "./locales/es/projectEstimator.json";
 import projectEstimatorDataEn from "./locales/en/projectEstimator.json";
 import projectEstimatorDataFr from "./locales/fr/projectEstimator.json";
 import type { Locale } from "@/lib/i18n";
 
-const iconMap: Record<string, LucideIcon> = {
-  Code2,
-  Smartphone,
-  BrainCircuit,
-  Plug,
-  AppWindow,
+const iconMap: Record<string, Icon> = {
+  Blueprint,
+  DeviceMobile,
+  Graph,
+  TreeStructure,
+  Lightning,
 };
 
 const projectEstimatorByLocale = {
@@ -40,7 +41,7 @@ export interface ProjectEstimatorType {
   id: string;
   title: string;
   desc: string;
-  icon: LucideIcon;
+  icon: Icon;
   priceCop: number;
   priceUsd: number;
   baseWeeks: number;
@@ -63,7 +64,7 @@ export function getProjectEstimatorContent(locale: Locale) {
       id: item.id,
       title: item.title,
       desc: item.desc,
-      icon: iconMap[item.iconName] ?? Code2,
+      icon: iconMap[item.iconName] ?? Blueprint,
       ...(PRICING[item.id] ?? { priceCop: 0, priceUsd: 0, baseWeeks: 0 }),
     })) satisfies ProjectEstimatorType[],
     addons: data.addons.map((item) => ({

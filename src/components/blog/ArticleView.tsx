@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { BlogPost } from "@/content/blogShared";
 import { getBlogMeta, readingTime } from "@/content/blogShared";

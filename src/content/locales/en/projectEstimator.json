@@ -15,41 +15,56 @@
   "projectTypes": [
     {
       "id": "software",
-      "iconName": "Code2",
+      "iconName": "Blueprint",
       "title": "Custom Software / SaaS",
       "desc": "Multi-tenant backend, hexagonal architecture, web dashboard and database."
     },
     {
       "id": "mobile",
-      "iconName": "Smartphone",
+      "iconName": "DeviceMobile",
       "title": "Mobile App (Android & iOS)",
       "desc": "Native or cross-platform app with React Native / Flutter."
     },
     {
       "id": "ai",
-      "iconName": "BrainCircuit",
+      "iconName": "Graph",
       "title": "Applied Artificial Intelligence",
       "desc": "LLM integration, vector databases and autonomous agents."
     },
     {
       "id": "apis",
-      "iconName": "Plug",
+      "iconName": "TreeStructure",
       "title": "APIs & REST Integrations",
       "desc": "Microservices, ERP connections and payment gateways."
     },
     {
       "id": "web",
-      "iconName": "AppWindow",
+      "iconName": "Lightning",
       "title": "Ultra-Fast Web / Frontend",
       "desc": "Next.js with 100/100 Core Web Vitals and optimized SEO."
     }
   ],
   "addons": [
-    { "id": "auth", "title": "OAuth Authentication / Multi-Role RBAC" },
-    { "id": "payments", "title": "Payment Gateway (Stripe / Wompi)" },
-    { "id": "offline", "title": "Offline-First Sync" },
-    { "id": "security", "title": "OWASP Security Audit & Data Protection Compliance" },
-    { "id": "ai_bot", "title": "Custom AI Virtual Assistant / Chatbot" }
+    {
+      "id": "auth",
+      "title": "OAuth Authentication / Multi-Role RBAC"
+    },
+    {
+      "id": "payments",
+      "title": "Payment Gateway (Stripe / Wompi)"
+    },
+    {
+      "id": "offline",
+      "title": "Offline-First Sync"
+    },
+    {
+      "id": "security",
+      "title": "OWASP Security Audit & Data Protection Compliance"
+    },
+    {
+      "id": "ai_bot",
+      "title": "Custom AI Virtual Assistant / Chatbot"
+    }
   ],
   "fromLabel": "From",
   "pace": {

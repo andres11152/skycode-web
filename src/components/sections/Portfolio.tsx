@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ExternalLink } from "lucide-react";
+import { ArrowSquareOut, ArrowUpRight } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { ProjectCover } from "@/components/ui/ProjectCover";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
@@ -80,7 +80,7 @@ function ProjectRow({
               aria-hidden="true"
               className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/60"
             >
-              <ExternalLink size={16} />
+              <ArrowSquareOut size={16} />
             </span>
           )}
           <span

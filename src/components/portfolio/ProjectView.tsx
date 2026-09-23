@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, CheckCircle2, ExternalLink, Maximize2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowSquareOut, CheckCircle, CornersOut } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "framer-motion";
 import { projects, getProjectBySlug } from "@/content/projects";
 import { Button } from "@/components/ui/Button";
@@ -105,7 +105,7 @@ export function ProjectView({ slug }: { slug: string }) {
             aria-label="Ampliar imagen"
             className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-background/10 text-background outline-none backdrop-blur-sm transition-colors hover:bg-background/20 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
           >
-            <Maximize2 size={18} />
+            <CornersOut size={18} />
           </button>
         </motion.div>
 
@@ -141,7 +141,7 @@ export function ProjectView({ slug }: { slug: string }) {
               <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                 {APPROACH_ITEMS.map((item) => (
                   <li key={item} className="flex items-center gap-2.5 text-sm text-foreground/80">
-                    <CheckCircle2 size={16} className="shrink-0 text-accent" aria-hidden="true" />
+                    <CheckCircle size={16} className="shrink-0 text-accent" aria-hidden="true" />
                     {item}
                   </li>
                 ))}
@@ -172,7 +172,7 @@ export function ProjectView({ slug }: { slug: string }) {
                         className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-foreground/20 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
-                        <Maximize2 size={16} className="text-background" />
+                        <CornersOut size={16} className="text-background" />
                       </div>
                     </button>
                   ))}
@@ -194,7 +194,7 @@ export function ProjectView({ slug }: { slug: string }) {
               {project.link && (
                 <Button href={project.link} variant="secondary" size="md" className="mt-5 w-full">
                   Visitar sitio en vivo
-                  <ExternalLink size={16} />
+                  <ArrowSquareOut size={16} />
                 </Button>
               )}
             </div>

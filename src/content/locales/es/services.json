@@ -7,7 +7,7 @@
       "slug": "desarrollo-software-medida",
       "title": "Sistemas y Plataformas a la Medida",
       "description": "Deja atrás los excels interminables y los programas rígidos. Creamos la herramienta exacta que tu operación necesita, optimizada para crecer sin pagar licencias mensuales abusivas.",
-      "iconName": "Code2",
+      "iconName": "Blueprint",
       "features": [
         "Código 100% tuyo y transferible",
         "Bases de datos rápidas y estructuradas",
@@ -18,7 +18,7 @@
       "slug": "desarrollo-aplicaciones-moviles",
       "title": "Aplicaciones Móviles (Android & iOS)",
       "description": "Apps fluidas, intuitivas y publicadas en las tiendas. Pensadas para que tus clientes o tu equipo en campo puedan usarlas con facilidad, incluso sin conexión a internet.",
-      "iconName": "Smartphone",
+      "iconName": "DeviceMobile",
       "features": [
         "Apps multiplataforma (React Native / Flutter)",
         "Acompañamiento en publicación en App Store y Google Play",
@@ -29,7 +29,7 @@
       "slug": "apis-integraciones",
       "title": "Integraciones & Conexión de Sistemas",
       "description": "Conectamos tu software con lo que ya usas a diario: pasarelas de pago (Stripe, Wompi, PayU), sistemas contables (Siigo, Alegra, SAP) y canales de mensajería.",
-      "iconName": "Plug",
+      "iconName": "TreeStructure",
       "features": [
         "Conexión con pasarelas de pago y bancos",
         "Integración con ERPs, CRMs y facturación",
@@ -40,7 +40,7 @@
       "slug": "frontend-alto-rendimiento",
       "title": "Páginas Web y Aplicaciones Ultra-Rápidas",
       "description": "A nadie le gusta esperar una web lenta. Diseñamos experiencias visualmente impecables que cargan al instante en cualquier teléfono y convierten visitas en clientes.",
-      "iconName": "AppWindow",
+      "iconName": "Lightning",
       "features": [
         "Desarrollo moderno con React y Next.js",
         "Carga ultra-rápida y optimización para Google (SEO)",
@@ -62,7 +62,7 @@
       "slug": "arquitectura-documentacion",
       "title": "Documentación Clara y Transferencia Total",
       "description": "No creemos en las cajas negras ni en retener clientes a la fuerza. Te entregamos guías claras y bien explicadas para que cualquier desarrollador pueda continuar el proyecto.",
-      "iconName": "Layers",
+      "iconName": "Handshake",
       "features": [
         "Guías paso a paso de uso y mantenimiento",
         "Entrega total de repositorios, contraseñas y accesos",
@@ -73,7 +73,7 @@
       "slug": "migracion-datos-legacy",
       "title": "Modernización y Rescate de Datos Antiguos",
       "description": "¿Tienes información valiosa atrapada en sistemas viejos, excels desordenados o bases de datos obsoletas? La limpiamos, estructuramos y migramos a tu nueva plataforma.",
-      "iconName": "Database",
+      "iconName": "Swap",
       "features": [
         "Migración segura y sin pérdida de información",
         "Limpieza y ordenamiento de datos históricos",
@@ -84,7 +84,7 @@
       "slug": "inteligencia-artificial-aplicada",
       "title": "Inteligencia Artificial con Propósito Real",
       "description": "Sin humo ni promesas mágicas. Integramos modelos de IA y asistentes inteligentes que realmente ahorran tiempo en tu operación diaria y mejoran la atención a clientes.",
-      "iconName": "BrainCircuit",
+      "iconName": "Graph",
       "features": [
         "Asistentes inteligentes para atención y soporte",
         "Automatización de clasificación y lectura de documentos",
@@ -93,4 +93,3 @@
     }
   ]
 }
-

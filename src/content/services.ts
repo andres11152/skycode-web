@@ -1,31 +1,47 @@
 import {
-  AppWindow,
-  BrainCircuit,
-  Code2,
-  Database,
-  Layers,
-  Plug,
+  Blueprint,
+  DeviceMobile,
+  Graph,
+  Handshake,
+  Lightning,
   ShieldCheck,
-  Smartphone,
-  type LucideIcon,
-} from "lucide-react";
+  Swap,
+  TreeStructure,
+} from "@phosphor-icons/react/ssr";
+import type { Icon } from "@phosphor-icons/react";
 import servicesDataEs from "./locales/es/services.json";
 import servicesDataEn from "./locales/en/services.json";
 import servicesDataFr from "./locales/fr/services.json";
 import type { Locale } from "@/lib/i18n";
 
-// Ícono de servicio (tarjeta del carrusel y portada de la página de detalle) —
-// Lucide, no LordIcon: se quitó la dependencia externa (CDN de terceros,
-// 320KB de lottie-web, console.log en producción, ver CLAUDE.md).
-const iconMap: Record<string, LucideIcon> = {
-  Code2,
-  Plug,
-  AppWindow,
+// Ícono de servicio (tarjeta del carrusel y portada de la página de detalle).
+// Phosphor, no Lucide: los glifos se renderizan en `weight="duotone"`, que da
+// una segunda capa donde entra el azul de marca — un stroke plano a 22px
+// dentro de un contenedor de 48px se veía vacío (ver CLAUDE.md).
+//
+// Las claves NO son el nombre literal del concepto del servicio a propósito.
+// El set anterior (Lucide) era un mapeo literal sustantivo→glifo: `Code2`
+// para "software", `Plug` para "integraciones", `BrainCircuit` para "IA" — el patrón
+// exacto que hace que un sitio se vea generado por IA. Cada ícono acá apunta
+// al *valor* del servicio, no a su sustantivo:
+//   Blueprint     -> se diseña a medida, no se escribe código genérico
+//   TreeStructure -> sistemas conectados entre sí, no un enchufe
+//   Lightning     -> el diferenciador del servicio es la velocidad, no "una ventana"
+//   Handshake     -> el entregable real es la transferencia, no "capas"
+//   Swap          -> migrar/reemplazar lo viejo, no "una base de datos"
+//   Graph         -> un modelo aplicado, no un cerebro con circuitos
+// ShieldCheck y DeviceMobile sí se quedan literales: ahí el glifo canónico
+// es el correcto (seguridad, plataforma móvil). ShieldCheck además ya no se
+// repite en Highlights, donde antes aparecía por tercera vez.
+const iconMap: Record<string, Icon> = {
+  Blueprint,
+  TreeStructure,
+  Lightning,
   ShieldCheck,
-  Layers,
-  Smartphone,
-  Database,
-  BrainCircuit,
+  Handshake,
+  DeviceMobile,
+  Swap,
+  Graph,
 };
 
 const servicesByLocale = { es: servicesDataEs, en: servicesDataEn, fr: servicesDataFr };
@@ -34,7 +50,7 @@ export interface Service {
   slug: string;
   title: string;
   description: string;
-  coverIcon: LucideIcon;
+  coverIcon: Icon;
   features: string[];
 }
 
@@ -50,7 +66,7 @@ export function getServicesContent(locale: Locale) {
       slug: item.slug,
       title: item.title,
       description: item.description,
-      coverIcon: iconMap[item.iconName] ?? Code2,
+      coverIcon: iconMap[item.iconName] ?? Blueprint,
       features: item.features,
     })) satisfies Service[],
   };

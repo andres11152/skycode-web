@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import type { LucideIcon } from "lucide-react";
+import type { Icon as PhosphorIcon } from "@phosphor-icons/react";
 import { GridPattern } from "@/components/ui/GridPattern";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +20,7 @@ export function ProjectCover({
   className,
   iconClassName,
 }: {
-  icon: LucideIcon;
+  icon: PhosphorIcon;
   imageSrc?: string;
   className?: string;
   iconClassName?: string;
@@ -67,7 +67,7 @@ export function ProjectCover({
             iconClassName,
           )}
         >
-          <Icon size={28} strokeWidth={1.75} />
+          <Icon size={28} weight="duotone" />
         </motion.div>
       </div>
     </div>

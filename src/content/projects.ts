@@ -1,16 +1,17 @@
-import { BrainCircuit, Building2, Car, Globe, Rocket, ShieldCheck, ShoppingCart, Truck, Workflow, type LucideIcon } from "lucide-react";
+import { Buildings, Car, FlowArrow, Globe, Graph, Rocket, ShieldCheck, ShoppingCart, Truck } from "@phosphor-icons/react/ssr";
+import type { Icon } from "@phosphor-icons/react";
 import projectsDataEs from "./locales/es/projects.json";
 import projectsDataEn from "./locales/en/projects.json";
 import projectsDataFr from "./locales/fr/projects.json";
 import type { Locale } from "@/lib/i18n";
 
-const coverIconMap: Record<string, LucideIcon> = {
-  BrainCircuit,
-  Building2,
+const coverIconMap: Record<string, Icon> = {
+  Graph,
+  Buildings,
   ShoppingCart,
   Rocket,
   Globe,
-  Workflow,
+  FlowArrow,
   Truck,
   Car,
   ShieldCheck,
@@ -28,7 +29,7 @@ export interface Project {
   coverImage?: string;
   /** Capturas reales adicionales, cuando el cliente las autoriza (ver Lightbox). */
   gallery?: string[];
-  coverIcon: LucideIcon;
+  coverIcon: Icon;
 }
 
 export function getProjectsContent(locale: Locale) {

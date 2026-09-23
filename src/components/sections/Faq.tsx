@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Plus } from "lucide-react";
+import { Plus } from "@phosphor-icons/react";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getFaqContent } from "@/content/faq";
 import { defaultLocale, type Locale } from "@/lib/i18n";

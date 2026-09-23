@@ -7,20 +7,19 @@
   "videoAria": "Video de muestra de nuestro trabajo",
   "items": [
     {
-      "iconName": "Users",
+      "iconName": "UsersThree",
       "title": "Hablas directo con quien programa",
       "description": "Cero intermediarios comerciales que te prometen lo imposible. Hablas con nosotros de frente, con avances reales y visibles cada semana."
     },
     {
-      "iconName": "BadgeCheck",
+      "iconName": "SealCheck",
       "title": "Garantía real de 90 días",
       "description": "No nos desentendemos al entregar. Si surge algún detalle o falla en los primeros tres meses de producción, lo resolvemos sin cobrarte extra."
     },
     {
-      "iconName": "ShieldCheck",
+      "iconName": "LockKey",
       "title": "Seguridad y privacidad desde el día uno",
       "description": "Cuidamos las contraseñas, los accesos y los datos de tus clientes con estándares serios. Nada de parches improvisados de última hora."
     }
   ]
 }
-

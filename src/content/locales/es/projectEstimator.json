@@ -15,41 +15,56 @@
   "projectTypes": [
     {
       "id": "software",
-      "iconName": "Code2",
+      "iconName": "Blueprint",
       "title": "Software a la Medida / Plataforma Web",
       "desc": "Panel administrativo, base de datos y la lógica exacta que necesita tu negocio."
     },
     {
       "id": "mobile",
-      "iconName": "Smartphone",
+      "iconName": "DeviceMobile",
       "title": "App Móvil (Android & iOS)",
       "desc": "Aplicación fluida para teléfonos, lista para publicar y fácil de usar."
     },
     {
       "id": "ai",
-      "iconName": "BrainCircuit",
+      "iconName": "Graph",
       "title": "Inteligencia Artificial Aplicada",
       "desc": "Asistentes inteligentes, lectura automática de documentos y automatizaciones."
     },
     {
       "id": "apis",
-      "iconName": "Plug",
+      "iconName": "TreeStructure",
       "title": "Integraciones & Conexión de Sistemas",
       "desc": "Conectar tus sistemas actuales con pasarelas de pago, facturación o WhatsApp."
     },
     {
       "id": "web",
-      "iconName": "AppWindow",
+      "iconName": "Lightning",
       "title": "Página Web o Portal Ultra-Rápido",
       "desc": "Sitio web veloz, optimizado para celulares y diseñado para conseguir clientes."
     }
   ],
   "addons": [
-    { "id": "auth", "title": "Inicio de sesión seguro y roles de usuarios (admin, cliente, etc.)" },
-    { "id": "payments", "title": "Pasarela de pagos en línea (Stripe, Wompi, PayU)" },
-    { "id": "offline", "title": "Modo sin conexión (sincronización automática)" },
-    { "id": "security", "title": "Blindaje de seguridad y protección rigurosa de datos" },
-    { "id": "ai_bot", "title": "Asistente inteligente para atención 24/7" }
+    {
+      "id": "auth",
+      "title": "Inicio de sesión seguro y roles de usuarios (admin, cliente, etc.)"
+    },
+    {
+      "id": "payments",
+      "title": "Pasarela de pagos en línea (Stripe, Wompi, PayU)"
+    },
+    {
+      "id": "offline",
+      "title": "Modo sin conexión (sincronización automática)"
+    },
+    {
+      "id": "security",
+      "title": "Blindaje de seguridad y protección rigurosa de datos"
+    },
+    {
+      "id": "ai_bot",
+      "title": "Asistente inteligente para atención 24/7"
+    }
   ],
   "fromLabel": "Desde",
   "pace": {
@@ -76,4 +91,3 @@
   "whatsappMessageTemplate": "¡Hola equipo SkyCode! Estuve usando el cotizador en su web para un proyecto de {type}:\n- Adicionales: {addons}\n- Ritmo: {pace}\n- Estimado: {total} (~{weeks} semanas).\n\nMe gustaría charlar con ustedes para ver cómo podemos aterrizarlo.",
   "noAddonsLabel": "Ninguno"
 }
-

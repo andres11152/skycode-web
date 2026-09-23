@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Mail, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle, Envelope } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function ForgotPasswordView() {
@@ -66,7 +66,7 @@ export function ForgotPasswordView() {
                 className="py-8 text-center space-y-3"
               >
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/20 text-green-400 mx-auto">
-                  <CheckCircle2 size={32} />
+                  <CheckCircle size={32} />
                 </div>
                 <h3 className="text-lg font-bold text-background">Revisa tu correo</h3>
                 <p className="text-xs text-background/70">{message}</p>
@@ -84,7 +84,7 @@ export function ForgotPasswordView() {
                     Correo Electrónico
                   </label>
                   <div className="relative">
-                    <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-background/40" />
+                    <Envelope size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-background/40" />
                     <input
                       id={emailId}
                       type="email"

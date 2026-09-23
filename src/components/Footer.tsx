@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Phone } from "lucide-react";
+import { ArrowRight, Phone } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/Button";
 import { getServicesContent } from "@/content/services";
 import { useRecentArticles } from "@/lib/useRecentArticles";

@@ -15,41 +15,56 @@
   "projectTypes": [
     {
       "id": "software",
-      "iconName": "Code2",
+      "iconName": "Blueprint",
       "title": "Logiciel sur Mesure / SaaS",
       "desc": "Backend multi-tenant, architecture hexagonale, tableau de bord web et base de données."
     },
     {
       "id": "mobile",
-      "iconName": "Smartphone",
+      "iconName": "DeviceMobile",
       "title": "Application Mobile (Android & iOS)",
       "desc": "Application native ou multiplateforme avec React Native / Flutter."
     },
     {
       "id": "ai",
-      "iconName": "BrainCircuit",
+      "iconName": "Graph",
       "title": "Intelligence Artificielle Appliquée",
       "desc": "Intégration de LLM, bases vectorielles et agents autonomes."
     },
     {
       "id": "apis",
-      "iconName": "Plug",
+      "iconName": "TreeStructure",
       "title": "APIs & Intégrations REST",
       "desc": "Microservices, connexions ERP et passerelles de paiement."
     },
     {
       "id": "web",
-      "iconName": "AppWindow",
+      "iconName": "Lightning",
       "title": "Web / Frontend Ultra-Rapide",
       "desc": "Next.js avec 100/100 Core Web Vitals et SEO optimisé."
     }
   ],
   "addons": [
-    { "id": "auth", "title": "Authentification OAuth / RBAC Multi-Rôles" },
-    { "id": "payments", "title": "Passerelle de Paiement (Stripe / Wompi)" },
-    { "id": "offline", "title": "Synchronisation Offline-First" },
-    { "id": "security", "title": "Audit de Sécurité OWASP & Conformité RGPD" },
-    { "id": "ai_bot", "title": "Assistant Virtuel IA Personnalisé" }
+    {
+      "id": "auth",
+      "title": "Authentification OAuth / RBAC Multi-Rôles"
+    },
+    {
+      "id": "payments",
+      "title": "Passerelle de Paiement (Stripe / Wompi)"
+    },
+    {
+      "id": "offline",
+      "title": "Synchronisation Offline-First"
+    },
+    {
+      "id": "security",
+      "title": "Audit de Sécurité OWASP & Conformité RGPD"
+    },
+    {
+      "id": "ai_bot",
+      "title": "Assistant Virtuel IA Personnalisé"
+    }
   ],
   "fromLabel": "À partir de",
   "pace": {

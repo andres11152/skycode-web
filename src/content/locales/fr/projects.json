@@ -8,8 +8,14 @@
       "title": "Sentry CRM · Plateforme Omnicanale SaaS Multitenant & Agents IA",
       "client": "Sentry CRM · CRM Intelligent & Automatisation WhatsApp",
       "description": "Plateforme SaaS entreprise multi-locataire de gestion omnicanale des conversations: intégration officielle avec l'API WhatsApp Business, agents IA autonomes, boîte de réception unifiée, routage intelligent et analytique d'entonnoir de vente en temps réel.",
-      "tags": ["SaaS Multitenant", "WhatsApp API", "Agents IA", "Omnicanalité", "Next.js & Cloud DB"],
-      "iconName": "BrainCircuit",
+      "tags": [
+        "SaaS Multitenant",
+        "WhatsApp API",
+        "Agents IA",
+        "Omnicanalité",
+        "Next.js & Cloud DB"
+      ],
+      "iconName": "Graph",
       "coverImage": "/projects/sentry-crm/dashboard.webp",
       "gallery": [
         "/projects/sentry-crm/dashboard.webp",
@@ -38,7 +44,12 @@
       "title": "Plateforme de Gestion de Flotte et Contrôle Opérationnel",
       "client": "ServiFuturo S.A.S. · Transport d'Entreprise & Logistique",
       "description": "Système de gestion intégrée pour le transport d'entreprise : suivi en temps réel, règlement automatique des prestations, contrôle chauffeurs/passagers et journal d'audit.",
-      "tags": ["Gestion de Flotte", "Contrôle Opérationnel", "Audit & Données", "Next.js & Node"],
+      "tags": [
+        "Gestion de Flotte",
+        "Contrôle Opérationnel",
+        "Audit & Données",
+        "Next.js & Node"
+      ],
       "iconName": "Truck",
       "link": "https://servifuturo.cloud/",
       "coverImage": "/projects/servifuturo/servifuturo-02.webp",
@@ -64,8 +75,14 @@
       "title": "Equilibrio Arquitectónico · Portail Web Corporatif & Solutions Verre et Métal",
       "client": "Equilibrio Arquitectónico S.A.S. · Design & Systèmes Architecturales",
       "description": "Site web d'entreprise haut de gamme conçu pour valoriser les projets résidentiels, commerciaux et institutionnels en verre trempé, aluminium et acier inoxydable. Optimisé pour la performance, le SEO et la conversion.",
-      "tags": ["Design Web", "Portail Corporatif", "Architecture & Design", "Verre & Aluminium", "Next.js & Performance"],
-      "iconName": "Building2",
+      "tags": [
+        "Design Web",
+        "Portail Corporatif",
+        "Architecture & Design",
+        "Verre & Aluminium",
+        "Next.js & Performance"
+      ],
+      "iconName": "Buildings",
       "link": "https://equilibrioarquitectonico.com/",
       "coverImage": "/projects/equilibrio-arquitectonico/hero.webp",
       "gallery": [
@@ -82,7 +99,13 @@
       "title": "CDA Revifull · Portail Web Corporatif & Système de Rendez-vous Digital",
       "client": "CDA Revifull S.A.S. · Centre de Diagnostic Automobile à Bogotá",
       "description": "Plateforme web haute vitesse et système de prise de rendez-vous en ligne pour l'inspection technico-mécanique des véhicules et motos. Intégration WhatsApp, calcul des tarifs et acquisition de clients.",
-      "tags": ["Portail Web", "Secteur Automobile", "Prise de Rendez-vous", "Optimisation SEO", "Next.js & Performance"],
+      "tags": [
+        "Portail Web",
+        "Secteur Automobile",
+        "Prise de Rendez-vous",
+        "Optimisation SEO",
+        "Next.js & Performance"
+      ],
       "iconName": "Car",
       "link": "https://cdarevifull.com/",
       "coverImage": "/projects/cda-revifull/hero.webp",
@@ -99,7 +122,13 @@
       "title": "Moncyre Studios · E-Commerce de Mode, Chaussures & Parfums Exclusifs",
       "client": "Moncyre Studios · Marque de Mode Urbaine & Haute Couture",
       "description": "Plateforme e-commerce de luxe conçue pour présenter des collections exclusives de vêtements streetwear, chaussures et parfums. Intégration avec passerelles de paiement et livraison nationale.",
-      "tags": ["E-Commerce", "Mode & Chaussures", "Design UX/UI", "Passerelle de Paiement", "Next.js & Performance"],
+      "tags": [
+        "E-Commerce",
+        "Mode & Chaussures",
+        "Design UX/UI",
+        "Passerelle de Paiement",
+        "Next.js & Performance"
+      ],
       "iconName": "ShoppingCart",
       "link": "https://moncyre.com/",
       "coverImage": "/projects/moncyre/hero.webp",
