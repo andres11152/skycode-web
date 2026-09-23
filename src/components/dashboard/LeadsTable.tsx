@@ -24,6 +24,7 @@ import {
   CheckCircle2,
   AlertCircle,
   UserCog,
+  Trash2,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { EmptyState } from "./EmptyState";
@@ -57,9 +58,11 @@ interface LeadsTableProps {
   status: string;
   owners: LeadOwner[];
   stats: { total: number; newCount: number; wonCount: number };
+  /** `leads:write` — el borrado es lógico pero saca el prospecto de la vista de todos, así que se gatea igual que editar. */
+  canWrite: boolean;
 }
 
-export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, status, owners, stats }: LeadsTableProps) {
+export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, status, owners, stats, canWrite }: LeadsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [isNavigating, startNavigation] = useTransition();
@@ -188,6 +191,30 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
       }
     } catch (err) {
       logError("Error al reasignar prospecto", err);
+    }
+  };
+
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  const handleDeleteLead = async (lead: Lead) => {
+    if (!window.confirm(`¿Eliminar el prospecto "${lead.name}"? Sale del listado y deja de contar en las métricas.`)) {
+      return;
+    }
+    setDeletingId(lead.id);
+    try {
+      // Borrado lógico (`deleted_at`), no un DELETE físico — la fila queda
+      // en la base y el cambio queda registrado en audit_log, igual que el
+      // resto de tablas con soft-delete del proyecto.
+      const res = await fetch(`/api/leads?id=${lead.id}`, { method: "DELETE" });
+      if (res.ok) {
+        setLeads((prev) => prev.filter((l) => l.id !== lead.id));
+        setSelectedLead(null);
+        router.refresh();
+      }
+    } catch (err) {
+      logError("Error al eliminar prospecto", err);
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -699,10 +726,20 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                     <ExternalLink size={14} />
                   </a>
                 )}
+                {canWrite && (
+                  <button
+                    onClick={() => handleDeleteLead(selectedLead)}
+                    disabled={deletingId === selectedLead.id}
+                    className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-red-500/30 px-4 py-2.5 text-xs font-medium text-red-700 hover:bg-red-500/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  >
+                    <Trash2 size={14} />
+                    <span>{deletingId === selectedLead.id ? "Eliminando…" : "Eliminar"}</span>
+                  </button>
+                )}
                 <button
                   onClick={() => setSelectedLead(null)}
-                  className="rounded-xl border border-foreground/20 px-4 py-2.5 text-xs font-medium text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
+                  className="min-h-11 rounded-xl border border-foreground/20 px-4 py-2.5 text-xs font-medium text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  >
                   Cerrar
                 </button>
               </div>

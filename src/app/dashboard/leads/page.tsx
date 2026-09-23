@@ -42,6 +42,7 @@ export default async function DashboardLeadsPage({ searchParams }: PageProps) {
       status={status}
       owners={owners}
       stats={stats}
+      canWrite={hasPermission(session.role, "leads:write")}
     />
   );
 }
