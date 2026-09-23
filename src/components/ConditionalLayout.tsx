@@ -44,6 +44,12 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/invitar") ||
     pathname.startsWith("/propuesta");
 
+  // Landing de campaña (Google Ads): sin Navbar/Footer ni ningún enlace de
+  // salida — la única acción posible en la página es enviar el formulario.
+  // No es un "app shell" (no lleva el fondo oscuro de dashboard/login), solo
+  // se queda sin el chrome público normal.
+  const isCampaignLanding = pathname === "/landing";
+
   // `html { scroll-behavior: smooth }` (globals.css) hace que el scroll-to-top
   // automático de Next en cada navegación se anime en vez de ser instantáneo —
   // si la página anterior estaba desplazada muy abajo (ej. sección Portafolio),
@@ -74,6 +80,10 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
     );
+  }
+
+  if (isCampaignLanding) {
+    return <main className="min-h-screen">{children}</main>;
   }
 
   return (

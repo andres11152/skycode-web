@@ -112,7 +112,18 @@ function isValidRealEmail(emailStr: string): boolean {
   return true;
 }
 
-export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
+export function Contact({
+  locale = defaultLocale,
+  showOtherContactMethods = true,
+  compact = false,
+}: {
+  locale?: Locale;
+  /** Landing pages de campaña (ej. /landing) no deben ofrecer salidas del formulario. */
+  showOtherContactMethods?: boolean;
+  /** Para embeber el formulario dentro de otra página (ej. /landing) que ya trae su propio
+   * H1/subtítulo: quita el padding de sección y el bloque badge/H2/descripción duplicado. */
+  compact?: boolean;
+}) {
   const router = useRouter();
   const contactData = getContactContent(locale);
   const uiData = getUiContent(locale);
@@ -184,37 +195,50 @@ export function Contact({ locale = defaultLocale }: { locale?: Locale }) {
   }
 
   return (
-    <section id="contacto" className="scroll-mt-24 px-6 py-20 sm:py-24 lg:py-28">
-      <div className="mx-auto max-w-xl">
-        <div className="mb-12 text-center">
-          <SectionEyebrow className="mb-3">{contactData.badge}</SectionEyebrow>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            {contactData.title}
-          </h2>
-          <p className="mt-3 text-foreground/80">
-            {contactData.description}
-          </p>
-          <ul
-            aria-label={uiData.contactOtherWaysAria}
-            className="mt-6 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3"
-          >
-            {contactLinks.map(({ label, href, icon: Icon, hoverClass }) => (
-              <li key={label}>
-                <a
-                  href={href}
-                  target={href.startsWith("http") ? "_blank" : undefined}
-                  rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className={cn(
-                    "inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/10 bg-background/50 px-4 py-2.5 text-xs sm:text-sm font-semibold text-foreground/80 outline-none transition-all duration-300 backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background shadow-sm hover:shadow-md hover:-translate-y-0.5",
-                    hoverClass
-                  )}
-                >
-                  <Icon size={16} />
-                  <span>{label}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
+    <section
+      id={compact ? undefined : "contacto"}
+      className={compact ? "px-5 py-6 sm:px-8 sm:py-8" : "scroll-mt-24 px-6 py-20 sm:py-24 lg:py-28"}
+    >
+      <div className={compact ? "" : "mx-auto max-w-xl"}>
+        <div className={compact ? "mb-6" : "mb-12 text-center"}>
+          {compact ? (
+            <h2 className="text-lg font-bold tracking-tight text-foreground">
+              Cuéntanos de tu proyecto
+            </h2>
+          ) : (
+            <>
+              <SectionEyebrow className="mb-3">{contactData.badge}</SectionEyebrow>
+              <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
+                {contactData.title}
+              </h2>
+              <p className="mt-3 text-foreground/80">
+                {contactData.description}
+              </p>
+            </>
+          )}
+          {showOtherContactMethods && (
+            <ul
+              aria-label={uiData.contactOtherWaysAria}
+              className="mt-6 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3"
+            >
+              {contactLinks.map(({ label, href, icon: Icon, hoverClass }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target={href.startsWith("http") ? "_blank" : undefined}
+                    rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className={cn(
+                      "inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/10 bg-background/50 px-4 py-2.5 text-xs sm:text-sm font-semibold text-foreground/80 outline-none transition-all duration-300 backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background shadow-sm hover:shadow-md hover:-translate-y-0.5",
+                      hoverClass
+                    )}
+                  >
+                    <Icon size={16} />
+                    <span>{label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">

@@ -59,9 +59,6 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   experimental: {
-    // framer-motion exporta cientos de módulos — sin esta opción, Next.js
-    // importa el barrel completo incluso si solo usamos motion.div + useReducedMotion.
-    // lucide-react ya está optimizado por defecto en Next.js 16.
     optimizePackageImports: ["framer-motion"],
   },
   async headers() {
