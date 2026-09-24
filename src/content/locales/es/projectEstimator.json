@@ -95,5 +95,27 @@
     "disclaimer": "*Este cálculo es una guía inicial. Nos sentamos contigo a revisar los detalles para darte un presupuesto exacto y definitivo."
   },
   "whatsappMessageTemplate": "¡Hola equipo SkyCode! Estuve usando el cotizador en su web para un proyecto de {type}:\n- Adicionales: {addons}\n- Ritmo: {pace}\n- Estimado: {total} (~{weeks} semanas).\n\nMe gustaría charlar con ustedes para ver cómo podemos aterrizarlo.",
-  "noAddonsLabel": "Ninguno"
+  "noAddonsLabel": "Ninguno",
+  "emailCapture": {
+    "toggleLabel": "Recíbelo por correo",
+    "placeholder": "tu-correo@empresa.com",
+    "submitLabel": "Enviar",
+    "sendingLabel": "Enviando…",
+    "successMessage": "¡Listo! Revisa tu correo.",
+    "errorMessage": "No pudimos enviarlo. Intenta de nuevo o escríbenos por WhatsApp.",
+    "invalidEmailError": "Escribe un correo válido."
+  },
+  "quoteEmail": {
+    "subject": "Tu cotización de SkyCode: {type}",
+    "preheader": "Aquí está el desglose completo de tu proyecto — precio, tiempo y qué incluye.",
+    "greeting": "Hola,",
+    "intro": "Aquí está la cotización que generaste en nuestra calculadora. Es una guía inicial — nos sentamos contigo a revisar los detalles para un presupuesto exacto y definitivo.",
+    "typeLabel": "Tipo de proyecto",
+    "addonsLabel": "Módulos incluidos",
+    "paceLabel": "Ritmo de entrega",
+    "priceLabel": "Inversión aproximada",
+    "weeksLabel": "Tiempo estimado",
+    "ctaLabel": "Hablar con el equipo",
+    "footerNote": "Este es un correo automático con la cotización que generaste en skycode.agency. Si no reconoces este mensaje, puedes ignorarlo con tranquilidad."
+  }
 }

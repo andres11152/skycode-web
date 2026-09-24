@@ -95,5 +95,27 @@
     "disclaimer": "*Estimation préliminaire hors taxes. Confirmée par une proposition technique formelle."
   },
   "whatsappMessageTemplate": "Bonjour l'équipe SKYCODE, j'ai configuré mon projet avec l'estimateur interactif :\n- Type : {type}\n- Modules additionnels : {addons}\n- Modalité : {pace}\n- Estimation : {total} (~{weeks} semaines).\nJe souhaiterais demander une proposition formelle et planifier un appel de cadrage.",
-  "noAddonsLabel": "Aucun"
+  "noAddonsLabel": "Aucun",
+  "emailCapture": {
+    "toggleLabel": "Le recevoir par e-mail",
+    "placeholder": "vous@entreprise.com",
+    "submitLabel": "Envoyer",
+    "sendingLabel": "Envoi en cours…",
+    "successMessage": "C'est fait ! Vérifiez votre boîte mail.",
+    "errorMessage": "Nous n'avons pas pu l'envoyer. Réessayez ou contactez-nous sur WhatsApp.",
+    "invalidEmailError": "Saisissez une adresse e-mail valide."
+  },
+  "quoteEmail": {
+    "subject": "Votre devis SkyCode : {type}",
+    "preheader": "Voici le détail complet de votre projet — prix, délai et ce qui est inclus.",
+    "greeting": "Bonjour,",
+    "intro": "Voici le devis que vous avez généré avec notre calculateur. C'est une estimation préliminaire — nous nous asseyons avec vous pour revoir les détails et obtenir un devis exact et définitif.",
+    "typeLabel": "Type de projet",
+    "addonsLabel": "Modules inclus",
+    "paceLabel": "Modalité de livraison",
+    "priceLabel": "Investissement approximatif",
+    "weeksLabel": "Délai estimé",
+    "ctaLabel": "Parler à l'équipe",
+    "footerNote": "Ceci est un e-mail automatique contenant le devis que vous avez généré sur skycode.agency. Si vous ne reconnaissez pas ce message, vous pouvez l'ignorer en toute tranquillité."
+  }
 }

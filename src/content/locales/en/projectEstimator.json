@@ -95,5 +95,27 @@
     "disclaimer": "*Preliminary estimate, taxes not included. Confirmed via formal technical proposal."
   },
   "whatsappMessageTemplate": "Hi SKYCODE team, I configured my project with the interactive estimator:\n- Type: {type}\n- Additional modules: {addons}\n- Mode: {pace}\n- Estimate: {total} (~{weeks} weeks).\nI'd like to request a formal proposal and schedule a scoping call.",
-  "noAddonsLabel": "None"
+  "noAddonsLabel": "None",
+  "emailCapture": {
+    "toggleLabel": "Get it by email",
+    "placeholder": "you@company.com",
+    "submitLabel": "Send",
+    "sendingLabel": "Sending…",
+    "successMessage": "Done! Check your inbox.",
+    "errorMessage": "We couldn't send it. Try again or reach us on WhatsApp.",
+    "invalidEmailError": "Enter a valid email address."
+  },
+  "quoteEmail": {
+    "subject": "Your SkyCode quote: {type}",
+    "preheader": "Here's the full breakdown of your project — price, timeline and what's included.",
+    "greeting": "Hi,",
+    "intro": "Here's the quote you generated with our calculator. It's a preliminary guide — we'll sit down with you to review the details for an exact, final estimate.",
+    "typeLabel": "Project type",
+    "addonsLabel": "Included modules",
+    "paceLabel": "Delivery pace",
+    "priceLabel": "Approximate investment",
+    "weeksLabel": "Estimated time",
+    "ctaLabel": "Talk to the team",
+    "footerNote": "This is an automatic email with the quote you generated at skycode.agency. If you don't recognize this message, you can safely ignore it."
+  }
 }

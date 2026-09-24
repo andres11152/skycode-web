@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, CheckCircle, Clock, Lightning, Tag } from "@phosphor-icons/react";
+import { ArrowRight, CheckCircle, Clock, EnvelopeSimple, Lightning, Spinner, Tag, WarningCircle } from "@phosphor-icons/react";
 import NumberFlow from "@number-flow/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";
@@ -12,6 +12,7 @@ import { defaultLocale, t, type Locale } from "@/lib/i18n";
 import { useGeoCountry } from "@/lib/useGeoCountry";
 import { dispatchContactPrefill } from "@/lib/contactPrefillEvent";
 import { ESTIMATOR_TYPE_TO_SERVICE_SLUG } from "@/lib/leadServices";
+import { logError } from "@/lib/logger";
 
 export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }) {
   const content = getProjectEstimatorContent(locale);
@@ -32,6 +33,13 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
   }, [geoCountry]);
   const [selectedAddons, setSelectedAddons] = useState<string[]>([addons[0].id, addons[1].id]);
   const [urgency, setUrgency] = useState<"standard" | "express">("standard");
+
+  // Captura suave: "Recíbelo por correo" — solo pide el email, sin
+  // obligar a llenar el formulario de contacto completo. Ver
+  // POST /api/estimator/quote-email y lib/estimatorQuote.ts.
+  const [showEmailCapture, setShowEmailCapture] = useState(false);
+  const [captureEmail, setCaptureEmail] = useState("");
+  const [captureStatus, setCaptureStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   const currentType = projectTypes.find((type) => type.id === selectedType) || projectTypes[0];
 
@@ -98,6 +106,33 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
     const contactSection = document.getElementById("contacto");
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleEmailCapture = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (captureStatus === "sending") return;
+
+    setCaptureStatus("sending");
+    try {
+      const res = await fetch("/api/estimator/quote-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: captureEmail.trim(),
+          typeId: selectedType,
+          addonIds: selectedAddons,
+          pace: urgency,
+          currency,
+          locale,
+        }),
+      });
+
+      if (!res.ok) throw new Error("request failed");
+      setCaptureStatus("sent");
+    } catch (err) {
+      logError("Error al enviar la cotización por correo", err);
+      setCaptureStatus("error");
     }
   };
 
@@ -338,6 +373,59 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   <ArrowRight size={14} />
                 </button>
               </Magnetic>
+
+              {/* Captura suave: "Recíbelo por correo" — solo el email, sin
+                  obligar a llenar el formulario de contacto completo (ver
+                  handleEmailCapture arriba y CLAUDE.md, "Cotizador: captura
+                  suave por correo"). Acción secundaria (ghost), la primaria
+                  sigue siendo el botón de arriba. */}
+              <div className="mt-3">
+                {captureStatus === "sent" ? (
+                  <div className="flex min-h-11 items-center justify-center gap-1.5 text-[11px] font-medium text-emerald-400">
+                    <CheckCircle size={13} />
+                    <span>{content.emailCapture.successMessage}</span>
+                  </div>
+                ) : showEmailCapture ? (
+                  <form onSubmit={handleEmailCapture} className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="email"
+                        required
+                        autoFocus
+                        value={captureEmail}
+                        onChange={(e) => setCaptureEmail(e.target.value)}
+                        placeholder={content.emailCapture.placeholder}
+                        className="h-11 flex-1 min-w-0 rounded-lg border border-background/15 bg-background/10 px-3 text-xs text-background placeholder:text-background/40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                      />
+                      <button
+                        type="submit"
+                        disabled={captureStatus === "sending"}
+                        className="flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-background/10 px-3.5 text-xs font-bold text-background transition-colors hover:bg-background/20 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                      >
+                        {captureStatus === "sending" ? (
+                          <Spinner size={13} className="animate-spin" />
+                        ) : (
+                          <span>{content.emailCapture.submitLabel}</span>
+                        )}
+                      </button>
+                    </div>
+                    {captureStatus === "error" && (
+                      <span className="flex items-center gap-1 text-[10px] font-medium text-red-400">
+                        <WarningCircle size={11} /> {content.emailCapture.errorMessage}
+                      </span>
+                    )}
+                  </form>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setShowEmailCapture(true)}
+                    className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg text-[11px] font-semibold text-background/60 transition-colors hover:text-background outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  >
+                    <EnvelopeSimple size={13} />
+                    <span>{content.emailCapture.toggleLabel}</span>
+                  </button>
+                )}
+              </div>
 
               <p className="mt-3 text-center text-[10px] text-background/50">{content.summary.disclaimer}</p>
             </SpotlightCard>

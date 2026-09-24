@@ -77,7 +77,16 @@ export function resolveLeadService(slug: string | null | undefined, otherText?: 
  * visitante. Whitelist cerrada: nunca se confía un string libre del
  * cliente para una columna que alimenta reportes de atribución.
  */
-export const LEAD_FORM_CONTEXTS = ["Formulario Web", "Landing Ads", "Cotizador"] as const;
+export const LEAD_FORM_CONTEXTS = [
+  "Formulario Web",
+  "Landing Ads",
+  "Cotizador",
+  // Captura suave: solo dejó su correo desde el resumen del cotizador, sin
+  // conversar ni llenar el formulario de contacto — el equipo debe saber
+  // que este lead todavía no tiene nombre ni mensaje real, es más frío
+  // que uno que sí completó "Cotizador".
+  "Cotizador (solo email)",
+] as const;
 export type LeadFormContext = (typeof LEAD_FORM_CONTEXTS)[number];
 
 export function isLeadFormContext(value: string): value is LeadFormContext {
