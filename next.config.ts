@@ -35,10 +35,22 @@ const GOOGLE_ADS_IMG_SRC = [
   "https://googleads.g.doubleclick.net",
 ];
 
+// Checkout de Bold (pagos en línea desde /portal, ver lib/bold.ts y
+// BoldPayButton.tsx): la librería (`boldPaymentButton.js`) se inyecta como
+// <script src> desde el navegador — sin `checkout.bold.co` en script-src
+// el script queda bloqueado en silencio (no hay error visible más allá de
+// la consola) y el botón "Pagar ahora" nunca llega a abrir nada. El
+// checkout en sí se abre en `renderMode: "embedded"` (un iframe modal
+// dentro de la misma página, no una navegación) — por eso también hace
+// falta `frame-src`, que sin esta entrada cae al `default-src 'self'` y
+// bloquearía ese iframe igual de silenciosamente.
+const BOLD_CHECKOUT_ORIGIN = "https://checkout.bold.co";
+
 const SCRIPT_SRC = [
   "'self'",
   "'unsafe-inline'",
   ...GOOGLE_ADS_SCRIPT_SRC,
+  BOLD_CHECKOUT_ORIGIN,
   ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : []),
 ];
 
@@ -64,6 +76,9 @@ const SECURITY_HEADERS = [
       // resto de APIs externas (open.er-api.com, tasa de cambio) se
       // consultan solo desde el servidor (lib/exchangeRate.ts).
       `connect-src 'self' ${GOOGLE_ADS_CONNECT_SRC.join(" ")}`,
+      // El iframe modal del checkout embebido de Bold (ver arriba) — sin
+      // esto cae al default-src 'self' y el iframe no carga.
+      `frame-src 'self' ${BOLD_CHECKOUT_ORIGIN}`,
       // Reemplaza y refuerza X-Frame-Options en navegadores modernos.
       "frame-ancestors 'none'",
       "object-src 'none'",

@@ -22,7 +22,10 @@ const CreateInvoiceSchema = z.object({
  * facturas con saldo, estado (pending/overdue/paid) y antigüedad
  * calculados. Un cliente ve solo las suyas (por `users.client_id` →
  * `projects.client_id`, mismo criterio de dueño que `/api/projects`) —
- * de solo lectura, `/portal` no puede crear ni pagar facturas.
+ * de solo lectura para CREAR facturas (eso sigue siendo exclusivo de
+ * /dashboard/facturacion). Para pagarlas en línea con Bold, ver
+ * /api/invoices/[id]/bold-checkout y bold-status, más el webhook público
+ * en /api/webhooks/bold — ninguno de los tres pasa por esta ruta.
  */
 export async function GET() {
   const auth = await requireSession();

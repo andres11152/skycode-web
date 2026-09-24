@@ -1,6 +1,7 @@
 import { Receipt } from "@phosphor-icons/react/ssr";
 import { EmptyState } from "../dashboard/EmptyState";
 import { Badge, type BadgeTone } from "../dashboard/ui/Badge";
+import { BoldPayButton } from "./BoldPayButton";
 import { formatMoney } from "@/lib/utils";
 import type { Invoice, InvoiceStatus } from "../dashboard/types";
 
@@ -17,10 +18,12 @@ const STATUS_TONES: Record<InvoiceStatus, BadgeTone> = {
 };
 
 /**
- * Solo lectura a propósito — el portal del cliente no crea facturas ni
- * registra pagos, esas acciones siguen siendo exclusivas del equipo
- * interno en /dashboard/facturacion. Este panel existe para que el
- * cliente vea su saldo sin tener que pedirlo por correo/WhatsApp.
+ * El cliente sigue sin poder CREAR facturas (eso es exclusivo de
+ * /dashboard/facturacion) pero desde acá SÍ puede pagar en línea con
+ * tarjeta (Bold) las que tienen saldo pendiente — ver BoldPayButton.tsx.
+ * El registro manual de pagos (transferencia, efectivo) sigue existiendo
+ * intacto en /dashboard/facturacion para el equipo interno; ambos caminos
+ * escriben en la misma tabla `payments`, distinguidos por `provider`.
  */
 export function PortalInvoicesPanel({ invoices }: { invoices: Invoice[] }) {
   const totalBalance = invoices.reduce((sum, inv) => sum + Math.max(inv.balance, 0), 0);
@@ -55,6 +58,7 @@ export function PortalInvoicesPanel({ invoices }: { invoices: Invoice[] }) {
                   <th scope="col" className="px-5 py-3.5">Saldo</th>
                   <th scope="col" className="px-5 py-3.5">Estado</th>
                   <th scope="col" className="px-5 py-3.5">Vence</th>
+                  <th scope="col" className="px-5 py-3.5 text-right">Acción</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-foreground/10">
@@ -75,6 +79,9 @@ export function PortalInvoicesPanel({ invoices }: { invoices: Invoice[] }) {
                     </td>
                     <td className="px-5 py-4 font-mono text-[10px] text-foreground/60">
                       {new Date(inv.due_date).toLocaleDateString("es-CO")}
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      {inv.balance > 0 && <BoldPayButton invoiceId={inv.id} />}
                     </td>
                   </tr>
                 ))}
