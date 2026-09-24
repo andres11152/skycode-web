@@ -25,8 +25,10 @@ import {
   AlertCircle,
   UserCog,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { Modal } from "@/components/ui/Modal";
 import { EmptyState } from "./EmptyState";
 import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
@@ -196,11 +198,19 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
   };
 
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  // Lead a punto de eliminarse — reemplaza el `window.confirm()` nativo
+  // (feo, no respeta el sistema de diseño, sin foco atrapado) por el
+  // Modal ya existente del proyecto (components/ui/Modal.tsx).
+  const [leadPendingDelete, setLeadPendingDelete] = useState<Lead | null>(null);
 
-  const handleDeleteLead = async (lead: Lead) => {
-    if (!window.confirm(`¿Eliminar el prospecto "${lead.name}"? Sale del listado y deja de contar en las métricas.`)) {
-      return;
-    }
+  const handleDeleteLead = (lead: Lead) => {
+    setLeadPendingDelete(lead);
+  };
+
+  const confirmDeleteLead = async () => {
+    const lead = leadPendingDelete;
+    if (!lead) return;
+
     setDeletingId(lead.id);
     try {
       // Borrado lógico (`deleted_at`), no un DELETE físico — la fila queda
@@ -216,6 +226,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
       logError("Error al eliminar prospecto", err);
     } finally {
       setDeletingId(null);
+      setLeadPendingDelete(null);
     }
   };
 
@@ -742,6 +753,48 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
           </div>
         )}
       </AnimatePresence>
+
+      {/* Confirmación de borrado — reemplaza window.confirm() por el Modal
+          del sistema de diseño (glass, foco atrapado, Escape, animación
+          consistente con el resto del proyecto). */}
+      <Modal
+        open={leadPendingDelete !== null}
+        onClose={() => setLeadPendingDelete(null)}
+        title="Eliminar prospecto"
+        closeLabel="Cerrar"
+      >
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-600">
+              <AlertTriangle size={18} />
+            </div>
+            <p className="text-sm text-foreground/80 leading-relaxed">
+              ¿Eliminar a{" "}
+              <span className="font-semibold text-foreground">{leadPendingDelete?.name}</span>? Sale del
+              listado y deja de contar en las métricas. Esta acción no se puede deshacer desde el CRM.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setLeadPendingDelete(null)}
+              className="inline-flex min-h-11 items-center rounded-xl border border-foreground/20 px-4 py-2.5 text-xs font-medium text-foreground/80 transition-colors hover:bg-foreground/10 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={confirmDeleteLead}
+              disabled={deletingId === leadPendingDelete?.id}
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <Trash2 size={14} />
+              <span>{deletingId === leadPendingDelete?.id ? "Eliminando…" : "Eliminar definitivamente"}</span>
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
