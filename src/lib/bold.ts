@@ -123,6 +123,16 @@ export interface BoldPaymentVoucher {
   reference_id?: string;
 }
 
+/** Forma real de la respuesta de Bold — verificada en vivo contra su API
+ * (no solo contra el ejemplo de su documentación, que muestra un objeto
+ * plano y en la práctica viene envuelto así): un pago encontrado trae
+ * `payload` con los campos de `BoldPaymentVoucher` y `errors` vacío;
+ * "no encontrado" es HTTP 404 con `payload: {}` y un mensaje en `errors`. */
+interface BoldApiEnvelope<T> {
+  payload: T;
+  errors?: { message: string }[];
+}
+
 /**
  * `GET /v2/payment-voucher/{orderId}` — consulta directa a Bold del
  * estado real de una venta (nunca confiar solo en el `bold-tx-status` de
@@ -130,6 +140,12 @@ export interface BoldPaymentVoucher {
  * estado de la transacción recibido...puede no ser el definitivo"). Se usa
  * como respaldo del webhook, no como reemplazo — ver
  * app/api/invoices/[id]/bold-status/route.ts.
+ *
+ * `null` cubre tanto "no encontrada todavía" (esperado: el cliente
+ * consultando antes de terminar de pagar, o el webhook que ya se
+ * adelantó) como un fallo real — a propósito no se distingue con un
+ * `logError` en el caso 404/"no encontrada", para no generar una alerta
+ * en Sentry por cada consulta de un pago que simplemente aún no existe.
  */
 export async function fetchBoldPaymentVoucher(orderId: string): Promise<BoldPaymentVoucher | null> {
   const apiKey = process.env.NEXT_PUBLIC_BOLD_IDENTITY_KEY?.trim();
@@ -142,12 +158,13 @@ export async function fetchBoldPaymentVoucher(orderId: string): Promise<BoldPaym
       cache: "no-store",
     });
 
-    if (!res.ok) {
-      logError("⚠️ [Bold] Respuesta no-OK al consultar el voucher de pago", null, { orderId, status: res.status });
+    const body = (await res.json().catch(() => null)) as BoldApiEnvelope<Partial<BoldPaymentVoucher>> | null;
+
+    if (!res.ok || !body || (body.errors && body.errors.length > 0) || !body.payload?.payment_status) {
       return null;
     }
 
-    return (await res.json()) as BoldPaymentVoucher;
+    return body.payload as BoldPaymentVoucher;
   } catch (error) {
     logError("⚠️ [Bold] Error de red al consultar el voucher de pago", error, { orderId });
     return null;

@@ -4,6 +4,7 @@ import {
   buildBoldCheckoutConfig,
   buildBoldOrderId,
   computeBoldIntegritySignature,
+  fetchBoldPaymentVoucher,
   isBoldConfigured,
   verifyBoldWebhookSignature,
 } from "./bold";
@@ -14,6 +15,7 @@ const ORIGINAL_ENV = { ...process.env };
 afterEach(() => {
   process.env = { ...ORIGINAL_ENV };
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe("computeBoldIntegritySignature", () => {
@@ -131,5 +133,64 @@ describe("isBoldConfigured / buildBoldCheckoutConfig", () => {
     expect(config!.currency).toBe("COP");
     expect(config!.orderId).toMatch(/^inv-5-[a-f0-9]{8}$/);
     expect(config!.integritySignature).toHaveLength(64);
+  });
+});
+
+describe("fetchBoldPaymentVoucher", () => {
+  it("null cuando Bold responde 404 'no encontrada' (forma real verificada en vivo: {payload: {}, errors: [...]})", async () => {
+    process.env.NEXT_PUBLIC_BOLD_IDENTITY_KEY = "llave-de-prueba";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 404,
+        json: async () => ({ payload: {}, errors: [{ message: "La referencia x no fue encontrada" }] }),
+      })
+    );
+
+    expect(await fetchBoldPaymentVoucher("inv-1-aabbccdd")).toBeNull();
+  });
+
+  it("devuelve el payload cuando Bold encuentra el pago (200, errors vacío)", async () => {
+    process.env.NEXT_PUBLIC_BOLD_IDENTITY_KEY = "llave-de-prueba";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          payload: { payment_status: "APPROVED", transaction_id: "TX-1", total: 50000 },
+          errors: [],
+        }),
+      })
+    );
+
+    const voucher = await fetchBoldPaymentVoucher("inv-1-aabbccdd");
+    expect(voucher).toEqual({ payment_status: "APPROVED", transaction_id: "TX-1", total: 50000 });
+  });
+
+  it("null si no hay llave de identidad configurada (nunca llama a fetch)", async () => {
+    delete process.env.NEXT_PUBLIC_BOLD_IDENTITY_KEY;
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+
+    expect(await fetchBoldPaymentVoucher("inv-1-aabbccdd")).toBeNull();
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("null si la respuesta no trae un JSON parseable", async () => {
+    process.env.NEXT_PUBLIC_BOLD_IDENTITY_KEY = "llave-de-prueba";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => {
+          throw new Error("not json");
+        },
+      })
+    );
+
+    expect(await fetchBoldPaymentVoucher("inv-1-aabbccdd")).toBeNull();
   });
 });
