@@ -82,7 +82,7 @@ npm run test:db:down      # tears down and destroys the test database
 
 Requires a host with a Node runtime for Next.js (Vercel, or anything other than pure static-file hosting) — the site serves real API routes (`/api/contact`, `/api/leads`, the whole CRM). Set the variables from `.env.example` in the hosting panel and run `npm run db:migrate` against the production database before the first deploy.
 
-The Documents module (`/dashboard/proyectos/[id]`) needs persistent storage: `DOCUMENTS_STORAGE_PATH` must point to a mounted disk that survives deploys (e.g. a Render Persistent Disk), never the container's ephemeral filesystem — without that variable, any uploaded file disappears on the next deploy.
+The Documents module (`/dashboard/proyectos/[id]`, `/portal`) stores uploaded files in Cloudflare R2, not on the container's filesystem — set `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` and `R2_BUCKET_NAME` from `.env.example` (which documents how to create the bucket and API token).
 
 Email notifications (proposal viewed, overdue invoice, SLA about to expire) require a separate Render Cron Job that periodically hits (e.g. hourly) `POST /api/cron/check-notifications` with the `x-cron-secret` header set to the `CRON_SECRET` variable, e.g.:
 
