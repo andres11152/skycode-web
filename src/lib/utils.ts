@@ -53,3 +53,23 @@ export function toCsvCell(value: string | number): string {
   const guarded = needsFormulaGuard ? `'${stringValue}` : stringValue;
   return `"${guarded.replace(/"/g, '""')}"`;
 }
+
+const HTML_ESCAPE_MAP: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+
+/**
+ * Escapa un string de origen no confiable (ej. lo que escribió un visitante
+ * en un formulario) antes de interpolarlo dentro de HTML generado a mano —
+ * necesario para el correo de confirmación de lead (lib/leadConfirmationEmail.ts),
+ * que arma su propio HTML sin pasar por React/JSX (Resend recibe un string).
+ * Sin esto, un nombre o mensaje con `<img src=x onerror=...>` se ejecutaría
+ * como HTML/script real en el cliente de correo de quien lo reciba.
+ */
+export function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (char) => HTML_ESCAPE_MAP[char]);
+}

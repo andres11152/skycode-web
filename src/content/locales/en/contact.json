@@ -32,6 +32,14 @@
     "understood": "Got it",
     "whatsappCta": "Talk on WhatsApp"
   },
+  "confirmationEmail": {
+    "subject": "We've received your message, {name}",
+    "preheader": "One of our engineers will review your project today — no generic bot replies.",
+    "greeting": "Hi {name},",
+    "serviceLabel": "Requested service",
+    "messageLabel": "Your message",
+    "footerNote": "This is an automatic confirmation email in response to your contact request at skycode.agency. If you don't recognize this message, you can safely ignore it."
+  },
   "sendingLabel": "Sending...",
   "errorConnection": "Could not connect to the server. Please check your connection.",
   "errorGeneral": "There was an error sending your message.",

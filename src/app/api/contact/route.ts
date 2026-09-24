@@ -7,6 +7,9 @@ import { AttributionFieldsSchema } from "@/lib/attributionSchema";
 import { createLead } from "@/lib/queries/leads";
 import { logError } from "@/lib/logger";
 import { LEAD_FORM_CONTEXTS, LEAD_SERVICE_SLUGS, resolveLeadService } from "@/lib/leadServices";
+import { sendEmail } from "@/lib/email";
+import { buildLeadConfirmationEmail } from "@/lib/leadConfirmationEmail";
+import { defaultLocale, locales } from "@/lib/i18n";
 
 const ContactSchema = z
   .object({
@@ -38,6 +41,12 @@ const ContactSchema = z
     // De dónde vino el envío — reemplaza el literal fijo "Formulario Directo"
     // que antes se asignaba sin importar el origen real (ver lib/leadServices.ts).
     formContext: z.enum(LEAD_FORM_CONTEXTS).optional(),
+    // Idioma en el que la persona llenó el formulario — determina el idioma
+    // del correo de confirmación (ver lib/leadConfirmationEmail.ts). El
+    // <Contact/> del sitio siempre lo manda porque ya conoce su propio
+    // locale por prop; queda opcional solo para no romper un POST externo
+    // que no lo incluya.
+    locale: z.enum(locales).optional(),
   })
   .extend(AttributionFieldsSchema.shape);
 
@@ -64,8 +73,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const { name, email, phone, message, serviceSlug, serviceOther, formContext } = parsed.data;
+    const { name, email, phone, message, serviceSlug, serviceOther, formContext, locale } = parsed.data;
     const service = resolveLeadService(serviceSlug, serviceOther);
+    const emailLocale = locale ?? defaultLocale;
     let dbSaved = false;
 
     // 1. Guardar automáticamente en la Base de Datos PostgreSQL (Render)
@@ -79,6 +89,19 @@ export async function POST(request: Request) {
       console.log("🐘 [PostgreSQL] Lead guardado exitosamente en BD invencheck!");
     } catch (dbErr) {
       logError("⚠️ [PostgreSQL Lead Warning]", dbErr);
+    }
+
+    // 1.5. Correo de confirmación al propio visitante (no al equipo interno,
+    // eso es la sección 2 más abajo) — llamándolo por su nombre, con el
+    // mismo copy de /gracias en HTML "enterprise" con logo (ver
+    // lib/leadConfirmationEmail.ts). Best-effort: nunca bloquea ni hace
+    // fallar la respuesta — sendEmail() ya no-opea sola si no hay
+    // RESEND_API_KEY configurada, así que es seguro llamarla siempre aquí.
+    try {
+      const confirmation = buildLeadConfirmationEmail({ name, message, service, locale: emailLocale });
+      await sendEmail({ to: email, ...confirmation });
+    } catch (confirmationErr) {
+      logError("⚠️ [Contacto] No se pudo enviar el correo de confirmación al visitante", confirmationErr);
     }
 
     // Si no hay API Key de Resend válida configurada pero se guardó en BD, retornar éxito

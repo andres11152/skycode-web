@@ -200,6 +200,10 @@ export function Contact({
       serviceSlug: serviceSlug || undefined,
       serviceOther: serviceSlug === "otro" ? serviceOther.trim() : undefined,
       formContext,
+      // El correo de confirmación (ver lib/leadConfirmationEmail.ts) se
+      // manda en el mismo idioma en que la persona vio y llenó el
+      // formulario — este componente ya conoce su propio locale por prop.
+      locale,
       ...getAttribution(),
     };
 

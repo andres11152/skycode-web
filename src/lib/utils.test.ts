@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cn, formatMoney, slugify, toCsvCell } from "./utils";
+import { cn, escapeHtml, formatMoney, slugify, toCsvCell } from "./utils";
 
 describe("toCsvCell", () => {
   it("wraps plain values in quotes", () => {
@@ -64,6 +64,22 @@ describe("slugify", () => {
 
   it("no deja guiones al principio o al final", () => {
     expect(slugify("  espacios  ")).toBe("espacios");
+  });
+});
+
+describe("escapeHtml", () => {
+  it("neutraliza una etiqueta con handler de evento (XSS en un correo HTML)", () => {
+    expect(escapeHtml('<img src=x onerror="alert(1)">')).toBe(
+      "&lt;img src=x onerror=&quot;alert(1)&quot;&gt;"
+    );
+  });
+
+  it("escapa el ampersand", () => {
+    expect(escapeHtml("Tom & Jerry")).toBe("Tom &amp; Jerry");
+  });
+
+  it("deja intacto un texto sin caracteres especiales", () => {
+    expect(escapeHtml("Consultoría técnica")).toBe("Consultoría técnica");
   });
 });
 

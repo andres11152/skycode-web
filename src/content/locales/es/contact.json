@@ -32,6 +32,14 @@
     "understood": "¡Listo, gracias!",
     "whatsappCta": "Escribirnos directo a WhatsApp"
   },
+  "confirmationEmail": {
+    "subject": "Hemos recibido tu mensaje, {name}",
+    "preheader": "Uno de nuestros ingenieros revisará tu proyecto hoy mismo — sin respuestas genéricas de bots.",
+    "greeting": "Hola {name},",
+    "serviceLabel": "Servicio solicitado",
+    "messageLabel": "Tu mensaje",
+    "footerNote": "Este es un correo automático de confirmación en respuesta a tu solicitud de contacto en skycode.agency. Si no reconoces este mensaje, puedes ignorarlo con tranquilidad."
+  },
   "sendingLabel": "Enviando tu mensaje...",
   "errorConnection": "No pudimos conectar con el servidor. Revisa tu conexión a internet.",
   "errorGeneral": "Hubo un problema al enviar el mensaje. Por favor intenta de nuevo o escríbenos a WhatsApp.",

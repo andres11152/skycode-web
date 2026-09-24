@@ -10,7 +10,21 @@ import { logError } from "./logger";
  * y tocarlos no es parte de esta tarea. Este helper es nuevo exclusivamente
  * para no repetir una quinta copia del mismo chequeo en notificaciones.
  */
-export async function sendEmail({ to, subject, text }: { to: string; subject: string; text: string }): Promise<void> {
+export async function sendEmail({
+  to,
+  subject,
+  text,
+  html,
+}: {
+  to: string;
+  subject: string;
+  text: string;
+  /** HTML opcional (ej. el correo de confirmación de lead) — Resend acepta
+   * `text` y `html` juntos y usa `html` cuando el cliente de correo lo soporta,
+   * cayendo a `text` si no. Los 5 usos existentes (forgot-password, team/invite,
+   * proposals, notificaciones) siguen mandando solo texto plano. */
+  html?: string;
+}): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const isDummyKey = !apiKey || apiKey === "your_resend_api_key_here" || !apiKey.startsWith("re_");
 
@@ -22,7 +36,7 @@ export async function sendEmail({ to, subject, text }: { to: string; subject: st
   try {
     const resend = new Resend(apiKey);
     const fromAddress = process.env.RESEND_FROM_EMAIL || "SKYCODE Web <contact@skycode.agency>";
-    const { error } = await resend.emails.send({ from: fromAddress, to, subject, text });
+    const { error } = await resend.emails.send({ from: fromAddress, to, subject, text, ...(html ? { html } : {}) });
 
     // El SDK de Resend NO lanza excepción cuando la API responde con error:
     // devuelve `{ data, error }`. Antes solo existía el try/catch de abajo,
