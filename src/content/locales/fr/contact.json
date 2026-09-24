@@ -11,7 +11,12 @@
     "message": "Décrivez brièvement les besoins ou le défi de votre projet",
     "namePlaceholder": "Ex. Jean Dupont ou Société SAS",
     "emailPlaceholder": "vous@entreprise.com",
-    "messagePlaceholder": "Décrivez brièvement le défi technique ou les besoins de votre projet..."
+    "messagePlaceholder": "Décrivez brièvement le défi technique ou les besoins de votre projet...",
+    "service": "Quel type de service recherchez-vous ? (facultatif)",
+    "serviceEmptyOption": "Je ne sais pas encore / je préfère l'expliquer dans le message",
+    "serviceOtherOption": "Autre (je précise)",
+    "serviceOtherPlaceholder": "Ex. Conseil technique, audit de code...",
+    "serviceOtherLabel": "Dites-nous quel service vous recherchez"
   },
   "submitLabel": "Envoyer la demande de contact",
   "habeasData": {
@@ -35,6 +40,7 @@
     "emailError": "Saisissez une adresse e-mail réelle et valide (ex : vous@entreprise.com).",
     "messageError": "Décrivez votre projet en au moins 10 caractères.",
     "acceptPolicyHint": "Vous devez accepter la politique de traitement des données pour activer l'envoi.",
-    "completeFieldsHint": "Complétez les champs requis avec des données valides pour activer le bouton."
+    "completeFieldsHint": "Complétez les champs requis avec des données valides pour activer le bouton.",
+    "serviceOtherError": "Dites-nous brièvement quel service vous recherchez (au moins 3 caractères)."
   }
 }

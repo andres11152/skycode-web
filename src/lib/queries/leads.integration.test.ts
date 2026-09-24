@@ -144,11 +144,15 @@ describe("createLead", () => {
     const row = res.rows[0];
     expect(row.email).toBe("prospecto@example.com"); // normalizado a minúsculas
     expect(row.status).toBe("Nuevo");
-    expect(row.service).toBe("Desarrollo General");
+    // Sin `service`/`source` explícitos, quedan NULL — nunca un valor
+    // inventado (bug real corregido: antes caían a literales fijos como
+    // "Desarrollo General"/"Sitio Web Directo" que sugerían una selección
+    // que nunca ocurrió, ver db/migrations/0020_normalize_lead_service.sql).
+    expect(row.service).toBeNull();
     expect(row.budget).toBe("A convenir");
     expect(row.currency).toBe("COP");
     expect(row.estimated_weeks).toBe(4);
-    expect(row.source).toBe("Sitio Web Directo");
+    expect(row.source).toBeNull();
   });
 
   it("enlaza automáticamente el lead a una campaña existente cuyo utm_campaign calza", async () => {

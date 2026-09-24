@@ -11,7 +11,12 @@
     "message": "Cuéntanos sobre tu proyecto",
     "namePlaceholder": "Ej. Carlos Gómez o Mi Empresa S.A.S.",
     "emailPlaceholder": "tu-correo@empresa.com",
-    "messagePlaceholder": "Cuéntanos brevemente qué necesitas construir, qué funciones imaginas o qué problema quieres resolver..."
+    "messagePlaceholder": "Cuéntanos brevemente qué necesitas construir, qué funciones imaginas o qué problema quieres resolver...",
+    "service": "¿Qué tipo de servicio necesitas? (opcional)",
+    "serviceEmptyOption": "Aún no lo sé / prefiero explicarlo en el mensaje",
+    "serviceOtherOption": "Otro (lo describo)",
+    "serviceOtherPlaceholder": "Ej. Consultoría técnica, auditoría de código...",
+    "serviceOtherLabel": "Cuéntanos qué servicio buscas"
   },
   "submitLabel": "Enviar mensaje",
   "habeasData": {
@@ -35,7 +40,8 @@
     "emailError": "Escribe un correo electrónico válido para que podamos responderte.",
     "messageError": "Cuéntanos un poco más sobre tu idea (al menos 10 caracteres).",
     "acceptPolicyHint": "Acepta la política de datos para habilitar el botón.",
-    "completeFieldsHint": "Completa los campos requeridos para enviar tu mensaje."
+    "completeFieldsHint": "Completa los campos requeridos para enviar tu mensaje.",
+    "serviceOtherError": "Cuéntanos brevemente qué servicio buscas (al menos 3 letras)."
   }
 }
 

@@ -31,6 +31,7 @@ import { EmptyState } from "./EmptyState";
 import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { logError } from "@/lib/logger";
+import { buildLeadWhatsappUrl } from "@/lib/leadWhatsapp";
 import type { Lead, LeadActivity, LeadActivityType, LeadOwner } from "./types";
 
 const STATUS_OPTIONS: Lead["status"][] = ["Nuevo", "En Cotización", "Ganado", "Perdido"];
@@ -399,11 +400,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                 </thead>
                 <tbody className="divide-y divide-foreground/10">
                   {leads.map((lead) => {
-                    const cleanPhone = lead.phone ? lead.phone.replace(/[^0-9+]/g, "") : "";
-                    const waText = encodeURIComponent(
-                      `Hola ${lead.name}, te contactamos desde SKYCODE Agency respecto a tu cotización de ${lead.service || "software"}.`
-                    );
-                    const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${waText}` : null;
+                    const waUrl = buildLeadWhatsappUrl(lead);
 
                     return (
                       <tr
@@ -426,7 +423,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
                         <td className="px-5 py-4 max-w-xs">
                           <div className="font-medium text-foreground truncate">
-                            {lead.service || "Desarrollo General"}
+                            {lead.service || "Sin especificar"}
                           </div>
                           {lead.message && (
                             <div className="text-[10px] text-foreground/50 line-clamp-1 mt-0.5">
@@ -596,7 +593,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                   )}
                   <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
                     <span className="text-foreground/60">Origen de Captación:</span>
-                    <span className="font-mono text-foreground/90">{selectedLead.source || "Web Directo"}</span>
+                    <span className="font-mono text-foreground/90">{selectedLead.source || "Sin especificar"}</span>
                   </div>
                   {selectedLead.utm_source && (
                     <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
@@ -713,11 +710,9 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
               </div>
 
               <div className="pt-4 border-t border-foreground/10 flex items-center gap-3">
-                {selectedLead.phone && (
+                {buildLeadWhatsappUrl(selectedLead) && (
                   <a
-                    href={`https://wa.me/${selectedLead.phone.replace(/[^0-9+]/g, "")}?text=${encodeURIComponent(
-                      `Hola ${selectedLead.name}, te escribo de SKYCODE respecto a tu requerimiento de ${selectedLead.service || "software"}.`
-                    )}`}
+                    href={buildLeadWhatsappUrl(selectedLead)!}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-2.5 text-xs font-bold text-black hover:bg-green-400 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"

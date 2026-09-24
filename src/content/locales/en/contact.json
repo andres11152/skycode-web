@@ -11,7 +11,12 @@
     "message": "Briefly describe your project's requirements or challenge",
     "namePlaceholder": "E.g. John Smith or Company Inc.",
     "emailPlaceholder": "you@company.com",
-    "messagePlaceholder": "Briefly describe your project's technical challenge or requirements..."
+    "messagePlaceholder": "Briefly describe your project's technical challenge or requirements...",
+    "service": "What kind of service do you need? (optional)",
+    "serviceEmptyOption": "Not sure yet / I'll explain in the message",
+    "serviceOtherOption": "Other (I'll describe it)",
+    "serviceOtherPlaceholder": "E.g. Technical consulting, code audit...",
+    "serviceOtherLabel": "Tell us what service you're looking for"
   },
   "submitLabel": "Send contact request",
   "habeasData": {
@@ -35,6 +40,7 @@
     "emailError": "Enter a real, valid email address (e.g. you@company.com).",
     "messageError": "Describe your project in at least 10 characters.",
     "acceptPolicyHint": "You must accept the data processing policy to enable submission.",
-    "completeFieldsHint": "Complete the required fields with valid data to enable the button."
+    "completeFieldsHint": "Complete the required fields with valid data to enable the button.",
+    "serviceOtherError": "Tell us briefly what service you're looking for (at least 3 characters)."
   }
 }

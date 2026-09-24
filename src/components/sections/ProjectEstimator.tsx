@@ -10,6 +10,8 @@ import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProjectEstimatorContent, getDefaultCurrency } from "@/content/projectEstimator";
 import { defaultLocale, t, type Locale } from "@/lib/i18n";
 import { useGeoCountry } from "@/lib/useGeoCountry";
+import { dispatchContactPrefill } from "@/lib/contactPrefillEvent";
+import { ESTIMATOR_TYPE_TO_SERVICE_SLUG } from "@/lib/leadServices";
 
 export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }) {
   const content = getProjectEstimatorContent(locale);
@@ -80,12 +82,18 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
       weeks: String(totalWeeks),
     });
 
-    // El textarea del formulario de contacto es `name="message"` (ver
-    // sections/Contact.tsx); antes se buscaba "mensaje" y el prefill fallaba en silencio.
-    const contactTextarea = document.querySelector<HTMLTextAreaElement>("textarea[name='message']");
-    if (contactTextarea) {
-      contactTextarea.value = text;
-    }
+    // Se despacha como evento (ver lib/contactPrefillEvent.ts) en vez de
+    // escribir directo en el DOM del textarea: ese textarea es un campo
+    // controlado por React en Contact.tsx, así que asignar `.value` a mano
+    // se veía en pantalla pero nunca actualizaba el estado `message` — el
+    // envío real (que lee el estado, no el DOM) mandaba el mensaje vacío y
+    // el botón de enviar seguía deshabilitado. El evento también manda el
+    // tipo de proyecto elegido como `service` real, algo que el prefill
+    // anterior (solo texto libre) nunca comunicaba al CRM.
+    dispatchContactPrefill({
+      message: text,
+      serviceSlug: ESTIMATOR_TYPE_TO_SERVICE_SLUG[selectedType],
+    });
 
     const contactSection = document.getElementById("contacto");
     if (contactSection) {

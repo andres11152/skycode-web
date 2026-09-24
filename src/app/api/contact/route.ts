@@ -6,6 +6,7 @@ import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { AttributionFieldsSchema } from "@/lib/attributionSchema";
 import { createLead } from "@/lib/queries/leads";
 import { logError } from "@/lib/logger";
+import { LEAD_FORM_CONTEXTS, LEAD_SERVICE_SLUGS, resolveLeadService } from "@/lib/leadServices";
 
 const ContactSchema = z
   .object({
@@ -28,6 +29,15 @@ const ContactSchema = z
       .nullable()
       .or(z.literal("")),
     message: z.string().trim().min(10, "El mensaje debe tener al menos 10 caracteres.").max(5000),
+    // Servicio elegido en el formulario (ver lib/leadServices.ts) — enum
+    // cerrado, no un string libre: un POST público no debe poder llenar
+    // `leads.service` con basura arbitraria. `serviceOther` solo se usa
+    // cuando `serviceSlug === "otro"`, saneado a 120 caracteres.
+    serviceSlug: z.enum(LEAD_SERVICE_SLUGS).optional(),
+    serviceOther: z.string().trim().max(120).optional(),
+    // De dónde vino el envío — reemplaza el literal fijo "Formulario Directo"
+    // que antes se asignaba sin importar el origen real (ver lib/leadServices.ts).
+    formContext: z.enum(LEAD_FORM_CONTEXTS).optional(),
   })
   .extend(AttributionFieldsSchema.shape);
 
@@ -54,15 +64,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const { name, email, phone, message } = parsed.data;
+    const { name, email, phone, message, serviceSlug, serviceOther, formContext } = parsed.data;
+    const service = resolveLeadService(serviceSlug, serviceOther);
     let dbSaved = false;
 
     // 1. Guardar automáticamente en la Base de Datos PostgreSQL (Render)
     try {
       await createLead({
         ...parsed.data,
-        service: "Contacto Web",
-        source: "Formulario Directo",
+        service,
+        source: formContext || "Formulario Web",
       });
       dbSaved = true;
       console.log("🐘 [PostgreSQL] Lead guardado exitosamente en BD invencheck!");
@@ -103,7 +114,7 @@ export async function POST(request: Request) {
         to: targetEmail,
         subject: `Nuevo contacto de ${name}`,
         replyTo: email,
-        text: `Nombre: ${name}\nCorreo: ${email}\nTeléfono: ${phone || "No provisto"}\nMensaje:\n${message}`,
+        text: `Nombre: ${name}\nCorreo: ${email}\nTeléfono: ${phone || "No provisto"}\nServicio solicitado: ${service || "No especificado"}\nMensaje:\n${message}`,
       };
 
       let { data, error } = await resend.emails.send(emailPayload);

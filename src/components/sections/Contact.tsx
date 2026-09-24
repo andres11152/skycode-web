@@ -1,17 +1,22 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { ChatCircle, Envelope, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/Button";
 import { PhoneField } from "@/components/ui/PhoneField";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getContactContent } from "@/content/contact";
+import { getServicesContent } from "@/content/services";
 import { getUiContent } from "@/content/ui";
 import { contactEmail, contactPhone, socials, whatsappHref } from "@/lib/site";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { getAttribution } from "@/lib/attribution";
 import { logError } from "@/lib/logger";
+import {
+  CONTACT_PREFILL_EVENT,
+  type ContactPrefillDetail,
+} from "@/lib/contactPrefillEvent";
 
 function FacebookIcon({ size = 16, className, ...props }: React.SVGProps<SVGSVGElement> & { size?: number }) {
   return (
@@ -125,6 +130,7 @@ export function Contact({
 }) {
   const contactData = getContactContent(locale);
   const uiData = getUiContent(locale);
+  const { services } = getServicesContent(locale);
   // Ruta de gracias por locale — mismo criterio que localeHomePath (es sin
   // prefijo, el resto con /{locale}), pero /blog y lo legal son las únicas
   // rutas sin prefijo hoy documentadas en CLAUDE.md; esta sí tiene versión
@@ -135,24 +141,48 @@ export function Contact({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [serviceSlug, setServiceSlug] = useState("");
+  const [serviceOther, setServiceOther] = useState("");
+  // "Cotizador" cuando el envío llegó prellenado desde ProjectEstimator —
+  // permite distinguir en el CRM a quien ya vio precios de quien solo
+  // escribió el formulario directo (ver lib/leadServices.ts).
+  const [formContext, setFormContext] = useState<"Formulario Web" | "Cotizador">("Formulario Web");
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
 
   const [touched, setTouched] = useState({
     name: false,
     email: false,
     message: false,
+    serviceOther: false,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const idPrefix = useId();
 
+  // Escucha el prefill del cotizador (ver lib/contactPrefillEvent.ts) — ya
+  // no escribe directo en el DOM del textarea, así que el estado de React
+  // (y por lo tanto lo que se envía) siempre refleja lo que se ve en pantalla.
+  useEffect(() => {
+    function handlePrefill(event: Event) {
+      const detail = (event as CustomEvent<ContactPrefillDetail>).detail;
+      if (!detail) return;
+      setMessage(detail.message);
+      if (detail.serviceSlug) setServiceSlug(detail.serviceSlug);
+      setFormContext("Cotizador");
+    }
+
+    window.addEventListener(CONTACT_PREFILL_EVENT, handlePrefill);
+    return () => window.removeEventListener(CONTACT_PREFILL_EVENT, handlePrefill);
+  }, []);
+
   // Validations
   const isNameValid = name.trim().length >= 2;
   const isEmailValid = isValidRealEmail(email);
   const isMessageValid = message.trim().length >= 10;
+  const isServiceOtherValid = serviceSlug !== "otro" || serviceOther.trim().length >= 3;
 
-  const isFormValid = isNameValid && isEmailValid && isMessageValid && acceptedPolicies;
+  const isFormValid = isNameValid && isEmailValid && isMessageValid && isServiceOtherValid && acceptedPolicies;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -167,6 +197,9 @@ export function Contact({
       email: email.trim(),
       phone: formData.get("phone") || "",
       message: message.trim(),
+      serviceSlug: serviceSlug || undefined,
+      serviceOther: serviceSlug === "otro" ? serviceOther.trim() : undefined,
+      formContext,
       ...getAttribution(),
     };
 
@@ -319,6 +352,59 @@ export function Contact({
             fieldClassName={`${baseFieldClasses} border-foreground/10 focus:border-accent focus:ring-accent/30`}
             labelClassName={labelClasses}
           />
+
+          {/* Servicio solicitado (opcional) — antes el CRM registraba todo
+              lead como "Contacto Web" sin importar qué necesitara la
+              persona; ahora se le deja elegir del catálogo real de
+              servicios o teclear el suyo. */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor={`${idPrefix}-service`} className={labelClasses}>
+              {contactData.placeholders.service}
+            </label>
+            <select
+              id={`${idPrefix}-service`}
+              name="serviceSlug"
+              value={serviceSlug}
+              onChange={(e) => setServiceSlug(e.target.value)}
+              className={`${baseFieldClasses} border-foreground/10 focus:border-accent focus:ring-accent/30`}
+            >
+              <option value="">{contactData.placeholders.serviceEmptyOption}</option>
+              {services.map((service) => (
+                <option key={service.slug} value={service.slug}>
+                  {service.title}
+                </option>
+              ))}
+              <option value="otro">{contactData.placeholders.serviceOtherOption}</option>
+            </select>
+          </div>
+
+          {serviceSlug === "otro" && (
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor={`${idPrefix}-service-other`} className={labelClasses}>
+                {contactData.placeholders.serviceOtherLabel}
+              </label>
+              <input
+                id={`${idPrefix}-service-other`}
+                type="text"
+                name="serviceOther"
+                value={serviceOther}
+                onChange={(e) => setServiceOther(e.target.value)}
+                onBlur={() => setTouched((prev) => ({ ...prev, serviceOther: true }))}
+                maxLength={120}
+                placeholder={contactData.placeholders.serviceOtherPlaceholder}
+                className={`${baseFieldClasses} ${
+                  touched.serviceOther && !isServiceOtherValid
+                    ? "border-red-500/80 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-foreground/10 focus:border-accent focus:ring-accent/30"
+                }`}
+              />
+              {touched.serviceOther && !isServiceOtherValid && (
+                <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
+                  <WarningCircle size={12} /> {contactData.validation.serviceOtherError}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Mensaje */}
           <div className="flex flex-col gap-1.5">
