@@ -32,7 +32,7 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
       >
         <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-[0_0_40px_rgba(16,185,129,0.25)]">
           <CheckCircle size={42} className="stroke-[2.2]" />
-          <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-white shadow-md">
+          <div className="absolute -top-1 -left-1 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-white shadow-md">
             <ShieldCheck size={16} />
           </div>
         </div>
