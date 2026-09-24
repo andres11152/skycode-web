@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowsClockwise, DeviceMobile, Lightning, PaperPlaneTilt, Play, ShieldCheck, Sparkle, Terminal } from "@phosphor-icons/react";
+import { ArrowsClockwise, DeviceMobile, Lightning, PaperPlaneTilt, Play, ShieldCheck, ShoppingCart, Sparkle, Terminal } from "@phosphor-icons/react";
 import { getBentoContent } from "@/content/bento";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 
@@ -584,6 +584,71 @@ export function AiAppliedWidget({ locale = defaultLocale }: WidgetProps) {
       <div className="rounded bg-background/10 p-2 text-[10px] space-y-1">
         <div className="text-background/50 text-[9px]">{content.promptLabel}: &quot;{content.promptText}&quot;</div>
         <div className="text-background font-bold leading-relaxed">{response}</div>
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  9. Interactive Checkout Widget (Ecommerce · Tienda en Línea)              */
+/* -------------------------------------------------------------------------- */
+// Sin i18n (getBentoContent) a propósito, mismo criterio que
+// PerformanceMeterWidget/ArchitectureDocWidget: términos técnicos de pasarelas
+// de pago (nombres de marca reales) y de ecommerce, se leen igual en los 3
+// idiomas del sitio sin necesitar traducción.
+const CHECKOUT_GATEWAYS = [
+  { id: "stripe", label: "Stripe" },
+  { id: "wompi", label: "Wompi" },
+  { id: "payu", label: "PayU" },
+] as const;
+
+export function EcommerceCheckoutWidget() {
+  const [gateway, setGateway] = useState<(typeof CHECKOUT_GATEWAYS)[number]["id"]>("stripe");
+
+  return (
+    <div className="w-full rounded-xl border border-foreground/10 bg-foreground/95 p-3.5 text-xs font-mono text-background">
+      <div className="flex items-center justify-between border-b border-background/10 pb-2 mb-2.5">
+        <div className="flex items-center gap-1.5 text-background font-bold text-[11px]">
+          <ShoppingCart size={14} className="text-accent" /> Checkout
+        </div>
+        <span className="rounded bg-background/10 px-1.5 py-0.5 text-[9px] text-background/70">3 items</span>
+      </div>
+
+      <div className="space-y-1 text-[10px] mb-2.5">
+        <div className="flex items-center justify-between text-background/70">
+          <span>Producto A</span>
+          <span>$120.000</span>
+        </div>
+        <div className="flex items-center justify-between text-background/70">
+          <span>Producto B</span>
+          <span>$85.000</span>
+        </div>
+        <div className="flex items-center justify-between border-t border-background/10 pt-1.5 font-bold text-background">
+          <span>Total</span>
+          <span className="text-accent">$205.000</span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1 mb-2.5">
+        {CHECKOUT_GATEWAYS.map((g) => (
+          <span
+            key={g.id}
+            role="button"
+            tabIndex={0}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setGateway(g.id); }}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setGateway(g.id); } }}
+            className={`flex-1 rounded px-1.5 py-1 text-center text-[9px] cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
+              gateway === g.id ? "bg-accent-strong text-white font-bold" : "bg-background/10 text-background/60"
+            }`}
+          >
+            {g.label}
+          </span>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-1.5 rounded bg-background/10 px-2 py-1.5 text-[10px] text-background/80">
+        <ShieldCheck size={12} className="text-accent shrink-0" />
+        <span>Pago cifrado · inventario sincronizado en tiempo real</span>
       </div>
     </div>
   );

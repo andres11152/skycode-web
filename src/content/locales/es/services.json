@@ -49,6 +49,17 @@
       ]
     },
     {
+      "slug": "ecommerce-tienda-online",
+      "title": "Ecommerce · Tienda en Línea",
+      "description": "Vende en línea sin depender de plantillas genéricas ni comisiones abusivas por transacción. Catálogo de productos, carrito de compras, pagos y envíos integrados en una plataforma que realmente es tuya.",
+      "iconName": "Storefront",
+      "features": [
+        "Catálogo de productos y variantes ilimitadas",
+        "Pagos en línea (Stripe, Wompi, PayU) y envíos integrados",
+        "Panel de control para gestionar pedidos e inventario"
+      ]
+    },
+    {
       "slug": "seguridad-cumplimiento",
       "title": "Seguridad y Protección de Datos",
       "description": "Dormir tranquilo no tiene precio. Protegemos tu plataforma contra accesos no autorizados, cuidamos la información confidencial de tus clientes y cumplimos con la ley.",

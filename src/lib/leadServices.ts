@@ -21,6 +21,7 @@ export const LEAD_SERVICE_SLUGS = [
   "desarrollo-aplicaciones-moviles",
   "apis-integraciones",
   "frontend-alto-rendimiento",
+  "ecommerce-tienda-online",
   "seguridad-cumplimiento",
   "arquitectura-documentacion",
   "migracion-datos-legacy",
@@ -42,6 +43,7 @@ const LEAD_SERVICE_LABELS_ES: Record<Exclude<LeadServiceSlug, "otro">, string> =
   "desarrollo-aplicaciones-moviles": "Aplicaciones Móviles (Android & iOS)",
   "apis-integraciones": "Integraciones & Conexión de Sistemas",
   "frontend-alto-rendimiento": "Páginas Web y Aplicaciones Ultra-Rápidas",
+  "ecommerce-tienda-online": "Ecommerce · Tienda en Línea",
   "seguridad-cumplimiento": "Seguridad y Protección de Datos",
   "arquitectura-documentacion": "Documentación Clara y Transferencia Total",
   "migracion-datos-legacy": "Modernización y Rescate de Datos Antiguos",
@@ -96,4 +98,5 @@ export const ESTIMATOR_TYPE_TO_SERVICE_SLUG: Record<string, LeadServiceSlug> = {
   ai: "inteligencia-artificial-aplicada",
   apis: "apis-integraciones",
   web: "frontend-alto-rendimiento",
+  ecommerce: "ecommerce-tienda-online",
 };

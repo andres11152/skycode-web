@@ -42,6 +42,12 @@
       "iconName": "Lightning",
       "title": "Página Web o Portal Ultra-Rápido",
       "desc": "Sitio web veloz, optimizado para celulares y diseñado para conseguir clientes."
+    },
+    {
+      "id": "ecommerce",
+      "iconName": "Storefront",
+      "title": "Ecommerce / Tienda en Línea",
+      "desc": "Catálogo de productos, carrito de compras y pagos en línea listos para vender desde el primer día."
     }
   ],
   "addons": [

@@ -5,6 +5,7 @@ import {
   Handshake,
   Lightning,
   ShieldCheck,
+  Storefront,
   Swap,
   TreeStructure,
 } from "@phosphor-icons/react/ssr";
@@ -30,9 +31,10 @@ import type { Locale } from "@/lib/i18n";
 //   Handshake     -> el entregable real es la transferencia, no "capas"
 //   Swap          -> migrar/reemplazar lo viejo, no "una base de datos"
 //   Graph         -> un modelo aplicado, no un cerebro con circuitos
-// ShieldCheck y DeviceMobile sí se quedan literales: ahí el glifo canónico
-// es el correcto (seguridad, plataforma móvil). ShieldCheck además ya no se
-// repite en Highlights, donde antes aparecía por tercera vez.
+// ShieldCheck, DeviceMobile y Storefront sí se quedan literales: ahí el
+// glifo canónico es el correcto (seguridad, plataforma móvil, tienda en
+// línea). ShieldCheck además ya no se repite en Highlights, donde antes
+// aparecía por tercera vez.
 const iconMap: Record<string, Icon> = {
   Blueprint,
   TreeStructure,
@@ -42,6 +44,7 @@ const iconMap: Record<string, Icon> = {
   DeviceMobile,
   Swap,
   Graph,
+  Storefront,
 };
 
 const servicesByLocale = { es: servicesDataEs, en: servicesDataEn, fr: servicesDataFr };

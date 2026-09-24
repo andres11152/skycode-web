@@ -1,4 +1,4 @@
-import { Blueprint, DeviceMobile, Graph, Lightning, TreeStructure } from "@phosphor-icons/react/ssr";
+import { Blueprint, DeviceMobile, Graph, Lightning, Storefront, TreeStructure } from "@phosphor-icons/react/ssr";
 import type { Icon } from "@phosphor-icons/react";
 import projectEstimatorDataEs from "./locales/es/projectEstimator.json";
 import projectEstimatorDataEn from "./locales/en/projectEstimator.json";
@@ -11,6 +11,7 @@ const iconMap: Record<string, Icon> = {
   Graph,
   TreeStructure,
   Lightning,
+  Storefront,
 };
 
 const projectEstimatorByLocale = {
@@ -27,6 +28,7 @@ const PRICING: Record<string, { priceCop: number; priceUsd: number; baseWeeks: n
   ai: { priceCop: 11_800_000, priceUsd: 2900, baseWeeks: 6 },
   apis: { priceCop: 5_500_000, priceUsd: 1400, baseWeeks: 3 },
   web: { priceCop: 4_500_000, priceUsd: 1150, baseWeeks: 3 },
+  ecommerce: { priceCop: 6_900_000, priceUsd: 1750, baseWeeks: 4 },
 };
 
 const ADDON_PRICING: Record<string, { priceCop: number; priceUsd: number; weeks: number }> = {

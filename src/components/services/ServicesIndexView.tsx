@@ -8,6 +8,7 @@ import {
   MobileAppPreviewWidget,
   ApiInspectorWidget,
   PerformanceMeterWidget,
+  EcommerceCheckoutWidget,
   SecurityComplianceWidget,
   ArchitectureDocWidget,
   LegacyMigrationWidget,
@@ -91,6 +92,7 @@ export function ServicesIndexView({ locale }: { locale: Locale }) {
                       {service.slug === "desarrollo-aplicaciones-moviles" && <MobileAppPreviewWidget />}
                       {service.slug === "apis-integraciones" && <ApiInspectorWidget />}
                       {service.slug === "frontend-alto-rendimiento" && <PerformanceMeterWidget />}
+                      {service.slug === "ecommerce-tienda-online" && <EcommerceCheckoutWidget />}
                       {service.slug === "seguridad-cumplimiento" && <SecurityComplianceWidget />}
                       {service.slug === "arquitectura-documentacion" && <ArchitectureDocWidget />}
                       {service.slug === "migracion-datos-legacy" && <LegacyMigrationWidget />}

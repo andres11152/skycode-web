@@ -26,6 +26,11 @@ describe("resolveLeadService", () => {
     expect(resolveLeadService("apis-integraciones")).toBe("Integraciones & Conexión de Sistemas");
   });
 
+  it("incluye el servicio de Ecommerce en el catálogo", () => {
+    expect(isLeadServiceSlug("ecommerce-tienda-online")).toBe(true);
+    expect(resolveLeadService("ecommerce-tienda-online")).toBe("Ecommerce · Tienda en Línea");
+  });
+
   it("devuelve 'Otro: <texto>' cuando el slug es 'otro' con texto libre", () => {
     expect(resolveLeadService("otro", "Consultoría de arquitectura")).toBe("Otro: Consultoría de arquitectura");
   });

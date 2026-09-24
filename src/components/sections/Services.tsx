@@ -14,6 +14,7 @@ import {
   MobileAppPreviewWidget,
   ApiInspectorWidget,
   PerformanceMeterWidget,
+  EcommerceCheckoutWidget,
   SecurityComplianceWidget,
   ArchitectureDocWidget,
   LegacyMigrationWidget,
@@ -33,6 +34,7 @@ function buildIconVariantsMap(reduced: boolean): Record<string, Variants> {
       "desarrollo-aplicaciones-moviles": subtle,
       "apis-integraciones": subtle,
       "frontend-alto-rendimiento": subtle,
+      "ecommerce-tienda-online": subtle,
       "seguridad-cumplimiento": subtle,
       "arquitectura-documentacion": subtle,
       "migracion-datos-legacy": subtle,
@@ -54,6 +56,10 @@ function buildIconVariantsMap(reduced: boolean): Record<string, Variants> {
     "frontend-alto-rendimiento": {
       initial: { y: 0, scale: 1 },
       hover: { y: [-2, 2, -2, 0], scale: 1.1, transition: { duration: 0.6, ease: "easeInOut", repeat: Infinity } },
+    },
+    "ecommerce-tienda-online": {
+      initial: { scale: 1, y: 0 },
+      hover: { scale: 1.12, y: [0, -3, 0], transition: { duration: 0.5, ease: "easeInOut" } },
     },
     "seguridad-cumplimiento": {
       initial: { scale: 1, opacity: 0.8 },
@@ -302,6 +308,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                           {service.slug === "desarrollo-aplicaciones-moviles" && <MobileAppPreviewWidget />}
                           {service.slug === "apis-integraciones" && <ApiInspectorWidget />}
                           {service.slug === "frontend-alto-rendimiento" && <PerformanceMeterWidget />}
+                          {service.slug === "ecommerce-tienda-online" && <EcommerceCheckoutWidget />}
                           {service.slug === "seguridad-cumplimiento" && <SecurityComplianceWidget />}
                           {service.slug === "arquitectura-documentacion" && <ArchitectureDocWidget />}
                           {service.slug === "migracion-datos-legacy" && <LegacyMigrationWidget />}

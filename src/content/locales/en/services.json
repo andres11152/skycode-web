@@ -49,6 +49,17 @@
       ]
     },
     {
+      "slug": "ecommerce-tienda-online",
+      "title": "Ecommerce & Online Stores",
+      "description": "Sell online without relying on generic templates or abusive per-transaction fees. Product catalog, cart, payments and shipping integrated into a platform you actually own.",
+      "iconName": "Storefront",
+      "features": [
+        "Product catalog with unlimited variants",
+        "Online payments (Stripe, Wompi, PayU) and shipping integrations",
+        "Order and inventory management dashboard"
+      ]
+    },
+    {
       "slug": "seguridad-cumplimiento",
       "title": "Data Shielding & Regulatory Compliance (OWASP)",
       "description": "We protect your brand's reputation. We apply OWASP methodologies against vulnerabilities and structure your software under Colombia's Law 1581 and Europe's GDPR, ensuring successful security audits.",

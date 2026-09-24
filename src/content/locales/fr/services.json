@@ -49,6 +49,17 @@
       ]
     },
     {
+      "slug": "ecommerce-tienda-online",
+      "title": "E-commerce & Boutiques en Ligne",
+      "description": "Vendez en ligne sans dépendre de modèles génériques ni de commissions abusives par transaction. Catalogue de produits, panier, paiements et livraison intégrés dans une plateforme qui vous appartient réellement.",
+      "iconName": "Storefront",
+      "features": [
+        "Catalogue de produits avec variantes illimitées",
+        "Paiements en ligne (Stripe, Wompi, PayU) et intégrations de livraison",
+        "Tableau de bord de gestion des commandes et des stocks"
+      ]
+    },
+    {
       "slug": "seguridad-cumplimiento",
       "title": "Protection des Données & Conformité Réglementaire (OWASP)",
       "description": "Nous protégeons la réputation de votre marque. Nous appliquons les méthodologies OWASP contre les vulnérabilités et structurons votre logiciel selon la loi 1581 de Colombie et le RGPD en Europe, assurant des audits de sécurité réussis.",

@@ -42,6 +42,12 @@
       "iconName": "Lightning",
       "title": "Web / Frontend Ultra-Rapide",
       "desc": "Next.js avec 100/100 Core Web Vitals et SEO optimisé."
+    },
+    {
+      "id": "ecommerce",
+      "iconName": "Storefront",
+      "title": "E-commerce / Boutique en Ligne",
+      "desc": "Catalogue de produits, panier et paiement avec inventaire en temps réel et intégration de passerelles de paiement."
     }
   ],
   "addons": [
