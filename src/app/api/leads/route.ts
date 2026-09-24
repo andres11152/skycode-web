@@ -8,6 +8,7 @@ import {
   getActiveLeadsPage,
   createLead,
   updateLeadStatusAndOwner,
+  setLeadFollowUp,
   softDeleteLead,
   addLeadActivity,
 } from "@/lib/queries/leads";
@@ -35,6 +36,16 @@ const UpdateLeadSchema = z.object({
   status: LeadStatusSchema.optional(),
   ownerId: z.number().int().positive().nullable().optional(),
   campaignId: z.number().int().positive().nullable().optional(),
+  // Recordatorio de seguimiento (ver setLeadFollowUp en
+  // lib/queries/leads.ts) — `null` borra el recordatorio existente,
+  // `undefined` (campo ausente) lo deja intacto.
+  nextFollowUpAt: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Fecha inválida (YYYY-MM-DD).")
+    .nullable()
+    .optional(),
+  followUpNote: z.string().trim().max(500).nullable().optional(),
 });
 
 /**
@@ -96,11 +107,11 @@ export async function POST(request: Request) {
 }
 
 /**
- * PATCH /api/leads - Cambia el estado o el dueño de un lead. Requiere
- * permiso leads:write. Un cambio de estado deja además una entrada
- * automática en `lead_activities` (tipo status_change), para que el
- * historial del lead sea un timeline único sin tener que cruzar con
- * audit_log.
+ * PATCH /api/leads - Cambia el estado, el dueño y/o el recordatorio de
+ * seguimiento de un lead. Requiere permiso leads:write. Un cambio de
+ * estado deja además una entrada automática en `lead_activities` (tipo
+ * status_change), para que el historial del lead sea un timeline único
+ * sin tener que cruzar con audit_log.
  */
 export const PATCH = withAuth("leads:write", async (request, { session }) => {
   try {
@@ -108,32 +119,54 @@ export const PATCH = withAuth("leads:write", async (request, { session }) => {
     if (!parsed.success) {
       return NextResponse.json({ error: "Datos de solicitud inválidos." }, { status: 400 });
     }
-    const { id, status, ownerId, campaignId } = parsed.data;
+    const { id, status, ownerId, campaignId, nextFollowUpAt, followUpNote } = parsed.data;
 
-    if (status === undefined && ownerId === undefined && campaignId === undefined) {
+    const hasStatusOrOwnerChange = status !== undefined || ownerId !== undefined || campaignId !== undefined;
+    const hasFollowUpChange = nextFollowUpAt !== undefined || followUpNote !== undefined;
+
+    if (!hasStatusOrOwnerChange && !hasFollowUpChange) {
       return NextResponse.json({ error: "Sin campos para actualizar." }, { status: 400 });
     }
 
     const ip = getClientIp(request);
 
     const lead = await withTransaction(async (client) => {
-      const result = await updateLeadStatusAndOwner({ id, status, ownerId, campaignId }, client);
-      if (!result) return null;
+      let before: Record<string, unknown> | null = null;
+      let after: Record<string, unknown> | null = null;
 
-      const { before, after } = result;
+      if (hasStatusOrOwnerChange) {
+        const result = await updateLeadStatusAndOwner({ id, status, ownerId, campaignId }, client);
+        if (!result) return null;
+        before = result.before;
+        after = result.after;
 
-      if (status !== undefined && status !== before.status) {
-        await addLeadActivity(
-          {
-            leadId: id,
-            actorId: session.id,
-            actorName: session.name,
-            type: "status_change",
-            body: `${before.status} → ${status}`,
-          },
+        if (status !== undefined && status !== result.before.status) {
+          await addLeadActivity(
+            {
+              leadId: id,
+              actorId: session.id,
+              actorName: session.name,
+              type: "status_change",
+              body: `${result.before.status} → ${status}`,
+            },
+            client
+          );
+        }
+      }
+
+      if (hasFollowUpChange) {
+        // Estos campos siempre viajan juntos desde el formulario del
+        // dashboard (LeadsTable.tsx) — si solo llegó uno de los dos,
+        // `nextFollowUpAt`/`followUpNote` ausente equivale a "bórralo".
+        const followUpResult = await setLeadFollowUp(
+          { id, nextFollowUpAt: nextFollowUpAt ?? null, followUpNote: followUpNote ?? null },
           client
         );
+        if (!followUpResult) return null;
+        after = { ...(after ?? {}), ...followUpResult };
       }
+
+      if (!after) return null;
 
       await logAudit(client.query.bind(client), {
         actorId: session.id,

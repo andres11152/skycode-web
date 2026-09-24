@@ -25,6 +25,11 @@ export interface Lead {
   utm_campaign?: string | null;
   referrer?: string | null;
   landing_page?: string | null;
+  /** Fecha (sin hora) para el próximo recontacto — `null` si no hay uno
+   * agendado. Formato ISO 8601 tal como lo serializa la API (recorta a
+   * los primeros 10 caracteres para un `<input type="date">`). */
+  next_follow_up_at?: string | null;
+  follow_up_note?: string | null;
 }
 
 export type LeadActivityType = "note" | "call" | "email" | "status_change";

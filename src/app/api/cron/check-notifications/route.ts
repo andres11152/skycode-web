@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { notifyViewedProposals, notifyOverdueInvoices, notifySlaWarnings } from "@/lib/queries/notifications";
+import { notifyViewedProposals, notifyOverdueInvoices, notifySlaWarnings, notifyLeadFollowUps } from "@/lib/queries/notifications";
 import { logError } from "@/lib/logger";
 
 /**
- * POST /api/cron/check-notifications - Dispara los tres avisos por correo
- * (propuesta vista, factura vencida, SLA por vencer). Pensado para un
+ * POST /api/cron/check-notifications - Dispara los cuatro avisos por
+ * correo (propuesta vista, factura vencida, SLA por vencer, seguimiento
+ * de lead pendiente). Pensado para un
  * Render Cron Job (ej. cada hora) que le pega con un secreto compartido —
  * NO usa sesión de usuario, porque quien llama es infraestructura, no una
  * persona logueada. `CRON_SECRET` (ver .env.example) debe coincidir
@@ -13,7 +14,7 @@ import { logError } from "@/lib/logger";
  *
  * Cada `notify*()` es independiente y de mejor esfuerzo — si una falla
  * (ej. un error de red al enviar un correo puntual), no bloquea a las
- * otras dos ni hace fallar la respuesta completa.
+ * demás ni hace fallar la respuesta completa.
  */
 export async function POST(request: Request) {
   const expectedSecret = process.env.CRON_SECRET?.trim();
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No autorizado." }, { status: 401 });
   }
 
-  const results = { proposalsViewed: 0, invoicesOverdue: 0, slaWarnings: 0 };
+  const results = { proposalsViewed: 0, invoicesOverdue: 0, slaWarnings: 0, leadFollowUps: 0 };
 
   try {
     results.proposalsViewed = await notifyViewedProposals();
@@ -44,6 +45,12 @@ export async function POST(request: Request) {
     results.slaWarnings = await notifySlaWarnings();
   } catch (error) {
     logError("❌ [Cron Notifications] notifySlaWarnings falló", error);
+  }
+
+  try {
+    results.leadFollowUps = await notifyLeadFollowUps();
+  } catch (error) {
+    logError("❌ [Cron Notifications] notifyLeadFollowUps falló", error);
   }
 
   return NextResponse.json({ success: true, ...results });

@@ -127,3 +127,44 @@ export async function notifySlaWarnings(): Promise<number> {
 
   return res.rows.length;
 }
+
+/**
+ * Leads con un recontacto agendado (`next_follow_up_at`) que ya llegó o
+ * pasó, sin avisar todavía — mismo criterio de "por vencer o ya vencido,
+ * una sola condición" que `notifySlaWarnings()`. Excluye leads ya
+ * cerrados (`Ganado`/`Perdido`): no tiene sentido recordar seguir un trato
+ * que ya se cerró, aunque alguien haya dejado un recordatorio viejo sin
+ * borrar. Sin dueño asignado, la fila se marca igual como avisada (para no
+ * reintentarla cada hora) pero no se envía ningún correo — mismo patrón
+ * que el resto de `notify*()` de este archivo.
+ */
+export async function notifyLeadFollowUps(): Promise<number> {
+  const res = await query(`
+    WITH candidates AS (
+      SELECT l.id, l.name, l.next_follow_up_at, l.follow_up_note, u.email AS owner_email
+      FROM leads l
+      LEFT JOIN users u ON u.id = l.owner_id
+      WHERE l.deleted_at IS NULL
+        AND l.follow_up_notified_at IS NULL
+        AND l.next_follow_up_at IS NOT NULL
+        AND l.next_follow_up_at <= CURRENT_DATE
+        AND l.status NOT IN ('Ganado', 'Perdido')
+    )
+    UPDATE leads l
+    SET follow_up_notified_at = now()
+    FROM candidates c
+    WHERE l.id = c.id
+    RETURNING c.name, c.follow_up_note, c.owner_email;
+  `);
+
+  for (const row of res.rows) {
+    if (!row.owner_email) continue;
+    await sendEmail({
+      to: row.owner_email,
+      subject: `Seguimiento pendiente: ${row.name}`,
+      text: `Hoy toca recontactar a ${row.name}.${row.follow_up_note ? `\n\nNota: ${row.follow_up_note}` : ""}\n\nRevisa el lead en /dashboard/leads.`,
+    });
+  }
+
+  return res.rows.length;
+}

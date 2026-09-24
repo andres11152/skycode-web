@@ -26,6 +26,7 @@ import {
   UserCog,
   Trash2,
   AlertTriangle,
+  CalendarClock,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Modal } from "@/components/ui/Modal";
@@ -133,6 +134,111 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
       ignore = true;
     };
   }, [selectedLeadId]);
+
+  // Formulario de recordatorio de seguimiento — estado editable local
+  // (fecha + nota), no controlado directo contra `selectedLead` como
+  // status/owner (esos se guardan al instante en cada cambio; acá el
+  // usuario escribe una nota y recién guarda con un botón, así que hace
+  // falta un borrador propio). Se resetea al abrir un lead distinto
+  // ajustando el estado DURANTE el render (comparando contra el id
+  // anterior), no en un `useEffect` separado — mismo motivo que el
+  // `ResizeObserver` de GridPattern.tsx: un efecto que reacciona a un
+  // cambio para volver a llamar `setState` dispara la regla de lint
+  // `react-hooks/set-state-in-effect` (estado derivado de estado vía
+  // efecto); ajustarlo en el cuerpo del componente es el patrón que React
+  // mismo documenta para "resetear estado cuando cambia una prop".
+  const [followUpDate, setFollowUpDate] = useState("");
+  const [followUpNote, setFollowUpNote] = useState("");
+  const [savingFollowUp, setSavingFollowUp] = useState(false);
+  const [followUpFormLeadId, setFollowUpFormLeadId] = useState<number | null>(null);
+  if (selectedLead?.id !== followUpFormLeadId) {
+    setFollowUpFormLeadId(selectedLead?.id ?? null);
+    setFollowUpDate(selectedLead?.next_follow_up_at?.slice(0, 10) ?? "");
+    setFollowUpNote(selectedLead?.follow_up_note ?? "");
+  }
+
+  const handleSaveFollowUp = async () => {
+    if (!selectedLead) return;
+    setSavingFollowUp(true);
+    try {
+      const res = await fetch("/api/leads", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: selectedLead.id,
+          nextFollowUpAt: followUpDate || null,
+          followUpNote: followUpNote.trim() || null,
+        }),
+      });
+      if (res.ok) {
+        const updated = { next_follow_up_at: followUpDate || null, follow_up_note: followUpNote.trim() || null };
+        setLeads((prev) => prev.map((lead) => (lead.id === selectedLead.id ? { ...lead, ...updated } : lead)));
+        setSelectedLead((prev) => (prev ? { ...prev, ...updated } : null));
+      }
+    } catch (err) {
+      logError("Error al guardar el recordatorio de seguimiento", err);
+    } finally {
+      setSavingFollowUp(false);
+    }
+  };
+
+  const handleClearFollowUp = async () => {
+    if (!selectedLead) return;
+    setFollowUpDate("");
+    setFollowUpNote("");
+    setSavingFollowUp(true);
+    try {
+      const res = await fetch("/api/leads", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: selectedLead.id, nextFollowUpAt: null, followUpNote: null }),
+      });
+      if (res.ok) {
+        const updated = { next_follow_up_at: null, follow_up_note: null };
+        setLeads((prev) => prev.map((lead) => (lead.id === selectedLead.id ? { ...lead, ...updated } : lead)));
+        setSelectedLead((prev) => (prev ? { ...prev, ...updated } : null));
+      }
+    } catch (err) {
+      logError("Error al borrar el recordatorio de seguimiento", err);
+    } finally {
+      setSavingFollowUp(false);
+    }
+  };
+
+  // Fecha (sin hora) de hoy en la zona local, para comparar contra
+  // `next_follow_up_at` sin desfases de huso horario — mismo criterio que
+  // `daysFromNow()` en los tests de invoices.
+  const todayIso = (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  })();
+
+  function getFollowUpBadge(lead: Lead) {
+    if (!lead.next_follow_up_at) return null;
+    const dueDate = lead.next_follow_up_at.slice(0, 10);
+    if (dueDate < todayIso) {
+      return (
+        <Badge tone="danger" className="gap-1">
+          <CalendarClock size={11} />
+          Seguimiento vencido
+        </Badge>
+      );
+    }
+    if (dueDate === todayIso) {
+      return (
+        <Badge tone="warning" className="gap-1">
+          <CalendarClock size={11} />
+          Seguimiento hoy
+        </Badge>
+      );
+    }
+    return (
+      <Badge tone="info" className="gap-1">
+        <CalendarClock size={11} />
+        {new Date(`${dueDate}T00:00:00`).toLocaleDateString("es-CO", { day: "numeric", month: "short" })}
+      </Badge>
+    );
+  }
 
   const pushQuery = (overrides: Partial<{ q: string; status: string; page: number }>) => {
     const nextQ = overrides.q ?? q;
@@ -448,7 +554,10 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                         </td>
 
                         <td className="px-5 py-4 space-y-1">
-                          <div>{getSLABadge(lead.created_at, lead.status)}</div>
+                          <div className="flex flex-wrap gap-1">
+                            {getSLABadge(lead.created_at, lead.status)}
+                            {getFollowUpBadge(lead)}
+                          </div>
                           <select
                             value={lead.status}
                             onClick={(e) => e.stopPropagation()}
@@ -649,6 +758,48 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                       <option key={o.id} value={o.id} className="bg-background text-foreground">{o.name}</option>
                     ))}
                   </select>
+                </div>
+
+                <div className="space-y-2 rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-4">
+                  <label className="flex items-center gap-1.5 text-xs font-semibold text-foreground/80">
+                    <CalendarClock size={14} className="text-accent" />
+                    <span>Próximo seguimiento</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="date"
+                      value={followUpDate}
+                      onChange={(e) => setFollowUpDate(e.target.value)}
+                      className="rounded-lg border border-foreground/15 bg-foreground/[0.02] px-2.5 py-2 text-xs text-foreground outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    />
+                    {selectedLead.next_follow_up_at && (
+                      <button
+                        type="button"
+                        onClick={handleClearFollowUp}
+                        disabled={savingFollowUp}
+                        aria-label="Borrar recordatorio"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-foreground/50 hover:bg-red-500/10 hover:text-red-700 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+                  <textarea
+                    value={followUpNote}
+                    onChange={(e) => setFollowUpNote(e.target.value)}
+                    placeholder="Nota para cuando toque recontactar (opcional)"
+                    rows={2}
+                    maxLength={500}
+                    className="w-full rounded-lg border border-foreground/15 bg-foreground/[0.02] px-3 py-2 text-xs text-foreground placeholder:text-foreground/40 outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background resize-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSaveFollowUp}
+                    disabled={savingFollowUp || !followUpDate}
+                    className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-accent-strong px-3.5 text-xs font-bold text-white hover:brightness-90 transition-all disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  >
+                    {savingFollowUp ? "Guardando…" : "Guardar recordatorio"}
+                  </button>
                 </div>
 
                 <div className="space-y-3 border-t border-foreground/10 pt-4">

@@ -5,6 +5,7 @@ const LEADS_SELECT = `
   SELECT l.id, l.name, l.email, l.phone, l.service, l.budget, l.currency, l.estimated_weeks,
          l.message, l.source, l.status, l.created_at,
          l.utm_source, l.utm_medium, l.utm_campaign, l.referrer, l.landing_page,
+         l.next_follow_up_at::text AS next_follow_up_at, l.follow_up_note,
          u.id AS owner_id, u.name AS owner_name, u.email AS owner_email,
          COUNT(*) OVER() AS total_count
   FROM leads l
@@ -34,6 +35,15 @@ function shapeLeadRow(row: Record<string, unknown>): Lead {
     utm_campaign: row.utm_campaign ? String(row.utm_campaign) : undefined,
     referrer: row.referrer ? String(row.referrer) : undefined,
     landing_page: row.landing_page ? String(row.landing_page) : undefined,
+    // `l.next_follow_up_at::text` en el SELECT de arriba, a propósito: `pg`
+    // devuelve una columna DATE como objeto `Date` (no string) salvo que se
+    // le pida texto — un objeto `Date` a partir de una fecha pura, sin hora,
+    // puede desalinearse un día al leerlo de vuelta según la zona horaria
+    // del proceso Node (mismo riesgo que documentan los tests de
+    // invoices.integration.test.ts). El cast a texto en SQL evita el
+    // problema de raíz: nunca pasa por un `Date` de JS.
+    next_follow_up_at: row.next_follow_up_at ? String(row.next_follow_up_at) : null,
+    follow_up_note: row.follow_up_note ? String(row.follow_up_note) : null,
     owner: ownerId && ownerName && ownerEmail ? { id: ownerId, name: ownerName, email: ownerEmail } : null,
   };
 }
@@ -241,6 +251,36 @@ export async function updateLeadStatusAndOwner(
   );
 
   return { before: before.rows[0], after: res.rows[0] };
+}
+
+export interface SetLeadFollowUpParams {
+  id: number;
+  /** `null` para borrar el recordatorio (ej. ya se contactó, se cambia de
+   * opinión). Formato `YYYY-MM-DD`. */
+  nextFollowUpAt: string | null;
+  followUpNote?: string | null;
+}
+
+/**
+ * Agenda (o borra) el próximo recontacto de un lead. Reinicia
+ * `follow_up_notified_at` a `NULL` en la MISMA sentencia — a diferencia de
+ * `viewed_notified_at`/`overdue_notified_at`/`sla_warning_notified_at`
+ * (que solo se pisan una vez, nunca por una acción del usuario), acá sí
+ * hace falta: si alguien reprograma un seguimiento a una fecha nueva,
+ * debe volver a avisar en esa fecha, no quedar marcado como "ya avisado"
+ * para siempre por el aviso anterior (ver migración 0023).
+ */
+export async function setLeadFollowUp(
+  { id, nextFollowUpAt, followUpNote }: SetLeadFollowUpParams,
+  dbRunner: QueryRunner
+) {
+  const res = await dbRunner.query(
+    `UPDATE leads SET next_follow_up_at = $1, follow_up_note = $2, follow_up_notified_at = NULL
+     WHERE id = $3 AND deleted_at IS NULL
+     RETURNING id, next_follow_up_at, follow_up_note;`,
+    [nextFollowUpAt, followUpNote ?? null, id]
+  );
+  return res.rows[0] ?? null;
 }
 
 /**

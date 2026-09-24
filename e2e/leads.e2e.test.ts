@@ -150,6 +150,87 @@ describe("PATCH /api/leads — asignación de dueño y cambio de estado con hist
   });
 });
 
+describe("PATCH /api/leads — recordatorio de seguimiento", () => {
+  it("agenda una fecha y una nota de seguimiento", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const adminClient = await loginAs(admin.email, "SuperSecret123456");
+
+    const createRes = await adminClient.post("/api/leads", {
+      name: "Lead con seguimiento",
+      email: `seguimiento-${uniqueSuffix()}@test.local`,
+    });
+    const { lead } = await createRes.json();
+
+    const patchRes = await adminClient.patch("/api/leads", {
+      id: lead.id,
+      nextFollowUpAt: "2026-10-15",
+      followUpNote: "Llamar a las 3pm",
+    });
+    expect(patchRes.status).toBe(200);
+    const patched = await patchRes.json();
+    expect(String(patched.lead.next_follow_up_at).slice(0, 10)).toBe("2026-10-15");
+    expect(patched.lead.follow_up_note).toBe("Llamar a las 3pm");
+
+    const row = await query("SELECT next_follow_up_at::text, follow_up_note FROM leads WHERE id = $1;", [lead.id]);
+    expect(row.rows[0].next_follow_up_at).toBe("2026-10-15");
+    expect(row.rows[0].follow_up_note).toBe("Llamar a las 3pm");
+  });
+
+  it("nextFollowUpAt: null borra un recordatorio existente", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const adminClient = await loginAs(admin.email, "SuperSecret123456");
+
+    const createRes = await adminClient.post("/api/leads", {
+      name: "Lead a limpiar",
+      email: `limpiar-${uniqueSuffix()}@test.local`,
+    });
+    const { lead } = await createRes.json();
+    await adminClient.patch("/api/leads", { id: lead.id, nextFollowUpAt: "2026-10-15", followUpNote: "x" });
+
+    await adminClient.patch("/api/leads", { id: lead.id, nextFollowUpAt: null, followUpNote: null });
+
+    const row = await query("SELECT next_follow_up_at, follow_up_note FROM leads WHERE id = $1;", [lead.id]);
+    expect(row.rows[0].next_follow_up_at).toBeNull();
+    expect(row.rows[0].follow_up_note).toBeNull();
+  });
+
+  it("400 con fecha en formato inválido", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const adminClient = await loginAs(admin.email, "SuperSecret123456");
+
+    const createRes = await adminClient.post("/api/leads", {
+      name: "Fecha inválida",
+      email: `fechainvalida-${uniqueSuffix()}@test.local`,
+    });
+    const { lead } = await createRes.json();
+
+    const res = await adminClient.patch("/api/leads", { id: lead.id, nextFollowUpAt: "15/10/2026" });
+    expect(res.status).toBe(400);
+  });
+
+  it("se puede agendar el seguimiento junto con un cambio de estado en la misma petición", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const adminClient = await loginAs(admin.email, "SuperSecret123456");
+
+    const createRes = await adminClient.post("/api/leads", {
+      name: "Combo estado + seguimiento",
+      email: `combo-${uniqueSuffix()}@test.local`,
+    });
+    const { lead } = await createRes.json();
+
+    const res = await adminClient.patch("/api/leads", {
+      id: lead.id,
+      status: "En Cotización",
+      nextFollowUpAt: "2026-10-20",
+    });
+    expect(res.status).toBe(200);
+
+    const row = await query("SELECT status, next_follow_up_at::text FROM leads WHERE id = $1;", [lead.id]);
+    expect(row.rows[0].status).toBe("En Cotización");
+    expect(row.rows[0].next_follow_up_at).toBe("2026-10-20");
+  });
+});
+
 describe("DELETE /api/leads — borrado lógico", () => {
   it("borra el lead (deja de aparecer en la lista activa) y un segundo intento da 404", async () => {
     const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });

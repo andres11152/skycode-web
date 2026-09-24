@@ -6,6 +6,7 @@ import {
   getAllMatchingLeads,
   getLeadActivities,
   getLeadStats,
+  setLeadFollowUp,
   softDeleteLead,
   updateLeadStatusAndOwner,
 } from "./leads";
@@ -276,5 +277,47 @@ describe("addLeadActivity", () => {
     expect(activity).toBeNull();
     const res = await query("SELECT COUNT(*) FROM lead_activities WHERE lead_id = $1;", [deletedLead.id]);
     expect(Number(res.rows[0].count)).toBe(0);
+  });
+});
+
+describe("setLeadFollowUp", () => {
+  it("agenda una fecha y una nota", async () => {
+    const lead = await createTestLead();
+
+    const result = await setLeadFollowUp({ id: lead.id, nextFollowUpAt: "2026-10-15", followUpNote: "Llamar en la tarde" }, { query });
+
+    expect(result).not.toBeNull();
+    const row = await query("SELECT next_follow_up_at::text, follow_up_note FROM leads WHERE id = $1;", [lead.id]);
+    expect(row.rows[0].next_follow_up_at).toBe("2026-10-15");
+    expect(row.rows[0].follow_up_note).toBe("Llamar en la tarde");
+  });
+
+  it("nextFollowUpAt: null borra el recordatorio", async () => {
+    const lead = await createTestLead();
+    await setLeadFollowUp({ id: lead.id, nextFollowUpAt: "2026-10-15", followUpNote: "x" }, { query });
+
+    await setLeadFollowUp({ id: lead.id, nextFollowUpAt: null, followUpNote: null }, { query });
+
+    const row = await query("SELECT next_follow_up_at, follow_up_note FROM leads WHERE id = $1;", [lead.id]);
+    expect(row.rows[0].next_follow_up_at).toBeNull();
+    expect(row.rows[0].follow_up_note).toBeNull();
+  });
+
+  it("reprogramar la fecha reinicia follow_up_notified_at a NULL (para que vuelva a avisar en la fecha nueva)", async () => {
+    const lead = await createTestLead();
+    await setLeadFollowUp({ id: lead.id, nextFollowUpAt: "2026-10-15", followUpNote: null }, { query });
+    await query("UPDATE leads SET follow_up_notified_at = now() WHERE id = $1;", [lead.id]);
+
+    await setLeadFollowUp({ id: lead.id, nextFollowUpAt: "2026-11-01", followUpNote: null }, { query });
+
+    const row = await query("SELECT follow_up_notified_at FROM leads WHERE id = $1;", [lead.id]);
+    expect(row.rows[0].follow_up_notified_at).toBeNull();
+  });
+
+  it("devuelve null para un lead que no existe o está borrado", async () => {
+    expect(await setLeadFollowUp({ id: 999999, nextFollowUpAt: "2026-10-15", followUpNote: null }, { query })).toBeNull();
+
+    const deletedLead = await createTestLead({ deletedAt: new Date() });
+    expect(await setLeadFollowUp({ id: deletedLead.id, nextFollowUpAt: "2026-10-15", followUpNote: null }, { query })).toBeNull();
   });
 });
