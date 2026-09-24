@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { requireSessionOrRedirect } from "@/lib/withAuth";
 import { verifySessionToken } from "@/lib/session";
 import { getActiveUserSessions } from "@/lib/queries/sessions";
+import { getTotpStatus } from "@/lib/queries/totp";
 import { SessionsView } from "@/components/dashboard/SessionsView";
+import { TwoFactorSetup } from "@/components/dashboard/TwoFactorSetup";
 
 export const metadata: Metadata = {
   title: "Mi Cuenta | SKYCODE Agency",
@@ -21,7 +23,12 @@ export default async function DashboardAccountPage() {
   const payload = token ? await verifySessionToken(token) : null;
   const currentSessionId = payload?.sessionId ?? null;
 
-  const sessions = await getActiveUserSessions(session.id);
+  const [sessions, totpStatus] = await Promise.all([getActiveUserSessions(session.id), getTotpStatus(session.id)]);
 
-  return <SessionsView user={session} sessions={sessions} currentSessionId={currentSessionId} />;
+  return (
+    <div className="space-y-6">
+      <TwoFactorSetup initialEnabled={totpStatus.enabled} initialRemainingBackupCodes={totpStatus.remainingBackupCodes} />
+      <SessionsView user={session} sessions={sessions} currentSessionId={currentSessionId} />
+    </div>
+  );
 }

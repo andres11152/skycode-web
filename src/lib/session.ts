@@ -81,3 +81,30 @@ export async function verifySessionToken(token: string): Promise<SessionTokenPay
     return null;
   }
 }
+
+/**
+ * Token intermedio del login en dos pasos (2FA, ver lib/authService.ts):
+ * cuando la contraseña es correcta pero el usuario tiene TOTP activo, no se
+ * crea sesión todavía — se firma este token de corta duración (5 min, muy
+ * por debajo de los 7 días de una sesión real) que prueba "esta persona ya
+ * pasó la contraseña" sin dejar entrar hasta que también pase el código de
+ * 6 dígitos. No toca la tabla `sessions`: es deliberadamente stateless y de
+ * un solo propósito (nunca se usa como sustituto de una sesión real, ni
+ * siquiera hay un `resolveSession()` que lo acepte).
+ */
+export async function createPendingTwoFactorToken(userId: number): Promise<string> {
+  return new SignJWT({ pending2fa: userId })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("5m")
+    .sign(getSecretKey());
+}
+
+export async function verifyPendingTwoFactorToken(token: string): Promise<number | null> {
+  try {
+    const { payload } = await jwtVerify(token, getSecretKey());
+    return typeof payload.pending2fa === "number" ? payload.pending2fa : null;
+  } catch {
+    return null;
+  }
+}

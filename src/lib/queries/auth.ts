@@ -7,6 +7,7 @@ export interface UserAuthRow {
   password_hash: string;
   role: string;
   status: string;
+  totp_enabled: boolean;
 }
 
 /**
@@ -14,7 +15,7 @@ export interface UserAuthRow {
  */
 export async function findUserByEmail(email: string): Promise<UserAuthRow | null> {
   const res = await query(
-    "SELECT id, name, email, password_hash, role, status FROM users WHERE email = $1 LIMIT 1;",
+    "SELECT id, name, email, password_hash, role, status, totp_enabled FROM users WHERE email = $1 LIMIT 1;",
     [email.toLowerCase()]
   );
   const row = res.rows[0];
@@ -27,6 +28,7 @@ export async function findUserByEmail(email: string): Promise<UserAuthRow | null
     password_hash: String(row.password_hash ?? ""),
     role: String(row.role ?? ""),
     status: String(row.status ?? ""),
+    totp_enabled: Boolean(row.totp_enabled),
   };
 }
 

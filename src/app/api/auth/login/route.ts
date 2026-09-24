@@ -46,11 +46,19 @@ export async function POST(request: Request) {
       userAgent: request.headers.get("user-agent"),
     });
 
-    if (!authResult) {
+    if (authResult.status === "invalid") {
       return NextResponse.json(
         { error: "Credenciales de acceso no válidas." },
         { status: 401 }
       );
+    }
+
+    // Contraseña correcta, pero falta el segundo factor — no se setea
+    // ninguna cookie de sesión todavía. El frontend (LoginView.tsx) guarda
+    // `pendingToken` en memoria y lo manda de vuelta a
+    // POST /api/auth/login/verify-2fa junto con el código de 6 dígitos.
+    if (authResult.status === "needs_2fa") {
+      return NextResponse.json({ success: true, needsTwoFactor: true, pendingToken: authResult.pendingToken });
     }
 
     const response = NextResponse.json({

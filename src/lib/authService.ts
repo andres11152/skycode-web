@@ -1,10 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { query } from "./db";
 import { ensureSeedAdmin, comparePassword } from "./auth";
-import { createSessionToken } from "./session";
+import { createSessionToken, createPendingTwoFactorToken, verifyPendingTwoFactorToken } from "./session";
 import { invalidateSessionCache } from "./authSession";
 import { logAudit } from "./audit";
 import { findUserByEmail, createSessionRecord, revokeSessionRecord } from "./queries/auth";
+import { verifyTotpOrBackupCode } from "./queries/totp";
 
 export const SESSION_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000; // 7 días
 
@@ -24,25 +25,59 @@ export interface AuthenticateParams {
   userAgent?: string | null;
 }
 
+export interface AuthUserPublic {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export interface AuthSuccessResult {
-  user: {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-  };
+  user: AuthUserPublic;
   token: string;
 }
 
 /**
- * Servicio de dominio para validar credenciales y crear la sesión del usuario.
+ * Resultado discriminado del primer paso del login — antes devolvía
+ * `AuthSuccessResult | null` directo. Con 2FA (ver lib/totp.ts) hace falta
+ * un tercer estado intermedio: contraseña correcta, pero todavía no hay
+ * sesión porque falta el código de 6 dígitos. `POST /api/auth/login`
+ * traduce cada rama a su propia respuesta HTTP.
  */
-export async function authenticateUserCredentials({
-  email,
-  password,
-  ip,
-  userAgent,
-}: AuthenticateParams): Promise<AuthSuccessResult | null> {
+export type AuthenticateResult =
+  | { status: "invalid" }
+  | { status: "needs_2fa"; pendingToken: string }
+  | { status: "success"; user: AuthUserPublic; token: string };
+
+/**
+ * Crea la sesión real (fila en `sessions` + JWT firmado + entrada de
+ * auditoría) — compartido entre el login directo (sin 2FA) y el segundo
+ * paso del login con 2FA, para no duplicar esta lógica en dos sitios.
+ */
+async function createSessionForUser(user: AuthUserPublic, ip: string, userAgent?: string | null): Promise<AuthSuccessResult> {
+  const sessionId = randomUUID();
+  const expiresAt = new Date(Date.now() + SESSION_LIFETIME_MS);
+  await createSessionRecord({ id: sessionId, userId: user.id, expiresAt, ip, userAgent });
+
+  await logAudit(query, {
+    actorId: user.id,
+    actorEmail: user.email,
+    action: "user.login",
+    entityType: "session",
+    entityId: sessionId,
+    ip,
+  });
+
+  const token = await createSessionToken({ sessionId });
+  return { user, token };
+}
+
+/**
+ * Servicio de dominio para validar credenciales — primer paso del login.
+ * Si el usuario tiene 2FA activo, se detiene acá (`needs_2fa`) sin crear
+ * sesión; `verifyTwoFactorAndCreateSession()` es el segundo paso.
+ */
+export async function authenticateUserCredentials({ email, password, ip, userAgent }: AuthenticateParams): Promise<AuthenticateResult> {
   // 1. Garantizar siembra de usuario administrador inicial en arranque de BD
   await ensureSeedAdmin();
 
@@ -54,42 +89,47 @@ export async function authenticateUserCredentials({
   const isValid = await comparePassword(password, passwordHashToCheck);
 
   if (!user || !isValid || user.status !== "active") {
-    return null;
+    return { status: "invalid" };
   }
 
-  // 4. Crear registro de sesión en PostgreSQL
-  const sessionId = randomUUID();
-  const expiresAt = new Date(Date.now() + SESSION_LIFETIME_MS);
-  await createSessionRecord({
-    id: sessionId,
-    userId: user.id,
-    expiresAt,
-    ip,
-    userAgent,
-  });
+  const publicUser: AuthUserPublic = { id: user.id, name: user.name, email: user.email, role: user.role };
 
-  // 5. Registrar en log de auditoría
-  await logAudit(query, {
-    actorId: user.id,
-    actorEmail: user.email,
-    action: "user.login",
-    entityType: "session",
-    entityId: sessionId,
-    ip,
-  });
+  if (user.totp_enabled) {
+    const pendingToken = await createPendingTwoFactorToken(user.id);
+    return { status: "needs_2fa", pendingToken };
+  }
 
-  // 6. Firmar token JWT de sesión
-  const token = await createSessionToken({ sessionId });
+  const { token } = await createSessionForUser(publicUser, ip, userAgent);
+  return { status: "success", user: publicUser, token };
+}
 
-  return {
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    },
-    token,
-  };
+export interface VerifyTwoFactorParams {
+  pendingToken: string;
+  code: string;
+  ip: string;
+  userAgent?: string | null;
+}
+
+/**
+ * Segundo paso del login cuando `authenticateUserCredentials` devolvió
+ * `needs_2fa`. Acepta tanto un código TOTP de 6 dígitos como un código de
+ * respaldo (ver `verifyTotpOrBackupCode`) — no distingue cuál llegó, así
+ * que el formulario de login puede aceptar cualquiera de los dos sin que
+ * el usuario tenga que indicar cuál está usando.
+ */
+export async function verifyTwoFactorAndCreateSession({ pendingToken, code, ip, userAgent }: VerifyTwoFactorParams): Promise<AuthSuccessResult | null> {
+  const userId = await verifyPendingTwoFactorToken(pendingToken);
+  if (!userId) return null;
+
+  const isValidCode = await verifyTotpOrBackupCode(userId, code);
+  if (!isValidCode) return null;
+
+  const res = await query("SELECT id, name, email, role, status FROM users WHERE id = $1;", [userId]);
+  const row = res.rows[0];
+  if (!row || row.status !== "active") return null;
+
+  const publicUser: AuthUserPublic = { id: Number(row.id), name: String(row.name), email: String(row.email), role: String(row.role) };
+  return createSessionForUser(publicUser, ip, userAgent);
 }
 
 /**
