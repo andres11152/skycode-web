@@ -84,10 +84,10 @@ export function buildLeadConfirmationEmail({ name, message, service, locale }: L
             </tr>
             <tr>
               <td style="padding:36px 40px 0;">
-                <table role="presentation" cellpadding="0" cellspacing="0">
+                <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
                   <tr>
-                    <td style="width:56px;height:56px;border-radius:14px;background-color:#ecfdf5;border:1px solid #a7f3d0;text-align:center;vertical-align:middle;">
-                      <span style="font-size:26px;line-height:56px;color:#059669;">&#10003;</span>
+                    <td width="56" height="56" align="center" valign="middle" style="width:56px;height:56px;border-radius:14px;background-color:#ecfdf5;border:1px solid #a7f3d0;">
+                      <span style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:24px;line-height:1;color:#059669;">&#10003;</span>
                     </td>
                   </tr>
                 </table>
