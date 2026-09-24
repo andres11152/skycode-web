@@ -130,3 +130,79 @@ describe("Documentos — subida, descarga y RBAC de extremo a extremo", () => {
     expect(res.status).toBe(403);
   });
 });
+
+describe("Documentos — subida desde el portal (cliente)", () => {
+  it("un cliente sube un documento a uno de sus propios proyectos, y aparece en su listado del portal", async () => {
+    const client = await createTestClient();
+    const clientUser = await createTestUser({ role: "client", clientId: client.id, password: "SuperSecret123456" });
+    const project = await createTestProject(client.id);
+    const clientBrowser = await loginAs(clientUser.email, "SuperSecret123456");
+
+    const uploadRes = await clientBrowser.fetch("/api/documents", {
+      method: "POST",
+      body: pdfFormData(project.id, "brief.pdf", "contenido del brief"),
+    });
+    expect(uploadRes.status).toBe(200);
+    const { document } = await uploadRes.json();
+    expect(document.original_filename).toBe("brief.pdf");
+
+    // Listado del portal (sin projectId) — mismo endpoint que usa PortalDocumentsPanel.
+    const listRes = await clientBrowser.get("/api/documents");
+    const { documents } = await listRes.json();
+    expect(documents.map((d: { id: number }) => d.id)).toContain(document.id);
+  });
+
+  it("un cliente puede descargar lo que él mismo subió", async () => {
+    const client = await createTestClient();
+    const clientUser = await createTestUser({ role: "client", clientId: client.id, password: "SuperSecret123456" });
+    const project = await createTestProject(client.id);
+    const clientBrowser = await loginAs(clientUser.email, "SuperSecret123456");
+
+    const uploadRes = await clientBrowser.fetch("/api/documents", {
+      method: "POST",
+      body: pdfFormData(project.id, "logo.png", "contenido binario simulado"),
+    });
+    const { document } = await uploadRes.json();
+
+    const downloadRes = await clientBrowser.get(`/api/documents/${document.id}/download`);
+    expect(downloadRes.status).toBe(200);
+    expect(await downloadRes.text()).toBe("contenido binario simulado");
+  });
+
+  it("404 si el cliente intenta subir a un proyecto que no es suyo (no confirma que el proyecto existe)", async () => {
+    const ownClient = await createTestClient();
+    const clientUser = await createTestUser({ role: "client", clientId: ownClient.id, password: "SuperSecret123456" });
+    const otherClient = await createTestClient();
+    const otherProject = await createTestProject(otherClient.id);
+
+    const clientBrowser = await loginAs(clientUser.email, "SuperSecret123456");
+    const res = await clientBrowser.fetch("/api/documents", {
+      method: "POST",
+      body: pdfFormData(otherProject.id),
+    });
+    expect(res.status).toBe(404);
+  });
+
+  it("rechaza una extensión no permitida subida por un cliente, mismas reglas que el equipo interno", async () => {
+    const client = await createTestClient();
+    const clientUser = await createTestUser({ role: "client", clientId: client.id, password: "SuperSecret123456" });
+    const project = await createTestProject(client.id);
+    const clientBrowser = await loginAs(clientUser.email, "SuperSecret123456");
+
+    const formData = new FormData();
+    formData.append("project_id", String(project.id));
+    formData.append("file", new Blob(["MZ..."], { type: "application/x-msdownload" }), "virus.exe");
+
+    const res = await clientBrowser.fetch("/api/documents", { method: "POST", body: formData });
+    expect(res.status).toBe(400);
+  });
+
+  it("un cliente sin proyectos (client_id sin proyectos asociados) recibe 404 al intentar subir", async () => {
+    const client = await createTestClient();
+    const clientUser = await createTestUser({ role: "client", clientId: client.id, password: "SuperSecret123456" });
+    const clientBrowser = await loginAs(clientUser.email, "SuperSecret123456");
+
+    const res = await clientBrowser.fetch("/api/documents", { method: "POST", body: pdfFormData(999999) });
+    expect(res.status).toBe(404);
+  });
+});

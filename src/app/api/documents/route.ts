@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { withTransaction } from "@/lib/db";
-import { requireSession, withAuth } from "@/lib/withAuth";
+import { requireSession } from "@/lib/withAuth";
 import { hasPermission } from "@/lib/rbac";
 import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { getProjectDocuments, getClientDocuments, createDocumentRecord } from "@/lib/queries/documents";
+import { isProjectOwnedByClient } from "@/lib/queries/supportTickets";
 import { saveDocumentFile, isAllowedDocumentExtension } from "@/lib/storage";
 import { logError } from "@/lib/logger";
 
@@ -55,15 +56,37 @@ export async function GET(request: Request) {
 
 /**
  * POST /api/documents - Sube un documento a un proyecto (`multipart/form-data`,
- * campos `project_id` y `file`). Requiere `documents:write`. El archivo se
- * guarda con un nombre generado server-side (ver lib/storage.ts) — nunca el
- * nombre original — y la fila de `documents` se crea en la misma
- * transacción que el registro de auditoría; si el `INSERT` falla después
- * de escribir el archivo, el archivo queda huérfano en disco (aceptable:
- * un archivo sin fila no se lista ni se sirve nunca, y no es información
- * sensible reconstruible sin el `storage_key` aleatorio).
+ * campos `project_id` y `file`). Dos caminos, mismo criterio que
+ * `POST /api/support-tickets`:
+ *
+ * - Con `documents:write` (admin/sales_manager): sube a cualquier proyecto.
+ * - Sin ese permiso pero `role === "client"`: sube a UNO DE SUS PROPIOS
+ *   proyectos (verificado con `isProjectOwnedByClient()`) — esta es la
+ *   pieza de "Portal ampliado" que faltaba: el cliente podía descargar
+ *   documentos desde `/portal` pero nunca subir los suyos (brief, logos,
+ *   accesos). `uploaded_by` queda igual con `session.id` — un cliente SÍ
+ *   tiene fila en `users` (con `client_id`, ver rbac.ts), así que no hace
+ *   falta ningún cambio de esquema para saber quién subió qué.
+ *
+ * El archivo se guarda con un nombre generado server-side (ver
+ * lib/storage.ts) — nunca el nombre original — y la fila de `documents` se
+ * crea en la misma transacción que el registro de auditoría; si el
+ * `INSERT` falla después de escribir el archivo, el archivo queda huérfano
+ * en disco (aceptable: un archivo sin fila no se lista ni se sirve nunca,
+ * y no es información sensible reconstruible sin el `storage_key`
+ * aleatorio).
  */
-export const POST = withAuth("documents:write", async (request, { session }) => {
+export async function POST(request: Request) {
+  const auth = await requireSession();
+  if ("error" in auth) return auth.error;
+  const { session } = auth;
+
+  const canWrite = hasPermission(session.role, "documents:write");
+  const isClient = session.role === "client" && !!session.clientId;
+  if (!canWrite && !isClient) {
+    return NextResponse.json({ error: "Permiso denegado." }, { status: 403 });
+  }
+
   try {
     const formData = await request.formData();
     const projectIdRaw = formData.get("project_id");
@@ -72,6 +95,11 @@ export const POST = withAuth("documents:write", async (request, { session }) => 
     const projectId = Number(projectIdRaw);
     if (!Number.isInteger(projectId) || projectId <= 0) {
       return NextResponse.json({ error: "project_id inválido." }, { status: 400 });
+    }
+    if (isClient && !(await isProjectOwnedByClient(projectId, session.clientId!))) {
+      // 404, no 403 — mismo criterio que el resto del portal: no confirmar
+      // que el proyecto existe si no es del cliente que llama.
+      return NextResponse.json({ error: "Proyecto no encontrado." }, { status: 404 });
     }
     if (!(file instanceof File)) {
       return NextResponse.json({ error: "Debe adjuntar un archivo." }, { status: 400 });
@@ -127,4 +155,4 @@ export const POST = withAuth("documents:write", async (request, { session }) => 
     logError("❌ [API POST Document Error]", error);
     return NextResponse.json({ error: "Error al subir el documento." }, { status: 500 });
   }
-});
+}

@@ -129,7 +129,7 @@ export function PortalView({
 
       {activeTab === "proyectos" && <ProjectsBoard initialProjects={projects} variant="portal" />}
       {activeTab === "facturas" && <PortalInvoicesPanel invoices={invoices} />}
-      {activeTab === "documentos" && <PortalDocumentsPanel documents={documents} />}
+      {activeTab === "documentos" && <PortalDocumentsPanel documents={documents} projects={projectOptions} />}
       {activeTab === "soporte" && <PortalSupportPanel tickets={tickets} projects={projectOptions} />}
     </div>
   );
