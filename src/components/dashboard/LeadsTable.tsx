@@ -22,22 +22,22 @@ import {
   Mail,
   History,
   CheckCircle2,
-  AlertCircle,
   UserCog,
   Trash2,
   AlertTriangle,
   CalendarClock,
+  LayoutGrid,
+  TableProperties,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Modal } from "@/components/ui/Modal";
 import { EmptyState } from "./EmptyState";
-import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
+import { LeadsKanban } from "./LeadsKanban";
+import { LEAD_STATUS_OPTIONS, LEAD_STATUS_STYLES, getSlaBadge, getFollowUpBadge, todayIsoDate } from "./leadShared";
 import { logError } from "@/lib/logger";
 import { buildLeadWhatsappUrl } from "@/lib/leadWhatsapp";
 import type { Lead, LeadActivity, LeadActivityType, LeadOwner } from "./types";
-
-const STATUS_OPTIONS: Lead["status"][] = ["Nuevo", "En Cotización", "Ganado", "Perdido"];
 
 const ACTIVITY_LABELS: Record<LeadActivityType, string> = {
   note: "Nota",
@@ -60,13 +60,15 @@ interface LeadsTableProps {
   pageSize: number;
   q: string;
   status: string;
+  /** "kanban" trae TODOS los leads activos que calzan `q` sin paginar (ver page.tsx) — mismo criterio sin límite que los tableros de Soporte/Tareas. */
+  view: "table" | "kanban";
   owners: LeadOwner[];
   stats: { total: number; newCount: number; wonCount: number };
   /** `leads:write` — el borrado es lógico pero saca el prospecto de la vista de todos, así que se gatea igual que editar. */
   canWrite: boolean;
 }
 
-export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, status, owners, stats, canWrite }: LeadsTableProps) {
+export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, status, view, owners, stats, canWrite }: LeadsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [isNavigating, startNavigation] = useTransition();
@@ -206,44 +208,15 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
     }
   };
 
-  // Fecha (sin hora) de hoy en la zona local, para comparar contra
-  // `next_follow_up_at` sin desfases de huso horario — mismo criterio que
-  // `daysFromNow()` en los tests de invoices.
-  const todayIso = (() => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-  })();
+  // Fecha (sin hora) de hoy en la zona local — función pura compartida con
+  // `LeadsKanban` (ver leadShared.tsx), para no calcularla dos veces con
+  // criterios que podrían desincronizarse.
+  const todayIso = todayIsoDate();
 
-  function getFollowUpBadge(lead: Lead) {
-    if (!lead.next_follow_up_at) return null;
-    const dueDate = lead.next_follow_up_at.slice(0, 10);
-    if (dueDate < todayIso) {
-      return (
-        <Badge tone="danger" className="gap-1">
-          <CalendarClock size={11} />
-          Seguimiento vencido
-        </Badge>
-      );
-    }
-    if (dueDate === todayIso) {
-      return (
-        <Badge tone="warning" className="gap-1">
-          <CalendarClock size={11} />
-          Seguimiento hoy
-        </Badge>
-      );
-    }
-    return (
-      <Badge tone="info" className="gap-1">
-        <CalendarClock size={11} />
-        {new Date(`${dueDate}T00:00:00`).toLocaleDateString("es-CO", { day: "numeric", month: "short" })}
-      </Badge>
-    );
-  }
-
-  const pushQuery = (overrides: Partial<{ q: string; status: string; page: number }>) => {
+  const pushQuery = (overrides: Partial<{ q: string; status: string; page: number; view: "table" | "kanban" }>) => {
     const nextQ = overrides.q ?? q;
     const nextStatus = overrides.status ?? status;
+    const nextView = overrides.view ?? view;
     const resetPage = overrides.q !== undefined || overrides.status !== undefined;
     const nextPage = overrides.page ?? (resetPage ? 1 : page);
 
@@ -251,6 +224,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
     if (nextQ) params.set("q", nextQ);
     if (nextStatus !== "ALL") params.set("status", nextStatus);
     if (nextPage > 1) params.set("page", String(nextPage));
+    if (nextView !== "table") params.set("view", nextView);
 
     startNavigation(() => router.push(`${pathname}${params.size ? `?${params}` : ""}`));
   };
@@ -364,34 +338,6 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const getSLABadge = (createdAt: string, leadStatus: string) => {
-    if (leadStatus !== "Nuevo" || now === null) return null;
-    const diffHours = (now - new Date(createdAt).getTime()) / (1000 * 60 * 60);
-
-    if (diffHours < 2) {
-      return (
-        <Badge tone="success" className="gap-1">
-          <CheckCircle2 size={11} />
-          Respuesta Inmediata (&lt;2h)
-        </Badge>
-      );
-    }
-    if (diffHours < 24) {
-      return (
-        <Badge tone="warning" className="gap-1">
-          <Clock size={11} />
-          Atención Requerida Hoy
-        </Badge>
-      );
-    }
-    return (
-      <Badge tone="danger" className="gap-1 animate-pulse">
-        <AlertCircle size={11} />
-        SLA Vencido (&gt;24h)
-      </Badge>
-    );
-  };
-
   const totalPages = Math.ceil(total / pageSize) || 1;
   const exportParams = new URLSearchParams();
   if (q) exportParams.set("q", q);
@@ -479,22 +425,71 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <SlidersHorizontal size={14} className="text-foreground/60" />
-          <span className="text-xs text-foreground/60 font-mono">Estado:</span>
-          <select
-            value={status}
-            onChange={(e) => pushQuery({ status: e.target.value })}
-            className="rounded-xl border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
+        {view === "table" && (
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <SlidersHorizontal size={14} className="text-foreground/60" />
+            <span className="text-xs text-foreground/60 font-mono">Estado:</span>
+            <select
+              value={status}
+              onChange={(e) => pushQuery({ status: e.target.value })}
+              className="rounded-xl border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
+            >
+              <option value="ALL" className="bg-background text-foreground">Todos los estados</option>
+              {LEAD_STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s} className="bg-background text-foreground">{s}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Tabla/Kanban — misma fila de datos, dos formas de verlos. El
+            estado persiste en la URL (?view=kanban) para que un refresh o
+            un link compartido conserve la vista, mismo criterio que
+            q/status/page. */}
+        <div className="flex items-center gap-1 rounded-xl border border-foreground/15 bg-foreground/[0.02] p-1" role="group" aria-label="Cambiar vista">
+          <button
+            type="button"
+            onClick={() => pushQuery({ view: "table" })}
+            aria-pressed={view === "table"}
+            className={`flex min-h-9 items-center gap-1.5 rounded-lg px-3 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+              view === "table" ? "bg-accent-strong text-white" : "text-foreground/60 hover:bg-foreground/10"
+            }`}
           >
-            <option value="ALL" className="bg-background text-foreground">Todos los estados</option>
-            {STATUS_OPTIONS.map((s) => (
-              <option key={s} value={s} className="bg-background text-foreground">{s}</option>
-            ))}
-          </select>
+            <TableProperties size={14} />
+            Tabla
+          </button>
+          <button
+            type="button"
+            onClick={() => pushQuery({ view: "kanban" })}
+            aria-pressed={view === "kanban"}
+            className={`flex min-h-9 items-center gap-1.5 rounded-lg px-3 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+              view === "kanban" ? "bg-accent-strong text-white" : "text-foreground/60 hover:bg-foreground/10"
+            }`}
+          >
+            <LayoutGrid size={14} />
+            Kanban
+          </button>
         </div>
       </div>
 
+      {view === "kanban" ? (
+        leads.length === 0 ? (
+          <EmptyState
+            icon={Users}
+            title="No se encontraron prospectos"
+            description={stats.total === 0 ? "Todavía no hay leads registrados." : "Intente ajustar la búsqueda."}
+          />
+        ) : (
+          <LeadsKanban
+            leads={leads}
+            onOpenLead={setSelectedLead}
+            onStatusChange={handleStatusChange}
+            now={now}
+            todayIso={todayIso}
+            canDrag={canWrite}
+          />
+        )
+      ) : (
       <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
         {leads.length === 0 ? (
           <EmptyState
@@ -556,24 +551,16 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
                         <td className="px-5 py-4 space-y-1">
                           <div className="flex flex-wrap gap-1">
-                            {getSLABadge(lead.created_at, lead.status)}
-                            {getFollowUpBadge(lead)}
+                            {getSlaBadge(lead.created_at, lead.status, now)}
+                            {getFollowUpBadge(lead, todayIso)}
                           </div>
                           <select
                             value={lead.status}
                             onClick={(e) => e.stopPropagation()}
                             onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                            className={`rounded-lg border px-2.5 py-1 text-[11px] font-semibold outline-none cursor-pointer ${
-                              lead.status === "Nuevo"
-                                ? "border-amber-200 bg-amber-50 text-amber-700"
-                                : lead.status === "En Cotización"
-                                ? "border-sky-200 bg-sky-50 text-sky-700"
-                                : lead.status === "Ganado"
-                                ? "border-green-200 bg-green-50 text-green-700"
-                                : "border-red-200 bg-red-50 text-red-700"
-                            }`}
+                            className={`rounded-lg border px-2.5 py-1 text-[11px] font-semibold outline-none cursor-pointer ${LEAD_STATUS_STYLES[lead.status].select}`}
                           >
-                            {STATUS_OPTIONS.map((s) => (
+                            {LEAD_STATUS_OPTIONS.map((s) => (
                               <option key={s} value={s} className="bg-background text-foreground">{s}</option>
                             ))}
                           </select>
@@ -639,6 +626,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
           </>
         )}
       </div>
+      )}
 
       <AnimatePresence>
         {selectedLead && (
