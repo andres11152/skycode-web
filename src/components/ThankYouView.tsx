@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Script from "next/script";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChatCircle, CheckCircle, ShieldCheck } from "@phosphor-icons/react";
 import { getContactContent } from "@/content/contact";
@@ -8,6 +9,8 @@ import { getUiContent } from "@/content/ui";
 import { whatsappHref } from "@/lib/site";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 import { fadeUp } from "@/lib/animations";
+
+const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 
 /**
  * Página de destino tras un envío exitoso del formulario de contacto —
@@ -23,7 +26,37 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
   const reduced = useReducedMotion();
 
   return (
-    <section className="flex min-h-[70vh] items-center justify-center px-6 py-20">
+    <>
+      {googleAdsId && (
+        // Movido aquí desde app/layout.tsx: antes se cargaba en TODAS las
+        // páginas del sitio (148KB de JS, gran parte sin usar fuera de esta
+        // página), inflando el trabajo del hilo principal justo cuando un
+        // usuario real hace su primer tap — contribuía al INP alto medido
+        // por CrUX en la home. La conversión de Google Ads "Envío de
+        // formulario para clientes potenciales" es de tipo "Carga de
+        // página" exclusivamente sobre /gracias, así que no hace falta en
+        // ninguna otra ruta. `afterInteractive` (no `lazyOnload`) se
+        // mantiene: esta página tiene poco dwell time, el tag necesita
+        // correr 'config' apenas monta, sin esperar a que el navegador
+        // quede idle.
+        <>
+          <Script
+            id="google-ads-tag"
+            strategy="afterInteractive"
+            src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
+          />
+          <Script id="google-ads-init" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${googleAdsId}');
+              console.log('[GAds] gtag config ejecutado en', window.location.pathname, '- revisa la pestaña Network filtrando por "googleads" o "pagead" para confirmar el disparo de la conversión.');
+            `}
+          </Script>
+        </>
+      )}
+      <section className="flex min-h-[70vh] items-center justify-center px-6 py-20">
       <motion.div
         variants={fadeUp(reduced ?? false)}
         initial="hidden"
@@ -71,6 +104,7 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
           </a>
         </div>
       </motion.div>
-    </section>
+      </section>
+    </>
   );
 }

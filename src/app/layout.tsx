@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { LocaleProvider } from "@/components/LocaleProvider";
@@ -222,8 +221,6 @@ function SiteNavigationJsonLd() {
   );
 }
 
-const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -237,33 +234,6 @@ export default function RootLayout({
       <head>
         <OrganizationJsonLd />
         <SiteNavigationJsonLd />
-        {googleAdsId && (
-          <>
-            {/* afterInteractive (no lazyOnload): la acción de conversión de
-                Google Ads "Envío de formulario para clientes potenciales" es
-                de tipo "Carga de página" sobre /gracias — el tag necesita
-                estar cargado y haber corrido 'config' apenas esa página
-                monta, sin depender de que el navegador quede idle (una
-                página de agradecimiento suele tener muy poco dwell time). */}
-            <Script
-              id="google-ads-tag"
-              strategy="afterInteractive"
-              src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
-            />
-            <Script id="google-ads-init" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${googleAdsId}');
-                if (window.location.pathname.indexOf('/gracias') !== -1) {
-                  console.log('[GAds] gtag config ejecutado en', window.location.pathname, '- revisa la pestaña Network filtrando por "googleads" o "pagead" para confirmar el disparo de la conversión.');
-                }
-              `}
-            </Script>
-          </>
-        )}
-
       </head>
       <body className="min-h-full flex flex-col">
         <LocaleProvider>
