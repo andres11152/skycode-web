@@ -142,13 +142,24 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+
+    // `ResizeObserver` ya coalesce sus propias notificaciones a una vez por
+    // frame de layout en navegadores modernos, así que este gate no corrige
+    // un bug medido — es el mismo patrón `ticking` de `checkScroll` de más
+    // abajo, aplicado aquí por consistencia y como blindaje ante cualquier
+    // entorno (navegador antiguo, polyfill) que no coalescee igual.
+    let ticking = false;
     const resizeObserver = new ResizeObserver((entries) => {
       const entry = entries[0];
-      if (!entry) return;
-      const available = entry.contentRect.width;
-      const unit = getCardWidth();
-      const wholeCards = Math.max(1, Math.floor((available + CARD_GAP) / unit));
-      setVisibleWidth(wholeCards * unit - CARD_GAP);
+      if (!entry || ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const available = entry.contentRect.width;
+        const unit = getCardWidth();
+        const wholeCards = Math.max(1, Math.floor((available + CARD_GAP) / unit));
+        setVisibleWidth(wholeCards * unit - CARD_GAP);
+        ticking = false;
+      });
     });
     resizeObserver.observe(el);
     return () => resizeObserver.disconnect();
