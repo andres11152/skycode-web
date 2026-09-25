@@ -28,6 +28,7 @@ import {
   X,
   Search,
   PenSquare,
+  LineChart,
 } from "lucide-react";
 import { hasPermission, type Permission } from "@/lib/rbac";
 import { NotificationBell } from "./NotificationBell";
@@ -85,6 +86,9 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/dashboard/facturacion", label: "Facturación", icon: Receipt, permission: "invoices:read" },
       { href: "/dashboard/gastos", label: "Gastos", icon: Wallet, permission: "expenses:read" },
       { href: "/dashboard/rentabilidad", label: "Rentabilidad", icon: BarChart3, permission: "profitability:read" },
+      // Mismo permiso que Rentabilidad a propósito — mismo tipo de dato
+      // financiero agregado de toda la agencia (ver page.tsx).
+      { href: "/dashboard/proyeccion-caja", label: "Proyección de Caja", icon: LineChart, permission: "profitability:read" },
     ],
   },
   {
