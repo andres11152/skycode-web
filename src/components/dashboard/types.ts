@@ -280,6 +280,12 @@ export interface Proposal {
   subtotal: number;
   total: number;
   status: ProposalStatus;
+  /** Firma electrónica capturada al aceptar (ver migración 0030) — `null` en
+   * propuestas rechazadas/pendientes, y también en propuestas aceptadas
+   * ANTES de que existiera esta captura. */
+  signer_name: string | null;
+  signature_ip: string | null;
+  signature_user_agent: string | null;
 }
 
 /**

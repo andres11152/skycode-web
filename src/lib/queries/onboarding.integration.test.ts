@@ -92,7 +92,9 @@ describe("integración con creación de proyectos", () => {
   it("aceptar una propuesta crea el checklist junto con el proyecto", async () => {
     const created = await createTestProposal({});
     const proposal = await getProposalById(created.id);
-    const project = await withTransaction((c) => acceptProposalAndCreateProject(proposal!, c));
+    const project = await withTransaction((c) =>
+      acceptProposalAndCreateProject(proposal!, c, { signerName: "Firmante de Prueba", ip: null, userAgent: null })
+    );
 
     const items = await getOnboardingItems(project.id);
     expect(items).toHaveLength(ONBOARDING_STEPS.length);

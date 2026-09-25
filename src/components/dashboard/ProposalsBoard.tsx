@@ -126,6 +126,9 @@ export function ProposalsBoard({
                     </td>
                     <td className="px-5 py-4">
                       <Badge tone={STATUS_TONES[p.status]}>{STATUS_LABELS[p.status]}</Badge>
+                      {p.status === "accepted" && p.signer_name && (
+                        <div className="mt-1 text-[10px] text-foreground/50">Firmado por {p.signer_name}</div>
+                      )}
                     </td>
                     <td className="px-5 py-4 font-mono text-[10px] text-foreground/60">
                       {p.valid_until ? new Date(p.valid_until).toLocaleDateString("es-CO") : "Sin vencimiento"}

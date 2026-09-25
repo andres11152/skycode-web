@@ -17,6 +17,9 @@ interface ProposalRow {
   rejected_at: string | null;
   accepted_project_id: number | null;
   created_at: string;
+  signer_name: string | null;
+  signature_ip: string | null;
+  signature_user_agent: string | null;
 }
 
 function computeStatus(row: ProposalRow): Proposal["status"] {
@@ -66,6 +69,9 @@ function shapeProposal(row: ProposalRow, items: ProposalItem[]): Proposal {
     subtotal,
     total,
     status: computeStatus(row),
+    signer_name: row.signer_name,
+    signature_ip: row.signature_ip,
+    signature_user_agent: row.signature_user_agent,
   };
 }
 
@@ -84,6 +90,9 @@ function mapRowToProposalRow(row: Record<string, unknown>): ProposalRow {
     rejected_at: row.rejected_at ? String(row.rejected_at) : null,
     accepted_project_id: row.accepted_project_id ? Number(row.accepted_project_id) : null,
     created_at: String(row.created_at ?? ""),
+    signer_name: row.signer_name ? String(row.signer_name) : null,
+    signature_ip: row.signature_ip ? String(row.signature_ip) : null,
+    signature_user_agent: row.signature_user_agent ? String(row.signature_user_agent) : null,
   };
 }
 
@@ -169,10 +178,19 @@ export async function rejectProposal(id: string, dbRunner: QueryRunner) {
   await dbRunner.query(`UPDATE proposals SET rejected_at = now() WHERE id = $1;`, [id]);
 }
 
+export interface SignatureData {
+  signerName: string;
+  ip: string | null;
+  userAgent: string | null;
+}
+
 /**
- * Acepta una propuesta, creando/enlazando el cliente y creando el proyecto con sus sprints.
+ * Acepta una propuesta, creando/enlazando el cliente y creando el proyecto
+ * con sus sprints. `signature` es obligatorio — la ruta que llama a esta
+ * función (`POST /api/proposals/[id]/respond`) ya validó con Zod que venga
+ * un nombre de firmante no vacío antes de llegar acá, ver migración 0030.
  */
-export async function acceptProposalAndCreateProject(proposal: Proposal, dbRunner: QueryRunner) {
+export async function acceptProposalAndCreateProject(proposal: Proposal, dbRunner: QueryRunner, signature: SignatureData) {
   const clientEmailNormalized = proposal.client_email.toLowerCase();
   const insertClientRes = await dbRunner.query(
     `INSERT INTO clients (name, email) VALUES ($1, $2) ON CONFLICT (email) DO NOTHING RETURNING id;`,
@@ -200,8 +218,10 @@ export async function acceptProposalAndCreateProject(proposal: Proposal, dbRunne
   }
 
   await dbRunner.query(
-    `UPDATE proposals SET accepted_at = now(), accepted_project_id = $1 WHERE id = $2;`,
-    [newProject.id, proposal.id]
+    `UPDATE proposals
+     SET accepted_at = now(), accepted_project_id = $1, signer_name = $2, signature_ip = $3, signature_user_agent = $4
+     WHERE id = $5;`,
+    [newProject.id, signature.signerName, signature.ip, signature.userAgent, proposal.id]
   );
 
   return newProject;

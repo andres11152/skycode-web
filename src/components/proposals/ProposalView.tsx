@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { CheckCircle, Clock, Warning, XCircle } from "@phosphor-icons/react";
@@ -11,21 +11,29 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
   const [status, setStatus] = useState(proposal.status);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [signerName, setSignerName] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [signedName, setSignedName] = useState<string | null>(null);
+  const signerNameId = useId();
 
   const respond = async (action: "accept" | "reject") => {
     setError(null);
     setIsSubmitting(true);
     try {
+      const trimmedName = signerName.trim();
       const res = await fetch(`/api/proposals/${proposal.id}/respond`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
+        body: JSON.stringify(
+          action === "accept" ? { action, signerName: trimmedName, consent: true } : { action }
+        ),
       });
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || "No se pudo procesar tu respuesta.");
         return;
       }
+      if (action === "accept") setSignedName(trimmedName);
       setStatus(action === "accept" ? "accepted" : "rejected");
     } catch {
       setError("Ocurrió un error de red. Intenta de nuevo.");
@@ -35,6 +43,7 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
   };
 
   const canRespond = status === "sent" || status === "viewed";
+  const canAccept = signerName.trim().length >= 2 && consent;
 
   return (
     <div className="min-h-screen bg-foreground text-background px-4 py-16">
@@ -114,9 +123,17 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
         )}
 
         {status === "accepted" && (
-          <div className="flex items-center justify-center gap-2 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm font-semibold text-green-400">
-            <CheckCircle size={18} />
-            <span>Propuesta aceptada. Nos pondremos en contacto para arrancar el proyecto.</span>
+          <div className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-center text-sm font-semibold text-green-400">
+            <div className="flex items-center gap-2">
+              <CheckCircle size={18} />
+              <span>Propuesta aceptada. Nos pondremos en contacto para arrancar el proyecto.</span>
+            </div>
+            {(signedName || proposal.signer_name) && (
+              <p className="text-[11px] font-normal text-green-400/80">
+                Firmada electrónicamente por {signedName || proposal.signer_name}
+                {proposal.accepted_at && ` el ${new Date(proposal.accepted_at).toLocaleString("es-CO")}`}.
+              </p>
+            )}
           </div>
         )}
         {status === "rejected" && (
@@ -133,14 +150,46 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
         )}
 
         {canRespond && (
+          <div className="rounded-xl border border-background/15 bg-background/5 p-5 space-y-4">
+            <div>
+              <label htmlFor={signerNameId} className="block text-xs font-semibold text-background/80 mb-1.5">
+                Nombre completo (para firmar electrónicamente)
+              </label>
+              <input
+                id={signerNameId}
+                type="text"
+                value={signerName}
+                onChange={(e) => setSignerName(e.target.value)}
+                placeholder="Ej. Juan Pérez"
+                autoComplete="name"
+                className="w-full rounded-xl border border-background/20 bg-background/10 py-2.5 px-4 text-sm text-background placeholder:text-background/40 outline-none focus:border-accent"
+              />
+            </div>
+            <label className="flex items-start gap-2.5 text-xs text-background/70 leading-relaxed cursor-pointer">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-background/30 bg-background/10 accent-accent"
+              />
+              <span>
+                Declaro que soy {signerName.trim() || "la persona indicada arriba"} y que, al marcar esta casilla y
+                aceptar, estoy firmando electrónicamente esta propuesta con el mismo valor legal que una firma
+                manuscrita (Ley 527 de 1999 y equivalentes).
+              </span>
+            </label>
+          </div>
+        )}
+
+        {canRespond && (
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => respond("accept")}
-              disabled={isSubmitting}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-sm font-bold text-white shadow-lg hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              disabled={isSubmitting || !canAccept}
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-sm font-bold text-white shadow-lg hover:brightness-90 transition-all disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
             >
               <CheckCircle size={16} />
-              <span>Aceptar Propuesta</span>
+              <span>Aceptar y Firmar</span>
             </button>
             <button
               onClick={() => respond("reject")}

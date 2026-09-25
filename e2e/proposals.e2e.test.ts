@@ -50,7 +50,11 @@ describe("Ciclo de vida completo de una propuesta comercial", () => {
     const beforeAccept = await query("SELECT COUNT(*) FROM clients WHERE email = $1;", ["nuevo-cliente@test.local"]);
     expect(Number(beforeAccept.rows[0].count)).toBe(0);
 
-    const acceptRes = await publicClient.post(`/api/proposals/${proposal.id}/respond`, { action: "accept" });
+    const acceptRes = await publicClient.post(`/api/proposals/${proposal.id}/respond`, {
+      action: "accept",
+      signerName: "Juan Pérez",
+      consent: true,
+    });
     expect(acceptRes.status).toBe(200);
     const accepted = await acceptRes.json();
     expect(accepted.status).toBe("accepted");
@@ -76,6 +80,9 @@ describe("Ciclo de vida completo de una propuesta comercial", () => {
     ]);
     expect(proposalRow.rows[0].accepted_at).not.toBeNull();
     expect(proposalRow.rows[0].accepted_project_id).toBe(accepted.projectId);
+
+    const signatureRow = await query("SELECT signer_name, signature_ip FROM proposals WHERE id = $1;", [proposal.id]);
+    expect(signatureRow.rows[0].signer_name).toBe("Juan Pérez");
   });
 
   it("un cliente que ya existe (mismo email) se reutiliza, no se duplica al aceptar", async () => {
@@ -85,11 +92,15 @@ describe("Ciclo de vida completo de una propuesta comercial", () => {
 
     const { proposal: proposalA } = await createProposal(authedClient, { client_email: sharedEmail });
     const clientA = new TestClient();
-    await clientA.post(`/api/proposals/${proposalA.id}/respond`, { action: "accept" });
+    await clientA.post(`/api/proposals/${proposalA.id}/respond`, { action: "accept", signerName: "Firmante A", consent: true });
 
     const { proposal: proposalB } = await createProposal(authedClient, { client_email: sharedEmail });
     const clientB = new TestClient();
-    const acceptB = await clientB.post(`/api/proposals/${proposalB.id}/respond`, { action: "accept" });
+    const acceptB = await clientB.post(`/api/proposals/${proposalB.id}/respond`, {
+      action: "accept",
+      signerName: "Firmante B",
+      consent: true,
+    });
     const acceptedB = await acceptB.json();
 
     const clientsRow = await query("SELECT id FROM clients WHERE email = $1;", [sharedEmail]);
@@ -131,7 +142,11 @@ describe("Ciclo de vida completo de una propuesta comercial", () => {
     const publicClient = new TestClient();
     await publicClient.post(`/api/proposals/${proposal.id}/respond`, { action: "reject" });
 
-    const secondAttempt = await publicClient.post(`/api/proposals/${proposal.id}/respond`, { action: "accept" });
+    const secondAttempt = await publicClient.post(`/api/proposals/${proposal.id}/respond`, {
+      action: "accept",
+      signerName: "Firmante",
+      consent: true,
+    });
     expect(secondAttempt.status).toBe(400);
   });
 
@@ -142,7 +157,11 @@ describe("Ciclo de vida completo de una propuesta comercial", () => {
     const viewRes = await client.get(`/api/proposals/${fakeId}`);
     expect(viewRes.status).toBe(404);
 
-    const respondRes = await client.post(`/api/proposals/${fakeId}/respond`, { action: "accept" });
+    const respondRes = await client.post(`/api/proposals/${fakeId}/respond`, {
+      action: "accept",
+      signerName: "Firmante",
+      consent: true,
+    });
     expect(respondRes.status).toBe(404);
   });
 
@@ -157,5 +176,80 @@ describe("Ciclo de vida completo de una propuesta comercial", () => {
       items: [{ description: "X", quantity: 1, unit_price: 1 }],
     });
     expect(res.status).toBe(403);
+  });
+});
+
+describe("Firma electrónica al aceptar una propuesta", () => {
+  it("aceptar sin signerName da 400 y no crea nada", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const authedClient = await loginAs(admin.email, "SuperSecret123456");
+    const email = `sin-firma-${uniqueSuffix()}@test.local`;
+    const { proposal } = await createProposal(authedClient, { client_email: email });
+
+    const res = await new TestClient().post(`/api/proposals/${proposal.id}/respond`, {
+      action: "accept",
+      consent: true,
+    });
+    expect(res.status).toBe(400);
+
+    const proposalRow = await query("SELECT accepted_at FROM proposals WHERE id = $1;", [proposal.id]);
+    expect(proposalRow.rows[0].accepted_at).toBeNull();
+    const clientRow = await query("SELECT COUNT(*) FROM clients WHERE email = $1;", [email]);
+    expect(Number(clientRow.rows[0].count)).toBe(0);
+  });
+
+  it("aceptar sin consent === true da 400, aunque venga signerName", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const authedClient = await loginAs(admin.email, "SuperSecret123456");
+    const { proposal } = await createProposal(authedClient);
+
+    const res = await new TestClient().post(`/api/proposals/${proposal.id}/respond`, {
+      action: "accept",
+      signerName: "Juan Pérez",
+      consent: false,
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it("aceptar con un signerName de un solo caracter (menor al mínimo) da 400", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const authedClient = await loginAs(admin.email, "SuperSecret123456");
+    const { proposal } = await createProposal(authedClient);
+
+    const res = await new TestClient().post(`/api/proposals/${proposal.id}/respond`, {
+      action: "accept",
+      signerName: "J",
+      consent: true,
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it("rechazar NO exige signerName ni consent", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const authedClient = await loginAs(admin.email, "SuperSecret123456");
+    const { proposal } = await createProposal(authedClient);
+
+    const res = await new TestClient().post(`/api/proposals/${proposal.id}/respond`, { action: "reject" });
+    expect(res.status).toBe(200);
+  });
+
+  it("una aceptación válida guarda nombre, IP y user-agent del firmante", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const authedClient = await loginAs(admin.email, "SuperSecret123456");
+    const { proposal } = await createProposal(authedClient);
+
+    const res = await new TestClient().fetch(`/api/proposals/${proposal.id}/respond`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "User-Agent": "PruebaQA/1.0" },
+      body: JSON.stringify({ action: "accept", signerName: "  María López  ", consent: true }),
+    });
+    expect(res.status).toBe(200);
+
+    const row = await query("SELECT signer_name, signature_ip, signature_user_agent FROM proposals WHERE id = $1;", [
+      proposal.id,
+    ]);
+    expect(row.rows[0].signer_name).toBe("María López");
+    expect(row.rows[0].signature_ip).not.toBeNull();
+    expect(row.rows[0].signature_user_agent).toBe("PruebaQA/1.0");
   });
 });

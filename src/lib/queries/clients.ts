@@ -124,7 +124,7 @@ export async function getClientDetail(id: number, usdToCopRate: number): Promise
     getClientProjects(id),
     query(
       `SELECT p.id, p.title, p.currency, p.tax_rate, p.valid_until, p.viewed_at,
-              p.accepted_at, p.rejected_at, p.created_at,
+              p.accepted_at, p.rejected_at, p.created_at, p.signer_name, p.signature_ip, p.signature_user_agent,
               COALESCE(SUM(pi.quantity * pi.unit_price), 0) AS subtotal
        FROM proposals p
        LEFT JOIN proposal_items pi ON pi.proposal_id = p.id
@@ -179,6 +179,9 @@ export async function getClientDetail(id: number, usdToCopRate: number): Promise
       subtotal,
       total,
       status,
+      signer_name: p.signer_name ? String(p.signer_name) : null,
+      signature_ip: p.signature_ip ? String(p.signature_ip) : null,
+      signature_user_agent: p.signature_user_agent ? String(p.signature_user_agent) : null,
     };
   });
 

@@ -14,9 +14,21 @@ interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-const RespondSchema = z.object({
-  action: z.enum(["accept", "reject"]),
-});
+/**
+ * Aceptar exige firma electrónica (ver migración 0030): nombre completo
+ * tecleado + consentimiento explícito (`consent: true`, literal — no basta
+ * un booleano cualquiera). Rechazar no necesita nada de esto, el cliente
+ * no está comprometiéndose a nada.
+ */
+const RespondSchema = z
+  .object({
+    action: z.enum(["accept", "reject"]),
+    signerName: z.string().trim().min(2).max(200).optional(),
+    consent: z.literal(true).optional(),
+  })
+  .refine((data) => data.action !== "accept" || (!!data.signerName && data.consent === true), {
+    message: "Para aceptar se requiere el nombre del firmante y el consentimiento explícito.",
+  });
 
 /**
  * POST /api/proposals/[id]/respond - El cliente acepta o rechaza, sin
@@ -37,7 +49,7 @@ export async function POST(request: Request, { params }: RouteContext) {
     if (!parsed.success) {
       return NextResponse.json({ error: "Solicitud inválida." }, { status: 400 });
     }
-    const { action } = parsed.data;
+    const { action, signerName } = parsed.data;
 
     const proposal = await getProposalById(id);
     if (!proposal) {
@@ -65,8 +77,13 @@ export async function POST(request: Request, { params }: RouteContext) {
       return NextResponse.json({ success: true, status: "rejected" });
     }
 
+    const userAgent = request.headers.get("user-agent");
     const project = await withTransaction(async (client) => {
-      const newProject = await acceptProposalAndCreateProject(proposal, client);
+      const newProject = await acceptProposalAndCreateProject(proposal, client, {
+        signerName: signerName as string,
+        ip,
+        userAgent,
+      });
 
       await logAudit(client.query.bind(client), {
         actorId: null,
@@ -74,7 +91,7 @@ export async function POST(request: Request, { params }: RouteContext) {
         action: "proposal.accept",
         entityType: "proposal",
         entityId: id,
-        diff: { after: { projectId: newProject.id } },
+        diff: { after: { projectId: newProject.id, signerName } },
         ip,
       });
 

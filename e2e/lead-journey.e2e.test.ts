@@ -86,7 +86,11 @@ describe("Recorrido de negocio: de lead a proyecto ganado", () => {
     const viewRes = await prospectClient.get(`/api/proposals/${proposal.id}`);
     expect((await viewRes.json()).proposal.status).toBe("viewed");
 
-    const acceptRes = await prospectClient.post(`/api/proposals/${proposal.id}/respond`, { action: "accept" });
+    const acceptRes = await prospectClient.post(`/api/proposals/${proposal.id}/respond`, {
+      action: "accept",
+      signerName: "Prospecto de Prueba",
+      consent: true,
+    });
     expect(acceptRes.status).toBe(200);
     const accepted = await acceptRes.json();
     expect(accepted.projectId).toBeTruthy();

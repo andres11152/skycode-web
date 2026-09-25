@@ -81,7 +81,11 @@ describe("Onboarding de cliente — extremo a extremo", () => {
     const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
 
     const publicClient = new TestClient();
-    const respondRes = await publicClient.post(`/api/proposals/${proposal.id}/respond`, { action: "accept" });
+    const respondRes = await publicClient.post(`/api/proposals/${proposal.id}/respond`, {
+      action: "accept",
+      signerName: "Cliente Onboarding",
+      consent: true,
+    });
     expect(respondRes.status).toBe(200);
     const { projectId } = await respondRes.json();
 
