@@ -4,8 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { m as motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
-import { TiltCard } from "@/components/ui/TiltCard";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { Button } from "@/components/ui/Button";
@@ -309,8 +307,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                   whileHover="hover"
                   className="w-[320px] sm:w-[360px] shrink-0 snap-start h-full"
                 >
-                  <TiltCard maxTilt={5} className="h-full">
-                    <Link
+                  <Link
                       href={`${servicesPrefix}/servicios/${service.slug}`}
                       aria-labelledby={`service-title-${service.slug}`}
                       className="group flex min-h-[460px] sm:min-h-[450px] h-full flex-col justify-between rounded-xl border border-foreground/10 bg-background p-6 sm:p-8 outline-none transition-all duration-300 hover:border-accent/30 hover:shadow-[0_12px_40px_rgba(0,137,205,0.04)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
@@ -362,7 +359,6 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
                         ))}
                       </motion.ul>
                     </Link>
-                  </TiltCard>
                 </motion.div>
               );
             })}

@@ -1,30 +1,29 @@
 {
   "sectionAria": "Nuestro equipo",
   "title": "Las personas detrás de cada línea de código",
-  "description": "Aquí no hay comerciales vendiendo humo ni intermediarios innecesarios. Trabajas de la mano con quienes pensamos, diseñamos y programamos tu solución.",
+  "description": "Trabajas directamente con los ingenieros y diseñadores a cargo de tu solución, sin intermediarios comerciales.",
   "ctaLabel": "Hablar directamente con el equipo",
   "members": [
     {
       "slug": "andres-betancourt",
       "name": "Andrés Betancourt",
       "role": "Backend & Arquitectura",
-      "description": "Se asegura de que las bases de datos no colapsen, las APIs respondan en milisegundos y todo funcione tras bambalinas como un reloj. Odia el código desordenado.",
+      "description": "Arquitectura de software, APIs y bases de datos. Me concentro en que el backend sea mantenible, seguro y responda con rapidez bajo alta demanda operativa.",
       "photo": "/team/andres-betancourt.webp"
     },
     {
       "slug": "cesar-leon",
       "name": "César León",
       "role": "Frontend & Rendimiento",
-      "description": "Obsesionado con que cada pantalla cargue al instante y se sienta súper fluida. Si algo tarda medio segundo de más en tu celular, César no se queda tranquilo.",
+      "description": "Desarrollo frontend con Next.js y React. Cuido la velocidad de carga, la interacción en móviles y el cumplimiento de estándares web sin excesos decorativos.",
       "photo": "/team/cesar-leon.webp"
     },
     {
       "slug": "ximena-calderon",
       "name": "Ximena Calderón",
       "role": "Diseño UI/UX",
-      "description": "Diseña interfaces limpias y fáciles de navegar. Su meta es que cualquier persona aprenda a usar tu plataforma a la primera, sin tener que leer ningún manual.",
+      "description": "Diseño de producto y experiencia de usuario. Estructuro flujos de navegación limpios y sistemas visuales intuitivos que reducen la curva de aprendizaje de tus usuarios.",
       "photo": "/team/ximena-calderon.webp"
     }
   ]
 }
-

@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Pause, Play, Quotes } from "@phosphor-icons/react";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
-import { TiltCard } from "@/components/ui/TiltCard";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getTestimonialsContent } from "@/content/testimonials";
@@ -103,7 +101,6 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
           }}
           className="relative mx-auto max-w-2xl rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
         >
-          <TiltCard maxTilt={4}>
             <motion.div
               layout
               className="relative overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
@@ -139,7 +136,6 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
                 </motion.div>
               </AnimatePresence>
             </motion.div>
-          </TiltCard>
 
           {testimonials.length > 1 && (
             <>

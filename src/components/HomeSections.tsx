@@ -44,9 +44,9 @@ export async function HomeSections({ locale }: { locale: Locale }) {
       </div>
       <Highlights locale={locale} />
       <Services locale={locale} />
+      <Portfolio locale={locale} />
       <Process locale={locale} />
       <HomeInteractiveEstimator locale={locale} />
-      <Portfolio locale={locale} />
       <HomeInteractiveTestimonials locale={locale} />
       <BlogTeaser locale={locale} posts={recentPosts} />
       <Faq locale={locale} />

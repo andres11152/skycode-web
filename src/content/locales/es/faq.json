@@ -1,32 +1,31 @@
 {
   "badge": "Dudas Frecuentes",
-  "title": "Preguntas que seguro te estás haciendo",
-  "description": "Respuestas directas y sin rodeos sobre cómo cobramos, quién es dueño del código y qué pasa después del lanzamiento.",
+  "title": "Preguntas Frecuentes",
+  "description": "Respuestas directas sobre propiedad intelectual, formas de pago, garantías y metodología.",
   "items": [
     {
       "question": "¿El código realmente me pertenece al 100% o quedo amarrado a ustedes?",
-      "answer": "El código es 100% tuyo desde el primer día. Los repositorios quedan a tu nombre y te entregamos todas las credenciales y accesos. No cobramos mensualidades forzadas por usar tu propio software ni ponemos 'candados' para obligarte a seguir con nosotros. Si en el futuro quieres trabajar con otro equipo o contratar desarrolladores internos, lo podrán continuar sin problemas."
+      "answer": "100% tuyo desde el primer día. Te entregamos repositorios a tu nombre y todas las credenciales de acceso. Cero letras chicas ni mensualidades forzadas. Si mañana decides continuarlo con otro equipo o in-house, puedes hacerlo sin ninguna traba."
     },
     {
       "question": "¿Qué pasa si después de lanzar encontramos un error o algo falla?",
-      "answer": "Cuentas con 90 días de garantía total después del lanzamiento. Si algo no funciona como acordamos o aparece algún bug, lo corregimos de inmediato sin cobrarte un solo centavo extra. No te dejamos solo una vez entregado el proyecto."
+      "answer": "Tienes 90 días de garantía de estabilidad técnica posterior al lanzamiento. Si surge algún bug o algo no se comporta como se acordó, lo corregimos de inmediato sin costo adicional."
     },
     {
       "question": "¿Cómo son las formas de pago? ¿Tengo que pagar todo por adelantado?",
-      "answer": "Para nada. Trabajamos con un esquema justo para ambas partes: 50% de anticipo para arrancar (con contrato firmado y cronograma claro) y el 50% restante únicamente cuando veas el sistema funcionando, probado de punta a punta y con tu visto bueno final."
+      "answer": "50% de anticipo al firmar contrato con cronograma acordado, y el 50% restante al recibir el proyecto funcionando, probado de punta a punta y con tu visto bueno final."
     },
     {
       "question": "¿Se puede conectar con lo que ya uso (pasarelas de pago, facturación, WhatsApp)?",
-      "answer": "Sí, totalmente. Conectamos tu plataforma con pasarelas de pago (Wompi, Stripe, PayU, Mercado Pago), sistemas contables y ERPs (Siigo, Alegra, SAP) y la API de WhatsApp para que tu información se sincronice automáticamente sin duplicar trabajo manual."
+      "answer": "Sí. Integramos pasarelas de pago (Wompi, Stripe, PayU), software contable y ERPs (Siigo, Alegra, SAP) y la API de WhatsApp para que todo fluya sin trabajo manual repetitivo."
     },
     {
       "question": "¿Cómo sé cómo va mi proyecto durante las semanas de desarrollo?",
-      "answer": "No vas a esperar semanas a ciegas. Cada semana te mostramos avances funcionales a través de un enlace privado donde puedes tocar y probar las pantallas tú mismo. Hablas directo con los ingenieros que están escribiendo el código."
+      "answer": "Entregamos avances funcionales cada semana en un entorno privado para que interactúes con el sistema y hables directo con los ingenieros que están programando, sin intermediarios."
     },
     {
       "question": "¿Cómo cuidan la seguridad y los datos de mis usuarios?",
-      "answer": "Nos tomamos la seguridad muy en serio. Ciframos contraseñas y datos confidenciales, configuramos permisos estrictos para que nadie vea lo que no debe y seguimos buenas prácticas de protección de datos (Ley 1581 / RGPD). Construimos software blindado desde la raíz."
+      "answer": "Cifrado de datos en reposo y en tránsito, control de acceso por roles y cumplimiento normativo (Ley 1581 y RGPD). La seguridad viene pensada desde la arquitectura, no como parche al final."
     }
   ]
 }
-

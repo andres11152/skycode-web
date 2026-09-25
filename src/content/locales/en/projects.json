@@ -1,20 +1,19 @@
 {
-  "badge": "Portfolio & Success Stories",
+  "badge": "Portfolio & Case Studies",
   "title": "Portfolio",
-  "description": "Featured projects and success stories: technology solutions successfully implemented to solve real business challenges.",
+  "description": "Real solutions engineered to solve operational bottlenecks and accelerate business growth.",
   "viewAll": "See all projects",
   "items": [
     {
       "slug": "sentry-crm",
-      "title": "Sentry CRM · Omnichannel SaaS Multitenant Platform & AI Agents",
-      "client": "Sentry CRM · Smart CRM & WhatsApp Automation",
-      "description": "Enterprise multi-tenant SaaS platform for omnichannel conversation management: official WhatsApp Business API integration, autonomous AI Copilot agents, unified agent inbox, smart routing, and real-time sales funnel analytics.",
+      "title": "Sentry CRM · Omnichannel CRM & AI Assistant",
+      "client": "Sentry CRM · Lead Management & Automation",
+      "description": "Multi-tenant platform to centralize WhatsApp Business conversations, route queries with AI assistants, and monitor sales funnels directly inside the chat interface.",
       "tags": [
-        "SaaS Multitenant",
-        "WhatsApp API",
+        "Multi-tenant SaaS",
+        "WhatsApp Cloud API",
         "AI Agents",
-        "Omnichannel",
-        "Next.js & Cloud DB"
+        "Next.js & PostgreSQL"
       ],
       "iconName": "Graph",
       "coverImage": "/projects/sentry-crm/dashboard.webp",
@@ -42,14 +41,14 @@
     },
     {
       "slug": "servifuturo",
-      "title": "Fleet Management & Operational Control Platform",
+      "title": "ServiFuturo · Fleet Management & Operational Control",
       "client": "ServiFuturo S.A.S. · Corporate Transport & Logistics",
-      "description": "Comprehensive fleet management system for corporate transport operations: real-time monitoring, automated service settlement, drivers/passengers control, and audit logs under SOX & data protection laws.",
+      "description": "Comprehensive dispatch and monitoring system for corporate transport: live trip tracking, automated service settlements, and full audit logs for regulatory compliance.",
       "tags": [
         "Fleet Management",
-        "Operational Control",
-        "Audit & Data",
-        "Next.js & Node"
+        "Real-Time Dispatch",
+        "Next.js & Node",
+        "PostgreSQL"
       ],
       "iconName": "Truck",
       "link": "https://servifuturo.cloud/",
@@ -73,15 +72,14 @@
     },
     {
       "slug": "equilibrio-arquitectonico",
-      "title": "Equilibrio Arquitectónico · Corporate Web Portal & Architectural Glass Solutions",
-      "client": "Equilibrio Arquitectónico S.A.S. · Architecture & Architectural Systems",
-      "description": "High-end corporate website engineered to showcase residential, commercial, and institutional projects in tempered glass, aluminum, and stainless steel. Optimized for high performance, SEO, and lead generation.",
+      "title": "Equilibrio Arquitectónico · Corporate Website & Digital Catalog",
+      "client": "Equilibrio Arquitectónico S.A.S. · Architectural Glass Systems",
+      "description": "High-performance corporate site showcasing residential and commercial architectural installations in tempered glass and aluminum, built to drive direct quote requests.",
       "tags": [
-        "Web Design",
-        "Corporate Portal",
-        "Architecture & Design",
-        "Glass & Aluminum",
-        "Next.js & Performance"
+        "Web Engineering",
+        "Digital Catalog",
+        "SEO & Performance",
+        "Next.js"
       ],
       "iconName": "Buildings",
       "link": "https://equilibrioarquitectonico.com/",
@@ -97,15 +95,14 @@
     },
     {
       "slug": "cda-revifull",
-      "title": "CDA Revifull · Corporate Web Portal & Digital Scheduling System",
-      "client": "CDA Revifull S.A.S. · Automotive Diagnostic Center in Bogotá",
-      "description": "High-speed web platform and online appointment system for vehicle and motorcycle technical-mechanical inspections. Featuring WhatsApp integration, rate calculator, and lead capture.",
+      "title": "CDA Revifull · Online Appointment & Inspection Booking",
+      "client": "CDA Revifull S.A.S. · Automotive Diagnostic Center",
+      "description": "Fast online booking platform for mandatory vehicle and motorcycle technical inspections in Bogotá, with automated reminders and instant WhatsApp support.",
       "tags": [
-        "Web Portal",
-        "Automotive Industry",
-        "Digital Scheduling",
-        "SEO Optimization",
-        "Next.js & Performance"
+        "Online Booking",
+        "Automotive",
+        "WhatsApp API",
+        "Next.js"
       ],
       "iconName": "Car",
       "link": "https://cdarevifull.com/",
@@ -120,15 +117,14 @@
     },
     {
       "slug": "moncyre",
-      "title": "Moncyre Studios · E-Commerce for Fashion, Footwear & Exclusive Fragrances",
-      "client": "Moncyre Studios · Urban Fashion & Apparel Brand",
-      "description": "Luxury e-commerce platform engineered to showcase exclusive streetwear collections, footwear, and fragrances. Integrated with payment gateways, national shipping, and high-converting UX/UI.",
+      "title": "Moncyre Studios · Streetwear & Apparel E-Commerce",
+      "client": "Moncyre Studios · Urban Fashion Brand",
+      "description": "E-commerce storefront for urban fashion and footwear: seamless mobile experience, dynamic product discovery, and localized payment gateway and courier integrations.",
       "tags": [
         "E-Commerce",
         "Fashion & Apparel",
-        "UX/UI Design",
         "Payment Gateways",
-        "Next.js & Performance"
+        "Next.js"
       ],
       "iconName": "ShoppingCart",
       "link": "https://moncyre.com/",

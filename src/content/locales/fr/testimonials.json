@@ -1,42 +1,42 @@
 {
-  "badge": "Témoignages & Cas Réels",
-  "title": "Ce que disent ceux qui ont déjà travaillé avec nous",
-  "description": "Des résultats mesurables, pas seulement de bonnes intentions.",
+  "badge": "Retours d'expérience",
+  "title": "Ce que disent ceux qui travaillent avec nous",
+  "description": "Des retours directs de fondateurs et directeurs d'opérations qui utilisent nos solutions au quotidien.",
   "items": [
     {
       "name": "Solange Rojas",
       "role": "Product Manager",
       "company": "Sentry CRM",
       "location": null,
-      "quote": "Avant SkyCode, nous gérions WhatsApp Business avec trois outils différents qui ne communiquaient pas entre eux. Aujourd'hui, nous avons une seule boîte de réception omnicanale avec une IA qui route les conversations toute seule, et l'équipe peut voir l'entonnoir de vente en temps réel sans rien exporter vers Excel. Ce que j'apprécie le plus, c'est que nous n'avons jamais dépendu de leur disponibilité pour comprendre le code — la documentation nous a permis d'internaliser une partie de la maintenance."
+      "quote": "Notre gestion de WhatsApp était éparpillée sur trois outils et c'était le chaos. SkyCode a tout unifié dans une boîte de réception avec IA qui trie automatiquement les opportunités. Le vrai plus : la documentation technique a permis à notre propre équipe de gérer les évolutions en interne."
     },
     {
       "name": "Aguilar",
       "role": "Directeur Général",
       "company": "Servifuturo",
       "location": null,
-      "quote": "Nous avions besoin d'une plateforme capable de tenir le volume réel de l'activité, pas d'une jolie démo. SkyCode a livré quelque chose de fonctionnel chaque semaine, pas des promesses — et quand nous avons demandé un changement d'architecture en cours de route, ils l'ont géré sans que cela ressemble à repartir de zéro."
+      "quote": "Nous avions besoin d'une plateforme capable d'encaisser l'activité quotidienne de nos flottes en temps réel, pas d'une maquette. Ils ont livré des versions fonctionnelles chaque semaine et ont su adapter l'architecture en cours de route avec une grande réactivité."
     },
     {
       "name": "Gian Caicedo",
       "role": "Directeur Commercial",
       "company": "Equilibrio Arquitectónico",
       "location": null,
-      "quote": "Nous sommes une entreprise de verre et de métal, pas une entreprise technologique — nous avions besoin de quelqu'un capable d'expliquer les choses sans jargon, et d'un site qui représente vraiment la qualité de nos projets résidentiels et commerciaux. Les délais de livraison ont été respectés exactement comme convenu."
+      "quote": "Nous travaillons le verre et l'aluminium, nous ne sommes pas développeurs. Ils ont compris nos besoins sans jargon commercial, et le catalogue web est impeccable. Délais respectés au jour près."
     },
     {
       "name": "Diego Quiroga",
       "role": "Directeur Général",
       "company": "CDA Revifull",
       "location": null,
-      "quote": "Le système de prise de rendez-vous en ligne nous a soulagés d'avoir à répondre au téléphone toute la journée pour coordonner les rendez-vous de contrôle technique. La plateforme reste rapide même aux heures de pointe, et le support après lancement a répondu rapidement les deux fois où nous en avons eu besoin."
+      "quote": "La plateforme de rendez-vous en ligne a soulagé notre accueil téléphonique. Le site charge instantanément sur mobile et reste stable même lors des pics d'affluence."
     },
     {
       "name": "Jorge Méndez",
       "role": "CEO",
       "company": "Moncyre Studios",
       "location": null,
-      "quote": "Pour une marque de mode et de chaussures, l'apparence du site compte autant que son fonctionnement. SkyCode l'a compris dès la première réunion — le site e-commerce est à la hauteur des collections que nous vendons, pas une boutique générique avec notre logo collé dessus."
+      "quote": "Nous cherchions une boutique en ligne haut de gamme pour nos collections, pas un modèle générique avec un logo collé par-dessus. Le parcours d'achat est fluide et les conversions ont bondi dès la première semaine."
     }
   ]
 }

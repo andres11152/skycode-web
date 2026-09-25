@@ -1,106 +1,105 @@
 {
-  "badge": "En Qué Podemos Ayudarte",
+  "badge": "Servicios de Ingeniería",
   "title": "Lo que construimos para ti",
-  "description": "Software pensado para la realidad de tu negocio: rápido, seguro, fácil de usar y con código limpio que te pertenece al 100%.",
+  "description": "Software diseñado para la operación real de tu empresa: rápido, seguro, sin dependencias forzadas y con código que te pertenece al 100%.",
   "viewAll": "Ver todos los servicios",
   "items": [
     {
       "slug": "desarrollo-software-medida",
-      "title": "Sistemas y Plataformas a la Medida",
-      "description": "Deja atrás los excels interminables y los programas rígidos. Creamos la herramienta exacta que tu operación necesita, optimizada para crecer sin pagar licencias mensuales abusivas.",
+      "title": "Plataformas y Software a la Medida",
+      "description": "Desarrollamos herramientas internas, portales de clientes y sistemas de gestión modelados sobre los flujos exactos de tu empresa, preparados para escalar sin licencias por usuario.",
       "iconName": "Blueprint",
       "features": [
-        "Código 100% tuyo y transferible",
-        "Bases de datos rápidas y estructuradas",
-        "Diseñado para tus flujos reales de trabajo"
+        "Código 100% de tu propiedad y transferible",
+        "Bases de datos optimizadas para alto volumen",
+        "Diseñado a la medida de tus procesos de negocio"
       ]
     },
     {
       "slug": "desarrollo-aplicaciones-moviles",
-      "title": "Aplicaciones Móviles (Android & iOS)",
-      "description": "Apps fluidas, intuitivas y publicadas en las tiendas. Pensadas para que tus clientes o tu equipo en campo puedan usarlas con facilidad, incluso sin conexión a internet.",
+      "title": "Aplicaciones Móviles (iOS & Android)",
+      "description": "Apps ágiles para clientes o personal de campo, optimizadas para sincronizar en segundo plano y seguir funcionando con normalidad incluso sin conexión a internet.",
       "iconName": "DeviceMobile",
       "features": [
-        "Apps multiplataforma (React Native / Flutter)",
-        "Acompañamiento en publicación en App Store y Google Play",
-        "Sincronización automática y funcionamiento offline"
+        "Desarrollo multiplataforma con React Native",
+        "Gestión y publicación en App Store y Google Play",
+        "Modo offline con sincronización automática al recuperar señal",
+        "Integración con hardware del dispositivo (cámara, GPS, Bluetooth)"
       ]
     },
     {
       "slug": "apis-integraciones",
-      "title": "Integraciones & Conexión de Sistemas",
-      "description": "Conectamos tu software con lo que ya usas a diario: pasarelas de pago (Stripe, Wompi, PayU), sistemas contables (Siigo, Alegra, SAP) y canales de mensajería.",
+      "title": "Integraciones y APIs",
+      "description": "Conectamos tu ecosistema de software con pasarelas de pago, sistemas contables, ERPs y canales de mensajería para automatizar tareas repetitivas.",
       "iconName": "TreeStructure",
       "features": [
-        "Conexión con pasarelas de pago y bancos",
-        "Integración con ERPs, CRMs y facturación",
-        "Automatización de procesos repetitivos"
+        "Pasarelas de pago (Wompi, Stripe, PayU, Mercado Pago)",
+        "Sistemas contables y ERPs (Siigo, Alegra, SAP)",
+        "APIs de mensajería como WhatsApp Cloud API y webhooks seguros"
       ]
     },
     {
       "slug": "frontend-alto-rendimiento",
-      "title": "Páginas Web y Aplicaciones Ultra-Rápidas",
-      "description": "A nadie le gusta esperar una web lenta. Diseñamos experiencias visualmente impecables que cargan al instante en cualquier teléfono y convierten visitas en clientes.",
+      "title": "Webs y Aplicaciones Web de Alto Rendimiento",
+      "description": "Desarrollo moderno con Next.js y React enfocado en tiempos de carga mínimos, accesibilidad y arquitectura técnica pensada para indexación y conversión.",
       "iconName": "Lightning",
       "features": [
-        "Desarrollo moderno con React y Next.js",
-        "Carga ultra-rápida y optimización para Google (SEO)",
-        "Diseño que se adapta perfecto a cualquier pantalla"
+        "Carga rápida y métricas Core Web Vitals en verde",
+        "Arquitectura técnica para SEO y posicionamiento orgánico"
       ]
     },
     {
       "slug": "ecommerce-tienda-online",
-      "title": "Ecommerce · Tienda en Línea",
-      "description": "Vende en línea sin depender de plantillas genéricas ni comisiones abusivas por transacción. Catálogo de productos, carrito de compras, pagos y envíos integrados en una plataforma que realmente es tuya.",
+      "title": "E-Commerce y Ventas en Línea",
+      "description": "Tiendas virtuales a la medida sin comisiones abusivas por venta. Diseñadas para catálogos amplios, checkout ágil y sincronización directa con inventario y envíos.",
       "iconName": "Storefront",
       "features": [
-        "Catálogo de productos y variantes ilimitadas",
-        "Pagos en línea (Stripe, Wompi, PayU) y envíos integrados",
-        "Panel de control para gestionar pedidos e inventario"
+        "Catálogo con variantes, atributos y stock en tiempo real",
+        "Checkout optimizado con pasarelas de pago locales e internacionales",
+        "Integración con operadores de paquetería y logística"
       ]
     },
     {
       "slug": "seguridad-cumplimiento",
       "title": "Seguridad y Protección de Datos",
-      "description": "Dormir tranquilo no tiene precio. Protegemos tu plataforma contra accesos no autorizados, cuidamos la información confidencial de tus clientes y cumplimos con la ley.",
+      "description": "Implementamos controles de seguridad desde la arquitectura: control granular de accesos, cifrado de información confidencial y cumplimiento con normativas de privacidad.",
       "iconName": "ShieldCheck",
       "features": [
-        "Cifrado de contraseñas y datos sensibles",
-        "Cumplimiento normativo de protección de datos (Ley 1581 / RGPD)",
-        "Protección contra vulnerabilidades comunes y fugas"
+        "Cifrado de datos sensibles en reposo y en tránsito",
+        "Cumplimiento con Ley 1581 (Colombia) y RGPD",
+        "Auditorías preventivas de vulnerabilidades comunes (OWASP)"
       ]
     },
     {
       "slug": "arquitectura-documentacion",
-      "title": "Documentación Clara y Transferencia Total",
-      "description": "No creemos en las cajas negras ni en retener clientes a la fuerza. Te entregamos guías claras y bien explicadas para que cualquier desarrollador pueda continuar el proyecto.",
+      "title": "Documentación y Transferencia Técnica",
+      "description": "Entrega transparente de repositorios, variables y diagramas de arquitectura para que tu equipo u otros desarrolladores puedan continuar el código con total autonomía.",
       "iconName": "Handshake",
       "features": [
-        "Guías paso a paso de uso y mantenimiento",
-        "Entrega total de repositorios, contraseñas y accesos",
-        "Cero dependencias forzadas ni contratos trampa"
+        "Repositorios y despliegues CI/CD a tu nombre",
+        "Guías técnicas de configuración y mantenimiento"
       ]
     },
     {
       "slug": "migracion-datos-legacy",
-      "title": "Modernización y Rescate de Datos Antiguos",
-      "description": "¿Tienes información valiosa atrapada en sistemas viejos, excels desordenados o bases de datos obsoletas? La limpiamos, estructuramos y migramos a tu nueva plataforma.",
+      "title": "Migración y Modernización de Datos",
+      "description": "Extracción, saneamiento y migración desde sistemas obsoletos, archivos XML o planillas dispersas hacia bases de datos modernas, sin interrumpir tu operación activa.",
       "iconName": "Swap",
       "features": [
-        "Migración segura y sin pérdida de información",
-        "Limpieza y ordenamiento de datos históricos",
-        "Información lista para tomar mejores decisiones"
+        "Limpieza, deduplicación y mapeo de datos históricos",
+        "Migración por fases sin tiempos de inactividad",
+        "Validación estricta de consistencia e integridad"
       ]
     },
     {
       "slug": "inteligencia-artificial-aplicada",
-      "title": "Inteligencia Artificial con Propósito Real",
-      "description": "Sin humo ni promesas mágicas. Integramos modelos de IA y asistentes inteligentes que realmente ahorran tiempo en tu operación diaria y mejoran la atención a clientes.",
+      "title": "Inteligencia Artificial Aplicada al Negocio",
+      "description": "Implementamos asistentes inteligentes y automatización de documentos conectados a las bases de conocimiento de tu empresa, enfocados en ahorrar horas operativas.",
       "iconName": "Graph",
       "features": [
-        "Asistentes inteligentes para atención y soporte",
-        "Automatización de clasificación y lectura de documentos",
-        "Herramientas de IA conectadas a los datos de tu empresa"
+        "Asistentes inteligentes para WhatsApp y canales internos",
+        "Extracción automática de datos desde facturas y documentos",
+        "Búsqueda semántica sobre la base de conocimiento de la empresa"
       ]
     }
   ]

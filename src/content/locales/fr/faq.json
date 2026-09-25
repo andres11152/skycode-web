@@ -1,27 +1,27 @@
 {
   "badge": "Questions Fréquentes",
-  "title": "Questions fréquentes",
-  "description": "Nous répondons à vos questions sur notre méthodologie d'ingénierie logicielle, la propriété intellectuelle et la conformité réglementaire, où que votre entreprise opère.",
+  "title": "Questions Fréquentes",
+  "description": "Des réponses claires sur la propriété du code, les garanties, les paiements et notre méthode d'ingénierie.",
   "items": [
     {
       "question": "À qui appartient le code une fois le logiciel livré ?",
-      "answer": "La propriété intellectuelle du code source développé appartient à 100% à votre entreprise. À la fin du projet, nous procédons à un transfert formel et complet des dépôts et des identifiants. Nous n'implémentons ni système de licence mensuelle propriétaire ni dépendance technique (vendor lock-in) empêchant votre équipe de poursuivre le développement par elle-même."
+      "answer": "100 % à vous dès le premier jour. Nous transférons la pleine propriété des dépôts et des accès, sans abonnement captif ni dépendance technique."
     },
     {
-      "question": "Comment garantissez-vous la conformité à la réglementation sur la protection des données ?",
-      "answer": "Nous concevons tous nos systèmes selon le principe de protection des données dès la conception (Privacy by Design). Nous mettons en place des flux de consentement explicites, un contrôle d'accès basé sur les rôles (RBAC), le chiffrement des données personnelles sensibles (au repos et en transit) et des journaux d'audit immuables, adaptés au cadre réglementaire de chaque marché — le RGPD dans l'Union européenne, la loi 1581 en Colombie, et des cadres équivalents ailleurs."
+      "question": "Comment garantissez-vous la protection et la conformité des données ?",
+      "answer": "Nous appliquons le principe de Privacy by Design : chiffrement des données au repos et en transit, gestion granulaire des rôles et conformité stricte au RGPD."
     },
     {
-      "question": "Vos développements peuvent-ils s'intégrer à des passerelles de paiement et des ERP ?",
-      "answer": "Oui, l'intégration robuste d'API est l'une de nos spécialités. Nous connectons votre logiciel sur mesure à des passerelles de paiement (Stripe, PayPal, Wompi, PayU, Mercado Pago, entre autres) et à des systèmes ERP/comptables tels que SAP, Siigo, Alegra ou vos outils internes, en automatisant la facturation et la synchronisation des stocks."
+      "question": "Pouvez-vous connecter nos logiciels à des passerelles de paiement et des ERP ?",
+      "answer": "Oui. Nous intégrons vos systèmes aux passerelles de paiement (Stripe, Wompi, PayU), logiciels comptables et ERP (SAP, Siigo, Alegra) ainsi qu'aux API de messagerie."
     },
     {
-      "question": "Quel support et quelle maintenance proposez-vous après la livraison ?",
-      "answer": "Nous incluons une période de garantie de stabilité technique de 90 jours pour résoudre tout incident sans coût supplémentaire. Nous proposons également des accords de niveau de service (SLA) pour un support mensuel préventif, des mises à jour de sécurité, des correctifs d'infrastructure cloud et des optimisations continues des performances."
+      "question": "Quelle garantie et quel accompagnement proposez-vous après la livraison ?",
+      "answer": "Chaque projet inclut une garantie de stabilité technique de 90 jours couvrant toute correction sans frais, avec la possibilité d'un contrat de maintenance SLA sur mesure."
     },
     {
-      "question": "Comment gérez-vous la communication et la gestion de projet ?",
-      "answer": "Nous travaillons selon des méthodes agiles adaptées. Votre entreprise bénéficie d'une visibilité totale et en temps réel sur l'avancement grâce à des dépôts partagés et des outils de gestion de projet. Nous livrons des versions fonctionnelles de façon itérative afin de recueillir vos retours rapidement, garantissant que le produit final correspond exactement aux besoins de votre activité."
+      "question": "Comment s'organisent le suivi et la communication pendant le projet ?",
+      "answer": "Nous livrons des versions fonctionnelles chaque semaine sur un environnement de préproduction pour que vous testiez l'application et échangiez en direct avec les développeurs."
     }
   ]
 }

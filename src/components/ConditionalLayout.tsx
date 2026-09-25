@@ -18,10 +18,6 @@ const CookieBanner = dynamic(
   () => import("@/components/CookieBanner").then((mod) => mod.CookieBanner),
   { ssr: false }
 );
-const CustomCursor = dynamic(
-  () => import("@/components/ui/CustomCursor").then((mod) => mod.CustomCursor),
-  { ssr: false }
-);
 
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
@@ -103,7 +99,6 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
       {children}
       <Footer />
       <HtmlLangSync />
-      <CustomCursor />
       <WhatsAppButton locale={locale} />
       <CookieBanner />
       <AttributionCapture />

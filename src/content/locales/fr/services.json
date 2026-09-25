@@ -1,106 +1,105 @@
 {
-  "badge": "Nos Services",
-  "title": "Nos services",
-  "description": "Nous développons des solutions robustes avec une architecture d'entreprise, une sécurité rigoureuse et une documentation technique détaillée pour soutenir la croissance et l'autonomie de votre organisation.",
+  "badge": "Services d'Ingénierie",
+  "title": "Ce que nous concevons pour vous",
+  "description": "Des logiciels adaptés à la réalité opérationnelle de votre entreprise : rapides, sécurisés, sans dépendance captive et dont vous détenez 100 % du code.",
   "viewAll": "Voir tous les services",
   "items": [
     {
       "slug": "desarrollo-software-medida",
-      "title": "Systèmes Propriétaires Sur Mesure et Évolutifs",
-      "description": "Nous concevons le cœur de votre entreprise avec des backends haute performance. Nous livrons une propriété intellectuelle absolue et des bases de données optimisées pour vous éviter les licences infinies et les builders limités.",
+      "title": "Plateformes et Logiciels Sur Mesure",
+      "description": "Développement d'outils internes, portails clients et systèmes opérationnels adaptés aux flux réels de votre entreprise, conçus pour évoluer sans frais de licence par utilisateur.",
       "iconName": "Blueprint",
       "features": [
-        "Code propre et transférable",
-        "Bases de données structurées pour votre activité",
-        "Logique métier personnalisée"
+        "Code source transférable et 100 % propriétaire",
+        "Bases de données dimensionnées pour les fortes volumétries",
+        "Modélisé sur vos flux opérationnels métiers"
       ]
     },
     {
       "slug": "desarrollo-aplicaciones-moviles",
-      "title": "Développement mobile (Android & iOS)",
-      "description": "Création d'applications mobiles natives et multiplateformes (React Native et Flutter) haute performance, optimisées pour l'App Store et Google Play.",
+      "title": "Applications Mobiles (iOS & Android)",
+      "description": "Applications fluides pour vos clients ou équipes terrain, développées pour synchroniser en arrière-plan et fonctionner normalement même sans connexion internet.",
       "iconName": "DeviceMobile",
       "features": [
-        "Applications multiplateformes (React Native / Flutter)",
-        "Optimisation et publication sur les stores (ASO)",
-        "Synchronisation hors ligne (Offline-first)"
+        "Développement multiplateforme avec React Native",
+        "Publication et gestion sur App Store et Google Play",
+        "Mode hors ligne avec synchronisation automatique",
+        "Intégration du matériel (appareil photo, GPS, Bluetooth)"
       ]
     },
     {
       "slug": "apis-integraciones",
-      "title": "API & Intégrations",
-      "description": "Conception et développement d'API REST documentées pour connecter vos systèmes aux passerelles de paiement, ERP, CRM et toute plateforme clé de votre activité.",
+      "title": "Intégrations et API",
+      "description": "Connexion de vos logiciels aux passerelles de paiement, ERP, logiciels comptables et canaux de messagerie pour éliminer les ressaisies manuelles.",
       "iconName": "TreeStructure",
       "features": [
-        "API REST standardisées et documentées",
-        "Intégration avec ERP et passerelles de paiement",
-        "Architecture en microservices"
+        "Passerelles de paiement (Stripe, Wompi, PayU, Mercado Pago)",
+        "Logiciels comptables et ERP (SAP, Siigo, Alegra)",
+        "API de messagerie (WhatsApp Cloud API) et webhooks sécurisés"
       ]
     },
     {
       "slug": "frontend-alto-rendimiento",
-      "title": "Interfaces Ultra-rapides & Optimisation de Conversion",
-      "description": "La performance web est synonyme de rentabilité. Nous développons avec React et Next.js, en optimisant pour d'excellents scores Core Web Vitals afin de maximiser vos taux de conversion et votre SEO organique.",
+      "title": "Applications Web Haute Performance",
+      "description": "Développement moderne avec Next.js et React centré sur des temps de chargement ultra-courts, l'accessibilité et une architecture technique pensée pour le référencement naturel.",
       "iconName": "Lightning",
       "features": [
-        "Applications avec React et Next.js",
-        "Optimisation des Core Web Vitals et du SEO",
-        "Accessibilité web (WCAG) dès la conception"
+        "Temps de chargement instantanés et Core Web Vitals au vert",
+        "Architecture SEO technique pour l'indexation sur Google"
       ]
     },
     {
       "slug": "ecommerce-tienda-online",
-      "title": "E-commerce & Boutiques en Ligne",
-      "description": "Vendez en ligne sans dépendre de modèles génériques ni de commissions abusives par transaction. Catalogue de produits, panier, paiements et livraison intégrés dans une plateforme qui vous appartient réellement.",
+      "title": "E-Commerce et Boutiques en Ligne",
+      "description": "Boutiques en ligne sur mesure sans commissions abusives par transaction. Conçues pour des catalogues étendus, un checkout rapide et la synchronisation des stocks et expéditions.",
       "iconName": "Storefront",
       "features": [
-        "Catalogue de produits avec variantes illimitées",
-        "Paiements en ligne (Stripe, Wompi, PayU) et intégrations de livraison",
-        "Tableau de bord de gestion des commandes et des stocks"
+        "Catalogue avec variantes, attributs et stock en direct",
+        "Tunnel de commande optimisé sur mobile avec moyens de paiement locaux et globaux",
+        "Intégration directe avec les transporteurs logistiques"
       ]
     },
     {
       "slug": "seguridad-cumplimiento",
-      "title": "Protection des Données & Conformité Réglementaire (OWASP)",
-      "description": "Nous protégeons la réputation de votre marque. Nous appliquons les méthodologies OWASP contre les vulnérabilités et structurons votre logiciel selon la loi 1581 de Colombie et le RGPD en Europe, assurant des audits de sécurité réussis.",
+      "title": "Sécurité et Protection des Données",
+      "description": "Protection native dès l'architecture : gestion stricte des droits d'accès, chiffrement des données sensibles et conformité avec les réglementations de confidentialité.",
       "iconName": "ShieldCheck",
       "features": [
-        "Normes de sécurité OWASP",
-        "Conformité réglementaire en protection des données (loi 1581, RGPD et équivalents)",
-        "Chiffrement des données et contrôle des accès"
+        "Chiffrement en transit et au repos",
+        "Conformité réglementaire (RGPD et Loi 1581)",
+        "Audits de vulnérabilités et respect des standards OWASP"
       ]
     },
     {
       "slug": "arquitectura-documentacion",
-      "title": "Architecture & Documentation",
-      "description": "Nous livrons une documentation technique exhaustive et un transfert de connaissances structuré afin que votre équipe garde le contrôle et l'autonomie sur le code.",
+      "title": "Documentation et Passation Technique",
+      "description": "Livraison transparente des dépôts, variables d'environnement et schémas d'architecture afin que votre équipe puisse faire évoluer le code en toute autonomie.",
       "iconName": "Handshake",
       "features": [
-        "Documentation technique détaillée",
-        "Conception de systèmes pensée pour évoluer",
-        "Transfert complet de la propriété intellectuelle"
+        "Dépôts et pipelines CI/CD à votre nom",
+        "Guides techniques détaillés d'installation et de maintenance"
       ]
     },
     {
       "slug": "migracion-datos-legacy",
-      "title": "Migration et Modernisation de Données Legacy",
-      "description": "Nous transformons les informations fragmentées et les fichiers structurés complexes (XML, CSV, bases de données obsolètes) des systèmes hérités en entrepôts de données modernes optimisés pour la prise de décision stratégique.",
+      "title": "Migration et Modernisation de Données",
+      "description": "Extraction, nettoyage et migration de données depuis des systèmes obsolètes ou tableurs dispersés vers des bases de données modernes, sans interrompre vos opérations.",
       "iconName": "Swap",
       "features": [
-        "Migration sécurisée depuis les systèmes hérités et XML",
-        "Structuration des données pour la Business Intelligence",
-        "Intégration de pipelines de données et d'ETL"
+        "Nettoyage, déduplication et alignement des données historiques",
+        "Migration par étapes sans arrêt de service",
+        "Contrôle strict d'intégrité et de cohérence"
       ]
     },
     {
       "slug": "inteligencia-artificial-aplicada",
-      "title": "Intelligence Artificielle Appliquée (IA)",
-      "description": "Nous concevons et intégrons des modèles d'IA, des LLM et des agents autonomes pour optimiser les flux de travail, automatiser les tâches répétitives et renforcer la prise de décision basée sur les données.",
+      "title": "Intelligence Artificielle Appliquée aux Métiers",
+      "description": "Mise en place d'assistants intelligents et automatisation du traitement de documents connectés à la base de connaissances de votre entreprise, pour réduire les tâches manuelles.",
       "iconName": "Graph",
       "features": [
-        "Intégration de LLM et modèles d'IA tiers",
-        "Agents autonomes pour l'automatisation des processus",
-        "Analyse de données pour une prise de décision éclairée"
+        "Assistants IA pour WhatsApp et outils internes",
+        "Extraction automatique de données depuis factures et documents",
+        "Recherche sémantique dans la documentation d'entreprise"
       ]
     }
   ]

@@ -1,28 +1,28 @@
 {
   "sectionAria": "Notre équipe",
-  "title": "L'équipe derrière le code",
-  "description": "Une équipe senior, sans intermédiaires commerciaux entre vous et les personnes qui construisent votre logiciel. Parlez directement aux ingénieurs en charge de votre projet.",
-  "ctaLabel": "Parler à l'équipe",
+  "title": "L'équipe d'ingénierie derrière le code",
+  "description": "Vous collaborez directement avec les ingénieurs et designers en charge de votre solution, sans intermédiaire commercial.",
+  "ctaLabel": "Échanger avec l'équipe",
   "members": [
     {
       "slug": "andres-betancourt",
       "name": "Andrés Betancourt",
-      "role": "Backend Developer",
-      "description": "Conçoit des systèmes haute performance, des architectures d'API robustes et des solutions de données qui soutiennent l'activité critique de chaque client.",
+      "role": "Backend & Architecture",
+      "description": "Architecture logicielle, APIs et bases de données. Focalisé sur la robustesse, la sécurité et la capacité à encaisser de fortes charges opérationnelles.",
       "photo": "/team/andres-betancourt.webp"
     },
     {
       "slug": "cesar-leon",
       "name": "César León",
-      "role": "Frontend Developer",
-      "description": "Construit des interfaces rapides et accessibles optimisées pour la conversion, avec un focus sur les performances et les Core Web Vitals.",
+      "role": "Frontend & Performance",
+      "description": "Développement frontend sous Next.js et React. Veille à la vitesse de chargement, la réactivité sur mobile et les standards d'accessibilité sans surcharge visuelle.",
       "photo": "/team/cesar-leon.webp"
     },
     {
       "slug": "ximena-calderon",
       "name": "Ximena Calderón",
-      "role": "UI/UX Designer",
-      "description": "Conçoit des expériences utilisateur alliant esthétique et fonctionnalité, alignant chaque livrable sur les objectifs métier du client.",
+      "role": "Design Produit & UI/UX",
+      "description": "Design de produit et ergonomie. Conçoit des parcours fluides et des interfaces intuitives pour réduire la courbe d'apprentissage de vos utilisateurs.",
       "photo": "/team/ximena-calderon.webp"
     }
   ]

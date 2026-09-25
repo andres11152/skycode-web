@@ -1,20 +1,19 @@
 {
-  "badge": "Portafolio & Casos de Éxito",
+  "badge": "Portafolio & Casos Reales",
   "title": "Portafolio",
-  "description": "Proyectos destacados y casos de éxito: soluciones tecnológicas implementadas con éxito para resolver desafíos reales de negocio.",
+  "description": "Proyectos desarrollados para resolver problemas operativos concretos y acelerar ventas reales.",
   "viewAll": "Ver todos los proyectos",
   "items": [
     {
       "slug": "sentry-crm",
-      "title": "Sentry CRM · Plataforma Omnicanal SaaS Multitenant & Agentes IA",
-      "client": "Sentry CRM · CRM Inteligente & Automatización WhatsApp",
-      "description": "Plataforma SaaS multi-inquilino empresarial de gestión omnicanal de conversaciones: integración oficial con WhatsApp Business API, agentes autónomos de IA Copilot, canal unificado de agentes, enrutamiento inteligente y analítica de embudo de ventas en tiempo real.",
+      "title": "Sentry CRM · CRM Omnicanal & Asistente IA",
+      "client": "Sentry CRM · Automatización y Gestión de Leads",
+      "description": "Plataforma multi-inquilino para centralizar conversaciones de WhatsApp Business, delegar respuestas a asistentes con IA y visualizar el embudo de ventas en tiempo real sin salir del chat.",
       "tags": [
-        "SaaS Multitenant",
-        "WhatsApp API",
-        "Agentes de IA",
-        "Omnicanalidad",
-        "Next.js & Cloud DB"
+        "SaaS Multi-tenant",
+        "WhatsApp Cloud API",
+        "Modelos de IA",
+        "Next.js & PostgreSQL"
       ],
       "iconName": "Graph",
       "coverImage": "/projects/sentry-crm/dashboard.webp",
@@ -42,14 +41,14 @@
     },
     {
       "slug": "servifuturo",
-      "title": "Plataforma de Gestión de Flota y Control Operativo",
+      "title": "ServiFuturo · Control Operativo de Flota y Rutas",
       "client": "ServiFuturo S.A.S. · Transporte Corporativo & Logística",
-      "description": "Sistema de gestión integral para la operación de transporte corporativo: monitoreo en tiempo real, liquidación automática de servicios, control de conductores/pasajeros y auditoría bajo SOX & Ley 1581.",
+      "description": "Sistema de despacho y monitoreo para transporte empresarial: seguimiento en vivo, liquidación automática de planillas, control de conductores y trazabilidad para auditorías.",
       "tags": [
-        "Gestión de Flotas",
-        "Control Operativo",
-        "Auditoría & Datos",
-        "Next.js & Node"
+        "Gestión Logística",
+        "Despacho en Vivo",
+        "Next.js & Node",
+        "PostgreSQL"
       ],
       "iconName": "Truck",
       "link": "https://servifuturo.cloud/",
@@ -73,15 +72,14 @@
     },
     {
       "slug": "equilibrio-arquitectonico",
-      "title": "Equilibrio Arquitectónico · Portal Web Corporativo & Soluciones en Vidrio y Metal",
-      "client": "Equilibrio Arquitectónico S.A.S. · Diseño & Sistemas Arquitectónicos",
-      "description": "Sitio web corporativo de alta gama diseñado para destacar proyectos residenciales, comerciales e institucionales en vidrio templado, aluminio y acero inoxidable. Optimizado para máximo rendimiento, SEO y conversión de clientes.",
+      "title": "Equilibrio Arquitectónico · Sitio Web y Catálogo Digital",
+      "client": "Equilibrio Arquitectónico S.A.S. · Sistemas en Vidrio y Aluminio",
+      "description": "Portal corporativo de alto rendimiento para proyectos residenciales y comerciales en vidrio y aluminio, optimizado para captar cotizaciones directas y posicionar en Google.",
       "tags": [
         "Diseño Web",
-        "Portal Corporativo",
-        "Arquitectura & Diseño",
-        "Vidrio & Aluminio",
-        "Next.js & Performance"
+        "Catálogo Digital",
+        "SEO & Rendimiento",
+        "Next.js"
       ],
       "iconName": "Buildings",
       "link": "https://equilibrioarquitectonico.com/",
@@ -97,15 +95,14 @@
     },
     {
       "slug": "cda-revifull",
-      "title": "CDA Revifull · Portal Web Corporativo & Sistema de Agendamiento Digital",
-      "client": "CDA Revifull S.A.S. · Centro de Diagnóstico Automotor en Bogotá",
-      "description": "Plataforma web de alta velocidad y agendamiento en línea para diagnóstico automotor y revisión técnico-mecánica de vehículos particulares, públicos y motocicletas. Integración con WhatsApp, consulta de tarifas y captación de clientes.",
+      "title": "CDA Revifull · Plataforma de Agendamiento en Línea",
+      "client": "CDA Revifull S.A.S. · Centro de Diagnóstico Automotor",
+      "description": "Portal de agendamiento rápido para revisión técnico-mecánica de vehículos y motos en Bogotá, con recordatorios automáticos y cotización directa por WhatsApp.",
       "tags": [
-        "Portal Web",
+        "Agendamiento Web",
         "Sector Automotriz",
-        "Agendamiento Digital",
-        "Optimización SEO",
-        "Next.js & Performance"
+        "WhatsApp API",
+        "Next.js"
       ],
       "iconName": "Car",
       "link": "https://cdarevifull.com/",
@@ -120,15 +117,14 @@
     },
     {
       "slug": "moncyre",
-      "title": "Moncyre Studios · E-Commerce de Moda, Calzado & Fragancias Exclusivas",
-      "client": "Moncyre Studios · Marca de Moda Urbana & Alta Costura",
-      "description": "Plataforma de comercio electrónico de lujo diseñada para exhibir colecciones exclusivas de prendas streetwear, calzado y perfumería. Integración con pasarelas de pago, envíos nacionales y diseño UX/UI de alta conversión.",
+      "title": "Moncyre Studios · Tienda Online de Moda Urbana",
+      "client": "Moncyre Studios · Marca de Streetwear & Calzado",
+      "description": "E-commerce de moda y calzado con catálogo interactivo, experiencia móvil ultra-rápida e integración directa con pasarelas de pago y envíos nacionales.",
       "tags": [
         "E-Commerce",
         "Moda & Calzado",
-        "Diseño UX/UI",
-        "Pasarela de Pagos",
-        "Next.js & Performance"
+        "Pasarelas de Pago",
+        "Next.js"
       ],
       "iconName": "ShoppingCart",
       "link": "https://moncyre.com/",

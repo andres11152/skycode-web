@@ -1,106 +1,105 @@
 {
-  "badge": "Our Services",
-  "title": "Our Services",
-  "description": "We build robust solutions with enterprise-grade architecture, rigorous security, and detailed technical documentation to support your organization's growth and independence.",
+  "badge": "Engineering Services",
+  "title": "What we build for you",
+  "description": "Software engineered for your real operational needs: fast, secure, free of vendor lock-in, and with source code that is 100% yours.",
   "viewAll": "See all services",
   "items": [
     {
       "slug": "desarrollo-software-medida",
-      "title": "Scalable Custom Proprietary Systems",
-      "description": "We design your business core with high-performance backends. We deliver absolute intellectual property and optimized databases so you don't pay endless licenses or rely on limited builders.",
+      "title": "Custom Software & Scalable Platforms",
+      "description": "We engineer internal tools, customer portals, and core operational platforms tailored to your business logic, built to scale without per-seat licensing fees.",
       "iconName": "Blueprint",
       "features": [
-        "Proprietary, transferable code",
-        "Databases structured for your business",
-        "Custom business logic"
+        "100% transferable, proprietary source code",
+        "High-performance, structured database architecture",
+        "Modeled directly around your real-world workflows"
       ]
     },
     {
       "slug": "desarrollo-aplicaciones-moviles",
-      "title": "Mobile Development (Android & iOS)",
-      "description": "Creation of native and cross-platform mobile apps (React Native and Flutter) with high performance, fully optimized for the App Store and Google Play.",
+      "title": "Mobile Applications (iOS & Android)",
+      "description": "Fast, intuitive mobile applications built with React Native, designed to synchronize background data and operate reliably even when field connections drop.",
       "iconName": "DeviceMobile",
       "features": [
-        "Cross-platform apps (React Native / Flutter)",
-        "App Store and Google Play optimization (ASO)",
-        "Offline-first synchronization"
+        "Cross-platform development with React Native",
+        "Store submission & management for App Store and Google Play",
+        "Offline-first mode with background syncing",
+        "Native hardware integration (camera, location, Bluetooth)"
       ]
     },
     {
       "slug": "apis-integraciones",
-      "title": "APIs & Integrations",
-      "description": "Design and development of documented REST APIs to connect your systems with payment gateways, ERPs, CRMs, and any platform critical to your operation.",
+      "title": "APIs & System Integrations",
+      "description": "We connect your internal software with payment processors, ERPs, accounting systems, and messaging channels to eliminate manual data entry.",
       "iconName": "TreeStructure",
       "features": [
-        "Standardized, documented REST APIs",
-        "Integration with ERPs and payment gateways",
-        "Microservices architecture"
+        "Payment gateways (Stripe, Wompi, PayU, Mercado Pago)",
+        "Accounting and ERP integration (SAP, Siigo, Alegra)",
+        "Messaging APIs (WhatsApp Cloud API) and secure webhooks"
       ]
     },
     {
       "slug": "frontend-alto-rendimiento",
-      "title": "Ultra-fast Interfaces & Conversion Optimization",
-      "description": "Web performance is profitability. We develop with React and Next.js, optimizing for excellent Core Web Vitals scores to maximize your conversion rates and organic SEO rankings.",
+      "title": "High-Performance Web Applications",
+      "description": "Modern frontend development using Next.js and React focused on sub-second page loads, accessibility, and clean architecture that drives organic search rankings.",
       "iconName": "Lightning",
       "features": [
-        "Applications built with React and Next.js",
-        "Core Web Vitals and SEO optimization",
-        "Web accessibility (WCAG) by design"
+        "Sub-second load times and green Core Web Vitals",
+        "Technical SEO architecture for organic search rankings"
       ]
     },
     {
       "slug": "ecommerce-tienda-online",
-      "title": "Ecommerce & Online Stores",
-      "description": "Sell online without relying on generic templates or abusive per-transaction fees. Product catalog, cart, payments and shipping integrated into a platform you actually own.",
+      "title": "Custom E-Commerce Platforms",
+      "description": "Tailored online storefronts free of recurring transaction taxes. Designed for extensive catalogs, frictionless checkouts, and automated stock and shipping sync.",
       "iconName": "Storefront",
       "features": [
-        "Product catalog with unlimited variants",
-        "Online payments (Stripe, Wompi, PayU) and shipping integrations",
-        "Order and inventory management dashboard"
+        "Dynamic catalog with variants, stock levels, and discounts",
+        "Mobile-optimized checkout with local and global payment gateways",
+        "Direct integration with regional logistics and couriers"
       ]
     },
     {
       "slug": "seguridad-cumplimiento",
-      "title": "Data Shielding & Regulatory Compliance (OWASP)",
-      "description": "We protect your brand's reputation. We apply OWASP methodologies against vulnerabilities and structure your software under Colombia's Law 1581 and Europe's GDPR, ensuring successful security audits.",
+      "title": "Security & Data Protection",
+      "description": "Built-in defensive architecture: role-based access control, cryptographic protection for sensitive records, and strict regulatory compliance.",
       "iconName": "ShieldCheck",
       "features": [
-        "OWASP security standards",
-        "Regulatory data-protection compliance (Law 1581, GDPR, and equivalents)",
-        "Data encryption and access control"
+        "Encryption in transit and at rest",
+        "Compliance with GDPR and Colombian Law 1581",
+        "Routine vulnerability assessments following OWASP standards"
       ]
     },
     {
       "slug": "arquitectura-documentacion",
-      "title": "Architecture & Documentation",
-      "description": "We deliver thorough technical documentation and structured knowledge transfer so your team retains control and autonomy over the code.",
+      "title": "Documentation & Technical Handover",
+      "description": "Clean handover of versioned repositories, environment setups, and system diagrams so your internal team or future partners can maintain the stack with zero friction.",
       "iconName": "Handshake",
       "features": [
-        "Detailed technical documentation",
-        "System design built to scale",
-        "Full intellectual property transfer"
+        "Full repository and deployment ownership under your credentials",
+        "Clear step-by-step setup, operational, and API documentation"
       ]
     },
     {
       "slug": "migracion-datos-legacy",
       "title": "Legacy Data Migration & Modernization",
-      "description": "We transform fragmented information and complex structured files (XML, CSV, obsolete databases) from legacy systems into modern data warehouses optimized for strategic, analytics-driven decision-making.",
+      "description": "Safe extraction, cleaning, and transformation of data locked inside outdated systems, XML dumps, or legacy spreadsheets into modern cloud databases without operational downtime.",
       "iconName": "Swap",
       "features": [
-        "Secure migration from legacy systems and XML",
-        "Data structuring for Business Intelligence",
-        "Data pipelines and ETL integration"
+        "Deduplication, schema normalization, and historic data cleanup",
+        "Zero-downtime phased migration strategies",
+        "Strict data integrity checks and validation"
       ]
     },
     {
       "slug": "inteligencia-artificial-aplicada",
-      "title": "Applied Artificial Intelligence (AI)",
-      "description": "We design and integrate AI models, LLMs, and autonomous agents to optimize workflows, automate repetitive tasks, and power data-driven decision-making.",
+      "title": "Applied Business Artificial Intelligence",
+      "description": "Pragmatic AI assistants and automated document workflows linked to your internal databases and knowledge bases, built to save hours of manual repetitive labor.",
       "iconName": "Graph",
       "features": [
-        "Integration of third-party LLMs and AI models",
-        "Autonomous agents for process automation",
-        "Data analysis for data-driven decisions"
+        "AI agents for WhatsApp and internal team workflows",
+        "Automated data extraction from invoices and unstructured documents",
+        "Semantic search across proprietary company documents"
       ]
     }
   ]

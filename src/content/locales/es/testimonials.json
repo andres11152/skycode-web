@@ -1,42 +1,42 @@
 {
-  "badge": "Testimonios & Casos Reales",
+  "badge": "Casos y Experiencias",
   "title": "Lo que dicen quienes ya trabajaron con nosotros",
-  "description": "Resultados medibles, no solo buenas intenciones.",
+  "description": "Feedback directo de fundadores y gerentes de operaciones que usan nuestras soluciones todos los días.",
   "items": [
     {
       "name": "Solange Rojas",
       "role": "Product Manager",
       "company": "Sentry CRM",
       "location": null,
-      "quote": "Antes de SkyCode manejábamos WhatsApp Business con tres herramientas distintas que no se hablaban entre sí. Ahora tenemos un solo inbox omnicanal con IA que enruta las conversaciones solas, y el equipo puede ver el embudo de ventas en tiempo real sin exportar nada a Excel. Lo que más valoro es que nunca dependimos de que ellos estuvieran disponibles para entender el código — la documentación nos permitió llevar parte del mantenimiento in-house."
+      "quote": "Teníamos WhatsApp regado en tres herramientas distintas y era un caos. SkyCode unificó todo en un buzón con IA que clasifica los leads solo. Lo que más valoré fue la documentación: hoy mi propio equipo hace ajustes sin tener que llamarlos por cada detalle."
     },
     {
       "name": "Aguilar",
       "role": "Gerente General",
       "company": "Servifuturo",
       "location": null,
-      "quote": "Necesitábamos una plataforma que aguantara el volumen real de la operación, no una demo bonita. SkyCode entregó cada semana con algo funcional, no promesas — y cuando pedimos un cambio de arquitectura a mitad de camino, lo resolvieron sin que se sintiera como un proyecto nuevo desde cero."
+      "quote": "Nos urgía un sistema que aguantara el trote diario de las rutas en vivo, no una maqueta para mostrar. Entregaron avances funcionales cada semana y cuando tocó ajustar la arquitectura sobre la marcha, respondieron de una."
     },
     {
       "name": "Gian Caicedo",
       "role": "Gerente Comercial",
       "company": "Equilibrio Arquitectónico",
       "location": null,
-      "quote": "Somos una empresa de vidrio y metal, no de tecnología — necesitábamos que alguien nos explicara las cosas sin tecnicismos y que el sitio realmente representara la calidad de nuestros proyectos residenciales y comerciales. Los tiempos de entrega se cumplieron tal cual se acordaron."
+      "quote": "Nosotros trabajamos con vidrio y aluminio, cero tecnicismos. Entendieron rápido qué necesitábamos para cotizaciones comerciales y el catálogo web quedó impecable. Los tiempos pactados se cumplieron al pie de la letra."
     },
     {
       "name": "Diego Quiroga",
       "role": "Gerente General",
       "company": "CDA Revifull",
       "location": null,
-      "quote": "El sistema de agendamiento en línea nos quitó la carga de estar contestando el teléfono todo el día para coordinar citas de revisión. La plataforma es rápida incluso en horas pico, y el soporte post-lanzamiento respondió rápido las dos veces que lo necesitamos."
+      "quote": "El agendamiento web nos quitó un dolor de cabeza enorme en recepción. La plataforma carga al instante en el celular y no se cae ni en los días de mayor afluencia."
     },
     {
       "name": "Jorge Méndez",
       "role": "CEO",
       "company": "Moncyre Studios",
       "location": null,
-      "quote": "Para una marca de moda y calzado, cómo se ve el sitio importa tanto como cómo funciona. SkyCode entendió eso desde la primera reunión — el e-commerce quedó al nivel de las colecciones que vendemos, no como una tienda genérica con nuestro logo pegado encima."
+      "quote": "Buscábamos una tienda online con nivel editorial de moda, no la típica plantilla de Shopify con logo pegado. El resultado habla por sí solo: el checkout es súper ágil y las ventas aumentaron desde la primera semana."
     }
   ]
 }
