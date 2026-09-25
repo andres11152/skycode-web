@@ -36,6 +36,14 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+# .env.test SÍ se commitea a propósito (ver el comentario dentro del
+# archivo) — son credenciales de la Postgres/MinIO desechables de
+# docker-compose.test.yml, nunca secretos reales, y CI (.github/workflows/ci.yml)
+# necesita que exista en el checkout para `node --env-file=.env.test
+# scripts/migrate.mjs` — el patrón `.env*` de arriba lo bloqueaba
+# silenciosamente hasta ahora (nunca se había commiteado pese al comentario
+# que decía lo contrario), causa real de que integration-e2e fallara en CI.
+!.env.test
 
 # vercel
 .vercel

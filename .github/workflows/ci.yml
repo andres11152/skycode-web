@@ -69,14 +69,19 @@ jobs:
           --health-retries 10
       # Doble S3-compatible de lib/storage.ts (Cloudflare R2 en producción)
       # — mismas credenciales que docker-compose.test.yml/.env.test. Imagen
-      # `bitnami/minio` en vez de `minio/minio` SOLO acá: los "services" de
-      # GitHub Actions no aceptan un `command:` propio como docker-compose,
-      # y la imagen de Bitnami arranca el server automáticamente leyendo
-      # MINIO_ROOT_USER/PASSWORD sin necesitar pasar `server /data` a mano.
-      # El bucket lo crea scripts/ensure-test-bucket.mjs vía los hooks
+      # `bitnamilegacy/minio` en vez de `minio/minio` SOLO acá: los
+      # "services" de GitHub Actions no aceptan un `command:` propio como
+      # docker-compose, y esta imagen arranca el server automáticamente
+      # leyendo MINIO_ROOT_USER/PASSWORD sin necesitar pasar `server /data`
+      # a mano. `bitnamilegacy/*` (no `bitnami/*`, que Broadcom restringió a
+      # clientes de pago en 2025 — la imagen bajo ese nombre dejó de existir
+      # en Docker Hub, causa real de que este job estuviera fallando en
+      # silencio) es el namespace donde Bitnami sigue publicando builds
+      # gratuitas de sus imágenes legacy. El bucket lo crea
+      # scripts/ensure-test-bucket.mjs vía los hooks
       # pretest:integration/pretest:e2e, sin paso propio de CI.
       minio:
-        image: bitnami/minio:latest
+        image: bitnamilegacy/minio:latest
         env:
           MINIO_ROOT_USER: test-access-key
           MINIO_ROOT_PASSWORD: test-secret-key
