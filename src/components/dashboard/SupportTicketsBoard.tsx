@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useId, useState } from "react";
-import { Plus, X, ChevronDown, LifeBuoy, Clock, AlertTriangle } from "lucide-react";
+import { Plus, X, ChevronDown, LifeBuoy, Clock, AlertTriangle, RefreshCw } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { Badge, type BadgeTone } from "./ui/Badge";
 import { Button } from "./ui/Button";
@@ -130,6 +130,20 @@ export function SupportTicketsBoard({
     if (res.ok) {
       const data = await res.json();
       setTickets((prev) => prev.map((t) => (t.id === id ? data.ticket : t)));
+    }
+  };
+
+  const [recalculatingId, setRecalculatingId] = useState<number | null>(null);
+  const handleRecalculateSla = async (id: number) => {
+    setRecalculatingId(id);
+    try {
+      const res = await fetch(`/api/support-tickets/${id}/recalculate-sla`, { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        setTickets((prev) => prev.map((t) => (t.id === id ? data.ticket : t)));
+      }
+    } finally {
+      setRecalculatingId(null);
     }
   };
 
@@ -320,6 +334,19 @@ export function SupportTicketsBoard({
                                         <option key={p} value={p} className="bg-background">{p}</option>
                                       ))}
                                     </select>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRecalculateSla(ticket.id);
+                                      }}
+                                      disabled={recalculatingId === ticket.id}
+                                      className="mt-1 inline-flex items-center gap-1 text-[10px] font-medium text-accent hover:underline disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+                                      title="Cambiar la prioridad no mueve el vencimiento del SLA por sí solo — usa esto para darle una ventana nueva desde ahora con la prioridad actual."
+                                    >
+                                      <RefreshCw size={10} className={recalculatingId === ticket.id ? "animate-spin" : ""} />
+                                      {recalculatingId === ticket.id ? "Recalculando…" : "Recalcular SLA"}
+                                    </button>
                                   </div>
                                   <div className="space-y-1">
                                     <label className="text-[10px] font-medium text-foreground/60">Estado</label>

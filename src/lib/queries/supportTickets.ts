@@ -139,8 +139,50 @@ export interface UpdateTicketData {
  * (volver a `Abierto`/`En Progreso`) limpia ambas fechas. El SLA
  * (`sla_due_at`) **no** se recalcula acá aunque cambie la prioridad — ver
  * el comentario de la migración 0012: reprogramar el SLA es una acción
- * explícita que no existe todavía, no un efecto secundario de este update.
+ * explícita separada (`recalculateTicketSla()` abajo), no un efecto
+ * secundario de este update.
  */
+export type RecalculateSlaResult = { outcome: "ok"; before: unknown; after: unknown } | { outcome: "not_found" };
+
+/**
+ * Reprograma el SLA de un ticket — la acción explícita que faltaba (ver
+ * el comentario de `updateTicket()` arriba y el de la migración 0012):
+ * cambiar `priority` NUNCA recalcula `sla_due_at` por sí solo, así que si
+ * alguien escala/degrada un ticket, el vencimiento sigue siendo el
+ * original hasta que alguien llame a esto explícitamente. Recalcula
+ * SIEMPRE desde `now()` con la prioridad ACTUAL del ticket (no la de
+ * cuando se creó) — reprogramar es "dame una ventana nueva a partir de
+ * hoy", no "recalcula qué hubiera pasado si hubiera tenido esta prioridad
+ * desde el principio".
+ *
+ * `sla_warning_notified_at` se reinicia a `NULL` — mismo criterio que
+ * `setLeadFollowUp()` con `follow_up_notified_at`: si el ticket ya había
+ * sido marcado como "aviso enviado" para el vencimiento viejo, debe poder
+ * volver a avisar para el vencimiento nuevo, no quedar mudo para siempre
+ * por un aviso que ya no aplica a esta fecha.
+ */
+export async function recalculateTicketSla(
+  id: number,
+  dbRunner: QueryRunner,
+  slaWindowHours: Record<TicketPriority, number> = DEFAULT_SLA_WINDOW_HOURS
+): Promise<RecalculateSlaResult> {
+  const before = await dbRunner.query(
+    "SELECT priority, sla_due_at FROM support_tickets WHERE id = $1 AND deleted_at IS NULL;",
+    [id]
+  );
+  if (before.rows.length === 0) return { outcome: "not_found" };
+
+  const priority = before.rows[0].priority as TicketPriority;
+  const newSlaDueAt = computeSlaDueAt(priority, slaWindowHours);
+
+  const res = await dbRunner.query(
+    `UPDATE support_tickets SET sla_due_at = $1, sla_warning_notified_at = NULL WHERE id = $2 RETURNING *;`,
+    [newSlaDueAt, id]
+  );
+
+  return { outcome: "ok", before: before.rows[0], after: res.rows[0] };
+}
+
 export async function updateTicket(id: number, data: UpdateTicketData, dbRunner: QueryRunner) {
   const before = await dbRunner.query("SELECT * FROM support_tickets WHERE id = $1 AND deleted_at IS NULL;", [id]);
   if (before.rows.length === 0) return null;
