@@ -18,9 +18,9 @@ const CreateTaskSchema = z.object({
 });
 
 /**
- * GET /api/tasks?projectId=N - Tareas de un proyecto. Requiere
- * `tasks:read`. Por proyecto, no un listado global — no hay una vista
- * "todas mis tareas" todavía (ver roadmap: Capacidad del equipo).
+ * GET /api/tasks?projectId=N - Tareas de UN proyecto. Requiere
+ * `tasks:read`. Para la vista cruzando todos los proyectos ("Mis Tareas"),
+ * ver `GET /api/tasks/mine`.
  */
 export const GET = withAuth("tasks:read", async (request) => {
   try {

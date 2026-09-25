@@ -128,6 +128,11 @@ export interface Task {
   completed_at: string | null;
 }
 
+/** Tarea cruzando proyectos — mismo shape que `Task` más el título del proyecto dueño, para "Mis Tareas" (ver lib/queries/tasks.ts::getTasksAssignedToUser). */
+export interface MyTask extends Task {
+  project_title: string;
+}
+
 export interface ProjectOption {
   id: number;
   title: string;

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { createTask, getProjectTasks, getTaskById, updateTask, updateOwnTaskStatus, softDeleteTask } from "./tasks";
+import { createTask, getProjectTasks, getTaskById, updateTask, updateOwnTaskStatus, softDeleteTask, getTasksAssignedToUser } from "./tasks";
 import { query, withTransaction } from "../db";
 import { createTestClient, createTestProject, createTestUser, createTestTimeEntry, resetTestDb } from "../testHelpers/db";
 
@@ -178,5 +178,80 @@ describe("softDeleteTask", () => {
     await withTransaction((c) => softDeleteTask(taskId, c));
     const secondAttempt = await withTransaction((c) => softDeleteTask(taskId, c));
     expect(secondAttempt).toBeNull();
+  });
+});
+
+describe("getTasksAssignedToUser", () => {
+  it("trae tareas de VARIOS proyectos distintos, no solo uno", async () => {
+    const client = await createTestClient();
+    const projectA = await createTestProject(client.id, { title: "Proyecto A" });
+    const projectB = await createTestProject(client.id, { title: "Proyecto B" });
+    const dev = await createTestUser({ name: "Dev Uno" });
+    const creator = await createTestUser();
+
+    await createTask({ project_id: projectA.id, title: "Tarea en A", assignee_id: dev.id }, creator.id, { query });
+    await createTask({ project_id: projectB.id, title: "Tarea en B", assignee_id: dev.id }, creator.id, { query });
+
+    const myTasks = await getTasksAssignedToUser(dev.id);
+    expect(myTasks).toHaveLength(2);
+    expect(myTasks.map((t) => t.project_title).sort()).toEqual(["Proyecto A", "Proyecto B"]);
+  });
+
+  it("no trae tareas asignadas a otra persona", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const devA = await createTestUser();
+    const devB = await createTestUser();
+    const creator = await createTestUser();
+    await createTask({ project_id: project.id, title: "De A", assignee_id: devA.id }, creator.id, { query });
+    await createTask({ project_id: project.id, title: "De B", assignee_id: devB.id }, creator.id, { query });
+
+    const myTasks = await getTasksAssignedToUser(devA.id);
+    expect(myTasks).toHaveLength(1);
+    expect(myTasks[0].title).toBe("De A");
+  });
+
+  it("no trae tareas borradas lógicamente ni de proyectos borrados", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const deletedProject = await createTestProject(client.id);
+    const dev = await createTestUser();
+    const creator = await createTestUser();
+
+    const deletedTaskId = await createTask({ project_id: project.id, title: "Borrada", assignee_id: dev.id }, creator.id, { query });
+    await withTransaction((c) => softDeleteTask(deletedTaskId, c));
+
+    await createTask({ project_id: deletedProject.id, title: "En proyecto borrado", assignee_id: dev.id }, creator.id, { query });
+    await query(`UPDATE projects SET deleted_at = now() WHERE id = $1;`, [deletedProject.id]);
+
+    await createTask({ project_id: project.id, title: "Sigue viva", assignee_id: dev.id }, creator.id, { query });
+
+    const myTasks = await getTasksAssignedToUser(dev.id);
+    expect(myTasks).toHaveLength(1);
+    expect(myTasks[0].title).toBe("Sigue viva");
+  });
+
+  it("sin asignación (assignee_id null), no aparece para nadie", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const dev = await createTestUser();
+    const creator = await createTestUser();
+    await createTask({ project_id: project.id, title: "Sin asignar" }, creator.id, { query });
+
+    expect(await getTasksAssignedToUser(dev.id)).toEqual([]);
+  });
+
+  it("ordena las no completadas antes que las completadas", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const dev = await createTestUser();
+    const creator = await createTestUser();
+
+    const doneId = await createTask({ project_id: project.id, title: "Ya terminada", assignee_id: dev.id }, creator.id, { query });
+    await withTransaction((c) => updateTask(doneId, { status: "Completada" }, c));
+    await createTask({ project_id: project.id, title: "Pendiente todavía", assignee_id: dev.id }, creator.id, { query });
+
+    const myTasks = await getTasksAssignedToUser(dev.id);
+    expect(myTasks.map((t) => t.title)).toEqual(["Pendiente todavía", "Ya terminada"]);
   });
 });

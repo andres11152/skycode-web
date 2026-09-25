@@ -31,6 +31,7 @@ import {
   LineChart,
   Repeat,
   PieChart,
+  ClipboardCheck,
 } from "lucide-react";
 import { hasPermission, type Permission } from "@/lib/rbac";
 import { NotificationBell } from "./NotificationBell";
@@ -76,6 +77,10 @@ const NAV_GROUPS: NavGroup[] = [
       // Mismo permiso que "Proyectos" a propósito: registrar horas exige
       // poder ver proyectos (ver /api/time-entries::canLogTime).
       { href: "/dashboard/horas", label: "Mis Horas", icon: Clock, permission: "projects:read" },
+      // Mismo permiso que el tablero de tareas por proyecto — hoy nadie sin
+      // tasks:read tiene forma de ver ni siquiera la página de un proyecto
+      // donde se le asignó algo (ver GET /api/tasks/mine).
+      { href: "/dashboard/mis-tareas", label: "Mis Tareas", icon: ClipboardCheck, permission: "tasks:read" },
       { href: "/dashboard/soporte", label: "Soporte", icon: LifeBuoy, permission: "support:read" },
       // Reutiliza tasks:read — es una vista derivada de las mismas
       // asignaciones que ya gatea ese permiso (ver capacidad/page.tsx).

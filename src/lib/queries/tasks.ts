@@ -1,5 +1,5 @@
 import { query } from "../db";
-import type { Task, TaskStatus } from "@/components/dashboard/types";
+import type { Task, TaskStatus, MyTask } from "@/components/dashboard/types";
 
 const TASKS_SELECT = `
   SELECT t.id, t.project_id, t.sprint_id, s.title AS sprint_title, t.title, t.description,
@@ -53,6 +53,40 @@ export async function getTaskById(id: number): Promise<Task | null> {
   const res = await query(`${TASKS_SELECT} WHERE t.id = $1 AND t.deleted_at IS NULL;`, [id]);
   const row = res.rows[0];
   return row ? shapeTaskRow(row) : null;
+}
+
+/**
+ * "Mis Tareas": todo lo asignado a un usuario, cruzando TODOS los
+ * proyectos — hasta acá la única vista de tareas era por proyecto
+ * (`getProjectTasks`), así que alguien con tareas en varios proyectos
+ * tenía que entrar uno por uno para ver su propia carga. Excluye proyectos
+ * borrados lógicamente (`p.deleted_at IS NULL`) — una tarea de un proyecto
+ * borrado no debería seguir apareciendo como pendiente. Orden: primero las
+ * no completadas (`status != 'Completada'` ordena antes que
+ * `= 'Completada'` al castear el booleano), luego por fecha límite más
+ * próxima (`NULLS LAST` — sin fecha, al final, no antes que las que sí
+ * tienen una vencida).
+ */
+export async function getTasksAssignedToUser(userId: number | string): Promise<MyTask[]> {
+  const res = await query(
+    `
+    SELECT t.id, t.project_id, p.title AS project_title, t.sprint_id, s.title AS sprint_title,
+           t.title, t.description, t.status, t.estimated_hours, t.due_date, t.created_at, t.completed_at,
+           u.id AS assignee_id, u.name AS assignee_name, u.email AS assignee_email,
+           COALESCE(te.actual_hours, 0) AS actual_hours
+    FROM tasks t
+    JOIN projects p ON p.id = t.project_id
+    LEFT JOIN sprints s ON s.id = t.sprint_id
+    LEFT JOIN users u ON u.id = t.assignee_id
+    LEFT JOIN (
+      SELECT task_id, SUM(hours) AS actual_hours FROM time_entries WHERE task_id IS NOT NULL GROUP BY task_id
+    ) te ON te.task_id = t.id
+    WHERE t.assignee_id = $1 AND t.deleted_at IS NULL AND p.deleted_at IS NULL
+    ORDER BY (t.status = 'Completada') ASC, t.due_date ASC NULLS LAST, t.created_at ASC;
+    `,
+    [userId]
+  );
+  return res.rows.map((row) => ({ ...shapeTaskRow(row), project_title: String(row.project_title ?? "") }));
 }
 
 interface QueryRunner {

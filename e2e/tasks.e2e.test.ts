@@ -127,3 +127,76 @@ describe("Tareas — ruta dual tasks:write vs. autogestión por identidad", () =
     expect(res.status).toBe(403);
   });
 });
+
+describe("GET /api/tasks/mine — vista global cruzando proyectos", () => {
+  it("trae tareas asignadas en distintos proyectos, ordenadas con las no completadas primero", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const dev = await createTestUser({ role: "sales_manager", password: "SuperSecret123456" });
+    const client = await createTestClient();
+    const projectA = await createTestProject(client.id, { title: "Proyecto A" });
+    const projectB = await createTestProject(client.id, { title: "Proyecto B" });
+
+    const adminClient = await loginAs(admin.email, "SuperSecret123456");
+    await adminClient.post("/api/tasks", { project_id: projectA.id, title: "Tarea en A", assignee_id: dev.id });
+    await adminClient.post("/api/tasks", { project_id: projectB.id, title: "Tarea en B", assignee_id: dev.id });
+
+    const devClient = await loginAs(dev.email, "SuperSecret123456");
+    const res = await devClient.get("/api/tasks/mine");
+    expect(res.status).toBe(200);
+    const { tasks } = await res.json();
+    expect(tasks).toHaveLength(2);
+    expect(tasks.map((t: { project_title: string }) => t.project_title).sort()).toEqual(["Proyecto A", "Proyecto B"]);
+  });
+
+  it("no trae tareas de otra persona", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const devA = await createTestUser({ role: "sales_manager", password: "SuperSecret123456" });
+    const devB = await createTestUser({ role: "sales_manager", password: "SuperSecret123456" });
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+
+    const adminClient = await loginAs(admin.email, "SuperSecret123456");
+    await adminClient.post("/api/tasks", { project_id: project.id, title: "De B", assignee_id: devB.id });
+
+    const devAClient = await loginAs(devA.email, "SuperSecret123456");
+    const res = await devAClient.get("/api/tasks/mine");
+    const { tasks } = await res.json();
+    expect(tasks).toEqual([]);
+  });
+
+  it("un rol sin tasks:read (traffiker) recibe 403", async () => {
+    const traffiker = await createTestUser({ role: "traffiker", password: "SuperSecret123456" });
+    const traffikerClient = await loginAs(traffiker.email, "SuperSecret123456");
+
+    const res = await traffikerClient.get("/api/tasks/mine");
+    expect(res.status).toBe(403);
+  });
+
+  it("un cliente de portal no tiene acceso", async () => {
+    const client = await createTestClient();
+    const clientUser = await createTestUser({ role: "client", clientId: client.id, password: "SuperSecret123456" });
+    const clientBrowser = await loginAs(clientUser.email, "SuperSecret123456");
+
+    const res = await clientBrowser.get("/api/tasks/mine");
+    expect(res.status).toBe(403);
+  });
+
+  it("el responsable puede cambiar el estado de una tarea vista en 'mis tareas' vía el mismo endpoint de autogestión", async () => {
+    const admin = await createTestUser({ role: "admin", password: "SuperSecret123456" });
+    const dev = await createTestUser({ role: "sales_manager", password: "SuperSecret123456" });
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+
+    const adminClient = await loginAs(admin.email, "SuperSecret123456");
+    const createRes = await adminClient.post("/api/tasks", { project_id: project.id, title: "Tarea", assignee_id: dev.id });
+    const { task } = await createRes.json();
+
+    const devClient = await loginAs(dev.email, "SuperSecret123456");
+    const patchRes = await devClient.patch(`/api/tasks/${task.id}`, { status: "En Progreso" });
+    expect(patchRes.status).toBe(200);
+
+    const listRes = await devClient.get("/api/tasks/mine");
+    const { tasks } = await listRes.json();
+    expect(tasks[0].status).toBe("En Progreso");
+  });
+});
