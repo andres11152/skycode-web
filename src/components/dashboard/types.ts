@@ -173,6 +173,30 @@ export interface TeamCapacity {
 /** Documento subido a un proyecto — ver lib/storage.ts y lib/queries/documents.ts. */
 export type ExpenseCategory = "licencias" | "infraestructura" | "subcontratos" | "otro";
 
+export type RetainerStatus = "active" | "paused" | "cancelled";
+
+/**
+ * Contrato recurrente mensual (mantenimiento/soporte continuo), siempre
+ * atado a un proyecto ya existente — ver migración 0028. Genera una
+ * factura normal en `invoices` cada mes vía el cron
+ * `POST /api/cron/generate-retainer-invoices`, no una tabla paralela de
+ * facturación.
+ */
+export interface Retainer {
+  id: number;
+  client_id: number;
+  client_name: string;
+  project_id: number;
+  project_title: string;
+  description: string;
+  amount: number;
+  currency: Currency;
+  billing_day: number;
+  status: RetainerStatus;
+  next_invoice_date: string;
+  created_at: string;
+}
+
 export interface Expense {
   id: number;
   project_id: number | null;

@@ -29,6 +29,7 @@ import {
   Search,
   PenSquare,
   LineChart,
+  Repeat,
 } from "lucide-react";
 import { hasPermission, type Permission } from "@/lib/rbac";
 import { NotificationBell } from "./NotificationBell";
@@ -84,6 +85,9 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Finanzas",
     items: [
       { href: "/dashboard/facturacion", label: "Facturación", icon: Receipt, permission: "invoices:read" },
+      // Mismo permiso que Facturación — un retainer es una configuración
+      // de facturación recurrente, no un módulo aparte (ver page.tsx).
+      { href: "/dashboard/retainers", label: "Retainers", icon: Repeat, permission: "invoices:read" },
       { href: "/dashboard/gastos", label: "Gastos", icon: Wallet, permission: "expenses:read" },
       { href: "/dashboard/rentabilidad", label: "Rentabilidad", icon: BarChart3, permission: "profitability:read" },
       // Mismo permiso que Rentabilidad a propósito — mismo tipo de dato
