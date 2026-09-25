@@ -30,6 +30,7 @@ import {
   PenSquare,
   LineChart,
   Repeat,
+  PieChart,
 } from "lucide-react";
 import { hasPermission, type Permission } from "@/lib/rbac";
 import { NotificationBell } from "./NotificationBell";
@@ -93,6 +94,9 @@ const NAV_GROUPS: NavGroup[] = [
       // Mismo permiso que Rentabilidad a propósito — mismo tipo de dato
       // financiero agregado de toda la agencia (ver page.tsx).
       { href: "/dashboard/proyeccion-caja", label: "Proyección de Caja", icon: LineChart, permission: "profitability:read" },
+      // Mismo permiso que Rentabilidad/Proyección de caja — otro reporte
+      // financiero/comercial agregado, no un módulo operativo aparte.
+      { href: "/dashboard/reportes", label: "Reportes Ejecutivos", icon: PieChart, permission: "profitability:read" },
     ],
   },
   {
