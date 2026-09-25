@@ -235,7 +235,6 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
       <head>
-        <link rel="preload" as="image" href="/logo-mark.png" fetchPriority="high" />
         <OrganizationJsonLd />
         <SiteNavigationJsonLd />
         {googleAdsId && (

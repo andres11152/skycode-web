@@ -21,7 +21,15 @@ import type { NextConfig } from "next";
 // por un problema de tracking en sí). Se agregan explícitamente en vez de
 // abrir script-src/connect-src a 'self' + '*' para no perder la protección
 // real que da el CSP.
-const GOOGLE_ADS_SCRIPT_SRC = ["https://www.googletagmanager.com"];
+// gtag config dispara además un <script src> propio hacia
+// googleads.g.doubleclick.net/pagead/viewthroughconversion/... (el pixel de
+// remarketing/view-through, distinto del script de conversión normal) —
+// solo tener googletagmanager.com en script-src lo bloqueaba en silencio
+// (bug real, visto en consola: "violates ... script-src-elem").
+const GOOGLE_ADS_SCRIPT_SRC = [
+  "https://www.googletagmanager.com",
+  "https://googleads.g.doubleclick.net",
+];
 const GOOGLE_ADS_CONNECT_SRC = [
   "https://www.googletagmanager.com",
   "https://www.google-analytics.com",
@@ -30,9 +38,17 @@ const GOOGLE_ADS_CONNECT_SRC = [
   "https://www.googleadservices.com",
   "https://ad.doubleclick.net",
 ];
+// Google Ads sirve sus píxeles de imagen (1p-user-list, remarketing) desde
+// el dominio de Google del país detectado del visitante, no siempre
+// www.google.com — visto en consola bloqueando www.google.com.co para un
+// visitante colombiano. Se agrega explícitamente en vez de abrir a
+// `https://*.google.*` (patrón inválido en CSP, un solo comodín no cubre
+// "www.google.com.co" de todos modos porque no es un subdominio de
+// google.com, es un TLD compuesto distinto).
 const GOOGLE_ADS_IMG_SRC = [
   "https://www.googletagmanager.com",
   "https://www.google.com",
+  "https://www.google.com.co",
   "https://googleads.g.doubleclick.net",
   "https://ad.doubleclick.net",
 ];

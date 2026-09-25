@@ -21,10 +21,20 @@ export function formatMoney(amount: number, currency: Currency): string {
   return MONEY_FORMATTERS[currency].format(amount);
 }
 
+// `timeZone` fijo a propósito: sin esto, `Intl.DateTimeFormat` resuelve al
+// timezone del entorno donde corre — UTC en el servidor, el del navegador
+// en el cliente. Para un `publishedAt` con hora real (no solo fecha, ver
+// `toIsoString()` en lib/queries/articles.ts) cuya marca UTC caiga cerca de
+// medianoche, servidor y cliente pueden calcular un día calendario distinto
+// ("25 de septiembre" vs. "26 de septiembre") — mismatch de texto puro que
+// dispara el error de hidratación de React #418 (bug real, reportado por un
+// visitante). Fijarlo hace el resultado determinista sin importar dónde
+// corra ni la zona horaria del visitante.
 const dateFormatter = new Intl.DateTimeFormat("es-CO", {
   day: "numeric",
   month: "long",
   year: "numeric",
+  timeZone: "America/Bogota",
 });
 
 export function formatDate(isoDate: string) {
