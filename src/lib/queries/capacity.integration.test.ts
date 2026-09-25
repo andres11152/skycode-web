@@ -127,6 +127,22 @@ describe("getTeamCapacity", () => {
     expect(row!.hours_this_week).toBe(0);
   });
 
+  it("una persona sin capacidad editada trae el default de 40h/semana (migración 0033)", async () => {
+    const dev = await createTestUser({ name: "Sin Editar" });
+    const capacity = await getTeamCapacity();
+    const row = capacity.find((c) => c.id === dev.id);
+    expect(row!.weekly_hours_capacity).toBe(40);
+  });
+
+  it("una persona de medio tiempo trae su capacidad semanal editada, no el default", async () => {
+    const dev = await createTestUser({ name: "Medio Tiempo" });
+    await query(`UPDATE users SET weekly_hours_capacity = 20 WHERE id = $1;`, [dev.id]);
+
+    const capacity = await getTeamCapacity();
+    const row = capacity.find((c) => c.id === dev.id);
+    expect(row!.weekly_hours_capacity).toBe(20);
+  });
+
   it("ordena por horas estimadas pendientes descendente", async () => {
     const client = await createTestClient();
     const project = await createTestProject(client.id);

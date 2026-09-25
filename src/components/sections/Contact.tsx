@@ -15,6 +15,7 @@ import { getAttribution } from "@/lib/attribution";
 import { logError } from "@/lib/logger";
 import {
   CONTACT_PREFILL_EVENT,
+  consumePendingContactPrefill,
   type ContactPrefillDetail,
 } from "@/lib/contactPrefillEvent";
 
@@ -180,6 +181,24 @@ export function Contact({
     }
 
     window.addEventListener(CONTACT_PREFILL_EVENT, handlePrefill);
+
+    // Traspaso entre páginas: si el visitante vino de /cotizador (su propia
+    // ruta, ya no vive en la misma página que este formulario — ver
+    // CotizadorPageView.tsx), el evento de arriba no llegó a tener quién lo
+    // escuche a tiempo. `consumePendingContactPrefill()` revisa el mismo
+    // dato guardado en sessionStorage antes de esa navegación. En un
+    // microtask (no directo en el cuerpo del efecto) por el mismo motivo
+    // que CookieBanner — el setState queda dentro de un callback y no
+    // dispara `react-hooks/set-state-in-effect`.
+    queueMicrotask(() => {
+      const pending = consumePendingContactPrefill();
+      if (pending) {
+        setMessage(pending.message);
+        if (pending.serviceSlug) setServiceSlug(pending.serviceSlug);
+        setFormContext("Cotizador");
+      }
+    });
+
     return () => window.removeEventListener(CONTACT_PREFILL_EVENT, handlePrefill);
   }, []);
 

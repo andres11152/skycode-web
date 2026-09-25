@@ -15,6 +15,9 @@ const UpdateTeamMemberSchema = z.object({
   status: z.enum(["active", "disabled"]).optional(),
   hourlyCost: z.number().nonnegative().max(1_000_000).nullable().optional(),
   hourlyCostCurrency: z.enum(CURRENCIES as [string, ...string[]]).optional(),
+  // Tope en 168 (24h × 7 días) — cualquier valor por encima de eso no
+  // representa una semana real, sin importar cuán extremo sea el caso.
+  weeklyHoursCapacity: z.number().positive().max(168).optional(),
 });
 
 /**
@@ -48,9 +51,15 @@ export const PATCH = withAuth("team:write", async (request, { session }) => {
     if (!parsed.success) {
       return NextResponse.json({ error: "Datos de solicitud inválidos." }, { status: 400 });
     }
-    const { id, role, status, hourlyCost, hourlyCostCurrency } = parsed.data;
+    const { id, role, status, hourlyCost, hourlyCostCurrency, weeklyHoursCapacity } = parsed.data;
 
-    if (role === undefined && status === undefined && hourlyCost === undefined && hourlyCostCurrency === undefined) {
+    if (
+      role === undefined &&
+      status === undefined &&
+      hourlyCost === undefined &&
+      hourlyCostCurrency === undefined &&
+      weeklyHoursCapacity === undefined
+    ) {
       return NextResponse.json({ error: "Sin campos para actualizar." }, { status: 400 });
     }
     if (role !== undefined && !isValidRole(role)) {
@@ -69,7 +78,7 @@ export const PATCH = withAuth("team:write", async (request, { session }) => {
     const ip = getClientIp(request);
 
     const member = await withTransaction(async (client) => {
-      const result = await updateTeamMember({ id, role, status, hourlyCost, hourlyCostCurrency }, client);
+      const result = await updateTeamMember({ id, role, status, hourlyCost, hourlyCostCurrency, weeklyHoursCapacity }, client);
       if (!result) return null;
 
       const { before, after } = result;
@@ -93,7 +102,11 @@ export const PATCH = withAuth("team:write", async (request, { session }) => {
 
     return NextResponse.json({
       success: true,
-      member: { ...member, hourly_cost: member.hourly_cost !== null ? Number(member.hourly_cost) : null },
+      member: {
+        ...member,
+        hourly_cost: member.hourly_cost !== null ? Number(member.hourly_cost) : null,
+        weekly_hours_capacity: Number(member.weekly_hours_capacity),
+      },
     });
   } catch (error) {
     logError("❌ [API PATCH Team Error]", error);

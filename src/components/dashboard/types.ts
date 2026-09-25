@@ -173,6 +173,8 @@ export interface TeamCapacity {
   open_estimated_hours: number;
   open_tickets_count: number;
   hours_this_week: number;
+  /** Horas contractuales semanales de esta persona (ver migración 0033) — reemplaza el supuesto fijo de 40h para todos. */
+  weekly_hours_capacity: number;
 }
 
 /** Documento subido a un proyecto — ver lib/storage.ts y lib/queries/documents.ts. */
@@ -404,6 +406,7 @@ export interface TeamMember {
   status: "active" | "disabled";
   hourly_cost: number | null;
   hourly_cost_currency: Currency;
+  weekly_hours_capacity: number;
   created_at: string;
 }
 

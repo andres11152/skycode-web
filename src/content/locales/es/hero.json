@@ -9,8 +9,8 @@
   "description": "Sabemos lo difícil que es confiar un proyecto tecnológico: agencias que desaparecen, retrasos eternos o código imposible de mantener. En SkyCode te entregamos el 100% de la propiedad, repositorios a tu nombre y documentación paso a paso para que tengas el control absoluto.",
   "ctaPrimary": {
     "label": "Hablemos de tu proyecto",
-    "href": "#cotizador",
-    "ariaLabel": "Hablemos de tu proyecto de software: ir al cotizador interactivo"
+    "href": "#contacto",
+    "ariaLabel": "Hablemos de tu proyecto de software: ir al formulario de contacto"
   },
   "ctaSecondary": {
     "label": "Ver proyectos reales",

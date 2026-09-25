@@ -130,6 +130,22 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
     }
   };
 
+  const handleWeeklyHoursCapacityChange = async (id: number, weeklyHoursCapacity: number) => {
+    setBusyMemberId(id);
+    try {
+      const res = await fetch("/api/team", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, weeklyHoursCapacity }),
+      });
+      if (res.ok) {
+        setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, weekly_hours_capacity: weeklyHoursCapacity } : m)));
+      }
+    } finally {
+      setBusyMemberId(null);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -167,6 +183,7 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
                   <th className="px-5 py-3.5">Nombre / Email</th>
                   <th className="px-5 py-3.5">Rol</th>
                   <th className="px-5 py-3.5">Costo/Hora</th>
+                  <th className="px-5 py-3.5">Horas/Semana</th>
                   <th className="px-5 py-3.5">Estado</th>
                   <th className="px-5 py-3.5">Desde</th>
                   <th className="px-5 py-3.5 text-right">Acción</th>
@@ -208,6 +225,13 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
                           member={member}
                           disabled={isBusy}
                           onChange={(cost, currency) => handleHourlyCostChange(member.id, cost, currency)}
+                        />
+                      </td>
+                      <td className="px-5 py-4">
+                        <WeeklyHoursCapacityCell
+                          member={member}
+                          disabled={isBusy}
+                          onChange={(hours) => handleWeeklyHoursCapacityChange(member.id, hours)}
                         />
                       </td>
                       <td className="px-5 py-4">
@@ -307,6 +331,54 @@ function HourlyCostCell({
         onChange={(currency) => onChange(member.hourly_cost, currency)}
         className="rounded-lg border border-foreground/15 bg-foreground/10 px-1.5 py-1 text-[10px] text-foreground outline-none focus:border-accent cursor-pointer disabled:opacity-40"
       />
+    </div>
+  );
+}
+
+/**
+ * Horas contractuales semanales editable en línea (ver migración 0033) —
+ * mismo patrón "guarda al perder el foco" que `HourlyCostCell`. Nunca
+ * queda vacío: a diferencia del costo por hora (que sí puede ser "sin
+ * definir"), un valor inválido o vacío simplemente revierte al último
+ * válido en vez de mandar `null` — la columna en base de datos es
+ * `NOT NULL`, siempre hay un número real detrás.
+ */
+function WeeklyHoursCapacityCell({
+  member,
+  disabled,
+  onChange,
+}: {
+  member: TeamMember;
+  disabled: boolean;
+  onChange: (hours: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(member.weekly_hours_capacity));
+
+  const commit = () => {
+    const parsed = Number(draft);
+    if (draft.trim() === "" || Number.isNaN(parsed) || parsed <= 0 || parsed > 168) {
+      setDraft(String(member.weekly_hours_capacity));
+      return;
+    }
+    if (parsed !== member.weekly_hours_capacity) {
+      onChange(parsed);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-1">
+      <input
+        type="number"
+        min="1"
+        max="168"
+        step="0.5"
+        value={draft}
+        disabled={disabled}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        className="w-16 rounded-lg border border-foreground/15 bg-foreground/10 px-2 py-1 text-[11px] text-foreground outline-none focus:border-accent font-mono disabled:opacity-40"
+      />
+      <span className="text-[10px] text-foreground/50">h</span>
     </div>
   );
 }

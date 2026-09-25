@@ -8,7 +8,7 @@ import type { TeamMember } from "@/components/dashboard/types";
  */
 export async function getTeamMembers(): Promise<TeamMember[]> {
   const res = await query(
-    `SELECT id, name, email, role, status, hourly_cost, hourly_cost_currency, created_at
+    `SELECT id, name, email, role, status, hourly_cost, hourly_cost_currency, weekly_hours_capacity, created_at
      FROM users WHERE role != 'client' ORDER BY created_at ASC;`
   );
   return res.rows.map((row) => ({
@@ -19,6 +19,7 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
     status: row.status as TeamMember["status"],
     hourly_cost: row.hourly_cost !== null && row.hourly_cost !== undefined ? Number(row.hourly_cost) : null,
     hourly_cost_currency: (row.hourly_cost_currency as TeamMember["hourly_cost_currency"]) ?? "COP",
+    weekly_hours_capacity: Number(row.weekly_hours_capacity),
     created_at: String(row.created_at ?? ""),
   }));
 }
@@ -58,18 +59,20 @@ export interface UpdateTeamMemberParams {
   status?: string;
   hourlyCost?: number | null;
   hourlyCostCurrency?: string;
+  weeklyHoursCapacity?: number;
 }
 
 /**
- * Actualiza rol, estado o costo por hora de un miembro del equipo.
- * Si el estado es 'disabled', revoca sus sesiones activas.
+ * Actualiza rol, estado, costo por hora o capacidad semanal de un
+ * miembro del equipo. Si el estado es 'disabled', revoca sus sesiones
+ * activas.
  */
 export async function updateTeamMember(
-  { id, role, status, hourlyCost, hourlyCostCurrency }: UpdateTeamMemberParams,
+  { id, role, status, hourlyCost, hourlyCostCurrency, weeklyHoursCapacity }: UpdateTeamMemberParams,
   dbRunner: QueryRunner
 ) {
   const before = await dbRunner.query(
-    "SELECT id, name, email, role, status, hourly_cost, hourly_cost_currency FROM users WHERE id = $1;",
+    "SELECT id, name, email, role, status, hourly_cost, hourly_cost_currency, weekly_hours_capacity FROM users WHERE id = $1;",
     [id]
   );
   if (before.rows.length === 0) return null;
@@ -79,10 +82,19 @@ export async function updateTeamMember(
        role = COALESCE($1, role),
        status = COALESCE($2, status),
        hourly_cost = CASE WHEN $3 THEN $4 ELSE hourly_cost END,
-       hourly_cost_currency = COALESCE($5, hourly_cost_currency)
-     WHERE id = $6
-     RETURNING id, name, email, role, status, hourly_cost, hourly_cost_currency, created_at;`,
-    [role ?? null, status ?? null, hourlyCost !== undefined, hourlyCost ?? null, hourlyCostCurrency ?? null, id]
+       hourly_cost_currency = COALESCE($5, hourly_cost_currency),
+       weekly_hours_capacity = COALESCE($6, weekly_hours_capacity)
+     WHERE id = $7
+     RETURNING id, name, email, role, status, hourly_cost, hourly_cost_currency, weekly_hours_capacity, created_at;`,
+    [
+      role ?? null,
+      status ?? null,
+      hourlyCost !== undefined,
+      hourlyCost ?? null,
+      hourlyCostCurrency ?? null,
+      weeklyHoursCapacity ?? null,
+      id,
+    ]
   );
 
   if (status === "disabled") {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useDeferredValue, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowRight, CheckCircle, Clock, EnvelopeSimple, Lightning, Spinner, Tag, WarningCircle } from "@phosphor-icons/react";
 import NumberFlow from "@number-flow/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
@@ -8,15 +9,16 @@ import { BorderBeam } from "@/components/ui/BorderBeam";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProjectEstimatorContent, getDefaultCurrency } from "@/content/projectEstimator";
-import { defaultLocale, t, type Locale } from "@/lib/i18n";
+import { defaultLocale, localeHomePath, t, type Locale } from "@/lib/i18n";
 import { useGeoCountry } from "@/lib/useGeoCountry";
-import { dispatchContactPrefill } from "@/lib/contactPrefillEvent";
+import { dispatchContactPrefill, savePendingContactPrefill } from "@/lib/contactPrefillEvent";
 import { ESTIMATOR_TYPE_TO_SERVICE_SLUG } from "@/lib/leadServices";
 import { logError } from "@/lib/logger";
 
 export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }) {
   const content = getProjectEstimatorContent(locale);
   const { projectTypes, addons } = content;
+  const router = useRouter();
 
   const [currency, setCurrency] = useState<"COP" | "USD">(getDefaultCurrency(locale));
   const [selectedType, setSelectedType] = useState<string>(projectTypes[0].id);
@@ -106,14 +108,25 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
     // el botón de enviar seguía deshabilitado. El evento también manda el
     // tipo de proyecto elegido como `service` real, algo que el prefill
     // anterior (solo texto libre) nunca comunicaba al CRM.
-    dispatchContactPrefill({
+    const prefillDetail = {
       message: text,
       serviceSlug: ESTIMATOR_TYPE_TO_SERVICE_SLUG[selectedType],
-    });
+    };
 
     const contactSection = document.getElementById("contacto");
     if (contactSection) {
+      // El cotizador y el formulario de contacto siguen en la misma página
+      // (embebido en algún lugar que no sea /cotizador) — el evento en vivo
+      // alcanza.
+      dispatchContactPrefill(prefillDetail);
       contactSection.scrollIntoView({ behavior: "smooth" });
+    } else {
+      // Página standalone (/cotizador): no hay `#contacto` acá, hace falta
+      // navegar de verdad a la home. Se guarda el traspaso en
+      // sessionStorage porque la navegación destruye este contexto de JS
+      // antes de que Contact.tsx exista para escuchar el evento.
+      savePendingContactPrefill(prefillDetail);
+      router.push(`${localeHomePath(locale)}#contacto`);
     }
   };
 

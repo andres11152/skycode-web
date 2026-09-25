@@ -2,12 +2,6 @@ import { Users2, ClipboardList, LifeBuoy, Clock } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import type { TeamCapacity } from "./types";
 
-// Supuesto de jornada estándar para la barra de "horas esta semana" — no
-// hay un campo de horas contractuales por persona en el esquema todavía.
-// Si eso se necesita (ej. alguien de medio tiempo), acá es donde habría
-// que leerlo en vez de asumir un número fijo para todos.
-const WEEKLY_CAPACITY_HOURS = 40;
-
 const ROLE_LABELS: Record<string, string> = {
   admin: "Admin",
   sales_manager: "Comercial",
@@ -78,7 +72,7 @@ export function CapacityView({ capacity }: { capacity: TeamCapacity[] }) {
               </thead>
               <tbody className="divide-y divide-foreground/10">
                 {capacity.map((person) => {
-                  const loadPct = Math.min(150, Math.round((person.hours_this_week / WEEKLY_CAPACITY_HOURS) * 100));
+                  const loadPct = Math.min(150, Math.round((person.hours_this_week / person.weekly_hours_capacity) * 100));
                   return (
                     <tr key={person.id}>
                       <td className="px-5 py-4">
@@ -107,7 +101,7 @@ export function CapacityView({ capacity }: { capacity: TeamCapacity[] }) {
                             />
                           </div>
                           <span className="font-mono text-[10px] text-foreground/60 shrink-0 w-16 text-right">
-                            {person.hours_this_week}h / {WEEKLY_CAPACITY_HOURS}h
+                            {person.hours_this_week}h / {person.weekly_hours_capacity}h
                           </span>
                         </div>
                       </td>

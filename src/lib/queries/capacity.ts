@@ -38,7 +38,7 @@ export async function getTeamCapacity(): Promise<TeamCapacity[]> {
       WHERE entry_date >= date_trunc('week', CURRENT_DATE)
       GROUP BY user_id
     )
-    SELECT u.id, u.name, u.email, u.role,
+    SELECT u.id, u.name, u.email, u.role, u.weekly_hours_capacity,
            COALESCE(task_agg.open_tasks_count, 0) AS open_tasks_count,
            COALESCE(task_agg.open_estimated_hours, 0) AS open_estimated_hours,
            COALESCE(ticket_agg.open_tickets_count, 0) AS open_tickets_count,
@@ -60,5 +60,6 @@ export async function getTeamCapacity(): Promise<TeamCapacity[]> {
     open_estimated_hours: Number(row.open_estimated_hours),
     open_tickets_count: Number(row.open_tickets_count),
     hours_this_week: Number(row.hours_this_week),
+    weekly_hours_capacity: Number(row.weekly_hours_capacity),
   }));
 }

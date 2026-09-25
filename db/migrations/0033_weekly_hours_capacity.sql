@@ -1,0 +1,12 @@
+-- Horas contractuales por persona — el reporte de Capacidad
+-- (/dashboard/capacidad, lib/queries/capacity.ts) asumía 40h/semana fijas
+-- para todo el equipo (`WEEKLY_CAPACITY_HOURS` hardcodeado en
+-- CapacityView.tsx), sin soporte para medio tiempo, freelance u horarios
+-- distintos por persona. `NOT NULL DEFAULT 40` — nunca queda en blanco:
+-- todo el equipo existente hereda el mismo supuesto de 40h que ya regía
+-- para todos, y una persona nueva arranca igual salvo que se edite.
+--
+-- Mismo criterio de edición que `hourly_cost` (migración 0008): editable
+-- solo por admin desde `/dashboard/equipo` (`team:write`), consumido por
+-- el reporte de Capacidad que ya existía (`tasks:read`, ver CapacityView).
+ALTER TABLE users ADD COLUMN IF NOT EXISTS weekly_hours_capacity NUMERIC(5,2) NOT NULL DEFAULT 40;
