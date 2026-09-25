@@ -230,6 +230,28 @@ export interface Proposal {
   status: ProposalStatus;
 }
 
+/**
+ * Plantilla de propuesta — un punto de partida guardado (partidas + IVA +
+ * moneda), nunca un vínculo vivo con una propuesta real (ver migración
+ * 0025). `items` no lleva `id` (a diferencia de `ProposalItem`): nunca se
+ * editan individualmente, solo se copian completos al aplicar la
+ * plantilla sobre el formulario de una propuesta nueva.
+ */
+export interface ProposalTemplateItem {
+  description: string;
+  quantity: number;
+  unit_price: number;
+}
+
+export interface ProposalTemplate {
+  id: number;
+  name: string;
+  currency: Currency;
+  tax_rate: number;
+  items: ProposalTemplateItem[];
+  created_at: string;
+}
+
 export type InvoiceStatus = "pending" | "overdue" | "paid";
 
 export interface InvoicePayment {

@@ -1,18 +1,19 @@
 "use client";
 
-import { useId, useState, useTransition } from "react";
+import { useEffect, useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
-import { FileText, Plus, RefreshCw, Copy, Check, Trash2 } from "lucide-react";
+import { FileText, Plus, RefreshCw, Copy, Check, Trash2, LayoutTemplate } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
 import { CurrencySelect } from "./CurrencySelect";
 import { Badge, type BadgeTone } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
+import { logError } from "@/lib/logger";
 import { formatMoney } from "@/lib/utils";
 import type { Currency } from "@/lib/currency";
-import type { Proposal, ProposalStatus } from "./types";
+import type { Proposal, ProposalStatus, ProposalTemplate } from "./types";
 
 const STATUS_LABELS: Record<ProposalStatus, string> = {
   sent: "Enviada",
@@ -57,6 +58,7 @@ export function ProposalsBoard({
   }
 
   const [createOpen, setCreateOpen] = useState(false);
+  const [templatesOpen, setTemplatesOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleRefresh = () => startRefresh(() => router.refresh());
@@ -80,6 +82,10 @@ export function ProposalsBoard({
           <Button variant="secondary" onClick={handleRefresh} disabled={isRefreshing}>
             <RefreshCw size={14} className={isRefreshing ? "animate-spin" : ""} />
             <span>Actualizar</span>
+          </Button>
+          <Button variant="secondary" onClick={() => setTemplatesOpen(true)}>
+            <LayoutTemplate size={14} />
+            <span>Plantillas</span>
           </Button>
           <Button variant="accent" onClick={() => setCreateOpen(true)}>
             <Plus size={14} />
@@ -143,8 +149,91 @@ export function ProposalsBoard({
 
       <AnimatePresence>
         {createOpen && <CreateProposalModal onClose={() => setCreateOpen(false)} defaultTaxRatePct={defaultTaxRatePct} />}
+        {templatesOpen && <ManageTemplatesModal onClose={() => setTemplatesOpen(false)} />}
       </AnimatePresence>
     </div>
+  );
+}
+
+/**
+ * Lista las plantillas guardadas con opción de borrarlas — no las edita
+ * (para cambiar una, se borra y se guarda una nueva desde el formulario de
+ * "Nueva propuesta"). Separado de `CreateProposalModal` porque no
+ * comparte estado con él: es una vista de administración aparte, no un
+ * paso del flujo de creación.
+ */
+function ManageTemplatesModal({ onClose }: { onClose: () => void }) {
+  const titleId = useId();
+  const [templates, setTemplates] = useState<ProposalTemplate[] | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/proposal-templates")
+      .then((res) => res.json())
+      .then((data) => setTemplates(data.templates ?? []))
+      .catch((err) => {
+        logError("Error al cargar plantillas de propuesta", err);
+        setTemplates([]);
+      });
+  }, []);
+
+  const handleDelete = async (id: number) => {
+    setDeletingId(id);
+    setError(null);
+    try {
+      const res = await fetch(`/api/proposal-templates/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "No se pudo eliminar la plantilla.");
+        return;
+      }
+      setTemplates((prev) => (prev ? prev.filter((t) => t.id !== id) : prev));
+    } catch {
+      setError("Ocurrió un error de red al eliminar la plantilla.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  return (
+    <ModalShell titleId={titleId} title="Plantillas de propuesta" onClose={onClose} maxWidthClassName="max-w-lg">
+      <div className="space-y-3">
+        {error && <Alert tone="error">{error}</Alert>}
+        {templates === null ? (
+          <p className="py-6 text-center text-xs text-foreground/50">Cargando…</p>
+        ) : templates.length === 0 ? (
+          <p className="py-6 text-center text-xs text-foreground/50">
+            Sin plantillas todavía — guarda una desde el formulario de &quot;Nueva propuesta&quot;.
+          </p>
+        ) : (
+          <ul className="divide-y divide-foreground/10">
+            {templates.map((t) => {
+              const subtotal = t.items.reduce((sum, it) => sum + it.quantity * it.unit_price, 0);
+              const total = subtotal * (1 + t.tax_rate / 100);
+              return (
+                <li key={t.id} className="flex items-center justify-between gap-3 py-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-xs font-bold text-foreground">{t.name}</p>
+                    <p className="text-[11px] text-foreground/60">
+                      {t.items.length} {t.items.length === 1 ? "partida" : "partidas"} · {formatMoney(total, t.currency)}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleDelete(t.id)}
+                    disabled={deletingId === t.id}
+                    aria-label={`Eliminar plantilla ${t.name}`}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-red-700 hover:bg-red-500/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </ModalShell>
   );
 }
 
@@ -162,6 +251,71 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [proposalUrl, setProposalUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+
+  // Plantillas: solo un punto de partida para las partidas/IVA/moneda del
+  // formulario — no se referencian de vuelta, cargar una es "copiar sus
+  // valores acá", nada más (ver comentario de la migración 0025).
+  const [templates, setTemplates] = useState<ProposalTemplate[]>([]);
+  useEffect(() => {
+    fetch("/api/proposal-templates")
+      .then((res) => res.json())
+      .then((data) => setTemplates(data.templates ?? []))
+      .catch((err) => logError("Error al cargar plantillas de propuesta", err));
+  }, []);
+
+  const applyTemplate = (templateId: string) => {
+    const template = templates.find((t) => t.id === Number(templateId));
+    if (!template) return;
+    setCurrency(template.currency);
+    setTaxRate(String(template.tax_rate));
+    setItems(
+      template.items.map((it) => ({
+        description: it.description,
+        quantity: String(it.quantity),
+        unit_price: String(it.unit_price),
+      }))
+    );
+  };
+
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [isSavingTemplate, setIsSavingTemplate] = useState(false);
+  const [templateSaveError, setTemplateSaveError] = useState<string | null>(null);
+  const [templateSaved, setTemplateSaved] = useState(false);
+
+  const handleSaveTemplate = async () => {
+    const validItems = items
+      .filter((it) => it.description.trim())
+      .map((it) => ({
+        description: it.description,
+        quantity: Number(it.quantity) || 1,
+        unit_price: Number(it.unit_price) || 0,
+      }));
+    if (!templateName.trim() || validItems.length === 0) return;
+
+    setTemplateSaveError(null);
+    setIsSavingTemplate(true);
+    try {
+      const res = await fetch("/api/proposal-templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: templateName.trim(), currency, tax_rate: Number(taxRate) || 0, items: validItems }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setTemplateSaveError(data.error || "No se pudo guardar la plantilla.");
+        return;
+      }
+      setTemplateSaved(true);
+      setSavingTemplate(false);
+      setTemplateName("");
+      setTimeout(() => setTemplateSaved(false), 2500);
+    } catch {
+      setTemplateSaveError("Ocurrió un error de red al guardar la plantilla.");
+    } finally {
+      setIsSavingTemplate(false);
+    }
+  };
 
   const updateItem = (index: number, patch: Partial<DraftItem>) => {
     setItems((prev) => prev.map((it, i) => (i === index ? { ...it, ...patch } : it)));
@@ -288,6 +442,27 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
             </div>
           </div>
 
+          {templates.length > 0 && (
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-foreground/80">Cargar desde plantilla (opcional)</label>
+              <select
+                defaultValue=""
+                onChange={(e) => {
+                  if (e.target.value) applyTemplate(e.target.value);
+                  e.target.value = "";
+                }}
+                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
+              >
+                <option value="" className="bg-background text-foreground">Seleccionar plantilla…</option>
+                {templates.map((t) => (
+                  <option key={t.id} value={t.id} className="bg-background text-foreground">
+                    {t.name} ({t.items.length} {t.items.length === 1 ? "partida" : "partidas"})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div className="space-y-2">
             <label className="block text-xs font-semibold text-foreground/80">Partidas</label>
             {items.map((item, i) => (
@@ -329,13 +504,61 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
                 )}
               </div>
             ))}
-            <button
-              type="button"
-              onClick={addItem}
-              className="text-[11px] font-semibold text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
-            >
-              + Agregar partida
-            </button>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <button
+                type="button"
+                onClick={addItem}
+                className="text-[11px] font-semibold text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+              >
+                + Agregar partida
+              </button>
+              {!savingTemplate && (
+                <button
+                  type="button"
+                  onClick={() => setSavingTemplate(true)}
+                  disabled={!items.some((it) => it.description.trim())}
+                  className="flex items-center gap-1 text-[11px] font-semibold text-foreground/60 hover:text-foreground hover:underline disabled:opacity-40 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+                >
+                  <LayoutTemplate size={12} />
+                  Guardar como plantilla
+                </button>
+              )}
+            </div>
+
+            {savingTemplate && (
+              <div className="flex items-start gap-2 rounded-lg border border-foreground/15 bg-foreground/[0.02] p-2.5">
+                <input
+                  type="text"
+                  autoFocus
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                  placeholder="Nombre de la plantilla (ej. Sitio institucional)"
+                  className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-background py-2 px-3 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+                />
+                <button
+                  type="button"
+                  onClick={handleSaveTemplate}
+                  disabled={isSavingTemplate || !templateName.trim()}
+                  className="shrink-0 rounded-lg bg-accent-strong px-3 py-2 text-[11px] font-bold text-white hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  {isSavingTemplate ? "Guardando…" : "Guardar"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSavingTemplate(false);
+                    setTemplateName("");
+                    setTemplateSaveError(null);
+                  }}
+                  aria-label="Cancelar"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-foreground/50 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+            {templateSaveError && <p className="text-[11px] text-red-700">{templateSaveError}</p>}
+            {templateSaved && <p className="text-[11px] text-green-700">Plantilla guardada.</p>}
           </div>
 
           <div className="grid sm:grid-cols-2 gap-3">
