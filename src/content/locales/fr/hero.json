@@ -2,7 +2,9 @@
   "sectionAria": "Présentation de l'agence",
   "actionsAria": "Actions principales",
   "badge": "INGÉNIERIE LOGICIELLE SANS DÉPENDANCE TECHNOLOGIQUE",
-  "title": "Logiciel sur mesure à haute performance. Code 100% transférable et libre de dette technique.",
+  "titleBefore": "Logiciel sur mesure à haute performance. ",
+  "titleAccent": "Code 100% transférable.",
+  "titleAfter": " Libre de dette technique.",
   "subtitle": "Nous développons des plateformes d'entreprise prêtes pour l'échelle, avec une documentation impeccable et un transfert complet de propriété intellectuelle. Votre logiciel, sans dépendance technique envers notre équipe une fois le projet livré.",
   "description": "Garantissez la continuité et la sécurité de votre activité numérique. Nous concevons selon les normes de sécurité internationales (OWASP) et la réglementation de protection des données applicable dans votre pays, en livrant une documentation technique rigoureuse afin que votre équipe garde le contrôle total sans dépendre de tiers.",
   "ctaPrimary": {
@@ -17,5 +19,10 @@
   },
   "codeMockup": {
     "comment": "// valide, authentifie et documente"
-  }
+  },
+  "guarantees": [
+    "Code 100 % propriétaire",
+    "90 jours de garantie",
+    "Contact direct ingénieurs"
+  ]
 }

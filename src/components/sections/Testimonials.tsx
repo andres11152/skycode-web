@@ -126,8 +126,8 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
                       {initials(active.name)}
                     </span>
                     <div className="text-left">
-                      <p className="font-heading text-xs font-bold text-foreground">{active.name}</p>
-                      <p className="text-[11px] text-foreground/60 leading-tight">
+                      <p className="font-heading text-sm font-bold text-foreground">{active.name}</p>
+                      <p className="text-xs text-foreground/70 leading-tight">
                         {active.role}, {active.company}
                         {active.location ? ` · ${active.location}` : ""}
                       </p>

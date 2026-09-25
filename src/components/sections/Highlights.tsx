@@ -114,7 +114,7 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
           className="mb-12 max-w-4xl"
         >
           <SectionEyebrow className="mb-3">{highlightsData.badge}</SectionEyebrow>
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             {highlightsData.title}
           </h2>
           <p className="mt-3 text-base sm:text-lg font-medium text-foreground/80 leading-relaxed">

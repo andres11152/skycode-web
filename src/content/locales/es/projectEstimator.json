@@ -1,4 +1,6 @@
 {
+  "navLabel": "Cotizador",
+  "breadcrumbAria": "Ruta de navegación",
   "sectionAria": "Cotizador interactivo de proyectos",
   "badge": "Presupuesto Transparente",
   "title": "Calcula el costo y tiempo de tu proyecto",
@@ -117,5 +119,6 @@
     "weeksLabel": "Tiempo estimado",
     "ctaLabel": "Hablar con el equipo",
     "footerNote": "Este es un correo automático con la cotización que generaste en skycode.agency. Si no reconoces este mensaje, puedes ignorarlo con tranquilidad."
-  }
+  },
+  "teaserCta": "Calcular mi proyecto"
 }

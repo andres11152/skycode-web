@@ -248,7 +248,13 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
               href={`${servicesPrefix}/servicios`}
               variant="secondary"
               size="sm"
-              className="focus-visible:ring-offset-foreground"
+              // `secondary` por defecto pone texto en `text-foreground`
+              // (casi negro) — invisible sobre esta sección `bg-foreground`
+              // (bug real, medido: mismo rgb(10,10,10) en texto y fondo,
+              // visto en auditoría visual). Mismo override de
+              // `ring-offset-foreground` que ya usan los botones del
+              // carrusel, más los tonos de borde/texto en `background`.
+              className="border-background/20 text-background hover:border-background/40 hover:bg-background/5 focus-visible:ring-offset-foreground"
             >
               {servicesSection.viewAll}
             </Button>

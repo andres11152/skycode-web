@@ -8,6 +8,7 @@
 //    del primer pintado, y Speed Index contaba todo ese tiempo como página
 //    visualmente incompleta (4.7s en PageSpeed móvil).
 
+import { Check } from "@phosphor-icons/react/ssr";
 import { Button } from "@/components/ui/Button";
 import { GridPattern } from "@/components/ui/GridPattern";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
@@ -40,25 +41,22 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
 
           {/*
            * H1 — LCP element principal.
-           * Tipografía de alto contraste: texto principal en foreground nítido,
-           * propuesta de valor destacada en degradado de acento.
+           * Tipografía de alto contraste: la mayor parte del H1 va en
+           * foreground sólido — solo `titleAccent` (una frase corta, no
+           * la mitad del titular) lleva el degradado de acento. Antes se
+           * coloreaba toda la segunda oración completa (3-4 líneas): el
+           * bloque de color más grande del sitio, cuando el acento debe
+           * limitarse a 2-3 puntos de contacto (ver CLAUDE.md). El H1 ahora
+           * son tres campos de contenido (`titleBefore`/`titleAccent`/
+           * `titleAfter`), no una oración partida en runtime por regex.
            */}
-          {(() => {
-            const titleParts = heroData.title.split(/(?<=[.!?])\s+/);
-            const primaryTitle = titleParts[0];
-            const secondaryTitle = titleParts.slice(1).join(" ");
-
-            return (
-              <h1 className="text-3xl leading-[1.15] font-bold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
-                <span>{primaryTitle}</span>{" "}
-                {secondaryTitle && (
-                  <span className="bg-gradient-to-r from-accent via-accent to-accent-strong bg-clip-text text-transparent">
-                    {secondaryTitle}
-                  </span>
-                )}
-              </h1>
-            );
-          })()}
+          <h1 className="text-3xl leading-[1.15] font-bold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
+            <span>{heroData.titleBefore}</span>
+            <span className="bg-gradient-to-r from-accent to-accent-strong bg-clip-text text-transparent">
+              {heroData.titleAccent}
+            </span>
+            <span>{heroData.titleAfter}</span>
+          </h1>
 
           <p className="max-w-xl text-lg font-medium text-foreground/80 sm:text-xl">
             {heroData.subtitle}
@@ -96,29 +94,15 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
             </div>
           </div>
 
-          {/* Barra de garantías inmediatas */}
+          {/* Barra de garantías inmediatas — vive en hero.json (traducida a
+              los 3 idiomas), no en un ternario inline: un ternario por
+              locale en el JSX es el patrón exacto que la sección de
+              Internacionalización de CLAUDE.md pide evitar. */}
           <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 text-xs font-medium text-foreground/75">
-            {(locale === "en"
-              ? [
-                  "100% proprietary code",
-                  "90-day stability warranty",
-                  "Direct engineer communication",
-                ]
-              : locale === "fr"
-                ? [
-                    "Code 100 % propriétaire",
-                    "90 jours de garantie",
-                    "Contact direct ingénieurs",
-                  ]
-                : [
-                    "Código 100% de tu propiedad",
-                    "90 días de garantía técnica",
-                    "Trato directo con ingenieros",
-                  ]
-            ).map((point) => (
+            {heroData.guarantees.map((point) => (
               <div key={point} className="flex items-center gap-1.5">
-                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent font-bold text-[10px]">
-                  ✓
+                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
+                  <Check size={10} weight="bold" />
                 </span>
                 <span>{point}</span>
               </div>
@@ -128,7 +112,14 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
 
         <div
           aria-hidden="true"
-          className="animate-hero-scale-in flex justify-center lg:mt-16 lg:justify-end w-full max-w-full overflow-hidden"
+          // Sin overflow-hidden: el editor flota con `animate-float`
+          // (translateY) y su `shadow-2xl` quedaba recortado en un borde
+          // duro visible cada vez que subía/bajaba — un rectángulo gris con
+          // esquina cuadrada sobre el fondo claro del Hero (bug real, visto
+          // en auditoría visual). La sección ya tiene su propio
+          // `overflow-hidden` (arriba) para el resplandor/grilla, así que
+          // este no hacía falta para evitar desbordes horizontales.
+          className="animate-hero-scale-in flex justify-center lg:mt-16 lg:justify-end w-full max-w-full"
         >
           <CodeMockup locale={locale} />
         </div>

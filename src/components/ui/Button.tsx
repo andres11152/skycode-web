@@ -23,22 +23,22 @@ type ButtonAsLink = ButtonBaseProps &
 
 export type ButtonProps = ButtonAsButton | ButtonAsLink;
 
+// Reescrito a propósito para simplificar el hover (auditoría visual): la
+// versión anterior mutaba el radio de píldora a 12px, expandía un círculo
+// de 450px de diámetro y animaba dos flechas cruzándose, todo en 600-800ms
+// — mucho movimiento para un botón que aparece decenas de veces por
+// página. Ahora: el radio siempre es `rounded-full` (regla del sistema de
+// diseño), el fondo/borde cambia de tono y una sola flecha se desliza unos
+// px — mismo lenguaje que Stripe/Linear, ~150-200ms.
 const variantStyles: Record<NonNullable<ButtonBaseProps["variant"]>, string> = {
-  accent:
-    "bg-accent-strong border-[1.5px] border-accent/40 text-accent-foreground hover:border-transparent hover:text-white",
-  primary:
-    "bg-foreground border-[1.5px] border-foreground/40 text-background hover:border-transparent hover:text-white",
+  // accent-strong (no accent) como color de reposo + hover:brightness-90:
+  // `accent` (#0089cd) con texto blanco da ~3.8:1, por debajo de AA para
+  // texto normal — ver CLAUDE.md.
+  accent: "bg-accent-strong text-accent-foreground hover:brightness-90",
+  primary: "bg-foreground text-background hover:bg-foreground/85",
   secondary:
-    "bg-transparent border-[1.5px] border-foreground/20 text-foreground hover:border-transparent hover:text-white",
-  ghost:
-    "bg-transparent border-[1.5px] border-transparent text-foreground hover:text-white",
-};
-
-const circleStyles: Record<NonNullable<ButtonBaseProps["variant"]>, string> = {
-  accent: "bg-[#0a0a0a]",
-  primary: "bg-accent",
-  secondary: "bg-[#0a0a0a]",
-  ghost: "bg-accent",
+    "bg-transparent border border-foreground/20 text-foreground hover:border-foreground/35 hover:bg-foreground/5",
+  ghost: "bg-transparent text-foreground hover:bg-foreground/5",
 };
 
 const sizeStyles: Record<NonNullable<ButtonBaseProps["size"]>, string> = {
@@ -56,7 +56,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const classes = cn(
-    "group relative inline-flex items-center justify-center gap-1 overflow-hidden rounded-[100px] font-semibold text-center cursor-pointer transition-all duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-transparent hover:rounded-[12px] active:scale-[0.95]",
+    "group relative inline-flex items-center justify-center gap-2 rounded-full font-semibold text-center cursor-pointer transition-[background-color,border-color,filter] duration-200 ease-out active:scale-[0.98]",
     "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     "disabled:opacity-50 disabled:pointer-events-none",
     variantStyles[variant],
@@ -66,34 +66,12 @@ export function Button({
 
   const content = (
     <>
+      <span>{children}</span>
       {showFlowArrows && (
         <ArrowRight
           aria-hidden="true"
-          className="absolute w-4 h-4 left-[-25%] stroke-current fill-none z-[9] group-hover:left-4 group-hover:stroke-current transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-        />
-      )}
-
-      <span
-        className={cn(
-          "relative z-[10] inline-flex items-center justify-center gap-2 transition-all duration-[800ms] ease-out",
-          showFlowArrows ? "-translate-x-3 group-hover:translate-x-3" : ""
-        )}
-      >
-        {children}
-      </span>
-
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-[50%] opacity-0 group-hover:w-[450px] group-hover:h-[450px] group-hover:opacity-100 transition-all duration-[800ms] ease-[cubic-bezier(0.19,1,0.22,1)] pointer-events-none z-0",
-          circleStyles[variant]
-        )}
-      />
-
-      {showFlowArrows && (
-        <ArrowRight
-          aria-hidden="true"
-          className="absolute w-4 h-4 right-4 stroke-current fill-none z-[9] group-hover:right-[-25%] group-hover:stroke-current transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+          weight="bold"
+          className="h-4 w-4 shrink-0 transition-transform duration-200 ease-out group-hover:translate-x-1"
         />
       )}
     </>

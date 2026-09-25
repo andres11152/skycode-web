@@ -1,4 +1,6 @@
 {
+  "navLabel": "Estimation",
+  "breadcrumbAria": "Fil d'Ariane",
   "sectionAria": "Estimateur de projet interactif",
   "badge": "Estimateur Transparent en Temps Réel",
   "title": "Calculez l'Investissement et les Délais de Votre Projet",
@@ -117,5 +119,6 @@
     "weeksLabel": "Délai estimé",
     "ctaLabel": "Parler à l'équipe",
     "footerNote": "Ceci est un e-mail automatique contenant le devis que vous avez généré sur skycode.agency. Si vous ne reconnaissez pas ce message, vous pouvez l'ignorer en toute tranquillité."
-  }
+  },
+  "teaserCta": "Calculer mon projet"
 }

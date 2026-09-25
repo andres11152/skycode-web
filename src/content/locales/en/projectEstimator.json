@@ -1,4 +1,6 @@
 {
+  "navLabel": "Estimator",
+  "breadcrumbAria": "Breadcrumb navigation",
   "sectionAria": "Interactive project estimator",
   "badge": "Real-Time Transparent Estimator",
   "title": "Calculate Your Project's Investment and Timeline",
@@ -117,5 +119,6 @@
     "weeksLabel": "Estimated time",
     "ctaLabel": "Talk to the team",
     "footerNote": "This is an automatic email with the quote you generated at skycode.agency. If you don't recognize this message, you can safely ignore it."
-  }
+  },
+  "teaserCta": "Calculate my project"
 }

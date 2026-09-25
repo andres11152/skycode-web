@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { m as motion, useReducedMotion } from "framer-motion";
-import { ArrowSquareOut, ArrowUpRight } from "@phosphor-icons/react";
+import { ArrowUpRight } from "@phosphor-icons/react";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { Button } from "@/components/ui/Button";
 import { EsBadge } from "@/components/ui/EsBadge";
@@ -43,14 +43,16 @@ function BrowserFrame({
 function FeaturedProjectCard({
   project,
   uiData,
+  sectionCopy,
   showEsBadge,
 }: {
   project: Project;
   uiData: ReturnType<typeof getUiContent>;
+  sectionCopy: ReturnType<typeof getProjectsContent>["projectsSection"];
   showEsBadge: boolean;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-foreground/10 bg-background transition-all duration-300 hover:border-accent/40 hover:shadow-2xl hover:shadow-accent/5">
+    <div className="group relative overflow-hidden rounded-xl border border-foreground/10 bg-background transition-all duration-300 hover:border-accent/40 hover:shadow-2xl hover:shadow-accent/5">
       <Link
         href={`/portafolio/${project.slug}`}
         aria-label={`${uiData.portfolioViewCase}: ${project.title}`}
@@ -82,7 +84,7 @@ function FeaturedProjectCard({
                 {project.client.split("·")[0].trim()}
               </span>
               <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-accent-strong">
-                Caso Destacado
+                {sectionCopy.featuredBadge}
               </span>
             </div>
 
@@ -111,7 +113,7 @@ function FeaturedProjectCard({
           </div>
 
           <div className="mt-6 flex items-center gap-2 font-heading text-sm font-bold text-accent">
-            <span>Ver caso de estudio</span>
+            <span>{sectionCopy.viewCaseStudy}</span>
             <ArrowUpRight
               size={16}
               className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
@@ -126,14 +128,16 @@ function FeaturedProjectCard({
 function ProjectCard({
   project,
   uiData,
+  sectionCopy,
   showEsBadge,
 }: {
   project: Project;
   uiData: ReturnType<typeof getUiContent>;
+  sectionCopy: ReturnType<typeof getProjectsContent>["projectsSection"];
   showEsBadge: boolean;
 }) {
   return (
-    <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-foreground/10 bg-background transition-all duration-300 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/5">
+    <div className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-foreground/10 bg-background transition-all duration-300 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/5">
       <Link
         href={`/portafolio/${project.slug}`}
         aria-label={`${uiData.portfolioViewCase}: ${project.title}`}
@@ -186,7 +190,7 @@ function ProjectCard({
 
           <div className="mt-5 flex items-center justify-between border-t border-foreground/5 pt-4">
             <span className="font-heading text-xs font-bold text-accent group-hover:underline">
-              Explorar proyecto
+              {sectionCopy.exploreProject}
             </span>
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
               <ArrowUpRight size={14} />
@@ -215,7 +219,7 @@ export function Portfolio({ locale = defaultLocale }: { locale?: Locale }) {
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
             <SectionEyebrow className="mb-3">{projectsSection.badge}</SectionEyebrow>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+            <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
               {projectsSection.title}
             </h2>
             <p className="mt-3 text-base text-foreground/80 sm:text-lg">{projectsSection.description}</p>
@@ -239,6 +243,7 @@ export function Portfolio({ locale = defaultLocale }: { locale?: Locale }) {
               <FeaturedProjectCard
                 project={featured}
                 uiData={uiData}
+                sectionCopy={projectsSection}
                 showEsBadge={locale !== "es"}
               />
             </motion.div>
@@ -251,6 +256,7 @@ export function Portfolio({ locale = defaultLocale }: { locale?: Locale }) {
                 <ProjectCard
                   project={project}
                   uiData={uiData}
+                  sectionCopy={projectsSection}
                   showEsBadge={locale !== "es"}
                 />
               </motion.div>

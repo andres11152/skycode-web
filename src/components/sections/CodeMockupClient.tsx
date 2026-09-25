@@ -212,7 +212,14 @@ export function CodeMockup({ locale }: { locale: Locale }) {
               return (
                 <div
                   key={index}
-                  className="animate-codeline overflow-hidden whitespace-nowrap text-left flex items-center pr-1"
+                  // Nunca `flex` acá: cada `<span>` hijo se convertía en su
+                  // propio flex item, y un flex item recorta el espacio en
+                  // blanco al inicio/final de su propio contenido como si
+                  // fuera el borde de una línea — "import{ z }from" en vez
+                  // de "import { z } from" (bug real, visto en auditoría
+                  // visual). Flujo `inline`/de texto normal preserva los
+                  // espacios entre spans tal como están escritos.
+                  className="animate-codeline overflow-hidden whitespace-pre text-left pr-1"
                   style={{
                     maxWidth: "max-content",
                     animation: `codeline-type ${line.duration}s linear ${line.delay}s forwards`,
@@ -228,7 +235,7 @@ export function CodeMockup({ locale }: { locale: Locale }) {
         {/* Live production health bar */}
         <div className="flex items-center justify-between border-t border-background/10 bg-background/[0.06] px-3.5 py-2 text-[10px] sm:text-[11px] font-mono text-background/70">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
             <span>Health Check: 100% OK</span>
           </div>
           <span className="text-accent font-semibold">Production · 38ms avg</span>

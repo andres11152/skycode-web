@@ -5,6 +5,7 @@ import { projects } from "@/content/projects";
 import { services } from "@/content/services";
 import { servicePath, servicesIndexPath } from "@/lib/serviceMetadata";
 import { teamPath } from "@/lib/teamMetadata";
+import { estimatorPath } from "@/lib/estimatorMetadata";
 import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
 import { siteUrl } from "@/lib/site";
 
@@ -150,6 +151,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     alternates: { languages: teamLanguages },
   }));
 
+  const estimatorLanguages = {
+    es: `${siteUrl}${estimatorPath("es")}`,
+    en: `${siteUrl}${estimatorPath("en")}`,
+    fr: `${siteUrl}${estimatorPath("fr")}`,
+    "x-default": `${siteUrl}${estimatorPath("es")}`,
+  };
+  const estimatorRoutes: MetadataRoute.Sitemap = (["es", "en", "fr"] as const).map((locale) => ({
+    url: `${siteUrl}${estimatorPath(locale)}`,
+    changeFrequency: "monthly",
+    priority: 0.7,
+    alternates: { languages: estimatorLanguages },
+  }));
+
   return [
     ...staticRoutes,
     ...blogIndexRoutes,
@@ -159,5 +173,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...serviceRoutes,
     ...servicesIndexRoutes,
     ...teamRoutes,
+    ...estimatorRoutes,
   ];
 }

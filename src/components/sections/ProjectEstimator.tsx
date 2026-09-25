@@ -151,16 +151,23 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
       className="scroll-mt-24 px-6 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-transparent via-foreground/[0.02] to-transparent"
     >
       <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-12">
-          <SectionEyebrow className="mb-3">{content.badge}</SectionEyebrow>
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {content.title}
-          </h2>
-          <p className="mt-3 text-base text-foreground/70">{content.subtitle}</p>
+        {/* Header — alineado a la izquierda, mismo eje que el resto de
+            secciones de la home (antes centrado con `items-center
+            text-center`, la única sección así fuera de Contacto — bug real
+            de alineación, visto en auditoría visual). El switcher de moneda
+            es un control, no texto descriptivo: se mueve a la derecha en
+            desktop, mismo patrón de header que Services/Portfolio. */}
+        <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-xl">
+            <SectionEyebrow className="mb-3">{content.badge}</SectionEyebrow>
+            <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+              {content.title}
+            </h2>
+            <p className="mt-3 text-base text-foreground/80">{content.subtitle}</p>
+          </div>
 
           {/* Currency Switcher Toggle */}
-          <div className="mt-6 flex items-center gap-2 rounded-full border border-foreground/15 bg-background p-1.5 shadow-sm">
+          <div className="flex items-center gap-2 self-start rounded-full border border-foreground/15 bg-background p-1.5 shadow-sm">
             <button
               onClick={() => setCurrency("COP")}
               className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-colors ${
@@ -330,6 +337,14 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   <span>$</span>
                   <NumberFlow
                     value={displayPrice}
+                    // Sin `locales`, NumberFlow cae al locale del
+                    // navegador (`Intl.NumberFormat` por defecto) — en un
+                    // navegador en inglés esto renderizaba "12,850,000"
+                    // (comas) justo debajo de tarjetas con "10.500.000"
+                    // (puntos, vía `formatPrice`/`toLocaleString("es-CO")`
+                    // explícito) — dos formatos distintos en la misma
+                    // pantalla (bug real, visto en auditoría visual).
+                    locales={currency === "COP" ? "es-CO" : "en-US"}
                     format={{ maximumFractionDigits: 0 }}
                     transformTiming={{ duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
                     spinTiming={{ duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}

@@ -15,10 +15,10 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 max-w-2xl">
           <SectionEyebrow className="mb-3">{processData.badge}</SectionEyebrow>
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+          <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             {processData.title}
           </h2>
-          <p className="mt-3 text-base text-foreground/70">{processData.description}</p>
+          <p className="mt-3 text-base text-foreground/80">{processData.description}</p>
         </div>
 
         <ol className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -44,13 +44,7 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
                     </div>
 
                     <h3 className="text-base font-bold tracking-tight text-foreground">{step.title}</h3>
-                    <p className="mt-2 text-xs leading-relaxed text-foreground/70">{step.description}</p>
-                  </div>
-
-                  <div className="border-t border-foreground/5 pt-3">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-accent-strong">
-                      Paso {index + 1} de 4
-                    </span>
+                    <p className="mt-2 text-xs leading-relaxed text-foreground/80">{step.description}</p>
                   </div>
                 </div>
               </SpotlightCard>

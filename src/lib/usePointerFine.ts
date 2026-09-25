@@ -21,9 +21,8 @@ function getServerSnapshot(): boolean {
 
 /**
  * `true` cuando el dispositivo tiene un puntero preciso (mouse/trackpad),
- * `false` en táctil. Lo usan `Magnetic` y `TiltCard` para desactivarse por
- * completo en móvil, donde un efecto que depende de seguir el cursor no
- * tiene sentido.
+ * `false` en táctil. Lo usa `Magnetic` para desactivarse por completo en
+ * móvil, donde un efecto que depende de seguir el cursor no tiene sentido.
  *
  * Con `useSyncExternalStore` y no con `useState` + `useEffect`: ese patrón
  * dispara la regla de lint `react-hooks/set-state-in-effect` (llamar a

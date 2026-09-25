@@ -138,5 +138,8 @@
         "/projects/moncyre/footer-newsletter.webp"
       ]
     }
-  ]
+  ],
+  "featuredBadge": "Caso Destacado",
+  "viewCaseStudy": "Ver caso de estudio",
+  "exploreProject": "Explorar proyecto"
 }

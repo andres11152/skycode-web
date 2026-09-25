@@ -158,6 +158,13 @@ export function Contact({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // Se marca en el primer intento de envío fallido — antes de esto el botón
+  // quedaba deshabilitado y en gris hasta marcar la casilla de datos, lo que
+  // se leía como un botón roto (bug real, visto en auditoría visual). Ahora
+  // el botón siempre está habilitado; un envío inválido marca todos los
+  // campos como "touched" (para mostrar sus errores) y mueve el foco al
+  // primer campo inválido, como pide CLAUDE.md.
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const idPrefix = useId();
 
   // Escucha el prefill del cotizador (ver lib/contactPrefillEvent.ts) — ya
@@ -186,7 +193,27 @@ export function Contact({
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!isFormValid || isSubmitting) return;
+    if (isSubmitting) return;
+
+    if (!isFormValid) {
+      setSubmitAttempted(true);
+      setTouched({ name: true, email: true, message: true, serviceOther: true });
+      const firstInvalidId = !isNameValid
+        ? `${idPrefix}-name`
+        : !isEmailValid
+          ? `${idPrefix}-email`
+          : !isMessageValid
+            ? `${idPrefix}-message`
+            : !isServiceOtherValid
+              ? `${idPrefix}-service-other`
+              : !acceptedPolicies
+                ? "habeas-data"
+                : null;
+      if (firstInvalidId) {
+        document.getElementById(firstInvalidId)?.focus();
+      }
+      return;
+    }
 
     setIsSubmitting(true);
     setErrorMessage(null);
@@ -440,27 +467,41 @@ export function Contact({
           </div>
 
           {/* Habeas Data Checkbox */}
-          <div className="flex items-start gap-2.5 rounded-lg border border-foreground/10 bg-foreground/[0.02] px-3.5 py-3 transition-colors hover:border-foreground/20">
-            <input
-              type="checkbox"
-              id="habeas-data"
-              name="habeasData"
-              checked={acceptedPolicies}
-              onChange={(e) => setAcceptedPolicies(e.target.checked)}
-              required
-              className="mt-0.5 h-4 w-4 shrink-0 rounded border-foreground/30 text-accent outline-none focus:ring-2 focus:ring-accent cursor-pointer"
-            />
-            <label htmlFor="habeas-data" className="text-xs text-foreground/80 leading-relaxed select-none cursor-pointer">
-              {contactData.habeasData.label}{" "}
-              <a
-                href={contactData.habeasData.linkUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold underline hover:text-accent-strong transition-colors"
-              >
-                {contactData.habeasData.linkText}
-              </a>
-            </label>
+          <div>
+            <div
+              className={cn(
+                "flex items-start gap-2.5 rounded-lg border bg-foreground/[0.02] px-3.5 py-3 transition-colors hover:border-foreground/20",
+                submitAttempted && !acceptedPolicies
+                  ? "border-red-500/80"
+                  : "border-foreground/10"
+              )}
+            >
+              <input
+                type="checkbox"
+                id="habeas-data"
+                name="habeasData"
+                checked={acceptedPolicies}
+                onChange={(e) => setAcceptedPolicies(e.target.checked)}
+                required
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-foreground/30 text-accent outline-none focus:ring-2 focus:ring-accent cursor-pointer"
+              />
+              <label htmlFor="habeas-data" className="text-xs text-foreground/80 leading-relaxed select-none cursor-pointer">
+                {contactData.habeasData.label}{" "}
+                <a
+                  href={contactData.habeasData.linkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold underline hover:text-accent-strong transition-colors"
+                >
+                  {contactData.habeasData.linkText}
+                </a>
+              </label>
+            </div>
+            {submitAttempted && !acceptedPolicies && (
+              <p className="mt-1.5 flex items-center gap-1 text-xs text-red-600 font-medium">
+                <WarningCircle size={12} /> {contactData.validation.acceptPolicyHint}
+              </p>
+            )}
           </div>
 
           {errorMessage && (
@@ -470,25 +511,19 @@ export function Contact({
             </div>
           )}
 
-          {/* Botón Submit & Notificación de estado */}
+          {/* Botón Submit & Notificación de estado — siempre habilitado
+              (salvo mientras envía): un botón gris hasta marcar la casilla
+              se leía como roto. Un envío inválido marca los campos y mueve
+              el foco al primero con error, en vez de bloquear el clic. */}
           <div className="flex flex-col gap-2 mt-1">
-            <Button
-              type="submit"
-              size="lg"
-              disabled={!isFormValid || isSubmitting}
-              className={!isFormValid ? "opacity-50 cursor-not-allowed pointer-events-none" : "shadow-[0_0_25px_rgba(0,137,205,0.3)]"}
-            >
+            <Button type="submit" size="lg" disabled={isSubmitting}>
               {isSubmitting ? contactData.sendingLabel : contactData.submitLabel}
             </Button>
 
-            {!isFormValid && (
+            {submitAttempted && !isFormValid && acceptedPolicies && (
               <div className="flex items-center justify-center gap-1.5 text-[11px] font-medium text-foreground/60 text-center">
                 <ShieldCheck size={13} className="text-accent shrink-0" />
-                <span>
-                  {!acceptedPolicies
-                    ? contactData.validation.acceptPolicyHint
-                    : contactData.validation.completeFieldsHint}
-                </span>
+                <span>{contactData.validation.completeFieldsHint}</span>
               </div>
             )}
           </div>

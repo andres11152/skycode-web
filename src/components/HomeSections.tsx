@@ -1,10 +1,10 @@
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { TrustStrip } from "@/components/sections/TrustStrip";
+import { ProjectEstimatorTeaser } from "@/components/sections/ProjectEstimatorTeaser";
 import {
   HomeInteractiveClosing,
   HomeInteractiveContact,
-  HomeInteractiveEstimator,
   HomeInteractiveTestimonials,
 } from "@/components/HomeInteractiveSections";
 import { getBlogPosts } from "@/content/blog";
@@ -46,7 +46,7 @@ export async function HomeSections({ locale }: { locale: Locale }) {
       <Services locale={locale} />
       <Portfolio locale={locale} />
       <Process locale={locale} />
-      <HomeInteractiveEstimator locale={locale} />
+      <ProjectEstimatorTeaser locale={locale} />
       <HomeInteractiveTestimonials locale={locale} />
       <BlogTeaser locale={locale} posts={recentPosts} />
       <Faq locale={locale} />

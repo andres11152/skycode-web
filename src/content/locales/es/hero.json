@@ -2,7 +2,9 @@
   "sectionAria": "Presentación de la agencia",
   "actionsAria": "Acciones principales",
   "badge": "DESARROLLO DE SOFTWARE HONESTO Y SIN AMARRES",
-  "title": "Creamos el software de tu empresa. El código es tuyo, limpio y sin depender de nosotros.",
+  "titleBefore": "Creamos el software de tu empresa. ",
+  "titleAccent": "El código es tuyo.",
+  "titleAfter": " Limpio y sin depender de nosotros.",
   "subtitle": "Desarrollamos sistemas y aplicaciones a tu medida, con entregas claras cada semana y comunicación directa con los ingenieros que programan. Sin intermediarios comerciales ni cajas negras.",
   "description": "Sabemos lo difícil que es confiar un proyecto tecnológico: agencias que desaparecen, retrasos eternos o código imposible de mantener. En SkyCode te entregamos el 100% de la propiedad, repositorios a tu nombre y documentación paso a paso para que tengas el control absoluto.",
   "ctaPrimary": {
@@ -17,6 +19,10 @@
   },
   "codeMockup": {
     "comment": "// código limpio, probado y 100% tuyo"
-  }
+  },
+  "guarantees": [
+    "Código 100% de tu propiedad",
+    "90 días de garantía técnica",
+    "Trato directo con ingenieros"
+  ]
 }
-

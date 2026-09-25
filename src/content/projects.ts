@@ -35,7 +35,15 @@ export interface Project {
 export function getProjectsContent(locale: Locale) {
   const projectsData = projectsByLocale[locale];
   return {
-    projectsSection: { badge: projectsData.badge, title: projectsData.title, description: projectsData.description, viewAll: projectsData.viewAll },
+    projectsSection: {
+      badge: projectsData.badge,
+      title: projectsData.title,
+      description: projectsData.description,
+      viewAll: projectsData.viewAll,
+      featuredBadge: projectsData.featuredBadge,
+      viewCaseStudy: projectsData.viewCaseStudy,
+      exploreProject: projectsData.exploreProject,
+    },
     projects: projectsData.items.map((item) => ({
       slug: item.slug,
       title: item.title,

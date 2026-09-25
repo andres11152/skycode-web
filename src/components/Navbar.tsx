@@ -15,7 +15,11 @@ import { blogIndexPath } from "@/lib/blogPaths";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
 
-const GLASS = "bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl";
+// bg-background/85 (no /70): al pasar sobre una sección oscura (Services,
+// Testimonials, TrustStrip, ClosingStatement — ver CLAUDE.md), el vidrio al
+// 70% dejaba pasar tanto negro que la Navbar se leía como una barra gris
+// sucia en vez de un panel blanco (bug real, visto en auditoría visual).
+const GLASS = "bg-background/85 shadow-lg shadow-black/5 backdrop-blur-xl";
 const MOBILE_GLASS = "border border-foreground/15 bg-background/95 shadow-2xl shadow-black/30 backdrop-blur-2xl";
 
 export function Navbar() {
@@ -25,9 +29,12 @@ export function Navbar() {
   const navData = getNavContent(locale);
   const homePath = localeHomePath(locale);
   const prefix = homePath === "/" ? "" : homePath;
+  // "Inicio" se dejó fuera a propósito: el logo ya lleva a home, y con 6
+  // links + selector de idioma + CTA, el contenedor `max-w-4xl` del estado
+  // "scrolled" no tenía ancho suficiente — "Preguntas Frecuentes"/"Cotizar
+  // Proyecto" se partían en dos líneas (bug real, visto en auditoría visual).
   const navLinks = [
-    { label: navData.inicio, href: `${prefix}/#inicio`, esOnly: false },
-    { label: navData.servicios, href: `${prefix}/#servicios`, esOnly: false },
+    { label: navData.servicios, href: `${prefix}/servicios`, esOnly: false },
     { label: navData.portafolio, href: `${prefix}/#portfolio`, esOnly: false },
     { label: navData.equipo, href: `${prefix}/equipo`, esOnly: false },
     // El blog ya tiene versión en los tres idiomas (ver CLAUDE.md) — deja
@@ -95,7 +102,7 @@ export function Navbar() {
               <Link
                 href={link.href}
                 prefetch={prefetchFor(link.href)}
-                className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-foreground/80 outline-none transition-colors duration-200 ease-out hover:bg-foreground/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium text-foreground/80 outline-none transition-colors duration-200 ease-out hover:bg-foreground/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 {link.label}
                 {link.esOnly && <EsBadge />}
@@ -108,15 +115,18 @@ export function Navbar() {
 
           <LanguageSwitcher locale={locale} className="flex items-center" />
 
-          {/* Desktop Contact button */}
-          <Magnetic strength={0.25} range={70} className="hidden sm:inline-flex">
+          {/* Desktop Contact button — sin halo/pulso: es el único CTA de
+              acento visible en todo momento en la página, no necesita
+              reforzarse más, y `animate-pulse-glow` nunca existió en
+              globals.css (la clase no hacía nada). */}
+          <Magnetic strength={0.2} range={60} className="hidden sm:inline-flex">
             <Button
               href={contactHref}
               prefetch={homePrefetch}
               variant="accent"
               size="sm"
               aria-label={navData.contactoAria}
-              className="shadow-[0_0_20px_rgba(0,137,205,0.35)] animate-pulse-glow"
+              className="whitespace-nowrap"
             >
               {navData.contacto}
             </Button>
