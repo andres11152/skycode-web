@@ -30,6 +30,7 @@ import {
   PenSquare,
 } from "lucide-react";
 import { hasPermission, type Permission } from "@/lib/rbac";
+import { NotificationBell } from "./NotificationBell";
 import type { SessionUser } from "./types";
 
 interface NavItem {
@@ -206,6 +207,7 @@ export function DashboardChrome({ user, children }: { user: SessionUser; childre
                 {user.role}
               </span>
             </div>
+            <NotificationBell />
             <button
               onClick={handleLogout}
               className="flex items-center gap-1.5 rounded-lg border border-foreground/15 px-3 py-1.5 text-xs text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"

@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { notifyViewedProposals, notifyOverdueInvoices, notifySlaWarnings, notifyLeadFollowUps } from "./notifications";
+import {
+  notifyViewedProposals,
+  notifyOverdueInvoices,
+  notifySlaWarnings,
+  notifyLeadFollowUps,
+  getUserNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+} from "./notifications";
 import { query, withTransaction } from "../db";
 import { createTicket } from "./supportTickets";
 import { createInvoice } from "./invoices";
@@ -225,5 +233,133 @@ describe("notifyLeadFollowUps", () => {
     await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
 
     expect(await notifyLeadFollowUps()).toBe(0);
+  });
+});
+
+describe("notificaciones in-app (campanita) — mismo evento que el correo", () => {
+  it("notifyViewedProposals crea una notificación in-app para el creador de la propuesta", async () => {
+    const user = await createTestUser();
+    const proposal = await createTestProposal({ createdBy: user.id });
+    await query(`UPDATE proposals SET viewed_at = now() WHERE id = $1;`, [proposal.id]);
+
+    await notifyViewedProposals();
+
+    const { notifications, unreadCount } = await getUserNotifications(user.id);
+    expect(notifications).toHaveLength(1);
+    expect(notifications[0].type).toBe("proposal_viewed");
+    expect(notifications[0].read).toBe(false);
+    expect(unreadCount).toBe(1);
+  });
+
+  it("notifyOverdueInvoices crea una notificación in-app para el creador de la factura", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const user = await createTestUser();
+    await withTransaction((c) =>
+      createInvoice({ project_id: project.id, description: "Vencida", amount: 1000, due_date: "2020-01-01" }, user.id, c)
+    );
+
+    await notifyOverdueInvoices();
+
+    const { notifications } = await getUserNotifications(user.id);
+    expect(notifications).toHaveLength(1);
+    expect(notifications[0].type).toBe("invoice_overdue");
+  });
+
+  it("notifySlaWarnings crea una notificación in-app para el responsable del ticket", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const user = await createTestUser();
+    const ticketId = await withTransaction((c) =>
+      createTicket({ project_id: project.id, title: "Urgente", assignee_id: user.id }, user.id, c)
+    );
+    await query(`UPDATE support_tickets SET sla_due_at = now() - interval '1 hour' WHERE id = $1;`, [ticketId]);
+
+    await notifySlaWarnings();
+
+    const { notifications } = await getUserNotifications(user.id);
+    expect(notifications).toHaveLength(1);
+    expect(notifications[0].type).toBe("sla_warning");
+  });
+
+  it("notifyLeadFollowUps crea una notificación in-app para el dueño del lead", async () => {
+    const user = await createTestUser();
+    const lead = await createTestLead({ ownerId: user.id });
+    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+
+    await notifyLeadFollowUps();
+
+    const { notifications } = await getUserNotifications(user.id);
+    expect(notifications).toHaveLength(1);
+    expect(notifications[0].type).toBe("lead_follow_up");
+  });
+
+  it("un lead sin dueño no genera ninguna notificación in-app (nadie a quién mostrársela)", async () => {
+    const lead = await createTestLead({ ownerId: null });
+    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+
+    await notifyLeadFollowUps();
+
+    const allNotifications = await query(`SELECT id FROM notifications;`);
+    expect(allNotifications.rows).toHaveLength(0);
+  });
+});
+
+describe("getUserNotifications / markNotificationRead / markAllNotificationsRead", () => {
+  it("getUserNotifications devuelve solo las del usuario pedido, más recientes primero", async () => {
+    const user = await createTestUser();
+    const otherUser = await createTestUser();
+    const lead = await createTestLead({ ownerId: user.id });
+    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+    await notifyLeadFollowUps();
+
+    const { notifications: forOwner } = await getUserNotifications(user.id);
+    const { notifications: forOther } = await getUserNotifications(otherUser.id);
+    expect(forOwner).toHaveLength(1);
+    expect(forOther).toHaveLength(0);
+  });
+
+  it("markNotificationRead marca como leída y descuenta el conteo de no leídas", async () => {
+    const user = await createTestUser();
+    const lead = await createTestLead({ ownerId: user.id });
+    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+    await notifyLeadFollowUps();
+
+    const { notifications } = await getUserNotifications(user.id);
+    const marked = await markNotificationRead(notifications[0].id, user.id);
+    expect(marked).toBe(true);
+
+    const after = await getUserNotifications(user.id);
+    expect(after.unreadCount).toBe(0);
+    expect(after.notifications[0].read).toBe(true);
+  });
+
+  it("markNotificationRead devuelve false si la notificación no es del usuario que llama", async () => {
+    const user = await createTestUser();
+    const attacker = await createTestUser();
+    const lead = await createTestLead({ ownerId: user.id });
+    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+    await notifyLeadFollowUps();
+
+    const { notifications } = await getUserNotifications(user.id);
+    const marked = await markNotificationRead(notifications[0].id, attacker.id);
+    expect(marked).toBe(false);
+
+    const stillUnread = await getUserNotifications(user.id);
+    expect(stillUnread.unreadCount).toBe(1);
+  });
+
+  it("markAllNotificationsRead marca todas las no leídas del usuario de una vez", async () => {
+    const user = await createTestUser();
+    const leadA = await createTestLead({ ownerId: user.id });
+    const leadB = await createTestLead({ ownerId: user.id });
+    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id IN ($1, $2);`, [leadA.id, leadB.id]);
+    await notifyLeadFollowUps();
+
+    const touched = await markAllNotificationsRead(user.id);
+    expect(touched).toBe(2);
+
+    const after = await getUserNotifications(user.id);
+    expect(after.unreadCount).toBe(0);
   });
 });

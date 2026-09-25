@@ -1,5 +1,29 @@
 import { query } from "../db";
 import { sendEmail } from "../email";
+import type { AppNotification } from "@/components/dashboard/types";
+
+interface NewNotification {
+  userId: number;
+  type: string;
+  title: string;
+  body: string;
+  link?: string;
+}
+
+/**
+ * Inserta la campanita in-app para el mismo evento que ya dispara el
+ * correo — un solo `notify*()` alimenta los dos canales desde la misma
+ * condición de "candidato", nunca hay una segunda fuente de verdad. Se
+ * llama una vez por fila con dueño conocido; sin dueño, el correo ya se
+ * salta (`if (!row.x_email) continue`) y esta función ni se invoca — la
+ * fila se marcó igual como avisada en su tabla de origen.
+ */
+async function createNotification({ userId, type, title, body, link }: NewNotification): Promise<void> {
+  await query(
+    `INSERT INTO notifications (user_id, type, title, body, link) VALUES ($1, $2, $3, $4, $5);`,
+    [userId, type, title, body, link ?? null]
+  );
+}
 
 /**
  * Marca las propuestas vistas-y-no-avisadas como avisadas en la MISMA
@@ -14,7 +38,7 @@ import { sendEmail } from "../email";
 export async function notifyViewedProposals(): Promise<number> {
   const res = await query(`
     WITH candidates AS (
-      SELECT p.id, p.title, p.client_name, u.email AS creator_email
+      SELECT p.id, p.title, p.client_name, p.created_by, u.email AS creator_email
       FROM proposals p
       LEFT JOIN users u ON u.id = p.created_by
       WHERE p.viewed_at IS NOT NULL AND p.viewed_notified_at IS NULL
@@ -23,10 +47,18 @@ export async function notifyViewedProposals(): Promise<number> {
     SET viewed_notified_at = now()
     FROM candidates c
     WHERE p.id = c.id
-    RETURNING c.title, c.client_name, c.creator_email;
+    RETURNING c.title, c.client_name, c.created_by, c.creator_email;
   `);
 
   for (const row of res.rows) {
+    if (!row.created_by) continue;
+    await createNotification({
+      userId: row.created_by,
+      type: "proposal_viewed",
+      title: "Propuesta vista",
+      body: `${row.client_name} vio la propuesta "${row.title}".`,
+      link: "/dashboard/propuestas",
+    });
     if (!row.creator_email) continue;
     await sendEmail({
       to: row.creator_email,
@@ -56,7 +88,7 @@ export async function notifyOverdueInvoices(): Promise<number> {
       GROUP BY i.id
     ),
     candidates AS (
-      SELECT ib.id, ib.description, ib.balance, p.title AS project_title,
+      SELECT ib.id, ib.description, ib.balance, ib.created_by, p.title AS project_title,
              c.name AS client_name, u.email AS creator_email
       FROM invoice_balances ib
       JOIN projects p ON p.id = ib.project_id
@@ -68,10 +100,18 @@ export async function notifyOverdueInvoices(): Promise<number> {
     SET overdue_notified_at = now()
     FROM candidates cd
     WHERE i.id = cd.id
-    RETURNING cd.description, cd.balance, cd.project_title, cd.client_name, cd.creator_email;
+    RETURNING cd.description, cd.balance, cd.created_by, cd.project_title, cd.client_name, cd.creator_email;
   `);
 
   for (const row of res.rows) {
+    if (!row.created_by) continue;
+    await createNotification({
+      userId: row.created_by,
+      type: "invoice_overdue",
+      title: "Factura vencida",
+      body: `La factura "${row.description}" de ${row.client_name} (${row.project_title}) tiene un saldo pendiente de ${row.balance}.`,
+      link: "/dashboard/facturacion",
+    });
     if (!row.creator_email) continue;
     await sendEmail({
       to: row.creator_email,
@@ -99,7 +139,7 @@ export async function notifySlaWarnings(): Promise<number> {
   const res = await query(
     `
     WITH candidates AS (
-      SELECT t.id, t.title, t.sla_due_at, p.title AS project_title, u.email AS assignee_email
+      SELECT t.id, t.title, t.sla_due_at, t.assignee_id, p.title AS project_title, u.email AS assignee_email
       FROM support_tickets t
       JOIN projects p ON p.id = t.project_id
       LEFT JOIN users u ON u.id = t.assignee_id
@@ -111,12 +151,20 @@ export async function notifySlaWarnings(): Promise<number> {
     SET sla_warning_notified_at = now()
     FROM candidates cd
     WHERE t.id = cd.id
-    RETURNING cd.title, cd.project_title, cd.assignee_email, cd.sla_due_at;
+    RETURNING cd.title, cd.project_title, cd.assignee_id, cd.assignee_email, cd.sla_due_at;
   `,
     [SLA_WARNING_WINDOW_HOURS]
   );
 
   for (const row of res.rows) {
+    if (!row.assignee_id) continue;
+    await createNotification({
+      userId: row.assignee_id,
+      type: "sla_warning",
+      title: "SLA por vencer",
+      body: `El ticket "${row.title}" (${row.project_title}) vence su SLA el ${new Date(row.sla_due_at).toLocaleString("es-CO")}.`,
+      link: "/dashboard/soporte",
+    });
     if (!row.assignee_email) continue;
     await sendEmail({
       to: row.assignee_email,
@@ -135,13 +183,13 @@ export async function notifySlaWarnings(): Promise<number> {
  * cerrados (`Ganado`/`Perdido`): no tiene sentido recordar seguir un trato
  * que ya se cerró, aunque alguien haya dejado un recordatorio viejo sin
  * borrar. Sin dueño asignado, la fila se marca igual como avisada (para no
- * reintentarla cada hora) pero no se envía ningún correo — mismo patrón
- * que el resto de `notify*()` de este archivo.
+ * reintentarla cada hora) pero no se envía ningún correo ni notificación
+ * — mismo patrón que el resto de `notify*()` de este archivo.
  */
 export async function notifyLeadFollowUps(): Promise<number> {
   const res = await query(`
     WITH candidates AS (
-      SELECT l.id, l.name, l.next_follow_up_at, l.follow_up_note, u.email AS owner_email
+      SELECT l.id, l.name, l.next_follow_up_at, l.follow_up_note, l.owner_id, u.email AS owner_email
       FROM leads l
       LEFT JOIN users u ON u.id = l.owner_id
       WHERE l.deleted_at IS NULL
@@ -154,10 +202,18 @@ export async function notifyLeadFollowUps(): Promise<number> {
     SET follow_up_notified_at = now()
     FROM candidates c
     WHERE l.id = c.id
-    RETURNING c.name, c.follow_up_note, c.owner_email;
+    RETURNING c.name, c.follow_up_note, c.owner_id, c.owner_email;
   `);
 
   for (const row of res.rows) {
+    if (!row.owner_id) continue;
+    await createNotification({
+      userId: row.owner_id,
+      type: "lead_follow_up",
+      title: "Seguimiento pendiente",
+      body: `Hoy toca recontactar a ${row.name}.${row.follow_up_note ? ` Nota: ${row.follow_up_note}` : ""}`,
+      link: "/dashboard/leads",
+    });
     if (!row.owner_email) continue;
     await sendEmail({
       to: row.owner_email,
@@ -166,5 +222,69 @@ export async function notifyLeadFollowUps(): Promise<number> {
     });
   }
 
+  return res.rows.length;
+}
+
+/**
+ * Últimas notificaciones del usuario autenticado, más el conteo de no
+ * leídas — dos consultas separadas (no una sola con `COUNT(*) OVER()`
+ * filtrado distinto) porque el conteo de no leídas necesita ver TODA la
+ * tabla del usuario, no solo la página de `limit` que se muestra en el
+ * dropdown.
+ */
+export async function getUserNotifications(
+  userId: number | string,
+  limit = 20
+): Promise<{ notifications: AppNotification[]; unreadCount: number }> {
+  const [listRes, countRes] = await Promise.all([
+    query(
+      `SELECT id, type, title, body, link, read_at, created_at
+       FROM notifications
+       WHERE user_id = $1
+       ORDER BY created_at DESC
+       LIMIT $2;`,
+      [userId, limit]
+    ),
+    query(`SELECT COUNT(*) AS count FROM notifications WHERE user_id = $1 AND read_at IS NULL;`, [userId]),
+  ]);
+
+  const notifications: AppNotification[] = listRes.rows.map((row) => ({
+    id: Number(row.id),
+    type: String(row.type),
+    title: String(row.title),
+    body: String(row.body),
+    link: row.link ? String(row.link) : null,
+    read: row.read_at !== null,
+    created_at: String(row.created_at),
+  }));
+
+  return { notifications, unreadCount: Number(countRes.rows[0].count) };
+}
+
+/**
+ * Marca una notificación como leída — `WHERE user_id = $2` es la única
+ * barrera contra marcar la de otra persona, mismo criterio que
+ * `revokeOwnSession()`. Devuelve `false` sin tocar nada si no es del
+ * usuario (o no existe), para que la ruta responda 404 en vez de 200 sin
+ * efecto.
+ */
+export async function markNotificationRead(id: number, userId: number | string): Promise<boolean> {
+  const res = await query(
+    `UPDATE notifications SET read_at = now() WHERE id = $1 AND user_id = $2 AND read_at IS NULL RETURNING id;`,
+    [id, userId]
+  );
+  return res.rows.length > 0;
+}
+
+/**
+ * Marca todas las notificaciones no leídas del usuario de una sola vez
+ * (botón "Marcar todas como leídas" del dropdown) — devuelve cuántas
+ * filas tocó, para que la UI pueda decidir si vale la pena refrescar.
+ */
+export async function markAllNotificationsRead(userId: number | string): Promise<number> {
+  const res = await query(
+    `UPDATE notifications SET read_at = now() WHERE user_id = $1 AND read_at IS NULL RETURNING id;`,
+    [userId]
+  );
   return res.rows.length;
 }

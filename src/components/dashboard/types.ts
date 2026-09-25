@@ -382,3 +382,19 @@ export interface ClientDetail {
   totalBilledCop: number;
   totalOutstandingCop: number;
 }
+
+/**
+ * Notificación in-app (campanita del dashboard) — el mismo evento que ya
+ * dispara un correo desde lib/queries/notifications.ts, ver ese archivo.
+ * `read` deriva de `read_at IS NOT NULL` en la query, no es una columna
+ * booleana propia.
+ */
+export interface AppNotification {
+  id: number;
+  type: string;
+  title: string;
+  body: string;
+  link: string | null;
+  read: boolean;
+  created_at: string;
+}

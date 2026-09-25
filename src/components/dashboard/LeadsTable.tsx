@@ -151,8 +151,9 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
   const [followUpNote, setFollowUpNote] = useState("");
   const [savingFollowUp, setSavingFollowUp] = useState(false);
   const [followUpFormLeadId, setFollowUpFormLeadId] = useState<number | null>(null);
-  if (selectedLead?.id !== followUpFormLeadId) {
-    setFollowUpFormLeadId(selectedLead?.id ?? null);
+  const currentLeadId = selectedLead?.id ?? null;
+  if (currentLeadId !== followUpFormLeadId) {
+    setFollowUpFormLeadId(currentLeadId);
     setFollowUpDate(selectedLead?.next_follow_up_at?.slice(0, 10) ?? "");
     setFollowUpNote(selectedLead?.follow_up_note ?? "");
   }
