@@ -100,6 +100,96 @@ async function queryInvoices(clientId?: number | string): Promise<Invoice[]> {
   return invoices;
 }
 
+export interface InvoicePdfData {
+  id: number;
+  invoice_number: string;
+  project_title: string;
+  client_name: string;
+  client_email: string;
+  client_company: string | null;
+  description: string;
+  amount: number;
+  currency: string;
+  due_date: string;
+  created_at: string;
+  paidAmount: number;
+  balance: number;
+  status: Invoice["status"];
+  daysOverdue: number;
+  payments: { id: number; amount: number; paid_at: string; method: string | null }[];
+}
+
+/**
+ * Datos de una factura puntual para el PDF descargable — mismo cálculo de
+ * saldo/estado/pagos que `queryInvoices()` (no lo duplica en SQL, pero sí
+ * repite la lógica en JS porque acá hace falta además el email/empresa
+ * del cliente, que las vistas de tabla no necesitan mostrar). `null` si
+ * la factura no existe o está borrada.
+ */
+export async function getInvoiceForPdf(id: number): Promise<InvoicePdfData | null> {
+  const res = await query(
+    `SELECT i.id, i.invoice_number, i.project_id, p.title AS project_title,
+            c.name AS client_name, c.email AS client_email, c.company AS client_company,
+            i.description, i.amount, i.currency, i.due_date, i.created_at,
+            COALESCE(pay.paid_amount, 0) AS paid_amount
+     FROM invoices i
+     JOIN projects p ON p.id = i.project_id
+     JOIN clients c ON c.id = p.client_id
+     LEFT JOIN (
+       SELECT invoice_id, SUM(amount) AS paid_amount FROM payments GROUP BY invoice_id
+     ) pay ON pay.invoice_id = i.id
+     WHERE i.id = $1 AND i.deleted_at IS NULL;`,
+    [id]
+  );
+  const row = res.rows[0];
+  if (!row) return null;
+
+  const amount = Number(row.amount);
+  const paidAmount = Number(row.paid_amount);
+  const balance = amount - paidAmount;
+
+  let status: Invoice["status"] = "pending";
+  let daysOverdue = 0;
+  if (balance <= 0) {
+    status = "paid";
+  } else {
+    const diffDays = Math.floor((Date.now() - new Date(row.due_date).getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays > 0) {
+      status = "overdue";
+      daysOverdue = diffDays;
+    }
+  }
+
+  const paymentsRes = await query(
+    `SELECT id, amount, paid_at, method FROM payments WHERE invoice_id = $1 ORDER BY paid_at ASC;`,
+    [id]
+  );
+
+  return {
+    id: row.id,
+    invoice_number: row.invoice_number,
+    project_title: row.project_title,
+    client_name: row.client_name,
+    client_email: row.client_email,
+    client_company: row.client_company,
+    description: row.description,
+    amount,
+    currency: row.currency,
+    due_date: row.due_date,
+    created_at: row.created_at,
+    paidAmount,
+    balance,
+    status,
+    daysOverdue,
+    payments: paymentsRes.rows.map((p) => ({
+      id: p.id,
+      amount: Number(p.amount),
+      paid_at: p.paid_at,
+      method: p.method,
+    })),
+  };
+}
+
 interface QueryRunner {
   query: typeof query;
 }

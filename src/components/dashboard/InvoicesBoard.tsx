@@ -3,7 +3,7 @@
 import { useId, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
-import { Receipt, Plus, RefreshCw, AlertTriangle, Wallet, CheckCircle2, Clock } from "lucide-react";
+import { Receipt, Plus, RefreshCw, AlertTriangle, Wallet, CheckCircle2, Clock, Download } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
 import { CurrencySelect } from "./CurrencySelect";
@@ -177,15 +177,24 @@ export function InvoicesBoard({
                       {new Date(inv.due_date).toLocaleDateString("es-CO")}
                     </td>
                     <td className="px-5 py-4 text-right">
-                      {canWrite && inv.balance > 0 && (
-                        <button
-                          onClick={() => setPaymentInvoice(inv)}
-                          className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1.5 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      <div className="flex items-center justify-end gap-2">
+                        <a
+                          href={`/api/invoices/${inv.id}/pdf`}
+                          aria-label={`Descargar PDF de la factura ${inv.invoice_number}`}
+                          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground/60 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
-                          <Wallet size={12} />
-                          <span>Registrar pago</span>
-                        </button>
-                      )}
+                          <Download size={14} />
+                        </a>
+                        {canWrite && inv.balance > 0 && (
+                          <button
+                            onClick={() => setPaymentInvoice(inv)}
+                            className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1.5 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          >
+                            <Wallet size={12} />
+                            <span>Registrar pago</span>
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

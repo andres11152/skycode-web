@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { getAllInvoices, getClientInvoices, createInvoice } from "./invoices";
+import { getAllInvoices, getClientInvoices, createInvoice, getInvoiceForPdf } from "./invoices";
 import { withTransaction, query } from "../db";
 import {
   createTestClient,
@@ -164,6 +164,55 @@ describe("createInvoice — numeración automática", () => {
 
     const settingsRes = await query(`SELECT invoice_next_number FROM settings WHERE id = 1;`);
     expect(Number(settingsRes.rows[0].invoice_next_number)).toBe(1);
+  });
+});
+
+describe("getInvoiceForPdf", () => {
+  it("trae los datos completos, incluyendo email del cliente, para armar el PDF", async () => {
+    const client = await createTestClient({ name: "Acme Corp" });
+    const project = await createTestProject(client.id, { title: "Rediseño Web" });
+    const invoice = await createTestInvoice(project.id, { amount: 1000, dueDate: daysFromNow(10) });
+
+    const pdfData = await getInvoiceForPdf(invoice.id);
+    expect(pdfData).not.toBeNull();
+    expect(pdfData!.client_name).toBe("Acme Corp");
+    expect(pdfData!.client_email).toBe(client.email);
+    expect(pdfData!.project_title).toBe("Rediseño Web");
+    expect(pdfData!.status).toBe("pending");
+    expect(pdfData!.balance).toBe(1000);
+    expect(pdfData!.client_company).toBeNull();
+  });
+
+  it("incluye la empresa del cliente cuando existe", async () => {
+    const client = await createTestClient();
+    await query(`UPDATE clients SET company = $1 WHERE id = $2;`, ["Acme SAS", client.id]);
+    const project = await createTestProject(client.id);
+    const invoice = await createTestInvoice(project.id);
+
+    const pdfData = await getInvoiceForPdf(invoice.id);
+    expect(pdfData!.client_company).toBe("Acme SAS");
+  });
+
+  it("incluye el historial de pagos ordenado del más antiguo al más reciente", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const invoice = await createTestInvoice(project.id, { amount: 1000 });
+    await createTestPayment(invoice.id, { amount: 300, paidAt: daysFromNow(-10) });
+    await createTestPayment(invoice.id, { amount: 200, paidAt: daysFromNow(-2) });
+
+    const pdfData = await getInvoiceForPdf(invoice.id);
+    expect(pdfData!.payments).toHaveLength(2);
+    expect(pdfData!.payments[0].amount).toBe(300);
+    expect(pdfData!.payments[1].amount).toBe(200);
+  });
+
+  it("devuelve null para una factura inexistente o borrada", async () => {
+    expect(await getInvoiceForPdf(999999)).toBeNull();
+
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const invoice = await createTestInvoice(project.id, { deletedAt: new Date() });
+    expect(await getInvoiceForPdf(invoice.id)).toBeNull();
   });
 });
 

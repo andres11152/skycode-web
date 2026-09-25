@@ -1,4 +1,4 @@
-import { Receipt } from "@phosphor-icons/react/ssr";
+import { Receipt, DownloadSimple } from "@phosphor-icons/react/ssr";
 import { EmptyState } from "../dashboard/EmptyState";
 import { Badge, type BadgeTone } from "../dashboard/ui/Badge";
 import { BoldPayButton } from "./BoldPayButton";
@@ -81,7 +81,16 @@ export function PortalInvoicesPanel({ invoices }: { invoices: Invoice[] }) {
                       {new Date(inv.due_date).toLocaleDateString("es-CO")}
                     </td>
                     <td className="px-5 py-4 text-right">
-                      {inv.balance > 0 && <BoldPayButton invoiceId={inv.id} />}
+                      <div className="flex items-center justify-end gap-2">
+                        <a
+                          href={`/api/invoices/${inv.id}/pdf`}
+                          aria-label={`Descargar PDF de la factura ${inv.invoice_number || inv.project_title}`}
+                          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground/60 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        >
+                          <DownloadSimple size={14} />
+                        </a>
+                        {inv.balance > 0 && <BoldPayButton invoiceId={inv.id} />}
+                      </div>
                     </td>
                   </tr>
                 ))}
