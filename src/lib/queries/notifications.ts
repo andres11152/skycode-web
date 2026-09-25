@@ -1,5 +1,6 @@
 import { query } from "../db";
 import { sendEmail } from "../email";
+import { sendPushToUser } from "../webPush";
 import type { AppNotification } from "@/components/dashboard/types";
 
 interface NewNotification {
@@ -12,17 +13,22 @@ interface NewNotification {
 
 /**
  * Inserta la campanita in-app para el mismo evento que ya dispara el
- * correo — un solo `notify*()` alimenta los dos canales desde la misma
- * condición de "candidato", nunca hay una segunda fuente de verdad. Se
- * llama una vez por fila con dueño conocido; sin dueño, el correo ya se
- * salta (`if (!row.x_email) continue`) y esta función ni se invoca — la
- * fila se marcó igual como avisada en su tabla de origen.
+ * correo — un solo `notify*()` alimenta los tres canales (in-app, correo,
+ * push del navegador) desde la misma condición de "candidato", nunca hay
+ * una segunda fuente de verdad. Se llama una vez por fila con dueño
+ * conocido; sin dueño, el correo ya se salta (`if (!row.x_email) continue`)
+ * y esta función ni se invoca — la fila se marcó igual como avisada en su
+ * tabla de origen. El push (`sendPushToUser`, ver lib/webPush.ts) es un
+ * no-op silencioso sin las variables VAPID configuradas o sin
+ * suscripciones activas del usuario — nunca bloquea ni falla el resto del
+ * flujo si el envío del push individual falla.
  */
 async function createNotification({ userId, type, title, body, link }: NewNotification): Promise<void> {
   await query(
     `INSERT INTO notifications (user_id, type, title, body, link) VALUES ($1, $2, $3, $4, $5);`,
     [userId, type, title, body, link ?? null]
   );
+  await sendPushToUser(userId, { title, body, link });
 }
 
 /**

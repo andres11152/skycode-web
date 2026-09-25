@@ -6,6 +6,7 @@ import { getActiveUserSessions } from "@/lib/queries/sessions";
 import { getTotpStatus } from "@/lib/queries/totp";
 import { SessionsView } from "@/components/dashboard/SessionsView";
 import { TwoFactorSetup } from "@/components/dashboard/TwoFactorSetup";
+import { PushNotificationSetup } from "@/components/dashboard/PushNotificationSetup";
 
 export const metadata: Metadata = {
   title: "Mi Cuenta | SKYCODE Agency",
@@ -28,6 +29,7 @@ export default async function DashboardAccountPage() {
   return (
     <div className="space-y-6">
       <TwoFactorSetup initialEnabled={totpStatus.enabled} initialRemainingBackupCodes={totpStatus.remainingBackupCodes} />
+      <PushNotificationSetup />
       <SessionsView user={session} sessions={sessions} currentSessionId={currentSessionId} />
     </div>
   );
