@@ -1,13 +1,8 @@
 "use client";
 
-// CodeMockupClient — cargado con next/dynamic({ ssr: false }) desde Hero.tsx.
-//
-// Por qué está separado:
-// - Contiene Framer Motion (motion.div × N, useReducedMotion)
-// - Al cargarlo lazy con ssr:false, el parser del navegador evalúa Framer Motion
-//   SOLO cuando el componente entra en viewport, NO durante el critical path del LCP.
-// - El H1, subtítulo y CTAs del Hero se hidrudan y pintan sin esperar a Framer Motion.
-// - En mobile esto ahorra ~400-600ms de Script Evaluation antes del LCP.
+// CodeMockupClient — renderizado en servidor desde Hero.tsx. Sin Framer
+// Motion: typing, láser y float son @keyframes CSS (globals.css), así que el
+// HTML del servidor ya se ve completo en el primer pintado.
 
 import { useState, useEffect, useSyncExternalStore } from "react";
 import { getHeroContent } from "@/content/hero";
@@ -163,12 +158,16 @@ export function CodeMockup({ locale }: { locale: Locale }) {
     return { ...line, delay, duration };
   });
 
-  const [status, setStatus] = useState(reduced ? "success" : "loading");
+  // Derivado, no inicializado desde `reduced`: al renderizar en servidor,
+  // `reduced` arranca en false (snapshot de servidor) y un `useState` inicial
+  // dejaría a un usuario con reduced-motion atascado en "POSTing...".
+  const [typingDone, setTypingDone] = useState(false);
   useEffect(() => {
     if (reduced) return;
-    const timer = setTimeout(() => setStatus("success"), Math.round(currentDelay * 1000));
+    const timer = setTimeout(() => setTypingDone(true), Math.round(currentDelay * 1000));
     return () => clearTimeout(timer);
   }, [currentDelay, reduced]);
+  const status = reduced || typingDone ? "success" : "loading";
 
   return (
     // Float animation: CSS @keyframes (globals.css) — GPU compositor, sin JS.

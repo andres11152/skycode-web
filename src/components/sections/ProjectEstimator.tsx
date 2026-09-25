@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 import { ArrowRight, CheckCircle, Clock, EnvelopeSimple, Lightning, Spinner, Tag, WarningCircle } from "@phosphor-icons/react";
 import NumberFlow from "@number-flow/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
@@ -62,6 +62,14 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
 
   const rawWeeks = Math.ceil(currentType.baseWeeks + addonsWeeks);
   const totalWeeks = urgency === "express" ? Math.max(2, Math.round(rawWeeks * 0.75)) : rawWeeks;
+
+  // NumberFlow mide layout (getBoundingClientRect/offsetWidth) en cada
+  // cambio de valor para su animación FLIP — con el valor directo, ese
+  // reflow forzado ocurría dentro del clic en cada opción y sumaba al INP.
+  // Diferido, el clic pinta primero la opción seleccionada y el número se
+  // actualiza en el render siguiente, fuera de la ventana que mide INP.
+  const displayPrice = useDeferredValue(totalPrice);
+  const displayWeeks = useDeferredValue(totalWeeks);
 
   const toggleAddon = (id: string) => {
     setSelectedAddons((prev) =>
@@ -321,7 +329,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                 <div className="text-2xl sm:text-3xl font-bold font-mono text-accent leading-tight flex items-baseline gap-1">
                   <span>$</span>
                   <NumberFlow
-                    value={totalPrice}
+                    value={displayPrice}
                     format={{ maximumFractionDigits: 0 }}
                     transformTiming={{ duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
                     spinTiming={{ duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
@@ -330,8 +338,8 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                 </div>
                 <div className="text-[10px] text-background/50">
                   {currency === "COP"
-                    ? `(~ $${Math.round(totalPrice / 4100).toLocaleString("en-US")} USD aprox)`
-                    : `(~ $${(totalPrice * 4100).toLocaleString("es-CO")} COP aprox)`}
+                    ? `(~ $${Math.round(displayPrice / 4100).toLocaleString("en-US")} USD aprox)`
+                    : `(~ $${(displayPrice * 4100).toLocaleString("es-CO")} COP aprox)`}
                 </div>
               </div>
 
@@ -343,7 +351,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   </span>
                   <span className="font-bold text-background flex items-center gap-1">
                     <NumberFlow
-                      value={totalWeeks}
+                      value={displayWeeks}
                       transformTiming={{ duration: 500, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
                     />
                     <span>{content.summary.weeksSuffix}</span>

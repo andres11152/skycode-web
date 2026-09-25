@@ -9,11 +9,17 @@ import { defaultLocale, isLocale, localeHomePath } from "@/lib/i18n";
 import { logError } from "@/lib/logger";
 import "./globals.css";
 
+// `preload: false` en las tres: Next precarga las fuentes de global-error en
+// TODAS las rutas, no solo cuando esta página se muestra — Geist Mono (24KB,
+// prioridad alta) terminaba en la ruta crítica del LCP de cada página sin
+// que ninguna la usara. Con `display: "swap"` la página de error igual las
+// descarga al pintarse; solo deja de pagarlas el resto del sitio.
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-heading",
   subsets: ["latin"],
   weight: ["500", "600", "700"],
   display: "swap",
+  preload: false,
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -21,12 +27,14 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: false,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 /**

@@ -3,12 +3,15 @@
 // Arquitectura de rendimiento:
 //  - H1 y P: renderizados como HTML estático puro del servidor sin hydration delay.
 //  - CTAs: CSS :hover/:active (globals.css .hero-cta) — cero JS, GPU compositor.
-//  - CodeMockup: cargado en HeroCodeMockup ("use client", lazy ssr:false).
+//  - CodeMockup: renderizado en servidor. Antes era `ssr: false` con un
+//    esqueleto gris: en 4G lenta el mockup real aparecía segundos después
+//    del primer pintado, y Speed Index contaba todo ese tiempo como página
+//    visualmente incompleta (4.7s en PageSpeed móvil).
 
 import { Button } from "@/components/ui/Button";
 import { GridPattern } from "@/components/ui/GridPattern";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
-import { HeroCodeMockup } from "./HeroCodeMockup";
+import { CodeMockup } from "./CodeMockupClient";
 import { getHeroContent } from "@/content/hero";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 
@@ -81,12 +84,11 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           </div>
         </div>
 
-        {/* CodeMockup lazy — Framer Motion no bloquea el LCP del H1 */}
         <div
           aria-hidden="true"
           className="animate-hero-scale-in flex justify-center lg:mt-16 lg:justify-end w-full max-w-full overflow-hidden"
         >
-          <HeroCodeMockup locale={locale} />
+          <CodeMockup locale={locale} />
         </div>
       </div>
     </section>

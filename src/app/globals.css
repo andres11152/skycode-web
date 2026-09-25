@@ -196,9 +196,25 @@ h6 {
   }
 }
 
+/* Reposo: degradado estático, ya "barrido". Antes era un bucle infinito de
+   background-position (no compuesto en GPU) sobre las 11 etiquetas del
+   sitio a la vez: repintaba cada frame durante toda la visita, compitiendo
+   con cada tap por el hilo principal (INP), e ignoraba reduced-motion.
+   Ahora el brillo barre una sola vez, ligado al scroll, cuando la etiqueta
+   entra en pantalla — sin costo mientras no se hace scroll. */
 .animate-shiny-text {
   background-size: 200% 100%;
-  animation: shiny-text 5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  background-position: -80% 0;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .animate-shiny-text {
+      animation: shiny-text linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
+    }
+  }
 }
 
 @keyframes codeline-type {
