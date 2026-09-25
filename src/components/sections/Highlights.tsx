@@ -156,30 +156,37 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
                   {techStack.map(({ name, Icon }) => {
                     const isHovered = hoveredTech === name;
                     return (
-                      <Magnetic key={name} strength={0.25} range={40}>
-                        <li
-                          tabIndex={0}
-                          onMouseEnter={() => setHoveredTech(name)}
-                          onMouseLeave={() => setHoveredTech(null)}
-                          onFocus={() => setHoveredTech(name)}
-                          onBlur={() => setHoveredTech(null)}
-                          className="group relative flex h-14 w-14 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/40 hover:bg-accent/[0.06] hover:shadow-lg hover:shadow-accent/10 focus:outline-none focus:ring-2 focus:ring-accent hover:z-30 focus-visible:z-30"
-                        >
+                      // <li> debe ser hijo directo de <ul> para que los
+                      // lectores de pantalla anuncien la lista correctamente
+                      // (bug real de Lighthouse: `<Magnetic>` como hijo
+                      // directo del `<ul>` renderiza un `<div>` envolvente,
+                      // rompiendo esa relación) — `Magnetic` ahora envuelve
+                      // solo el ícono/tooltip, no la caja completa del `<li>`.
+                      <li
+                        key={name}
+                        tabIndex={0}
+                        onMouseEnter={() => setHoveredTech(name)}
+                        onMouseLeave={() => setHoveredTech(null)}
+                        onFocus={() => setHoveredTech(name)}
+                        onBlur={() => setHoveredTech(null)}
+                        className="group relative flex h-14 w-14 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/40 hover:bg-accent/[0.06] hover:shadow-lg hover:shadow-accent/10 focus:outline-none focus:ring-2 focus:ring-accent hover:z-30 focus-visible:z-30"
+                      >
+                        <Magnetic strength={0.25} range={40}>
                           <Icon
                             className="h-7 w-7 text-foreground/75 transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-accent group-hover:rotate-3"
                             aria-label={name}
                           />
+                        </Magnetic>
 
-                          {/* Tooltip Pill: solo se renderiza y muestra cuando este elemento específico es el hoveredTech */}
-                          {isHovered && (
-                            <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 flex items-center z-50 whitespace-nowrap rounded-full border border-accent/30 bg-background/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-md shadow-accent/10 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150">
-                              {name}
-                              {/* Triángulo inferior del indicador */}
-                              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-accent/40" />
-                            </span>
-                          )}
-                        </li>
-                      </Magnetic>
+                        {/* Tooltip Pill: solo se renderiza y muestra cuando este elemento específico es el hoveredTech */}
+                        {isHovered && (
+                          <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 flex items-center z-50 whitespace-nowrap rounded-full border border-accent/30 bg-background/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-md shadow-accent/10 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150">
+                            {name}
+                            {/* Triángulo inferior del indicador */}
+                            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-accent/40" />
+                          </span>
+                        )}
+                      </li>
                     );
                   })}
                 </ul>
