@@ -137,6 +137,34 @@
         "/projects/moncyre/detalle-producto.webp",
         "/projects/moncyre/footer-newsletter.webp"
       ]
+    },
+    {
+      "slug": "livver",
+      "title": "Livver · Portail Immobilier et Catalogue de Propriétés",
+      "client": "Livver · Agence Immobilière, Medellín",
+      "description": "Portail immobilier avec catalogue filtrable de propriétés à vendre et à louer, formulaire de demande par type de démarche et guides touristiques locaux pour accompagner la décision d'achat à Medellín et ses environs.",
+      "tags": [
+        "Secteur Immobilier",
+        "Catalogue de Propriétés",
+        "Formulaires de Demande",
+        "WordPress"
+      ],
+      "iconName": "House",
+      "link": "https://realstatelivver.com/",
+      "coverImage": "/projects/livver/propiedad-casa-castellana.webp",
+      "gallery": [
+        "/projects/livver/propiedad-casa-castellana.webp",
+        "/projects/livver/propiedad-apartamento-laureles.webp",
+        "/projects/livver/propiedad-lote-el-noral.webp",
+        "/projects/livver/propiedad-lote-sopetran.webp",
+        "/projects/livver/seccion-lotes.webp",
+        "/projects/livver/seccion-medellin.webp",
+        "/projects/livver/turismo-comuna-13.webp",
+        "/projects/livver/turismo-guatape.webp",
+        "/projects/livver/turismo-el-poblado.webp",
+        "/projects/livver/turismo-llanogrande.webp",
+        "/projects/livver/turismo-parque-arvi.webp"
+      ]
     }
   ],
   "featuredBadge": "Étude de Cas",
