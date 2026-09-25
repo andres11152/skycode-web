@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { RefreshCw, Code2, Layers, ShieldCheck, Calendar, AlertCircle, ClipboardList } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { SprintApproval } from "./SprintApproval";
+import { SprintComments } from "./SprintComments";
 import { ProjectTimeline } from "./ProjectTimeline";
 import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
@@ -202,6 +203,8 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
                       {variant === "portal" && sprint.status === "Completado" && (
                         <SprintApproval sprint={sprint} />
                       )}
+
+                      <SprintComments sprintId={sprint.id} />
                     </div>
                   ))}
                 </div>

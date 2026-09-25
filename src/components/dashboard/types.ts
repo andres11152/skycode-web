@@ -45,6 +45,19 @@ export interface LeadActivity {
 
 export type SprintApprovalStatus = "aprobado" | "rechazado";
 
+/**
+ * Comentario en un sprint — cliente o equipo interno, la misma tabla
+ * sirve a ambos (ver migración 0026). `author` es `null` si quien comentó
+ * borró su cuenta después (`ON DELETE SET NULL`), el comentario en sí no
+ * se borra.
+ */
+export interface SprintComment {
+  id: number;
+  body: string;
+  created_at: string;
+  author: { id: number; name: string; role: string } | null;
+}
+
 export interface Sprint {
   id: number;
   title: string;
