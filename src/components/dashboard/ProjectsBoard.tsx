@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { RefreshCw, Code2, Layers, ShieldCheck, Calendar, AlertCircle, ClipboardList } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { SprintApproval } from "./SprintApproval";
+import { ProjectTimeline } from "./ProjectTimeline";
 import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import type { Project } from "./types";
@@ -149,6 +150,15 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
                   />
                 </div>
               </div>
+
+              {variant === "portal" && project.sprints && project.sprints.length > 0 && (
+                <div className="space-y-3 pt-4 border-t border-foreground/10">
+                  <h3 className="text-xs font-mono font-bold text-foreground/60 uppercase tracking-wider">
+                    Línea de Tiempo
+                  </h3>
+                  <ProjectTimeline sprints={project.sprints} />
+                </div>
+              )}
 
               <div className="space-y-4 pt-4 border-t border-foreground/10">
                 <h3 className="text-xs font-mono font-bold text-foreground/60 uppercase tracking-wider">
