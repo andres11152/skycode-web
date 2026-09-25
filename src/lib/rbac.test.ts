@@ -39,6 +39,8 @@ const ALL_PERMISSIONS: Permission[] = [
   "content:read",
   "content:write",
   "data_privacy:manage",
+  "portfolio:read",
+  "portfolio:write",
 ];
 
 // Matriz esperada duplicada a propósito acá: si alguien cambia
@@ -172,6 +174,8 @@ describe("rbac", () => {
         "seo:read",
         "content:read",
         "content:write",
+        "portfolio:read",
+        "portfolio:write",
       ];
       for (const permission of forbidden) {
         expect(hasPermission("traffiker", permission)).toBe(false);
