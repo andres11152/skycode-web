@@ -224,6 +224,15 @@ export function CodeMockup({ locale }: { locale: Locale }) {
             })}
           </code>
         </pre>
+
+        {/* Live production health bar */}
+        <div className="flex items-center justify-between border-t border-background/10 bg-background/[0.06] px-3.5 py-2 text-[10px] sm:text-[11px] font-mono text-background/70">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Health Check: 100% OK</span>
+          </div>
+          <span className="text-accent font-semibold">Production · 38ms avg</span>
+        </div>
       </div>
     </div>
   );

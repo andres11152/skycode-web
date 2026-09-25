@@ -40,12 +40,25 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
 
           {/*
            * H1 — LCP element principal.
-           * Sin animaciones que inicien en opacity: 0 ni delays.
-           * Se pinta instantáneamente en el primer frame (FCP = LCP).
+           * Tipografía de alto contraste: texto principal en foreground nítido,
+           * propuesta de valor destacada en degradado de acento.
            */}
-          <h1 className="text-3xl leading-[1.1] font-bold tracking-tight text-balance text-accent sm:text-5xl lg:text-6xl">
-            {heroData.title}
-          </h1>
+          {(() => {
+            const titleParts = heroData.title.split(/(?<=[.!?])\s+/);
+            const primaryTitle = titleParts[0];
+            const secondaryTitle = titleParts.slice(1).join(" ");
+
+            return (
+              <h1 className="text-3xl leading-[1.15] font-bold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
+                <span>{primaryTitle}</span>{" "}
+                {secondaryTitle && (
+                  <span className="bg-gradient-to-r from-accent via-accent to-accent-strong bg-clip-text text-transparent">
+                    {secondaryTitle}
+                  </span>
+                )}
+              </h1>
+            );
+          })()}
 
           <p className="max-w-xl text-lg font-medium text-foreground/80 sm:text-xl">
             {heroData.subtitle}
@@ -81,6 +94,35 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
                 {heroData.ctaSecondary.label}
               </Button>
             </div>
+          </div>
+
+          {/* Barra de garantías inmediatas */}
+          <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 text-xs font-medium text-foreground/75">
+            {(locale === "en"
+              ? [
+                  "100% proprietary code",
+                  "90-day stability warranty",
+                  "Direct engineer communication",
+                ]
+              : locale === "fr"
+                ? [
+                    "Code 100 % propriétaire",
+                    "90 jours de garantie",
+                    "Contact direct ingénieurs",
+                  ]
+                : [
+                    "Código 100% de tu propiedad",
+                    "90 días de garantía técnica",
+                    "Trato directo con ingenieros",
+                  ]
+            ).map((point) => (
+              <div key={point} className="flex items-center gap-1.5">
+                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent font-bold text-[10px]">
+                  ✓
+                </span>
+                <span>{point}</span>
+              </div>
+            ))}
           </div>
         </div>
 
