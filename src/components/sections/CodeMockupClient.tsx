@@ -170,14 +170,13 @@ export function CodeMockup({ locale }: { locale: Locale }) {
   const status = reduced || typingDone ? "success" : "loading";
 
   return (
-    // Float animation: CSS @keyframes (globals.css) — GPU compositor, sin JS.
-    <div className={`w-full max-w-md select-none ${!reduced ? "animate-float" : ""}`}>
+    // Sin flotación ni láser de escaneo: el Hero ya anima la grilla de fondo
+    // (GridPattern) y el tipeo del propio código — sumarle un bounce vertical
+    // infinito y una línea de láser en loop era demasiado movimiento
+    // compitiendo por atención en el primer elemento que ve cualquier
+    // visitante (auditoría visual, "restricción en movimiento").
+    <div className="w-full max-w-md select-none">
       <div className="group relative w-full overflow-hidden rounded-xl bg-foreground border border-background/10 shadow-2xl shadow-black/40 transition-all duration-300 hover:shadow-accent/5 hover:border-accent/20">
-        {/* Línea de escaneo láser — GPU compositor via transform */}
-        {!reduced && (
-          <div className="animate-laser absolute inset-x-0 z-20 h-[1.5px] bg-gradient-to-r from-transparent via-accent/80 to-transparent blur-[1px] pointer-events-none" />
-        )}
-
         {/* Cabecera del archivo */}
         <div className="flex items-center justify-between border-b border-background/10 px-3 py-2 sm:px-4 sm:py-2.5 bg-background/20 backdrop-blur-sm">
           <div className="flex items-center gap-2 sm:gap-3">

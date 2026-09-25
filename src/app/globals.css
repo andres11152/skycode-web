@@ -98,71 +98,6 @@ h6 {
   transform: scale(0.98);
 }
 
-/*
- * CodeMockup float — CSS puro, reemplaza motion.animate de Framer Motion.
- * Antes: animate={{ y: [0, -6, 0] }} con Framer Motion JS loop.
- * Ahora: @keyframes en el compositor de GPU, sin trabajo de JS por frame.
- */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-.animate-float {
-  animation: float 5s ease-in-out infinite;
-  will-change: transform;
-}
-
-/*
- * GradientShimmer — animación de texto con gradiente.
- *
- * NOTA: background-position NO es compositable por GPU, ni siquiera con @property.
- * Solo transform y opacity corren en el compositor. El shimmer queda en el
- * main thread pero SOLO se usa en elementos below-fold (H2, H3 de secciones),
- * NO en el H1 (LCP element) — por eso no afecta el score de performance.
- *
- * Para el H1 se usa color sólido text-accent que SÍ es LCP-friendly.
- */
-@keyframes gs-sweep {
-  from {
-    background-position: 200% center;
-  }
-  to {
-    background-position: -200% center;
-  }
-}
-
-.animate-gs-sweep {
-  background-size: 250% 100%;
-  animation: gs-sweep var(--gs-duration, 3.5s) var(--gs-easing, cubic-bezier(0.45, 0, 0.55, 1)) infinite;
-}
-
-@keyframes laser-sweep {
-  0% {
-    transform: translateY(-10px);
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(380px);
-    opacity: 0;
-  }
-}
-
-.animate-laser {
-  animation: laser-sweep 4.5s ease-in-out infinite;
-  will-change: transform;
-}
-
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -175,16 +110,6 @@ h6 {
 .animate-marquee {
   animation: marquee 25s linear infinite;
   will-change: transform;
-}
-
-@keyframes border-beam {
-  100% {
-    offset-distance: 100%;
-  }
-}
-
-.animate-border-beam {
-  animation: border-beam var(--duration, 12s) infinite linear;
 }
 
 @keyframes shiny-text {
@@ -250,9 +175,6 @@ h6 {
 @media (prefers-reduced-motion: reduce) {
   .animate-hero-fade-up,
   .animate-hero-scale-in,
-  .animate-gs-sweep,
-  .animate-laser,
-  .animate-float,
   .animate-marquee {
     animation: none !important;
   }

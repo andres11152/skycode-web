@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, CheckCircle, Clock, EnvelopeSimple, Lightning, Spinner, Tag, WarningCircle } from "@phosphor-icons/react";
 import NumberFlow from "@number-flow/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
-import { BorderBeam } from "@/components/ui/BorderBeam";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProjectEstimatorContent, getDefaultCurrency } from "@/content/projectEstimator";
@@ -327,8 +326,11 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
 
           {/* Estimation Summary Box */}
           <div className="lg:sticky lg:top-28 h-fit">
+            {/* Sin BorderBeam (ver Highlights.tsx): un borde en loop
+                infinito alrededor de la tarjeta de precio compite con el
+                número que cambia en vivo (NumberFlow) — demasiado
+                movimiento en el mismo punto. */}
             <SpotlightCard className="relative overflow-hidden rounded-xl border border-foreground/15 bg-foreground/95 p-6 text-background shadow-2xl">
-              <BorderBeam size={240} duration={10} borderWidth={1.5} colorFrom="#0089cd" colorTo="#006998" />
               <div className="flex items-center justify-between border-b border-background/10 pb-4 mb-4">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-background/60">
                   {content.summary.title}

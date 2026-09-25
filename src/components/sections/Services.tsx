@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { m as motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
-import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { Button } from "@/components/ui/Button";
 import {
@@ -51,9 +50,13 @@ function buildIconVariantsMap(reduced: boolean): Record<string, Variants> {
       initial: { scale: 1, rotate: 0 },
       hover: { scale: 1.15, rotate: 45, transition: { type: "spring", stiffness: 300, damping: 15 } },
     },
+    // Antes con `repeat: Infinity`: mientras el mouse quedaba quieto sobre
+    // la tarjeta, el ícono seguía rebotando/pulsando sin parar — ruido, no
+    // un momento (auditoría visual, "restricción en movimiento"). Ahora es
+    // una sola pasada, igual que el resto de íconos de esta lista.
     "frontend-alto-rendimiento": {
       initial: { y: 0, scale: 1 },
-      hover: { y: [-2, 2, -2, 0], scale: 1.1, transition: { duration: 0.6, ease: "easeInOut", repeat: Infinity } },
+      hover: { y: [-2, 2, -2, 0], scale: 1.1, transition: { duration: 0.5, ease: "easeInOut" } },
     },
     "ecommerce-tienda-online": {
       initial: { scale: 1, y: 0 },
@@ -61,7 +64,7 @@ function buildIconVariantsMap(reduced: boolean): Record<string, Variants> {
     },
     "seguridad-cumplimiento": {
       initial: { scale: 1, opacity: 0.8 },
-      hover: { scale: [1, 1.2, 1], opacity: 1, transition: { duration: 0.8, repeat: Infinity, ease: "easeInOut" } },
+      hover: { scale: [1, 1.2, 1], opacity: 1, transition: { duration: 0.5, ease: "easeInOut" } },
     },
     "arquitectura-documentacion": {
       initial: { scale: 1 },
@@ -259,9 +262,10 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
               {servicesSection.viewAll}
             </Button>
 
-            {/* Botones de navegación del carrusel */}
+            {/* Botones de navegación del carrusel — sin Magnetic: un tirón
+                magnético en un botón chico de flecha secundaria es ruido,
+                no un momento (auditoría visual, "restricción en movimiento"). */}
             <div className="flex gap-2">
-            <Magnetic strength={0.3} range={50}>
               <button
                 onClick={() => scroll("left")}
                 disabled={!canScrollLeft}
@@ -270,8 +274,6 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
               >
                 <ArrowLeft size={18} />
               </button>
-            </Magnetic>
-            <Magnetic strength={0.3} range={50}>
               <button
                 onClick={() => scroll("right")}
                 disabled={!canScrollRight}
@@ -280,7 +282,6 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
               >
                 <ArrowRight size={18} />
               </button>
-            </Magnetic>
             </div>
           </div>
         </div>
@@ -307,11 +308,22 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
             {services.map((service) => {
               const iconVariants = iconVariantsMap[service.slug] || { hover: { scale: 1.1 } };
               return (
+                // Sin `h-full` acá (medido real: las 9 tarjetas rendían
+                // entre 501px y 734px de alto, con el borde inferior
+                // dentado — bug real, visto en auditoría visual):
+                // `height: 100%` contra un contenedor de altura `auto`
+                // (el scroll horizontal no fija una altura propia) resuelve
+                // a `auto`, así que cada tarjeta terminaba con la altura de
+                // su propio contenido en vez de la del elemento más alto de
+                // la fila. `flex` en este wrapper (sin alto explícito) deja
+                // que el `align-items: stretch` por defecto del contenedor
+                // padre —y de este mismo, con el `<Link>` como su único
+                // hijo— iguale la altura de las 9 de verdad.
                 <motion.div
                   key={service.slug}
                   initial="initial"
                   whileHover="hover"
-                  className="w-[320px] sm:w-[360px] shrink-0 snap-start h-full"
+                  className="flex w-[320px] sm:w-[360px] shrink-0 snap-start"
                 >
                   <Link
                       href={`${servicesPrefix}/servicios/${service.slug}`}

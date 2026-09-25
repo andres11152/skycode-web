@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { m as motion, useReducedMotion } from "framer-motion";
 import { getHighlightsContent } from "@/content/highlights";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
-import { BorderBeam } from "@/components/ui/BorderBeam";
-import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, type Locale } from "@/lib/i18n";
@@ -133,8 +131,11 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
         >
           <motion.div variants={fadeUp(reduced)}>
             <SpotlightCard className="h-full">
+              {/* Sin BorderBeam: un borde recorriendo la tarjeta en loop
+                  infinito compite por atención con todo lo demás que ya se
+                  mueve en el Hero/esta sección — auditoría visual, "restricción
+                  en movimiento" (CLAUDE.md). */}
               <div className="relative overflow-hidden h-full rounded-xl border border-foreground/10 bg-background p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
-                <BorderBeam size={260} duration={12} borderWidth={1.5} colorFrom="#0089cd" colorTo="#006998" />
                 <VideoShowcase videoAria={highlightsData.videoAria} />
               </div>
             </SpotlightCard>
@@ -157,11 +158,12 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
                     const isHovered = hoveredTech === name;
                     return (
                       // <li> debe ser hijo directo de <ul> para que los
-                      // lectores de pantalla anuncien la lista correctamente
-                      // (bug real de Lighthouse: `<Magnetic>` como hijo
-                      // directo del `<ul>` renderiza un `<div>` envolvente,
-                      // rompiendo esa relación) — `Magnetic` ahora envuelve
-                      // solo el ícono/tooltip, no la caja completa del `<li>`.
+                      // lectores de pantalla anuncien la lista correctamente.
+                      // Sin Magnetic: el ícono ya sube (`-translate-y-1` en
+                      // el `<li>`) y escala/rota (`group-hover:scale-110
+                      // group-hover:rotate-3`) — sumarle además un tirón
+                      // magnético que sigue el cursor es una tercera capa de
+                      // movimiento sobre una caja de 56px (auditoría visual).
                       <li
                         key={name}
                         tabIndex={0}
@@ -171,12 +173,10 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
                         onBlur={() => setHoveredTech(null)}
                         className="group relative flex h-14 w-14 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/40 hover:bg-accent/[0.06] hover:shadow-lg hover:shadow-accent/10 focus:outline-none focus:ring-2 focus:ring-accent hover:z-30 focus-visible:z-30"
                       >
-                        <Magnetic strength={0.25} range={40}>
-                          <Icon
-                            className="h-7 w-7 text-foreground/75 transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-accent group-hover:rotate-3"
-                            aria-label={name}
-                          />
-                        </Magnetic>
+                        <Icon
+                          className="h-7 w-7 text-foreground/75 transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-accent group-hover:rotate-3"
+                          aria-label={name}
+                        />
 
                         {/* Tooltip Pill: solo se renderiza y muestra cuando este elemento específico es el hoveredTech */}
                         {isHovered && (

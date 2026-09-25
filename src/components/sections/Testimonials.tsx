@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Pause, Play, Quotes } from "@phosphor-icons/react";
-import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getTestimonialsContent } from "@/content/testimonials";
 import { getUiContent } from "@/content/ui";
@@ -139,29 +138,26 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
 
           {testimonials.length > 1 && (
             <>
+              {/* Flechas del carrusel — sin Magnetic (ver Services.tsx). */}
               <div className="absolute left-0 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 sm:block">
-                <Magnetic strength={0.3} range={50}>
-                  <button
-                    type="button"
-                    onClick={goPrev}
-                    aria-label={uiData.testimonialsScrollPrev}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-background/15 bg-foreground text-background transition-colors hover:bg-background/10 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
-                  >
-                    <ArrowLeft size={18} />
-                  </button>
-                </Magnetic>
+                <button
+                  type="button"
+                  onClick={goPrev}
+                  aria-label={uiData.testimonialsScrollPrev}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-background/15 bg-foreground text-background transition-colors hover:bg-background/10 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                >
+                  <ArrowLeft size={18} />
+                </button>
               </div>
               <div className="absolute right-0 top-1/2 z-30 hidden translate-x-1/2 -translate-y-1/2 sm:block">
-                <Magnetic strength={0.3} range={50}>
-                  <button
-                    type="button"
-                    onClick={goNext}
-                    aria-label={uiData.testimonialsScrollNext}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-background/15 bg-foreground text-background transition-colors hover:bg-background/10 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
-                  >
-                    <ArrowRight size={18} />
-                  </button>
-                </Magnetic>
+                <button
+                  type="button"
+                  onClick={goNext}
+                  aria-label={uiData.testimonialsScrollNext}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-background/15 bg-foreground text-background transition-colors hover:bg-background/10 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                >
+                  <ArrowRight size={18} />
+                </button>
               </div>
             </>
           )}
