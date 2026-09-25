@@ -166,16 +166,32 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
 
   useEffect(() => {
     const ref = scrollRef.current;
-    if (ref) {
-      ref.addEventListener("scroll", checkScroll, { passive: true });
-      const rafId = requestAnimationFrame(() => {
+    if (!ref) return;
+
+    // El evento nativo `scroll` dispara a alta frecuencia durante un arrastre
+    // táctil (varias veces por frame) — sin este gate, cada uno ejecutaba 3
+    // `setState` de inmediato y competía por el hilo principal justo durante
+    // la interacción, inflando el INP en móvil (medido real vía CrUX, no
+    // reproducible en Lighthouse de laboratorio). El flag `ticking` colapsa
+    // cualquier ráfaga de eventos a una sola actualización por frame.
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
         checkScroll();
+        ticking = false;
       });
-      return () => {
-        cancelAnimationFrame(rafId);
-        ref.removeEventListener("scroll", checkScroll);
-      };
-    }
+    };
+
+    ref.addEventListener("scroll", onScroll, { passive: true });
+    const rafId = requestAnimationFrame(() => {
+      checkScroll();
+    });
+    return () => {
+      cancelAnimationFrame(rafId);
+      ref.removeEventListener("scroll", onScroll);
+    };
   }, [checkScroll]);
 
   const scroll = (direction: "left" | "right") => {

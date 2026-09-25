@@ -33,6 +33,18 @@ export interface Article {
   updatedAt: string;
 }
 
+/**
+ * `pg` deserializa columnas TIMESTAMPTZ como `Date`, no como string — usar
+ * `String(row.x)` sobre esos campos invoca `Date.prototype.toString()`
+ * ("Wed Sep 23 2026 00:00:00 GMT+0000 (...)"), formato inválido para
+ * sitemap.xml (W3C Datetime) y para `dateModified`/`article:modified_time`.
+ * Esta función siempre produce ISO 8601, sin importar si `pg` ya lo dio
+ * como Date o (en tests/mocks) como string.
+ */
+function toIsoString(value: unknown): string {
+  return value instanceof Date ? value.toISOString() : new Date(String(value)).toISOString();
+}
+
 function shapeArticleRow(row: Record<string, unknown>): Article {
   return {
     id: Number(row.id),
@@ -46,13 +58,13 @@ function shapeArticleRow(row: Record<string, unknown>): Article {
     tags: Array.isArray(row.tags) ? (row.tags as string[]) : [],
     content: (row.content ?? []) as BlogBlock[],
     targetKeyword: row.target_keyword ? String(row.target_keyword) : null,
-    publishedAt: row.published_at ? String(row.published_at) : null,
+    publishedAt: row.published_at ? toIsoString(row.published_at) : null,
     createdBy: row.created_by ? Number(row.created_by) : null,
     approvedBy: row.approved_by ? Number(row.approved_by) : null,
-    approvedAt: row.approved_at ? String(row.approved_at) : null,
+    approvedAt: row.approved_at ? toIsoString(row.approved_at) : null,
     rejectionReason: row.rejection_reason ? String(row.rejection_reason) : null,
-    createdAt: String(row.created_at),
-    updatedAt: String(row.updated_at),
+    createdAt: toIsoString(row.created_at),
+    updatedAt: toIsoString(row.updated_at),
   };
 }
 
