@@ -203,6 +203,7 @@ export async function getClientDetail(id: number, usdToCopRate: number): Promise
       project_id: Number(i.project_id),
       project_title: String(i.project_title ?? ""),
       client_name: String(row.name),
+      client_phone: row.phone ?? null,
       description: String(i.description ?? ""),
       amount,
       currency: i.currency as Currency,

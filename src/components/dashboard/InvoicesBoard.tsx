@@ -3,7 +3,7 @@
 import { useId, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
-import { Receipt, Plus, RefreshCw, AlertTriangle, Wallet, CheckCircle2, Clock, Download } from "lucide-react";
+import { Receipt, Plus, RefreshCw, AlertTriangle, Wallet, CheckCircle2, Clock, Download, MessageCircle } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
 import { CurrencySelect } from "./CurrencySelect";
@@ -13,6 +13,7 @@ import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import { formatMoney } from "@/lib/utils";
 import { convertCurrency, type Currency } from "@/lib/currency";
+import { buildInvoiceWhatsappUrl } from "@/lib/invoiceWhatsapp";
 import type { Invoice, InvoiceStatus, Project } from "./types";
 
 const STATUS_LABELS: Record<InvoiceStatus, string> = {
@@ -185,6 +186,17 @@ export function InvoicesBoard({
                         >
                           <Download size={14} />
                         </a>
+                        {inv.status === "overdue" && buildInvoiceWhatsappUrl(inv) && (
+                          <a
+                            href={buildInvoiceWhatsappUrl(inv)!}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Enviar recordatorio de pago por WhatsApp a ${inv.client_name}`}
+                            className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-green-500/20 border border-green-500/30 text-green-700 hover:bg-green-500/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          >
+                            <MessageCircle size={14} />
+                          </a>
+                        )}
                         {canWrite && inv.balance > 0 && (
                           <button
                             onClick={() => setPaymentInvoice(inv)}

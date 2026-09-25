@@ -319,6 +319,7 @@ export interface Invoice {
   project_id: number;
   project_title: string;
   client_name: string;
+  client_phone: string | null;
   description: string;
   amount: number;
   currency: Currency;

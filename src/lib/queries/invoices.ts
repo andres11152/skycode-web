@@ -35,7 +35,7 @@ async function queryInvoices(clientId?: number | string): Promise<Invoice[]> {
 
   const res = await query(
     `
-    SELECT i.id, i.invoice_number, i.project_id, p.title AS project_title, c.name AS client_name,
+    SELECT i.id, i.invoice_number, i.project_id, p.title AS project_title, c.name AS client_name, c.phone AS client_phone,
            i.description, i.amount, i.currency, i.due_date, i.created_at,
            COALESCE(pay.paid_amount, 0) AS paid_amount
     FROM invoices i
@@ -79,6 +79,7 @@ async function queryInvoices(clientId?: number | string): Promise<Invoice[]> {
       project_id: row.project_id,
       project_title: row.project_title,
       client_name: row.client_name,
+      client_phone: row.client_phone ?? null,
       description: row.description,
       amount,
       currency: row.currency,
