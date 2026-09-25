@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Script from "next/script";
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import { ChatCircle, CheckCircle, ShieldCheck } from "@phosphor-icons/react";
 import { getContactContent } from "@/content/contact";
 import { getUiContent } from "@/content/ui";

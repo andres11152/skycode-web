@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import type { Icon as PhosphorIcon } from "@phosphor-icons/react";
 import { GridPattern } from "@/components/ui/GridPattern";
 import { cn } from "@/lib/utils";

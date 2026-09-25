@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
+import { m as motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface SpotlightCardProps {

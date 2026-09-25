@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { m as motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Plus } from "@phosphor-icons/react";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getFaqContent } from "@/content/faq";

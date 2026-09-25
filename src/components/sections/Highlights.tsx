@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import { getHighlightsContent } from "@/content/highlights";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";

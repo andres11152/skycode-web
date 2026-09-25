@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Pause, Play, Quotes } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { TiltCard } from "@/components/ui/TiltCard";

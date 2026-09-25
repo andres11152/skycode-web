@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import { useFocusTrap } from "@/lib/useFocusTrap";
 import { scaleUp } from "@/lib/animations";

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import type { BlogPost } from "@/content/blogShared";
 import { getBlogMeta, readingTime } from "@/content/blogShared";
 import { blogIndexPath } from "@/lib/blogPaths";

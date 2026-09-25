@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import { ArrowSquareOut, ArrowUpRight } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Magnetic } from "@/components/ui/Magnetic";

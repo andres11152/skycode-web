@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { m as motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { TiltCard } from "@/components/ui/TiltCard";

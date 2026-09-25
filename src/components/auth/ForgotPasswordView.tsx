@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { ArrowRight, CheckCircle, Envelope } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 

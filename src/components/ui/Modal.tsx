@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m as motion } from "framer-motion";
 import { X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { useFocusTrap } from "@/lib/useFocusTrap";

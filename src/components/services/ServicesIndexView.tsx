@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import {
   CodeConsoleWidget,

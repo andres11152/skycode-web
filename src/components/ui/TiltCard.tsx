@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { motion, useMotionTemplate, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
+import { m as motion, useMotionTemplate, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { usePointerFine } from "@/lib/usePointerFine";
 

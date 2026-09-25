@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowSquareOut, CheckCircle, CornersOut } from "@phosphor-icons/react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import { projects, getProjectBySlug } from "@/content/projects";
 import { Button } from "@/components/ui/Button";
 import { ProjectCover } from "@/components/ui/ProjectCover";

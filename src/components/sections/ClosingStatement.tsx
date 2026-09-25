@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
+import { m as motion, useScroll, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
 import { ArrowRight } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";

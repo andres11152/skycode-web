@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { fadeUp, staggerContainer } from "@/lib/animations";

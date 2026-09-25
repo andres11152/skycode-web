@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { ArrowsClockwise, DeviceMobile, Lightning, PaperPlaneTilt, Play, ShieldCheck, ShoppingCart, Sparkle, Terminal } from "@phosphor-icons/react";
 import { getBentoContent } from "@/content/bento";
 import { defaultLocale, type Locale } from "@/lib/i18n";

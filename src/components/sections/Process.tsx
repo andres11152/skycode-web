@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import { getProcessContent } from "@/content/process";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";

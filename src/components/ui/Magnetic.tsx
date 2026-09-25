@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useSpring, useReducedMotion } from "framer-motion";
+import { m as motion, useSpring, useReducedMotion } from "framer-motion";
 import { usePointerFine } from "@/lib/usePointerFine";
 
 interface MagneticProps {

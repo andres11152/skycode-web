@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { m as motion, useReducedMotion } from "framer-motion";
 import { getBlogMeta, type BlogPost } from "@/content/blogShared";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, type Locale } from "@/lib/i18n";

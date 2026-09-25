@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
+import { LazyMotionProvider } from "@/components/LazyMotionProvider";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { services } from "@/content/services";
 import {
@@ -236,9 +237,11 @@ export default function RootLayout({
         <SiteNavigationJsonLd />
       </head>
       <body className="min-h-full flex flex-col">
-        <LocaleProvider>
-          <ConditionalLayout>{children}</ConditionalLayout>
-        </LocaleProvider>
+        <LazyMotionProvider>
+          <LocaleProvider>
+            <ConditionalLayout>{children}</ConditionalLayout>
+          </LocaleProvider>
+        </LazyMotionProvider>
       </body>
     </html>
   );

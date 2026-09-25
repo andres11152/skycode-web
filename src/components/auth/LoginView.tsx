@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, CheckCircle, Envelope, Eye, EyeSlash, Lock, ShieldCheck } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
