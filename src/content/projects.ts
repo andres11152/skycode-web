@@ -1,4 +1,4 @@
-import { Buildings, Car, FlowArrow, Globe, Graph, House, Rocket, ShieldCheck, ShoppingCart, Truck } from "@phosphor-icons/react/ssr";
+import { Buildings, Car, FlowArrow, Globe, Graph, Rocket, ShieldCheck, ShoppingCart, Truck } from "@phosphor-icons/react/ssr";
 import type { Icon } from "@phosphor-icons/react";
 import projectsDataEs from "./locales/es/projects.json";
 import projectsDataEn from "./locales/en/projects.json";
@@ -15,7 +15,6 @@ const coverIconMap: Record<string, Icon> = {
   Truck,
   Car,
   ShieldCheck,
-  House,
 };
 
 const projectsByLocale = { es: projectsDataEs, en: projectsDataEn, fr: projectsDataFr };
