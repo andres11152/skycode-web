@@ -21,12 +21,13 @@ import {
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Modal } from "@/components/ui/Modal";
 import { EmptyState } from "./EmptyState";
+import { ClientActivityLog } from "./ClientActivityLog";
 import { Badge, type BadgeTone } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import { formatMoney } from "@/lib/utils";
 import { logError } from "@/lib/logger";
-import type { ClientDetail, InvoiceStatus, ProposalStatus } from "./types";
+import type { ClientActivity, ClientDetail, InvoiceStatus, ProposalStatus } from "./types";
 
 const PROPOSAL_LABELS: Record<ProposalStatus, string> = {
   sent: "Enviada",
@@ -66,10 +67,12 @@ export function ClientDetailView({
   client,
   canWrite,
   canManagePrivacy,
+  initialActivities,
 }: {
   client: ClientDetail;
   canWrite: boolean;
   canManagePrivacy: boolean;
+  initialActivities: ClientActivity[];
 }) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -406,6 +409,8 @@ export function ClientDetailView({
           </div>
         )}
       </section>
+
+      <ClientActivityLog clientId={client.id} initialActivities={initialActivities} canWrite={canWrite} />
 
       <AnonymizeClientModal
         open={anonymizeOpen}

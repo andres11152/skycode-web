@@ -454,6 +454,15 @@ export interface Client {
  * convertidos a COP con la tasa vigente — sumar `invoices[].amount`
  * directo mezclaría facturas en COP y USD sin convertir.
  */
+/** Nota de seguimiento comercial con fecha y autor — historial aparte de `clients.notes` (ver migración 0032). */
+export interface ClientActivity {
+  id: number;
+  client_id: number;
+  actor_name: string;
+  body: string;
+  created_at: string;
+}
+
 export interface ClientDetail {
   id: number;
   name: string;
