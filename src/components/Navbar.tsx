@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { List, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,13 @@ export function Navbar() {
     { label: navData.faq, href: `${prefix}/#faq`, esOnly: false },
   ];
   const contactHref = `${prefix}/#contacto`;
+  // Estando ya en esta home, sus anclas (`/#servicios`, el logo, el CTA)
+  // hacían prefetch RSC de la misma página que se está viendo — descargas
+  // inútiles compitiendo por red durante la carga. Desde otras rutas
+  // (/blog, /equipo) el prefetch sí acelera la navegación y se mantiene.
+  const pathname = usePathname();
+  const homePrefetch = pathname === homePath ? false : undefined;
+  const prefetchFor = (href: string) => (href.startsWith(`${prefix}/#`) ? homePrefetch : undefined);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32);
@@ -54,6 +62,7 @@ export function Navbar() {
         <div>
           <Link
             href={homePath}
+            prefetch={homePrefetch}
             className="group flex items-center gap-2 rounded-full py-1.5 pr-1.5 text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label={navData.logoAria}
             onClick={() => setIsOpen(false)}
@@ -85,6 +94,7 @@ export function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
+                prefetch={prefetchFor(link.href)}
                 className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-foreground/80 outline-none transition-colors duration-200 ease-out hover:bg-foreground/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 {link.label}
@@ -102,6 +112,7 @@ export function Navbar() {
           <Magnetic strength={0.25} range={70} className="hidden sm:inline-flex">
             <Button
               href={contactHref}
+              prefetch={homePrefetch}
               variant="accent"
               size="sm"
               aria-label={navData.contactoAria}
@@ -141,6 +152,7 @@ export function Navbar() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
+                    prefetch={prefetchFor(link.href)}
                     onClick={() => setIsOpen(false)}
                     className="flex items-center gap-1.5 rounded-xl px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
                   >
@@ -156,6 +168,7 @@ export function Navbar() {
             </ul>
             <Button
               href={contactHref}
+              prefetch={homePrefetch}
               variant="accent"
               size="md"
               onClick={() => setIsOpen(false)}

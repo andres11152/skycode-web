@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Phone } from "@phosphor-icons/react";
@@ -99,7 +100,8 @@ export function Footer() {
   const prefix = homePath === "/" ? "" : homePath;
   // Ya vienen del más reciente al más antiguo (GET /api/articles/recent),
   // no hace falta reordenar acá.
-  const recentPosts = useRecentArticles(locale, 4);
+  const footerRef = useRef<HTMLElement>(null);
+  const recentPosts = useRecentArticles(locale, 4, footerRef);
 
   // Portfolio sigue sin traducir (a diferencia del blog) — es la única
   // ruta que queda esOnly acá.
@@ -114,7 +116,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="border-t border-foreground/10">
+    <footer ref={footerRef} className="border-t border-foreground/10">
       <div className="grid lg:grid-cols-[1fr_380px]">
         <div className="px-6 py-16 sm:px-10">
           <div className="mx-auto grid max-w-5xl gap-12 sm:grid-cols-[auto_1fr_1fr_1fr] sm:gap-8">

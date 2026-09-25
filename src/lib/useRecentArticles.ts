@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type RefObject } from "react";
 import type { Locale } from "@/lib/i18n";
 
 export interface RecentArticle {
@@ -20,23 +20,42 @@ export interface RecentArticle {
  * (GET /api/articles/recent) — cachearla localmente arriesga mostrar
  * artículos desactualizados sin ganancia real de rendimiento.
  */
-export function useRecentArticles(locale: Locale, limit = 4): RecentArticle[] {
+export function useRecentArticles(
+  locale: Locale,
+  limit: number,
+  target: RefObject<HTMLElement | null>,
+): RecentArticle[] {
   const [posts, setPosts] = useState<RecentArticle[]>([]);
 
   useEffect(() => {
+    const el = target.current;
+    if (!el) return;
     let cancelled = false;
-    fetch(`/api/articles/recent?locale=${locale}&limit=${limit}`)
-      .then((res) => (res.ok ? (res.json() as Promise<{ posts: RecentArticle[] }>) : null))
-      .then((data) => {
-        if (cancelled || !data) return;
-        setPosts(data.posts);
-      })
-      .catch(() => {});
+
+    // Solo cuando el Footer se acerca al viewport: antes se pedía al
+    // hidratar cada página, compitiendo por red con la carga inicial por
+    // una lista que está al fondo de la página.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        fetch(`/api/articles/recent?locale=${locale}&limit=${limit}`)
+          .then((res) => (res.ok ? (res.json() as Promise<{ posts: RecentArticle[] }>) : null))
+          .then((data) => {
+            if (cancelled || !data) return;
+            setPosts(data.posts);
+          })
+          .catch(() => {});
+      },
+      { rootMargin: "800px 0px" },
+    );
+    observer.observe(el);
 
     return () => {
       cancelled = true;
+      observer.disconnect();
     };
-  }, [locale, limit]);
+  }, [locale, limit, target]);
 
   return posts;
 }

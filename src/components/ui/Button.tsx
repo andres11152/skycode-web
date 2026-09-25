@@ -18,6 +18,7 @@ type ButtonAsButton = ButtonBaseProps &
 type ButtonAsLink = ButtonBaseProps &
   Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
     href: string;
+    prefetch?: boolean;
   };
 
 export type ButtonProps = ButtonAsButton | ButtonAsLink;
@@ -99,9 +100,19 @@ export function Button({
   );
 
   if ("href" in props && props.href) {
-    const { href, ...anchorProps } = props;
+    const { href, prefetch, ...anchorProps } = props;
+    // Un ancla de la misma página (`#cotizador`) no necesita el router: con
+    // <Link>, Next hacía prefetch de la página actual por cada una apenas
+    // entraba en pantalla (3 descargas RSC de la home durante la carga).
+    if (href.startsWith("#")) {
+      return (
+        <a href={href} className={classes} {...anchorProps}>
+          {content}
+        </a>
+      );
+    }
     return (
-      <Link href={href} className={classes} {...anchorProps}>
+      <Link href={href} prefetch={prefetch} className={classes} {...anchorProps}>
         {content}
       </Link>
     );

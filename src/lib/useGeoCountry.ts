@@ -18,6 +18,25 @@ function readGeoCookie(): string | null {
  * resultado se cachea en la misma cookie para no repetir la llamada en la
  * siguiente visita.
  */
+// Una sola petición por carga de página: el cotizador y el campo de
+// teléfono del formulario usan este hook a la vez, y cada uno hacía su
+// propio fetch a /api/geo al montar (dos peticiones idénticas en la carga).
+let geoRequest: Promise<string | null> | null = null;
+
+function fetchGeoCountry(): Promise<string | null> {
+  geoRequest ??= fetch("/api/geo")
+    .then((res) => (res.ok ? (res.json() as Promise<{ country: string | null }>) : null))
+    .then((data) => {
+      const country = data?.country ?? null;
+      if (country) {
+        document.cookie = `${COOKIE_NAME}=${encodeURIComponent(country)}; Max-Age=${COOKIE_MAX_AGE}; Path=/; SameSite=Lax`;
+      }
+      return country;
+    })
+    .catch(() => null);
+  return geoRequest;
+}
+
 export function useGeoCountry(): string | null {
   const [country, setCountry] = useState<string | null>(null);
 
@@ -30,14 +49,9 @@ export function useGeoCountry(): string | null {
       }
 
       let cancelled = false;
-      fetch("/api/geo")
-        .then((res) => (res.ok ? (res.json() as Promise<{ country: string | null }>) : null))
-        .then((data) => {
-          if (cancelled || !data?.country) return;
-          setCountry(data.country);
-          document.cookie = `${COOKIE_NAME}=${encodeURIComponent(data.country)}; Max-Age=${COOKIE_MAX_AGE}; Path=/; SameSite=Lax`;
-        })
-        .catch(() => {});
+      fetchGeoCountry().then((result) => {
+        if (!cancelled && result) setCountry(result);
+      });
 
       return () => {
         cancelled = true;

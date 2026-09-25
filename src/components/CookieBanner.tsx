@@ -50,8 +50,13 @@ export function CookieBanner() {
           </span>
           <p className="text-sm text-foreground/80 leading-relaxed">
             {cookieData.message}{" "}
+            {/* Sin prefetch: el banner está en pantalla en toda primera
+                visita, así que prefetchear la política (2 descargas RSC) le
+                costaba red a cada visitante durante la carga para un link
+                que casi nadie abre. */}
             <Link
               href={cookieData.linkUrl}
+              prefetch={false}
               className="underline decoration-foreground/30 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground"
             >
               {cookieData.linkText}
