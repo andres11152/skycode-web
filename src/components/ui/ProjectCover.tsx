@@ -19,11 +19,13 @@ export function ProjectCover({
   imageSrc,
   className,
   iconClassName,
+  priority = false,
 }: {
   icon: PhosphorIcon;
   imageSrc?: string;
   className?: string;
   iconClassName?: string;
+  priority?: boolean;
 }) {
   const reduced = Boolean(useReducedMotion());
 
@@ -34,6 +36,7 @@ export function ProjectCover({
           src={imageSrc}
           alt="Vista previa del proyecto"
           fill
+          priority={priority}
           sizes="(max-width: 640px) 100vw, 50vw"
           className="object-cover object-top transition-transform duration-500 ease-out group-hover/cover:scale-105"
         />

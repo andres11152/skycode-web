@@ -51,13 +51,8 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
 
   return (
     <main id="main-content" className="px-6 pt-28 pb-24 sm:pt-36 sm:pb-32">
-      <motion.div
-        variants={staggerContainer(reduced)}
-        initial="hidden"
-        animate="visible"
-        className="mx-auto flex max-w-6xl flex-col gap-10"
-      >
-        <motion.nav variants={fadeUp(reduced)} aria-label={servicePageData.breadcrumbAria}>
+      <div className="mx-auto flex max-w-6xl flex-col gap-10">
+        <nav aria-label={servicePageData.breadcrumbAria}>
           <ol className="flex items-center gap-2 text-sm text-foreground/60">
             <li>
               <Link
@@ -70,11 +65,11 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
             <li aria-hidden="true">/</li>
             <li className="text-foreground font-medium">{service.title}</li>
           </ol>
-        </motion.nav>
+        </nav>
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_340px] lg:gap-16">
           <div className="flex min-w-0 flex-col gap-8">
-            <motion.header variants={fadeUp(reduced)} className="flex flex-col gap-4">
+            <header className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-gradient-to-br from-foreground/5 to-foreground/[0.01] text-accent shadow-[0_0_25px_rgba(0,137,205,0.12)]">
                   <service.coverIcon size={30} weight="duotone" aria-hidden="true" />
@@ -84,14 +79,11 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
               <h1 className="text-3xl font-bold tracking-tight text-balance text-foreground sm:text-4xl lg:text-5xl">
                 {service.title}
               </h1>
-            </motion.header>
+            </header>
 
-            <motion.p
-              variants={fadeUp(reduced)}
-              className="max-w-2xl text-lg leading-relaxed text-foreground/80"
-            >
+            <p className="max-w-2xl text-lg leading-relaxed text-foreground/80">
               {service.description}
-            </motion.p>
+            </p>
 
             {/* Interactive Demo & Environment Simulation Box */}
             <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6 bg-foreground/[0.02]">
@@ -180,7 +172,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
             {servicePageData.backToServices}
           </Link>
         </motion.div>
-      </motion.div>
+      </div>
     </main>
   );
 }

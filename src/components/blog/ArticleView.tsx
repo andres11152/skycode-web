@@ -24,13 +24,8 @@ export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; 
   return (
     <main id="main-content" className="px-6 pt-28 pb-24 sm:pt-36 sm:pb-32">
       <ScrollProgress />
-      <motion.article
-        variants={staggerContainer(reduced)}
-        initial="hidden"
-        animate="visible"
-        className="mx-auto flex max-w-6xl flex-col gap-10"
-      >
-        <motion.nav variants={fadeUp(reduced)} aria-label={meta.breadcrumbAria}>
+      <article className="mx-auto flex max-w-6xl flex-col gap-10">
+        <nav aria-label={meta.breadcrumbAria}>
           <ol className="flex items-center gap-2 text-sm text-foreground/60">
             <li>
               <Link
@@ -50,11 +45,11 @@ export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; 
               </Link>
             </li>
           </ol>
-        </motion.nav>
+        </nav>
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_280px] lg:gap-16">
           <div className="flex min-w-0 flex-col gap-8">
-            <motion.header variants={fadeUp(reduced)} className="flex flex-col gap-4">
+            <header className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center gap-2">
                 {post.tags.map((tag) => (
                   <span
@@ -77,7 +72,7 @@ export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; 
                   {readingTime(post)} {meta.readingTimeSuffix}
                 </span>
               </div>
-            </motion.header>
+            </header>
 
             <motion.div variants={fadeUp(reduced)} className="max-w-2xl">
               <ArticleBody blocks={post.content} />
@@ -126,7 +121,7 @@ export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; 
             </div>
           </motion.aside>
         </div>
-      </motion.article>
+      </article>
     </main>
   );
 }

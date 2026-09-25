@@ -28,11 +28,13 @@ const GOOGLE_ADS_CONNECT_SRC = [
   "https://www.google.com",
   "https://googleads.g.doubleclick.net",
   "https://www.googleadservices.com",
+  "https://ad.doubleclick.net",
 ];
 const GOOGLE_ADS_IMG_SRC = [
   "https://www.googletagmanager.com",
   "https://www.google.com",
   "https://googleads.g.doubleclick.net",
+  "https://ad.doubleclick.net",
 ];
 
 // Checkout de Bold (pagos en línea desde /portal, ver lib/bold.ts y
@@ -100,7 +102,7 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   images: {
-    unoptimized: true,
+    formats: ["image/avif", "image/webp"],
   },
   experimental: {
     // `@phosphor-icons/react` exporta 3.000+ iconos desde un solo índice —

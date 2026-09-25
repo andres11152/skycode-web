@@ -25,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: siteUrl,
+      url: `${siteUrl}/`,
       changeFrequency: "monthly",
       priority: 1,
       alternates: { languages: homeLanguages },
@@ -79,6 +79,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           .filter((loc) => postsByLocale[loc].some((p) => p.slug === post.slug))
           .map((loc) => [loc, `${siteUrl}${blogPostPath(loc, post.slug)}`])
       );
+      const defaultLoc = postsByLocale["es"].some((p) => p.slug === post.slug) ? "es" : locale;
+      languages["x-default"] = `${siteUrl}${blogPostPath(defaultLoc, post.slug)}`;
       return {
         url: `${siteUrl}${blogPostPath(locale, post.slug)}`,
         lastModified: post.updatedAt,

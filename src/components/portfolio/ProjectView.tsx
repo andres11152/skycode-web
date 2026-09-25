@@ -67,7 +67,7 @@ export function ProjectView({ slug }: { slug: string }) {
         animate="visible"
         className="mx-auto flex max-w-6xl flex-col gap-10"
       >
-        <motion.nav variants={fadeUp(reduced)} aria-label="Ruta de navegación">
+        <nav aria-label="Ruta de navegación">
           <ol className="flex items-center gap-2 text-sm text-foreground/60">
             <li>
               <Link
@@ -87,14 +87,15 @@ export function ProjectView({ slug }: { slug: string }) {
               </Link>
             </li>
           </ol>
-        </motion.nav>
+        </nav>
 
-        <motion.div variants={fadeUp(reduced)} className="group relative">
+        <div className="group relative">
           <ProjectCover
             icon={project.coverIcon}
             imageSrc={project.coverImage}
             className={`${COVER_ASPECT} w-full rounded-xl`}
             iconClassName="h-20 w-20 sm:h-24 sm:w-24"
+            priority={true}
           />
           <button
             type="button"
@@ -107,11 +108,11 @@ export function ProjectView({ slug }: { slug: string }) {
           >
             <CornersOut size={18} />
           </button>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_320px] lg:gap-16">
           <div className="flex min-w-0 flex-col gap-8">
-            <motion.header variants={fadeUp(reduced)} className="flex flex-col gap-4">
+            <header className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center gap-2">
                 {project.tags.map((tag) => (
                   <span
@@ -125,14 +126,11 @@ export function ProjectView({ slug }: { slug: string }) {
               <h1 className="text-4xl font-bold tracking-tight text-balance text-foreground sm:text-5xl">
                 {project.title}
               </h1>
-            </motion.header>
+            </header>
 
-            <motion.p
-              variants={fadeUp(reduced)}
-              className="max-w-2xl text-lg leading-relaxed text-foreground/80"
-            >
+            <p className="max-w-2xl text-lg leading-relaxed text-foreground/80">
               {project.description}
-            </motion.p>
+            </p>
 
             <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60">

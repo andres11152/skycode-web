@@ -34,13 +34,8 @@ export function TeamView({ locale = defaultLocale }: { locale?: Locale }) {
       <div className="mx-auto max-w-6xl">
 
         {/* Encabezado + Breadcrumb */}
-        <motion.div
-          variants={staggerContainer(reduced)}
-          initial="hidden"
-          animate="visible"
-          className="flex max-w-2xl flex-col items-start gap-4 text-left"
-        >
-          <motion.nav variants={fadeUp(reduced)} aria-label={servicePageData.breadcrumbAria}>
+        <div className="flex max-w-2xl flex-col items-start gap-4 text-left">
+          <nav aria-label={servicePageData.breadcrumbAria}>
             <ol className="flex items-center gap-2 text-sm text-foreground/60">
               <li>
                 <Link
@@ -53,18 +48,15 @@ export function TeamView({ locale = defaultLocale }: { locale?: Locale }) {
               <li aria-hidden="true">/</li>
               <li className="text-foreground">{teamData.title}</li>
             </ol>
-          </motion.nav>
+          </nav>
 
-          <motion.h1
-            variants={fadeUp(reduced)}
-            className="text-4xl font-bold tracking-tight text-balance text-foreground sm:text-5xl"
-          >
+          <h1 className="text-4xl font-bold tracking-tight text-balance text-foreground sm:text-5xl">
             {teamData.title}
-          </motion.h1>
-          <motion.p variants={fadeUp(reduced)} className="max-w-2xl text-lg text-foreground/80">
+          </h1>
+          <p className="max-w-2xl text-lg text-foreground/80">
             {teamData.description}
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
         {/* Grid de perfiles del equipo */}
         <motion.div
@@ -74,7 +66,7 @@ export function TeamView({ locale = defaultLocale }: { locale?: Locale }) {
           viewport={{ once: true, margin: "-80px" }}
           className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {teamData.members.map((member) => (
+          {teamData.members.map((member, index) => (
             <motion.div
               key={member.slug}
               id={member.slug}
@@ -96,7 +88,7 @@ export function TeamView({ locale = defaultLocale }: { locale?: Locale }) {
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
-                          priority={false}
+                          priority={index === 0}
                         />
                         {/* Gradiente sobre la foto — del fondo opaco hacia transparente */}
                         <div

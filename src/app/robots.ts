@@ -12,8 +12,22 @@ export default function robots(): MetadataRoute.Robots {
       // (evita que se indexen), pero eso no evita que un crawler gaste
       // presupuesto de rastreo entrando ahí. Las rutas de API no son HTML
       // indexable de todos modos — no tienen nada que hacer en un rastreo.
-      disallow: ["/dashboard", "/login", "/api"],
+      disallow: [
+        "/dashboard",
+        "/portal",
+        "/login",
+        "/api",
+        "/invitar",
+        "/olvide-password",
+        "/resetear-password",
+        "/gracias",
+        "/en/gracias",
+        "/fr/gracias",
+      ],
     },
-    sitemap: `${siteUrl}/sitemap.xml`,
+    sitemap: [
+      `${siteUrl}/sitemap.xml`,
+      `${siteUrl}/sitemap_index.xml`,
+    ],
   };
 }
