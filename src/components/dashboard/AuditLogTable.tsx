@@ -152,7 +152,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
                             {entry.entity_id ? `#${entry.entity_id}` : ""}
                           </td>
                           <td className="px-5 py-3.5 font-mono text-foreground/50">{entry.ip || "—"}</td>
-                          <td className="px-5 py-3.5 font-mono text-foreground/50 whitespace-nowrap">
+                          <td suppressHydrationWarning className="px-5 py-3.5 font-mono text-foreground/50 whitespace-nowrap">
                             {new Date(entry.created_at).toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" })}
                           </td>
                           <td className="px-5 py-3.5 text-right">

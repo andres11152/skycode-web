@@ -138,10 +138,10 @@ export function SessionsView({
                         {s.ip || "—"}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 font-mono text-foreground/60 whitespace-nowrap">
+                    <td suppressHydrationWarning className="px-5 py-3.5 font-mono text-foreground/60 whitespace-nowrap">
                       {new Date(s.created_at).toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" })}
                     </td>
-                    <td className="px-5 py-3.5 font-mono text-foreground/60 whitespace-nowrap">
+                    <td suppressHydrationWarning className="px-5 py-3.5 font-mono text-foreground/60 whitespace-nowrap">
                       {new Date(s.expires_at).toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" })}
                     </td>
                     <td className="px-5 py-3.5 text-right">

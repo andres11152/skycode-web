@@ -4,6 +4,14 @@
 // desde PushNotificationSetup.tsx (/dashboard/cuenta), nunca en el sitio
 // de marketing.
 
+self.addEventListener("install", () => {
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener("push", (event) => {
   if (!event.data) return;
 

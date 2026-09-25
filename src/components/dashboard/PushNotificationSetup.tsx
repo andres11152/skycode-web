@@ -77,8 +77,9 @@ export function PushNotificationSetup() {
         return;
       }
 
-      const registration = await navigator.serviceWorker.register("/sw-push.js");
-      const subscription = await registration.pushManager.subscribe({
+      await navigator.serviceWorker.register("/sw-push.js");
+      const readyRegistration = await navigator.serviceWorker.ready;
+      const subscription = await readyRegistration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
       });
