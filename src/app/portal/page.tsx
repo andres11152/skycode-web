@@ -3,6 +3,7 @@ import { getClientProjects } from "@/lib/queries/projects";
 import { getClientInvoices } from "@/lib/queries/invoices";
 import { getClientDocuments } from "@/lib/queries/documents";
 import { getClientTickets } from "@/lib/queries/supportTickets";
+import { getClientActivityFeed } from "@/lib/queries/clientActivity";
 import { PortalView } from "@/components/portal/PortalView";
 
 type PageProps = {
@@ -24,17 +25,19 @@ export default async function PortalPage({ searchParams }: PageProps) {
         invoices={[]}
         documents={[]}
         tickets={[]}
+        activity={[]}
         projectOptions={[]}
         boldOrderId={boldOrderId}
       />
     );
   }
 
-  const [projects, invoices, documents, tickets] = await Promise.all([
+  const [projects, invoices, documents, tickets, activity] = await Promise.all([
     getClientProjects(session.clientId),
     getClientInvoices(session.clientId),
     getClientDocuments(session.clientId),
     getClientTickets(session.clientId),
+    getClientActivityFeed(session.clientId),
   ]);
 
   const projectOptions = projects.map((p) => ({ id: p.id, title: p.title, client_name: p.client.name }));
@@ -45,6 +48,7 @@ export default async function PortalPage({ searchParams }: PageProps) {
       invoices={invoices}
       documents={documents}
       tickets={tickets}
+      activity={activity}
       projectOptions={projectOptions}
       boldOrderId={boldOrderId}
     />

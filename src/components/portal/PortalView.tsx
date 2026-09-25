@@ -2,17 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, FileText, Lifebuoy, Receipt, Spinner, Stack, WarningCircle } from "@phosphor-icons/react";
+import { CheckCircle, ClockCounterClockwise, FileText, Lifebuoy, Receipt, Spinner, Stack, WarningCircle } from "@phosphor-icons/react";
 import { ProjectsBoard } from "../dashboard/ProjectsBoard";
 import { PortalInvoicesPanel } from "./PortalInvoicesPanel";
 import { PortalDocumentsPanel } from "./PortalDocumentsPanel";
 import { PortalSupportPanel } from "./PortalSupportPanel";
+import { PortalActivityFeed } from "./PortalActivityFeed";
 import { parseInvoiceIdFromBoldOrderId } from "@/lib/bold";
 import { logError } from "@/lib/logger";
 import type { Project, Invoice, ProjectDocument, SupportTicket, ProjectOption } from "../dashboard/types";
+import type { ClientActivityEvent } from "@/lib/queries/clientActivity";
 
 const TABS = [
   { key: "proyectos", label: "Proyectos", icon: Stack },
+  { key: "actividad", label: "Actividad", icon: ClockCounterClockwise },
   { key: "facturas", label: "Facturas", icon: Receipt },
   { key: "documentos", label: "Documentos", icon: FileText },
   { key: "soporte", label: "Soporte", icon: Lifebuoy },
@@ -32,6 +35,7 @@ export function PortalView({
   invoices,
   documents,
   tickets,
+  activity,
   projectOptions,
   boldOrderId,
 }: {
@@ -39,6 +43,7 @@ export function PortalView({
   invoices: Invoice[];
   documents: ProjectDocument[];
   tickets: SupportTicket[];
+  activity: ClientActivityEvent[];
   projectOptions: ProjectOption[];
   /** `?bold-order-id=...` que Bold agrega al volver del checkout (ver
    * lib/bold.ts) — server component (app/portal/page.tsx) lo lee de
@@ -128,6 +133,7 @@ export function PortalView({
       </nav>
 
       {activeTab === "proyectos" && <ProjectsBoard initialProjects={projects} variant="portal" />}
+      {activeTab === "actividad" && <PortalActivityFeed events={activity} />}
       {activeTab === "facturas" && <PortalInvoicesPanel invoices={invoices} />}
       {activeTab === "documentos" && <PortalDocumentsPanel documents={documents} projects={projectOptions} />}
       {activeTab === "soporte" && <PortalSupportPanel tickets={tickets} projects={projectOptions} />}
