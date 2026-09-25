@@ -27,5 +27,11 @@ export default async function DashboardClientDetailPage({ params }: PageProps) {
   const client = await getClientDetail(clientId, usdToCopRate);
   if (!client) notFound();
 
-  return <ClientDetailView client={client} canWrite={hasPermission(session.role, "clients:write")} />;
+  return (
+    <ClientDetailView
+      client={client}
+      canWrite={hasPermission(session.role, "clients:write")}
+      canManagePrivacy={hasPermission(session.role, "data_privacy:manage")}
+    />
+  );
 }

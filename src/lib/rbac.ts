@@ -28,7 +28,8 @@ export type Permission =
   | "settings:write"
   | "seo:read"
   | "content:read"
-  | "content:write";
+  | "content:write"
+  | "data_privacy:manage";
 
 export const ALL_ROLES = ["admin", "sales_manager", "traffiker", "client"] as const satisfies readonly Role[];
 
@@ -66,6 +67,7 @@ export const ALL_PERMISSIONS = [
   "seo:read",
   "content:read",
   "content:write",
+  "data_privacy:manage",
 ] as const satisfies readonly Permission[];
 
 /**
@@ -156,6 +158,7 @@ const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Permission>> = {
     "seo:read",
     "content:read",
     "content:write",
+    "data_privacy:manage",
   ]),
   sales_manager: new Set([
     "leads:read",

@@ -38,6 +38,7 @@ const ALL_PERMISSIONS: Permission[] = [
   "seo:read",
   "content:read",
   "content:write",
+  "data_privacy:manage",
 ];
 
 // Matriz esperada duplicada a propósito acá: si alguien cambia

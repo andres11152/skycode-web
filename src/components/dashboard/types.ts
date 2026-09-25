@@ -451,6 +451,7 @@ export interface ClientDetail {
   phone: string | null;
   notes: string;
   created_at: string;
+  anonymized_at: string | null;
   projects: Project[];
   proposals: Proposal[];
   invoices: Invoice[];

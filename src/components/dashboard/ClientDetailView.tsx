@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -14,13 +14,18 @@ import {
   Layers,
   FileText,
   Receipt,
+  Download,
+  ShieldAlert,
+  UserX,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { Modal } from "@/components/ui/Modal";
 import { EmptyState } from "./EmptyState";
 import { Badge, type BadgeTone } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import { formatMoney } from "@/lib/utils";
+import { logError } from "@/lib/logger";
 import type { ClientDetail, InvoiceStatus, ProposalStatus } from "./types";
 
 const PROPOSAL_LABELS: Record<ProposalStatus, string> = {
@@ -57,7 +62,15 @@ const PROJECT_TONES: Record<string, BadgeTone> = {
   "Garantía SLA": "success",
 };
 
-export function ClientDetailView({ client, canWrite }: { client: ClientDetail; canWrite: boolean }) {
+export function ClientDetailView({
+  client,
+  canWrite,
+  canManagePrivacy,
+}: {
+  client: ClientDetail;
+  canWrite: boolean;
+  canManagePrivacy: boolean;
+}) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -68,6 +81,7 @@ export function ClientDetailView({ client, canWrite }: { client: ClientDetail; c
     phone: client.phone ?? "",
     notes: client.notes,
   });
+  const [anonymizeOpen, setAnonymizeOpen] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -214,6 +228,43 @@ export function ClientDetailView({ client, canWrite }: { client: ClientDetail; c
         {error && <Alert tone="error" className="mt-3">{error}</Alert>}
       </div>
 
+      {canManagePrivacy && (
+        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-3">
+          <h2 className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-foreground/60">
+            <ShieldAlert size={15} className="text-accent" />
+            Privacidad de datos
+          </h2>
+          {client.anonymized_at ? (
+            <p className="text-xs text-foreground/60">
+              Este cliente fue anonimizado el {new Date(client.anonymized_at).toLocaleDateString("es-CO")} — su nombre, correo, teléfono y notas ya no son recuperables.
+            </p>
+          ) : (
+            <p className="text-xs text-foreground/60">
+              Exporta todo lo que tenemos sobre este cliente (derecho de portabilidad), o anonimiza su información personal (derecho al olvido) — proyectos, facturas y pagos se conservan como registro contable, solo dejan de estar atados a un nombre real.
+            </p>
+          )}
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={`/api/clients/${client.id}/export`}
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-foreground/15 px-4 text-xs font-medium text-foreground hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <Download size={13} />
+              Exportar datos (JSON)
+            </a>
+            {!client.anonymized_at && (
+              <button
+                type="button"
+                onClick={() => setAnonymizeOpen(true)}
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-red-500/30 px-4 text-xs font-medium text-red-700 hover:bg-red-500/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                <UserX size={13} />
+                Anonimizar cliente
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <SpotlightCard>
           <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
@@ -355,6 +406,115 @@ export function ClientDetailView({ client, canWrite }: { client: ClientDetail; c
           </div>
         )}
       </section>
+
+      <AnonymizeClientModal
+        open={anonymizeOpen}
+        onClose={() => setAnonymizeOpen(false)}
+        clientId={client.id}
+        clientName={client.name}
+      />
     </div>
+  );
+}
+
+/**
+ * Exige escribir el nombre exacto del cliente antes de habilitar el
+ * botón — mismo criterio que confirmar borrar un repositorio en GitHub:
+ * la fricción extra es deliberada, esta acción es irreversible y no hay
+ * ningún endpoint para deshacerla.
+ */
+function AnonymizeClientModal({
+  open,
+  onClose,
+  clientId,
+  clientName,
+}: {
+  open: boolean;
+  onClose: () => void;
+  clientId: number;
+  clientName: string;
+}) {
+  const router = useRouter();
+  const inputId = useId();
+  const [confirmText, setConfirmText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleClose = () => {
+    onClose();
+    setConfirmText("");
+    setError(null);
+  };
+
+  const handleConfirm = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/clients/${clientId}/anonymize`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "No se pudo anonimizar el cliente.");
+        return;
+      }
+      handleClose();
+      router.refresh();
+    } catch (err) {
+      logError("Error al anonimizar cliente", err);
+      setError("Ocurrió un error de red al anonimizar el cliente.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={handleClose} title="Anonimizar cliente" closeLabel="Cerrar">
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-600">
+            <ShieldAlert size={18} />
+          </div>
+          <p className="text-sm text-foreground/80 leading-relaxed">
+            Esto reemplaza el nombre, correo, teléfono y notas de <span className="font-semibold text-foreground">{clientName}</span> por
+            valores genéricos, de forma permanente — no se puede deshacer. Sus proyectos, facturas y pagos se conservan intactos como
+            registro contable, solo dejan de estar atados a esta identidad.
+          </p>
+        </div>
+
+        {error && <Alert tone="error">{error}</Alert>}
+
+        <div className="space-y-1.5">
+          <label htmlFor={inputId} className="block text-xs font-semibold text-foreground/80">
+            Escribe <span className="font-mono">{clientName}</span> para confirmar
+          </label>
+          <input
+            id={inputId}
+            type="text"
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent"
+            autoComplete="off"
+          />
+        </div>
+
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <button
+            type="button"
+            onClick={handleClose}
+            className="inline-flex min-h-11 items-center rounded-xl border border-foreground/20 px-4 py-2.5 text-xs font-medium text-foreground/80 transition-colors hover:bg-foreground/10 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            onClick={handleConfirm}
+            disabled={confirmText !== clientName || isSubmitting}
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <UserX size={14} />
+            {isSubmitting ? "Anonimizando…" : "Anonimizar definitivamente"}
+          </button>
+        </div>
+      </div>
+    </Modal>
   );
 }

@@ -1,0 +1,21 @@
+-- Exportar/anonimizar datos de cliente (derecho de portabilidad y de
+-- olvido — Ley 1581/RGPD, ya mencionados en el copy legal del sitio).
+--
+-- Esto es ANONIMIZACIÓN, no un DELETE físico: un cliente con facturas y
+-- pagos reales es un registro contable que la agencia debe poder
+-- sustentar ante una auditoría tributaria, incluso después de que esa
+-- persona ejerza su derecho al olvido — tanto la Ley 1581 (art. 9) como
+-- el RGPD (art. 17.3.b) contemplan esta excepción explícitamente para
+-- obligaciones legales/contractuales. `anonymize()` (ver
+-- lib/queries/dataPrivacy.ts) reemplaza nombre/email/teléfono/empresa/notas
+-- por valores genéricos y anonimiza también las filas de `users`/
+-- `proposals` que copiaban esos mismos datos (no son FK, son copias en el
+-- momento) — pero deja intactos proyectos, facturas, pagos y documentos:
+-- los montos y fechas siguen siendo un registro contable válido, solo
+-- dejan de estar atados a una identidad real.
+--
+-- `anonymized_at` (no un booleano) sigue el mismo patrón que
+-- `sessions.revoked_at`/`articles.published_at` — NULL es "no anonimizado
+-- todavía", y guarda además CUÁNDO se hizo (relevante para demostrar
+-- cumplimiento ante una autoridad de protección de datos).
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS anonymized_at TIMESTAMPTZ;

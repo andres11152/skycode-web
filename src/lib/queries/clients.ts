@@ -114,7 +114,7 @@ export async function getClientsPage({ q, page, pageSize, usdToCopRate }: Client
  */
 export async function getClientDetail(id: number, usdToCopRate: number): Promise<ClientDetail | null> {
   const clientRes = await query(
-    `SELECT id, name, email, company, phone, notes, created_at FROM clients WHERE id = $1;`,
+    `SELECT id, name, email, company, phone, notes, created_at, anonymized_at FROM clients WHERE id = $1;`,
     [id]
   );
   const row = clientRes.rows[0];
@@ -232,6 +232,7 @@ export async function getClientDetail(id: number, usdToCopRate: number): Promise
     phone: row.phone ? String(row.phone) : null,
     notes: String(row.notes ?? ""),
     created_at: String(row.created_at ?? ""),
+    anonymized_at: row.anonymized_at ? String(row.anonymized_at) : null,
     projects,
     proposals,
     invoices,
