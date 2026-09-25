@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, Code2, Layers, ShieldCheck, Calendar } from "lucide-react";
 import { TasksBoard } from "./TasksBoard";
 import { DocumentsPanel } from "./DocumentsPanel";
+import { OnboardingChecklist } from "./OnboardingChecklist";
 import { Badge, type BadgeTone } from "./ui/Badge";
 import type { Project, ProjectDocument, Task } from "./types";
 
@@ -155,6 +156,8 @@ export function ProjectDetailView({
           </div>
         )}
       </div>
+
+      <OnboardingChecklist projectId={project.id} />
 
       {canReadTasks && (
         <TasksBoard

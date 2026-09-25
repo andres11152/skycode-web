@@ -1,5 +1,6 @@
 import { query } from "../db";
 import type { Currency } from "../currency";
+import { createOnboardingChecklist } from "./onboarding";
 import type { Proposal, ProposalItem } from "@/components/dashboard/types";
 
 interface ProposalRow {
@@ -188,6 +189,8 @@ export async function acceptProposalAndCreateProject(proposal: Proposal, dbRunne
     [clientId, proposal.title, proposal.notes || ""]
   );
   const newProject = projectRes.rows[0];
+
+  await createOnboardingChecklist(newProject.id, dbRunner);
 
   for (const item of proposal.items) {
     await dbRunner.query(

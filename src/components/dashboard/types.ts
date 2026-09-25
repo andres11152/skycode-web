@@ -58,6 +58,21 @@ export interface SprintComment {
   author: { id: number; name: string; role: string } | null;
 }
 
+/**
+ * Ítem del checklist de onboarding de un proyecto nuevo (ver migración
+ * 0027) — catálogo fijo, no configurable. `responsible` es informativo,
+ * no una restricción real de quién puede marcarlo (ver lib/queries/onboarding.ts).
+ */
+export interface OnboardingItem {
+  id: number;
+  stepKey: string;
+  title: string;
+  responsible: "client" | "team";
+  completed: boolean;
+  completedAt: string | null;
+  completedBy: { id: number; name: string } | null;
+}
+
 export interface Sprint {
   id: number;
   title: string;

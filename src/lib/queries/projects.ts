@@ -1,4 +1,5 @@
 import { query } from "../db";
+import { createOnboardingChecklist } from "./onboarding";
 import type { Project, ProjectOption } from "@/components/dashboard/types";
 
 const PROJECTS_WITH_CLIENT_SELECT = `
@@ -147,6 +148,8 @@ export async function createProjectWithClient(data: CreateProjectData, dbRunner:
     [clientId, data.title, data.description || "", data.repo_url || "", data.staging_url || ""]
   );
   const project = projectRes.rows[0];
+
+  await createOnboardingChecklist(project.id, dbRunner);
 
   if (data.sprints && Array.isArray(data.sprints)) {
     for (const sprint of data.sprints) {

@@ -8,6 +8,7 @@ import { EmptyState } from "./EmptyState";
 import { SprintApproval } from "./SprintApproval";
 import { SprintComments } from "./SprintComments";
 import { ProjectTimeline } from "./ProjectTimeline";
+import { OnboardingChecklist } from "./OnboardingChecklist";
 import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import type { Project } from "./types";
@@ -151,6 +152,8 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
                   />
                 </div>
               </div>
+
+              <OnboardingChecklist projectId={project.id} />
 
               {variant === "portal" && project.sprints && project.sprints.length > 0 && (
                 <div className="space-y-3 pt-4 border-t border-foreground/10">
