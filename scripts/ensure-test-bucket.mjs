@@ -6,8 +6,9 @@
 // bucket por defecto. Idempotente: si un bucket ya existe (corridas
 // repetidas contra el mismo contenedor sin `test:db:down`), no hace nada.
 // Se dispara solo vía los hooks `pretest:integration`/`pretest:e2e` de
-// package.json — nunca hace falta correrlo a mano. Dos buckets sobre el
-// mismo MinIO (documentos y backups de base de datos) — en test comparten
+// package.json — nunca hace falta correrlo a mano. Tres buckets sobre el
+// mismo MinIO (documentos, backups de base de datos e imágenes del
+// portafolio) — en test comparten
 // credenciales de MinIO por simplicidad; en producción son buckets y
 // tokens de API completamente separados (ver lib/backupStorage.ts).
 
@@ -27,6 +28,7 @@ const accessKeyId = process.env.R2_ACCESS_KEY_ID;
 const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
 const bucket = process.env.R2_BUCKET_NAME;
 const backupsBucket = process.env.R2_BACKUPS_BUCKET_NAME;
+const portfolioBucket = process.env.R2_PORTFOLIO_BUCKET_NAME;
 
 if (!endpoint || !bucket || !accessKeyId || !secretAccessKey) {
   console.error("Faltan variables R2_* en el entorno. Corre con --env-file=.env.test.");
@@ -42,3 +44,4 @@ const client = new S3Client({
 
 await ensureBucket(client, bucket, endpoint);
 if (backupsBucket) await ensureBucket(client, backupsBucket, endpoint);
+if (portfolioBucket) await ensureBucket(client, portfolioBucket, endpoint);

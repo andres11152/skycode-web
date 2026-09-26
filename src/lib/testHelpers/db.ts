@@ -361,6 +361,19 @@ export async function createTestPayment(
   return res.rows[0];
 }
 
+/** Portafolio: proyecto vacío (sin traducciones/imágenes) por defecto — el test agrega lo que necesite encima. */
+export async function createTestPortfolioProject(overrides: { slug?: string; industryIcon?: string; status?: "draft" | "published" | "archived" } = {}) {
+  const res = await query(
+    `INSERT INTO portfolio_projects (slug, industry_icon, status) VALUES ($1,$2,$3) RETURNING *;`,
+    [
+      overrides.slug ?? `caso-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      overrides.industryIcon ?? "Buildings",
+      overrides.status ?? "draft",
+    ]
+  );
+  return res.rows[0];
+}
+
 export async function createTestTimeEntry(
   userId: number,
   projectId: number,

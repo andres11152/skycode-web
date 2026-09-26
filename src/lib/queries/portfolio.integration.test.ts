@@ -43,7 +43,7 @@ async function createFullProject(admin: { id: number }) {
       c
     )
   );
-  const imageId = await withTransaction((c) =>
+  const { id: imageId } = await withTransaction((c) =>
     addPortfolioProjectImage(
       projectId,
       { storageKey: "abc123.webp", variants: { sm: "https://media.test/abc-400.webp", md: "https://media.test/abc-800.webp", lg: "https://media.test/abc-1600.webp" }, width: 1600, height: 900 },
@@ -136,7 +136,7 @@ describe("getPublishedPortfolioProjects / getPublishedPortfolioProjectBySlug", (
       await withTransaction((c) =>
         upsertPortfolioTranslation(id, "es", { title: slug, clientLabel: "C", summary: "S", challenge: "", solution: "", results: "", capabilities: [] }, c)
       );
-      const imgId = await withTransaction((c) =>
+      const { id: imgId } = await withTransaction((c) =>
         addPortfolioProjectImage(id, { storageKey: `${slug}.webp`, variants: { sm: "s", md: "m", lg: "l" }, width: 10, height: 10 }, c)
       );
       await withTransaction((c) => setPortfolioProjectCoverImage(id, imgId, c));
@@ -208,7 +208,7 @@ describe("imágenes", () => {
   it("reordenar imágenes cambia el orden en que se devuelven", async () => {
     const admin = await createTestUser({ role: "admin" });
     const { projectId, imageId: firstImage } = await createFullProject(admin);
-    const secondImage = await withTransaction((c) =>
+    const { id: secondImage } = await withTransaction((c) =>
       addPortfolioProjectImage(projectId, { storageKey: "second.webp", variants: { sm: "s2", md: "m2", lg: "l2" }, width: 10, height: 10 }, c)
     );
     await withTransaction((c) => setPortfolioProjectStatus(projectId, "published", admin.id, c));

@@ -474,17 +474,18 @@ export async function addPortfolioProjectImage(
   projectId: number,
   data: AddPortfolioImageData,
   dbRunner: QueryRunner
-): Promise<number> {
+): Promise<{ id: number; sortOrder: number }> {
   const sortRes = await dbRunner.query(
     `SELECT COALESCE(MAX(sort_order), -1) + 1 AS next_order FROM portfolio_project_images WHERE project_id = $1;`,
     [projectId]
   );
+  const nextOrder = Number(sortRes.rows[0].next_order);
   const res = await dbRunner.query(
     `INSERT INTO portfolio_project_images (project_id, storage_key, variants, width, height, sort_order)
      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;`,
-    [projectId, data.storageKey, JSON.stringify(data.variants), data.width, data.height, sortRes.rows[0].next_order]
+    [projectId, data.storageKey, JSON.stringify(data.variants), data.width, data.height, nextOrder]
   );
-  return res.rows[0].id as number;
+  return { id: res.rows[0].id as number, sortOrder: nextOrder };
 }
 
 /** Devuelve el `storage_key` para que el caller borre también el objeto del bucket. */
@@ -494,12 +495,19 @@ export async function removePortfolioProjectImage(imageId: number, dbRunner: Que
   return row ? { storageKey: String(row.storage_key) } : null;
 }
 
+/**
+ * Combina (no reemplaza) el JSONB `alt` con lo que venga en `alt` — el
+ * editor guarda el texto alternativo de un idioma a la vez (ver la ruta
+ * PATCH), así que un `SET alt = $1` a secas borraría silenciosamente los
+ * otros dos idiomas ya guardados. El operador `||` de JSONB en Postgres
+ * hace exactamente ese merge superficial por clave.
+ */
 export async function updatePortfolioImageAlt(
   imageId: number,
   alt: Record<string, string>,
   dbRunner: QueryRunner
 ): Promise<void> {
-  await dbRunner.query(`UPDATE portfolio_project_images SET alt = $1 WHERE id = $2;`, [JSON.stringify(alt), imageId]);
+  await dbRunner.query(`UPDATE portfolio_project_images SET alt = alt || $1::jsonb WHERE id = $2;`, [JSON.stringify(alt), imageId]);
 }
 
 export async function reorderPortfolioProjectImages(
