@@ -42,9 +42,15 @@ export function ProjectView({
 
   const galleryImages = project.images.length > 0 ? project.images : [];
 
+  // Sin envolver cada slide en una relación de aspecto fija (16:9/21:9,
+  // ver COVER_ASPECT más abajo) — eso forzaba letterboxing exagerado en
+  // capturas con otra proporción y hacía que el zoom del Lightbox
+  // ampliara ese espacio vacío en vez de detalle real. El lienzo del
+  // Lightbox ya define un tamaño grande y consistente (ver Lightbox.tsx);
+  // acá cada slide solo necesita llenarlo con `object-contain`.
   const slides = galleryImages.length > 0
     ? galleryImages.map((image, index) => (
-        <div key={image.id} className={`relative ${COVER_ASPECT} w-full`}>
+        <div key={image.id} className="relative h-full w-full">
           <Image
             src={image.variants.lg}
             alt={image.alt || `${project.title} — captura ${index + 1}`}
@@ -59,7 +65,7 @@ export function ProjectView({
           key="cover"
           icon={getPortfolioIcon(project.industryIcon)}
           imageSrc={project.coverImage?.variants.lg}
-          className={`${COVER_ASPECT} w-full`}
+          className="h-full w-full"
           iconClassName="h-24 w-24"
         />,
       ];
