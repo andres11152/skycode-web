@@ -566,7 +566,7 @@ function ImagesTab({
           {images.map((img, index) => (
             <div key={img.id} className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 overflow-hidden">
               <div className="relative aspect-video bg-foreground/10">
-                <Image src={img.variants.md} alt="" fill className="object-cover" unoptimized />
+                <Image src={img.variants.md} alt="" fill className="object-cover" />
                 {coverImageId === img.id && (
                   <span className="absolute top-2 left-2 rounded-full bg-accent-strong px-2 py-0.5 text-[10px] font-bold text-white">Portada</span>
                 )}

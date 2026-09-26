@@ -87,7 +87,13 @@ const SECURITY_HEADERS = [
       // ver lib/animations.ts) — 'unsafe-inline' es necesario para eso, no
       // hay hojas de estilo de terceros que lo requieran.
       "style-src 'self' 'unsafe-inline'",
-      `img-src 'self' data: ${GOOGLE_ADS_IMG_SRC.join(" ")}`,
+      // *.r2.dev: bucket público de imágenes del portafolio (ver
+      // lib/portfolioStorage.ts) — sin esto, cualquier <img>/<Image
+      // unoptimized> que apunte directo al host de R2 (bypaseando el proxy
+      // same-origin /_next/image) se bloquea en silencio por CSP, sin error
+      // de red visible más allá de la consola (bug real, visto en el editor
+      // del dashboard de portafolio).
+      `img-src 'self' data: https://*.r2.dev ${GOOGLE_ADS_IMG_SRC.join(" ")}`,
       "font-src 'self' data:",
       // La única llamada de red que sale del navegador hacia un tercero es
       // la del propio gtag.js (conversión de Google Ads, ver arriba) — el
