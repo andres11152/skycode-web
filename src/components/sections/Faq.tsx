@@ -18,12 +18,13 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
 
   return (
     <section id="faq" className="scroll-mt-24 bg-foreground/[0.01] px-6 py-20 sm:py-24 lg:py-28 border-t border-foreground/5">
-      {/* max-w-6xl (no max-w-4xl): un contenedor más angosto centrado dentro
-          de la misma sección `px-6` arranca en un borde izquierdo distinto
-          al resto (272px vs. 144px a 1440px de ancho) — bug real de
-          alineación, visto en auditoría visual. El acordeón en sí se queda
-          en `max-w-3xl` para que las preguntas no se estiren a todo el
-          ancho, pero alineado al mismo borde que el resto de secciones. */}
+      {/* max-w-6xl (no max-w-4xl): mismo ancho de contenedor que el resto de
+          secciones, para que el encabezado (badge/h2/descripción, alineado a
+          la izquierda como el resto del sitio) arranque en el mismo borde.
+          El acordeón en sí se queda en `max-w-3xl` (las preguntas no deben
+          estirarse a todo el ancho) pero centrado dentro de ese contenedor
+          — a pedido explícito, para que no quede pegado al borde izquierdo
+          dejando un vacío grande a la derecha en desktop. */}
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 max-w-xl">
           <SectionEyebrow className="mb-3">{faqData.badge}</SectionEyebrow>
@@ -35,7 +36,7 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
           </p>
         </div>
 
-        <div className="flex flex-col max-w-3xl border-t border-foreground/10">
+        <div className="mx-auto flex max-w-3xl flex-col border-t border-foreground/10">
           {faqData.items.map((item, index) => {
             const isOpen = activeIndex === index;
             return (
