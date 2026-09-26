@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { m as motion, useScroll, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
-import { ArrowRight } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { cn } from "@/lib/utils";
@@ -93,7 +92,6 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
               className="focus-visible:ring-offset-foreground"
             >
               {closingData.cta}
-              <ArrowRight size={16} />
             </Button>
           </Magnetic>
         </div>

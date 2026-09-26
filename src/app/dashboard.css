@@ -1,0 +1,18 @@
+/*
+ * CSS del panel interno (/dashboard, /portal) y de las pantallas de
+ * autenticación (/login, /olvide-password, /resetear-password, /invitar,
+ * /propuesta) — deliberadamente SIN restringir el escaneo de Tailwind
+ * (mismo comportamiento de detección automática que tenía globals.css antes
+ * de esta separación).
+ *
+ * Por qué existe un archivo aparte: `globals.css` (ver ese archivo) ahora
+ * excluye estas mismas carpetas de su escaneo para que el sitio público
+ * indexado (las 16 URLs que audita Search Console) no cargue las utilidades
+ * de Tailwind que solo usa el CRM interno. Ninguna de estas rutas está
+ * indexada (`robots: {index:false}`, ver sus metadata), así que no aportan
+ * nada al Core Web Vitals de campo que reporta Search Console — no había
+ * razón de negocio para arriesgar precisión de clases acá, solo en el lado
+ * público.
+ */
+@import "tailwindcss";
+@import "./theme.css";

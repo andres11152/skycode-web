@@ -25,6 +25,22 @@ function getPool(): Pool {
     );
   }
 
+  // `pg` controla SSL con la opción `ssl` de abajo (ya decide `rejectUnauthorized`
+  // según el entorno), así que un `?sslmode=...` en la URL misma es redundante —
+  // y `pg-connection-string` emite una advertencia de deprecación en cada conexión
+  // por los modos `prefer`/`require`/`verify-ca` (ver el aviso de consola real que
+  // esto generaba). Se quita acá, en vez de pedirle al usuario que edite su
+  // `DATABASE_URL` en cada entorno (local/Render), que es donde de verdad vive.
+  const sanitizedConnectionString = (() => {
+    try {
+      const url = new URL(connectionString);
+      url.searchParams.delete("sslmode");
+      return url.toString();
+    } catch {
+      return connectionString;
+    }
+  })();
+
   const caCert = process.env.DATABASE_CA_CERT;
   // `NODE_ENV === "production"` no es un proxy confiable de "la base está en
   // Render y necesita SSL": `next start` (build de producción) pone
@@ -45,7 +61,7 @@ function getPool(): Pool {
     : false;
 
   pool = new Pool({
-    connectionString,
+    connectionString: sanitizedConnectionString,
     ssl: sslConfig,
     max: 10,
     idleTimeoutMillis: 30000,

@@ -2,6 +2,10 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { requireSessionOrRedirect } from "@/lib/withAuth";
 import { PortalChrome } from "@/components/portal/PortalChrome";
+// globals.css (layout raíz) excluye `components/portal`/`app/portal` de su
+// escaneo de Tailwind (ver el comentario ahí) — este import trae de vuelta
+// esas utilidades solo para el subárbol de /portal.
+import "../dashboard.css";
 
 export const metadata: Metadata = {
   title: "Portal de Cliente | SKYCODE Agency",

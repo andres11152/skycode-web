@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { ResetPasswordView } from "@/components/auth/ResetPasswordView";
+// globals.css excluye `components/auth`/`app/resetear-password` de su
+// escaneo de Tailwind (ver el comentario ahí) — este import trae de vuelta
+// esas utilidades solo para esta página.
+import "../../dashboard.css";
 
 export const metadata: Metadata = {
   title: "Nueva Contraseña | SKYCODE Agency",

@@ -1,0 +1,56 @@
+/*
+ * Tokens y estilos base compartidos entre el sitio público (globals.css) y
+ * el panel interno/portal (dashboard.css) — el dashboard SÍ reutiliza los
+ * mismos tokens de color/espaciado del sistema de diseño (ver CLAUDE.md), así
+ * que este archivo no puede vivir solo en globals.css sin que `bg-accent`,
+ * `text-foreground`, etc. dejen de tener valor en /dashboard y /portal.
+ *
+ * Sin `@import "tailwindcss"` propio: Tailwind resuelve todos los `@import`
+ * en un solo stylesheet lógico antes de procesar `@theme`, así que este
+ * bloque se registra igual sin importar en qué archivo físico vive, siempre
+ * que quien lo importe (globals.css/dashboard.css) sí traiga `tailwindcss`.
+ */
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --accent: #0089cd;
+  --accent-strong: #006998;
+  --accent-foreground: #ffffff;
+  --accent-secondary: #ffd100;
+}
+
+@theme inline {
+  /* Usado por el badge de estado del CodeMockup del Hero (hidden xs:flex) —
+     sin esta declaración, Tailwind nunca genera la variante `xs:` y la clase
+     `hidden` queda permanente en todos los tamaños de pantalla. */
+  --breakpoint-xs: 25rem;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-secondary: var(--accent-secondary);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), var(--font-sans), sans-serif;
+}

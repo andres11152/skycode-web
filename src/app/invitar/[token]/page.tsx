@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { AcceptInviteView } from "@/components/auth/AcceptInviteView";
+// globals.css excluye `components/auth`/`app/invitar` de su escaneo de
+// Tailwind (ver el comentario ahí) — este import trae de vuelta esas
+// utilidades solo para esta página.
+import "../../dashboard.css";
 
 export const metadata: Metadata = {
   title: "Activar invitación | SKYCODE Agency",

@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { LoginView } from "@/components/auth/LoginView";
+// globals.css excluye `components/auth`/`app/login` de su escaneo de
+// Tailwind (ver el comentario ahí) — este import trae de vuelta esas
+// utilidades solo para esta página.
+import "../dashboard.css";
 
 export const metadata: Metadata = {
   title: "Iniciar Sesión | SKYCODE Agency",
