@@ -32,6 +32,7 @@ import {
   Repeat,
   PieChart,
   ClipboardCheck,
+  Briefcase,
 } from "lucide-react";
 import { hasPermission, type Permission } from "@/lib/rbac";
 import { NotificationBell } from "./NotificationBell";
@@ -64,6 +65,9 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/dashboard/campanas", label: "Campañas", icon: Megaphone, permission: "campaigns:read" },
       { href: "/dashboard/seo", label: "SEO", icon: Search, permission: "seo:read" },
       { href: "/dashboard/contenido", label: "Contenido", icon: PenSquare, permission: "content:read" },
+      // Mismo criterio que Contenido/SEO — publicar el portafolio público
+      // es una decisión estratégica de marca, no un módulo operativo.
+      { href: "/dashboard/portafolio", label: "Portafolio", icon: Briefcase, permission: "portfolio:read" },
     ],
   },
   {
