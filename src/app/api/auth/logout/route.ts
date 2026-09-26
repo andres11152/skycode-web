@@ -16,11 +16,19 @@ export async function POST() {
 
   const response = NextResponse.json({ success: true, message: "Sesión cerrada correctamente." });
 
-  // Expira la cookie HTTP-only inmediatamente
+  // Expira la cookie HTTP-only inmediatamente — mismos atributos
+  // (`secure`/`sameSite`) que cuando se creó en login/reset-password/
+  // verify-2fa, por consistencia: el navegador ya identifica la cookie a
+  // borrar solo por nombre+dominio+path (`secure`/`sameSite` no son parte
+  // de esa identidad, así que esto no cambia si la cookie se borra o no),
+  // pero declararlos igual evita que esta sea la única escritura de esta
+  // cookie en todo el proyecto con un set de atributos distinto.
   response.cookies.set({
     name: "skycode_session",
     value: "",
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     expires: new Date(0),
     path: "/",
   });

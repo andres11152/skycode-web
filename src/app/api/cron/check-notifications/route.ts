@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { verifyCronSecret } from "@/lib/cronAuth";
 import { notifyViewedProposals, notifyOverdueInvoices, notifySlaWarnings, notifyLeadFollowUps } from "@/lib/queries/notifications";
 import { logError } from "@/lib/logger";
 
@@ -17,15 +18,8 @@ import { logError } from "@/lib/logger";
  * demás ni hace fallar la respuesta completa.
  */
 export async function POST(request: Request) {
-  const expectedSecret = process.env.CRON_SECRET?.trim();
-  if (!expectedSecret) {
-    return NextResponse.json({ error: "CRON_SECRET no configurado en el servidor." }, { status: 503 });
-  }
-
-  const providedSecret = request.headers.get("x-cron-secret")?.trim();
-  if (providedSecret !== expectedSecret) {
-    return NextResponse.json({ error: "No autorizado." }, { status: 401 });
-  }
+  const authError = verifyCronSecret(request);
+  if (authError) return authError;
 
   const results = { proposalsViewed: 0, invoicesOverdue: 0, slaWarnings: 0, leadFollowUps: 0 };
 

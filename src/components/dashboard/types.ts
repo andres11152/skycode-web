@@ -30,6 +30,10 @@ export interface Lead {
    * los primeros 10 caracteres para un `<input type="date">`). */
   next_follow_up_at?: string | null;
   follow_up_note?: string | null;
+  /** `null` = no anonimizado; si trae fecha, sus datos identificables ya
+   * fueron reemplazados (ejerció su derecho al olvido — ver
+   * lib/queries/leads.ts::anonymizeLead). */
+  anonymized_at?: string | null;
 }
 
 export type LeadActivityType = "note" | "call" | "email" | "status_change";

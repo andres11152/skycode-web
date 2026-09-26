@@ -4,7 +4,55 @@ import { verifySessionToken } from "@/lib/session";
 
 const HOME_PATHS = new Set(["/", "/en", "/fr"]);
 
+const UNSAFE_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+
+// `/api/cron/*` (secreto compartido `x-cron-secret`) y `/api/webhooks/*`
+// (firma `x-bold-signature`) los llama infraestructura server-to-server,
+// nunca un navegador — no tiene sentido exigirles un `Origin` de este
+// sitio, y de hecho normalmente no lo mandan.
+const ORIGIN_CHECK_EXEMPT_PREFIXES = ["/api/cron/", "/api/webhooks/"];
+
+/**
+ * Defensa CSRF vía validación de `Origin` (patrón "Fetch Metadata" que
+ * recomienda OWASP como alternativa liviana a tokens CSRF explícitos):
+ * este sitio no tenía NINGUNA protección contra un `<form>` o `fetch`
+ * cross-site que reutilizara la cookie de sesión `skycode_session`
+ * (httpOnly + `SameSite=Lax`, que solo bloquea el caso de navegación
+ * cross-site vía GET, no un POST disparado por JS o un formulario en otro
+ * dominio).
+ *
+ * Solo aplica a métodos que mutan estado (GET/HEAD nunca deberían mutar
+ * nada, así que quedan afuera) y solo RECHAZA cuando el header `Origin`
+ * está presente y no coincide — nunca cuando falta. Un navegador moderno
+ * SIEMPRE manda `Origin` en un POST/PUT/PATCH/DELETE cross-site (fetch,
+ * XHR o `<form>`), así que "Origin ausente" no es el caso que hay que
+ * bloquear: cubre clientes que nunca mandan ese header por diseño
+ * (los cron jobs y el webhook de Bold, ya exentos arriba; peticiones
+ * server-to-server legítimas; los tests E2E de este proyecto, que usan
+ * `fetch` de Node sin ese header — ver `e2e/helpers/client.ts`). Rechazar
+ * también cuando falta habría exigido tocar el cliente de test y cualquier
+ * integración futura sin ganar protección real, porque un atacante real
+ * usando un navegador de verdad no puede omitir ese header por su cuenta.
+ */
+function hasValidOrigin(request: NextRequest): boolean {
+  if (!UNSAFE_METHODS.has(request.method)) return true;
+  if (ORIGIN_CHECK_EXEMPT_PREFIXES.some((prefix) => request.nextUrl.pathname.startsWith(prefix))) return true;
+
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+
+  try {
+    return new URL(origin).origin === request.nextUrl.origin;
+  } catch {
+    return false;
+  }
+}
+
 export async function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith("/api/") && !hasValidOrigin(request)) {
+    return NextResponse.json({ error: "Origen no autorizado." }, { status: 403 });
+  }
+
   // Chequeo barato en el edge: solo confirma que exista un JWT con firma y
   // expiración válidas. No puede consultar PostgreSQL (pg no corre en Edge
   // Runtime), así que no sabe el rol ni si la sesión fue revocada — esa
@@ -57,5 +105,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/portal/:path*", "/", "/en", "/fr"],
+  matcher: ["/dashboard/:path*", "/portal/:path*", "/", "/en", "/fr", "/api/:path*"],
 };

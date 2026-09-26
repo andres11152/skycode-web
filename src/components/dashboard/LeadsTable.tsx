@@ -28,6 +28,8 @@ import {
   CalendarClock,
   LayoutGrid,
   TableProperties,
+  ShieldAlert,
+  ShieldCheck,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Modal } from "@/components/ui/Modal";
@@ -66,9 +68,16 @@ interface LeadsTableProps {
   stats: { total: number; newCount: number; wonCount: number };
   /** `leads:write` — el borrado es lógico pero saca el prospecto de la vista de todos, así que se gatea igual que editar. */
   canWrite: boolean;
+  /** `data_privacy:manage` (exclusivo de admin, ver rbac.ts) — anonimizar
+   * es ejercer el derecho al olvido de alguien más (Ley 1581), una
+   * decisión de cumplimiento, no de gestión comercial diaria. Mismo
+   * criterio que `data_privacy:manage` para clientes
+   * (ClientDetailView.tsx) — un sales_manager con `leads:write` puede
+   * editar/borrar un prospecto, pero no anonimizarlo. */
+  canManagePrivacy: boolean;
 }
 
-export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, status, view, owners, stats, canWrite }: LeadsTableProps) {
+export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, status, view, owners, stats, canWrite, canManagePrivacy }: LeadsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [isNavigating, startNavigation] = useTransition();
@@ -286,6 +295,59 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
   const handleDeleteLead = (lead: Lead) => {
     setLeadPendingDelete(lead);
+  };
+
+  // Anonimización (derecho al olvido, Ley 1581) — distinta del borrado
+  // lógico de arriba: un lead "eliminado" (deleted_at) sigue con su
+  // nombre/correo/teléfono en texto plano en la base, solo oculto de la
+  // vista; anonimizar de verdad los reemplaza por valores genéricos, de
+  // forma irreversible. Mismo patrón "escribir el nombre para confirmar"
+  // que AnonymizeClientModal en ClientDetailView.tsx.
+  const [anonymizingId, setAnonymizingId] = useState<number | null>(null);
+  const [leadPendingAnonymize, setLeadPendingAnonymize] = useState<Lead | null>(null);
+  const [anonymizeConfirmText, setAnonymizeConfirmText] = useState("");
+  const [anonymizeError, setAnonymizeError] = useState<string | null>(null);
+
+  const closeAnonymizeModal = () => {
+    setLeadPendingAnonymize(null);
+    setAnonymizeConfirmText("");
+    setAnonymizeError(null);
+  };
+
+  const confirmAnonymizeLead = async () => {
+    const lead = leadPendingAnonymize;
+    if (!lead) return;
+
+    setAnonymizingId(lead.id);
+    setAnonymizeError(null);
+    try {
+      const res = await fetch(`/api/leads/${lead.id}/anonymize`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        setAnonymizeError(data.error || "No se pudo anonimizar el prospecto.");
+        return;
+      }
+      const anonymizedAt = new Date().toISOString();
+      setLeads((prev) =>
+        prev.map((l) =>
+          l.id === lead.id
+            ? { ...l, name: `Prospecto Eliminado #${lead.id}`, email: `prospecto-eliminado-${lead.id}@anonimizado.local`, phone: "", message: "", anonymized_at: anonymizedAt }
+            : l
+        )
+      );
+      setSelectedLead((prev) =>
+        prev && prev.id === lead.id
+          ? { ...prev, name: `Prospecto Eliminado #${lead.id}`, email: `prospecto-eliminado-${lead.id}@anonimizado.local`, phone: "", message: "", anonymized_at: anonymizedAt }
+          : prev
+      );
+      closeAnonymizeModal();
+      router.refresh();
+    } catch (err) {
+      logError("Error al anonimizar prospecto", err);
+      setAnonymizeError("Ocurrió un error de red al anonimizar el prospecto.");
+    } finally {
+      setAnonymizingId(null);
+    }
   };
 
   const confirmDeleteLead = async () => {
@@ -860,8 +922,18 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-foreground/10 flex items-center gap-3">
-                {buildLeadWhatsappUrl(selectedLead) && (
+              {selectedLead.anonymized_at ? (
+                <div className="flex items-center gap-2 rounded-xl border border-foreground/10 bg-foreground/[0.03] p-3 text-[11px] text-foreground/60">
+                  <ShieldCheck size={14} className="shrink-0 text-foreground/40" />
+                  <span>
+                    Este prospecto fue anonimizado el {new Date(selectedLead.anonymized_at).toLocaleDateString("es-CO")} — su
+                    nombre, correo, teléfono y mensaje ya no son recuperables.
+                  </span>
+                </div>
+              ) : null}
+
+              <div className="pt-4 border-t border-foreground/10 flex flex-wrap items-center gap-3">
+                {buildLeadWhatsappUrl(selectedLead) && !selectedLead.anonymized_at && (
                   <a
                     href={buildLeadWhatsappUrl(selectedLead)!}
                     target="_blank"
@@ -880,6 +952,17 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                   >
                     <Trash2 size={14} />
                     <span>{deletingId === selectedLead.id ? "Eliminando…" : "Eliminar"}</span>
+                  </button>
+                )}
+                {canManagePrivacy && !selectedLead.anonymized_at && (
+                  <button
+                    onClick={() => setLeadPendingAnonymize(selectedLead)}
+                    disabled={anonymizingId === selectedLead.id}
+                    title="Ejercer el derecho al olvido: reemplaza sus datos identificables de forma permanente"
+                    className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-foreground/20 px-4 py-2.5 text-xs font-medium text-foreground/80 hover:bg-foreground/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  >
+                    <ShieldAlert size={14} />
+                    <span>Anonimizar</span>
                   </button>
                 )}
                 <button
@@ -931,6 +1014,71 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
             >
               <Trash2 size={14} />
               <span>{deletingId === leadPendingDelete?.id ? "Eliminando…" : "Eliminar definitivamente"}</span>
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Anonimización — derecho al olvido (Ley 1581), mismo patrón "type
+          to confirm" que AnonymizeClientModal en ClientDetailView.tsx.
+          Exclusivo de `data_privacy:manage` (admin), separado a propósito
+          del borrado lógico de arriba: uno solo oculta el prospecto de la
+          vista, esto reemplaza sus datos identificables para siempre. */}
+      <Modal
+        open={leadPendingAnonymize !== null}
+        onClose={closeAnonymizeModal}
+        title="Anonimizar prospecto"
+        closeLabel="Cerrar"
+      >
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-600">
+              <ShieldAlert size={18} />
+            </div>
+            <p className="text-sm text-foreground/80 leading-relaxed">
+              Esto reemplaza el nombre, correo, teléfono y mensaje de{" "}
+              <span className="font-semibold text-foreground">{leadPendingAnonymize?.name}</span> por valores
+              genéricos, de forma permanente — no se puede deshacer. Su historial de actividad se conserva
+              como rastro interno, sin datos identificables.
+            </p>
+          </div>
+
+          {anonymizeError && (
+            <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-xs text-red-700 font-medium">
+              {anonymizeError}
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <label htmlFor="anonymize-lead-confirm" className="block text-xs font-semibold text-foreground/80">
+              Escribe <span className="font-mono">{leadPendingAnonymize?.name}</span> para confirmar
+            </label>
+            <input
+              id="anonymize-lead-confirm"
+              type="text"
+              value={anonymizeConfirmText}
+              onChange={(e) => setAnonymizeConfirmText(e.target.value)}
+              className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent"
+              autoComplete="off"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={closeAnonymizeModal}
+              className="inline-flex min-h-11 items-center rounded-xl border border-foreground/20 px-4 py-2.5 text-xs font-medium text-foreground/80 transition-colors hover:bg-foreground/10 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={confirmAnonymizeLead}
+              disabled={anonymizeConfirmText !== leadPendingAnonymize?.name || anonymizingId === leadPendingAnonymize?.id}
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <ShieldAlert size={14} />
+              <span>{anonymizingId === leadPendingAnonymize?.id ? "Anonimizando…" : "Anonimizar definitivamente"}</span>
             </button>
           </div>
         </div>

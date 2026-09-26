@@ -250,6 +250,11 @@ export function Contact({
       // manda en el mismo idioma en que la persona vio y llenó el
       // formulario — este componente ya conoce su propio locale por prop.
       locale,
+      // `acceptedPolicies` ya bloqueaba el envío en el navegador, pero
+      // nunca viajaba al servidor — el backend no tenía forma de
+      // demostrar que hubo autorización real (bug real de cumplimiento,
+      // ver ContactSchema en /api/contact/route.ts, que ahora la exige).
+      consent: acceptedPolicies,
       ...getAttribution(),
     };
 

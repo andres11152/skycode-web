@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { verifyCronSecret } from "@/lib/cronAuth";
 import { sendWeeklyDigest } from "@/lib/queries/weeklyDigest";
 import { logError } from "@/lib/logger";
 
@@ -12,15 +13,8 @@ import { logError } from "@/lib/logger";
  * configurado la ruta se niega a correr en vez de quedar abierta.
  */
 export async function POST(request: Request) {
-  const expectedSecret = process.env.CRON_SECRET?.trim();
-  if (!expectedSecret) {
-    return NextResponse.json({ error: "CRON_SECRET no configurado en el servidor." }, { status: 503 });
-  }
-
-  const providedSecret = request.headers.get("x-cron-secret")?.trim();
-  if (providedSecret !== expectedSecret) {
-    return NextResponse.json({ error: "No autorizado." }, { status: 401 });
-  }
+  const authError = verifyCronSecret(request);
+  if (authError) return authError;
 
   try {
     const recipientCount = await sendWeeklyDigest();

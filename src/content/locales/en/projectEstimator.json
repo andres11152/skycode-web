@@ -105,7 +105,12 @@
     "sendingLabel": "Sending…",
     "successMessage": "Done! Check your inbox.",
     "errorMessage": "We couldn't send it. Try again or reach us on WhatsApp.",
-    "invalidEmailError": "Enter a valid email address."
+    "invalidEmailError": "Enter a valid email address.",
+    "consent": {
+      "label": "I agree to the personal data processing policy to receive this quote.",
+      "linkText": "View privacy policy",
+      "linkUrl": "/politica-privacidad"
+    }
   },
   "quoteEmail": {
     "subject": "Your SkyCode quote: {type}",

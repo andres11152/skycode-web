@@ -105,7 +105,12 @@
     "sendingLabel": "Envoi en cours…",
     "successMessage": "C'est fait ! Vérifiez votre boîte mail.",
     "errorMessage": "Nous n'avons pas pu l'envoyer. Réessayez ou contactez-nous sur WhatsApp.",
-    "invalidEmailError": "Saisissez une adresse e-mail valide."
+    "invalidEmailError": "Saisissez une adresse e-mail valide.",
+    "consent": {
+      "label": "J'accepte la politique de traitement des données pour recevoir ce devis.",
+      "linkText": "Voir la politique de confidentialité",
+      "linkUrl": "/politica-privacidad"
+    }
   },
   "quoteEmail": {
     "subject": "Votre devis SkyCode : {type}",

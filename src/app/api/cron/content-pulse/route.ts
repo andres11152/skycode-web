@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { verifyCronSecret } from "@/lib/cronAuth";
 import { getContentGaps } from "@/lib/queries/seoMetrics";
 import { articleExistsForKeyword, createArticleDraft } from "@/lib/queries/articles";
 import { generateArticleDraftSafe } from "@/lib/contentGeneration";
@@ -40,15 +41,8 @@ const GAP_LIMIT = 15;
  * iniciales.
  */
 export async function POST(request: Request) {
-  const expectedSecret = process.env.CRON_SECRET?.trim();
-  if (!expectedSecret) {
-    return NextResponse.json({ error: "CRON_SECRET no configurado en el servidor." }, { status: 503 });
-  }
-
-  const providedSecret = request.headers.get("x-cron-secret")?.trim();
-  if (providedSecret !== expectedSecret) {
-    return NextResponse.json({ error: "No autorizado." }, { status: 401 });
-  }
+  const authError = verifyCronSecret(request);
+  if (authError) return authError;
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json({ error: "ANTHROPIC_API_KEY no configurada. Ver .env.example." }, { status: 503 });

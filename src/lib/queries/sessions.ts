@@ -40,3 +40,26 @@ export async function revokeOwnSession(sessionId: string, userId: number | strin
   );
   return res.rows.length > 0;
 }
+
+/**
+ * Revoca todas las sesiones activas de un usuario EXCEPTO la que está
+ * usando ahora mismo — llamado al confirmar o desactivar 2FA (ver
+ * app/api/auth/2fa/confirm y .../disable). A diferencia de
+ * `consumeResetToken`/`disableTotp`-por-team (que revocan TODAS las
+ * sesiones, sin excepción, porque ahí se crea una sesión nueva aparte
+ * inmediatamente después o la cuenta queda inhabilitada), acá la persona
+ * sigue logueada haciendo el cambio desde su propia sesión — revocarla
+ * también la dejaría fuera de su propio dashboard justo después de
+ * activar el segundo factor que acaba de configurar.
+ *
+ * Cierra la ventana real que motivó esto: si alguien más (un dispositivo
+ * robado, una sesión olvidada en un café internet) tenía sesión abierta
+ * con la cuenta, activar o quitar 2FA debe sacarlo de inmediato, no dejarlo
+ * con acceso hasta que esa sesión expire por su cuenta (hasta 7 días).
+ */
+export async function revokeOtherSessions(userId: number | string, currentSessionId: string): Promise<void> {
+  await query(
+    `UPDATE sessions SET revoked_at = now() WHERE user_id = $1 AND id != $2 AND revoked_at IS NULL;`,
+    [userId, currentSessionId]
+  );
+}

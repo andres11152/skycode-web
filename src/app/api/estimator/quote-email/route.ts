@@ -30,6 +30,11 @@ const QuoteEmailSchema = z.object({
   pace: z.enum(["standard", "express"]),
   currency: z.enum(["COP", "USD"]),
   locale: z.enum(locales).optional(),
+  // Ley 1581/Decreto 1377 — mismo requisito y mismo patrón que
+  // ContactSchema en /api/contact/route.ts: sin esto, esta captura suave
+  // (solo el correo) creaba un lead sin ninguna autorización explícita
+  // registrada (bug real de cumplimiento).
+  consent: z.literal(true),
 });
 
 /**
@@ -50,7 +55,7 @@ const QuoteEmailSchema = z.object({
 export async function POST(request: Request) {
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`estimator-quote:${ip}`, 5, 10 * 60 * 1000)) {
+    if (await isRateLimited(`estimator-quote:${ip}`, 5, 10 * 60 * 1000)) {
       return NextResponse.json({ error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." }, { status: 429 });
     }
 
@@ -60,6 +65,15 @@ export async function POST(request: Request) {
     }
 
     const { email, typeId, addonIds, pace, currency, locale } = parsed.data;
+
+    // Límite por destinatario, además del límite por IP de arriba — mismo
+    // criterio que /api/auth/login y /api/auth/forgot-password: el límite
+    // por IP no frena a alguien rotando IPs para bombardear de correos a
+    // un tercero (este endpoint manda un correo a cualquier dirección que
+    // el visitante escriba, sin verificarla).
+    if (await isRateLimited(`estimator-quote-email:${email.toLowerCase()}`, 3, 60 * 60 * 1000)) {
+      return NextResponse.json({ error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." }, { status: 429 });
+    }
     const resolvedLocale = locale ?? defaultLocale;
 
     const quote = computeEstimatorQuote({ typeId, addonIds, pace, currency, locale: resolvedLocale });
@@ -88,6 +102,8 @@ export async function POST(request: Request) {
           quote.addonTitles.join(", ") || "Ninguno"
         }. Ritmo: ${quote.paceLabel}.`,
         source: "Cotizador (solo email)",
+        // El schema ya exigió `consent === true` para llegar hasta acá.
+        consentGivenAt: new Date(),
       });
       dbSaved = true;
     } catch (dbErr) {

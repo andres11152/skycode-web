@@ -6,6 +6,7 @@ import {
   createTestProject,
   createTestUser,
   createTestInvoice,
+  createTestLead,
   createTestPayment,
   createTestProposal,
   createTestSession,
@@ -110,6 +111,24 @@ describe("anonymizeClient", () => {
     ]);
     expect(propRow.rows).toHaveLength(1);
     expect(propRow.rows[0].client_name).toBe(`Cliente Eliminado #${client.id}`);
+  });
+
+  it("anonimiza también los leads asociados por email (el lead original antes de convertirse en cliente)", async () => {
+    const client = await createTestClient({ name: "Cliente Lead", email: "lead-origen@test.local" });
+    const lead = await createTestLead({ name: "Cliente Lead", email: "lead-origen@test.local", phone: "+573009998877" });
+    const otherLead = await createTestLead({ name: "Otro Lead", email: "otro-sin-relacion@test.local" });
+
+    await withTransaction((c) => anonymizeClient(client.id, c));
+
+    const leadRow = await query("SELECT name, email, phone, anonymized_at FROM leads WHERE id = $1;", [lead.id]);
+    expect(leadRow.rows[0].name).toBe(`Cliente Eliminado #${client.id}`);
+    expect(leadRow.rows[0].phone).toBeNull();
+    expect(leadRow.rows[0].anonymized_at).not.toBeNull();
+
+    // Un lead sin relación por email no debe tocarse.
+    const otherRow = await query("SELECT name, anonymized_at FROM leads WHERE id = $1;", [otherLead.id]);
+    expect(otherRow.rows[0].name).toBe("Otro Lead");
+    expect(otherRow.rows[0].anonymized_at).toBeNull();
   });
 
   it("es idempotente: devuelve already_anonymized en el segundo intento", async () => {

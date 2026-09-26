@@ -1,21 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { getClientIp, isRateLimited } from "./rateLimit";
+import { getClientIp } from "./rateLimit";
 
-describe("isRateLimited", () => {
-  it("allows requests under the limit and blocks once it's reached", () => {
-    const key = "test:under-limit";
-    expect(isRateLimited(key, 3, 60_000)).toBe(false);
-    expect(isRateLimited(key, 3, 60_000)).toBe(false);
-    expect(isRateLimited(key, 3, 60_000)).toBe(false);
-    expect(isRateLimited(key, 3, 60_000)).toBe(true);
-  });
-
-  it("tracks separate buckets per key", () => {
-    isRateLimited("test:bucket-a", 1, 60_000);
-    expect(isRateLimited("test:bucket-b", 1, 60_000)).toBe(false);
-  });
-});
-
+// `isRateLimited()` ahora vive en Postgres (ver lib/rateLimit.ts) — sus
+// tests están en rateLimit.integration.test.ts, contra la base de prueba
+// real, no acá. `getClientIp()` sigue siendo pura (sin red ni DB), así que
+// se queda en la capa de tests unitarios.
 describe("getClientIp", () => {
   // TRUSTED_PROXY_HOPS default es 1: el edge del hosting (Vercel/Render) es
   // el único proxy de confianza, así que la IP real es la última entrada de

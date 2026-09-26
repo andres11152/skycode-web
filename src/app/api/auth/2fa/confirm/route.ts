@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { z } from "zod";
 import { requireSession } from "@/lib/withAuth";
+import { verifySessionToken } from "@/lib/session";
 import { confirmTotpSetup } from "@/lib/queries/totp";
+import { revokeOtherSessions } from "@/lib/queries/sessions";
 import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { query } from "@/lib/db";
@@ -40,6 +43,18 @@ export async function POST(request: Request) {
       entityId: session.id,
       ip: getClientIp(request),
     });
+
+    // Si alguien más tenía sesión abierta con esta cuenta (dispositivo
+    // robado, sesión olvidada), activar 2FA ahora debe sacarlo de
+    // inmediato en vez de dejarlo con acceso hasta que expire por su
+    // cuenta — ver el comentario largo en revokeOtherSessions(). Excluye
+    // la sesión ACTUAL (la de quien acaba de confirmar el QR) para no
+    // dejarla fuera de su propio dashboard.
+    const token = (await cookies()).get("skycode_session")?.value;
+    const payload = token ? await verifySessionToken(token) : null;
+    if (payload) {
+      await revokeOtherSessions(session.id, payload.sessionId);
+    }
 
     return NextResponse.json({ success: true, backupCodes: result.backupCodes });
   } catch (error) {

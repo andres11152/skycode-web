@@ -40,7 +40,7 @@ const RespondSchema = z
 export async function POST(request: Request, { params }: RouteContext) {
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`proposal-respond:${ip}`, 10, 10 * 60 * 1000)) {
+    if (await isRateLimited(`proposal-respond:${ip}`, 10, 10 * 60 * 1000)) {
       return NextResponse.json({ error: "Demasiadas solicitudes." }, { status: 429 });
     }
 

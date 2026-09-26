@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   // Cada lookup lee la base de datos de geoip desde disco — sin límite, un
   // cliente (o script) machacando este endpoint fuerza I/O de disco repetido
   // sin ningún beneficio (el país de una IP no cambia en minutos).
-  if (isRateLimited(`geo:${ip}`, 30, 60 * 1000)) {
+  if (await isRateLimited(`geo:${ip}`, 30, 60 * 1000)) {
     return NextResponse.json({ country: null }, { status: 429 });
   }
   const country = ip === "unknown" ? null : (geoipLookup(ip)?.country ?? null);

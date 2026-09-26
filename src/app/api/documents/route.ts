@@ -6,7 +6,7 @@ import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { getProjectDocuments, getClientDocuments, createDocumentRecord } from "@/lib/queries/documents";
 import { isProjectOwnedByClient } from "@/lib/queries/supportTickets";
-import { saveDocumentFile, isAllowedDocumentExtension } from "@/lib/storage";
+import { saveDocumentFile, isAllowedDocumentExtension, matchesFileSignature } from "@/lib/storage";
 import { logError } from "@/lib/logger";
 
 // Cota generosa para contratos/specs escaneados sin abrir la puerta a
@@ -118,6 +118,17 @@ export async function POST(request: Request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+
+    // Cierra la whitelist de extensiones contra un archivo renombrado (ej.
+    // un ejecutable guardado como `informe.pdf`) — ver el comentario largo
+    // en lib/storage.ts::matchesFileSignature.
+    if (!matchesFileSignature(buffer, file.name)) {
+      return NextResponse.json(
+        { error: "El contenido del archivo no coincide con su extensión." },
+        { status: 400 }
+      );
+    }
+
     const storageKey = await saveDocumentFile(buffer, file.name);
 
     const ip = getClientIp(request);

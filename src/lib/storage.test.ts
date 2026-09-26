@@ -56,7 +56,50 @@ process.env.R2_ACCESS_KEY_ID = "test-access-key";
 process.env.R2_SECRET_ACCESS_KEY = "test-secret-key";
 process.env.R2_BUCKET_NAME = "test-bucket";
 
-const { saveDocumentFile, readDocumentFile, deleteDocumentFile, isAllowedDocumentExtension } = await import("./storage");
+const { saveDocumentFile, readDocumentFile, deleteDocumentFile, isAllowedDocumentExtension, matchesFileSignature } =
+  await import("./storage");
+
+describe("matchesFileSignature", () => {
+  it("acepta un PDF real (firma %PDF-)", () => {
+    const pdfBytes = Buffer.from([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x34]);
+    expect(matchesFileSignature(pdfBytes, "contrato.pdf")).toBe(true);
+  });
+
+  it("rechaza un archivo renombrado a .pdf cuyo contenido real es otra cosa", () => {
+    // Firma MZ de un ejecutable de Windows (PE/EXE), guardado como .pdf.
+    const exeBytesDisguisedAsPdf = Buffer.from([0x4d, 0x5a, 0x90, 0x00]);
+    expect(matchesFileSignature(exeBytesDisguisedAsPdf, "informe.pdf")).toBe(false);
+  });
+
+  it("acepta un PNG real (firma de 8 bytes)", () => {
+    const pngBytes = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+    expect(matchesFileSignature(pngBytes, "captura.png")).toBe(true);
+  });
+
+  it("rechaza un PNG cuyo contenido real es un PDF", () => {
+    const pdfBytes = Buffer.from([0x25, 0x50, 0x44, 0x46, 0x2d]);
+    expect(matchesFileSignature(pdfBytes, "captura.png")).toBe(false);
+  });
+
+  it("acepta un .docx real (contenedor ZIP/Open XML)", () => {
+    const zipBytes = Buffer.from([0x50, 0x4b, 0x03, 0x04]);
+    expect(matchesFileSignature(zipBytes, "propuesta.docx")).toBe(true);
+  });
+
+  it("acepta un .doc real (OLE Compound File, Office viejo)", () => {
+    const oleBytes = Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]);
+    expect(matchesFileSignature(oleBytes, "contrato.doc")).toBe(true);
+  });
+
+  it("no verifica texto plano (.txt/.csv) — sin firma universal de bytes", () => {
+    expect(matchesFileSignature(Buffer.from("cualquier contenido"), "notas.txt")).toBe(true);
+    expect(matchesFileSignature(Buffer.from("a,b,c\n1,2,3"), "datos.csv")).toBe(true);
+  });
+
+  it("rechaza un buffer más corto que la firma esperada", () => {
+    expect(matchesFileSignature(Buffer.from([0x25]), "vacio.pdf")).toBe(false);
+  });
+});
 
 describe("isAllowedDocumentExtension", () => {
   it("acepta las extensiones de la whitelist, sin distinguir mayúsculas", () => {

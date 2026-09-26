@@ -47,6 +47,16 @@ const ContactSchema = z
     // locale por prop; queda opcional solo para no romper un POST externo
     // que no lo incluya.
     locale: z.enum(locales).optional(),
+    // Autorización de tratamiento de datos (Ley 1581 de 2012 / Decreto 1377
+    // de 2013) — no basta con que Contact.tsx bloquee el botón en el
+    // navegador hasta marcar la casilla: eso es solo UX, no prueba nada.
+    // El backend exige literalmente `true`, igual que `RespondSchema` de
+    // /api/proposals/[id]/respond exige `consent: z.literal(true)` para
+    // aceptar una propuesta — mismo patrón, misma razón. Sin esto, un POST
+    // directo (sin pasar por el checkbox del navegador) podía crear un
+    // lead sin que existiera ninguna autorización real (bug real de
+    // cumplimiento, corregido junto con la migración 0035).
+    consent: z.literal(true),
   })
   .extend(AttributionFieldsSchema.shape);
 
@@ -56,7 +66,7 @@ export async function POST(request: Request) {
 
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`contact:${ip}`, 10, 10 * 60 * 1000)) {
+    if (await isRateLimited(`contact:${ip}`, 10, 10 * 60 * 1000)) {
       return NextResponse.json(
         { error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." },
         { status: 429 }
@@ -84,6 +94,10 @@ export async function POST(request: Request) {
         ...parsed.data,
         service,
         source: formContext || "Formulario Web",
+        // El schema ya exigió `consent === true` para llegar hasta acá
+        // (ver ContactSchema arriba) — se guarda el momento exacto, no
+        // solo el booleano, como prueba de cumplimiento (Ley 1581).
+        consentGivenAt: new Date(),
       });
       dbSaved = true;
       console.log("🐘 [PostgreSQL] Lead guardado exitosamente en BD invencheck!");

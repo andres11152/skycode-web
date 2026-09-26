@@ -25,7 +25,7 @@ const AcceptInviteSchema = z.object({
 export async function POST(request: Request) {
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`team-accept:${ip}`, 5, 10 * 60 * 1000)) {
+    if (await isRateLimited(`team-accept:${ip}`, 5, 10 * 60 * 1000)) {
       return NextResponse.json(
         { error: "Demasiados intentos. Intente de nuevo en unos minutos." },
         { status: 429 }

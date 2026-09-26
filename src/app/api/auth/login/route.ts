@@ -12,7 +12,7 @@ const LoginSchema = z.object({
 export async function POST(request: Request) {
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`login:${ip}`, 5, 10 * 60 * 1000)) {
+    if (await isRateLimited(`login:${ip}`, 5, 10 * 60 * 1000)) {
       return NextResponse.json(
         { error: "Demasiados intentos de inicio de sesión. Intente de nuevo en unos minutos." },
         { status: 429 }
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     // sola cuenta (IPs rotadas, CGNAT). Este segundo límite, por email
     // normalizado, sí lo hace — independiente del anterior, así que un
     // atacante necesita evadir ambos a la vez.
-    if (isRateLimited(`login-email:${email.trim().toLowerCase()}`, 5, 10 * 60 * 1000)) {
+    if (await isRateLimited(`login-email:${email.trim().toLowerCase()}`, 5, 10 * 60 * 1000)) {
       return NextResponse.json(
         { error: "Demasiados intentos de inicio de sesión. Intente de nuevo en unos minutos." },
         { status: 429 }

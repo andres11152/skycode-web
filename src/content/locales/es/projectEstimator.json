@@ -105,7 +105,12 @@
     "sendingLabel": "Enviando…",
     "successMessage": "¡Listo! Revisa tu correo.",
     "errorMessage": "No pudimos enviarlo. Intenta de nuevo o escríbenos por WhatsApp.",
-    "invalidEmailError": "Escribe un correo válido."
+    "invalidEmailError": "Escribe un correo válido.",
+    "consent": {
+      "label": "Acepto el tratamiento de mis datos para recibir esta cotización.",
+      "linkText": "Ver política de privacidad",
+      "linkUrl": "/politica-privacidad"
+    }
   },
   "quoteEmail": {
     "subject": "Tu cotización de SkyCode: {type}",

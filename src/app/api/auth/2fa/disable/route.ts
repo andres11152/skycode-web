@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { z } from "zod";
 import { requireSession } from "@/lib/withAuth";
+import { verifySessionToken } from "@/lib/session";
 import { disableTotp } from "@/lib/queries/totp";
+import { revokeOtherSessions } from "@/lib/queries/sessions";
 import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { query } from "@/lib/db";
@@ -40,6 +43,16 @@ export async function POST(request: Request) {
       entityId: session.id,
       ip: getClientIp(request),
     });
+
+    // Mismo criterio que al activar 2FA (ver .../confirm/route.ts): si
+    // alguien más tenía sesión abierta con esta cuenta, quitar el segundo
+    // factor debe sacarlo de inmediato — sobre todo acá, donde justo se
+    // está reduciendo la seguridad de la cuenta. Excluye la sesión actual.
+    const token = (await cookies()).get("skycode_session")?.value;
+    const payload = token ? await verifySessionToken(token) : null;
+    if (payload) {
+      await revokeOtherSessions(session.id, payload.sessionId);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

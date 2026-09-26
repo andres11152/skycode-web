@@ -26,7 +26,7 @@ const Verify2faSchema = z.object({
 export async function POST(request: Request) {
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`login-2fa:${ip}`, 8, 10 * 60 * 1000)) {
+    if (await isRateLimited(`login-2fa:${ip}`, 8, 10 * 60 * 1000)) {
       return NextResponse.json(
         { error: "Demasiados intentos. Intente de nuevo en unos minutos." },
         { status: 429 }

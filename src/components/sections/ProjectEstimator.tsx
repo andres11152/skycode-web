@@ -40,6 +40,14 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
   // POST /api/estimator/quote-email y lib/estimatorQuote.ts.
   const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [captureEmail, setCaptureEmail] = useState("");
+  // Autorización de tratamiento de datos (Ley 1581/Decreto 1377) — esta
+  // captura solo pedía el correo, sin ningún checkbox de consentimiento,
+  // a diferencia del formulario grande de Contact.tsx (bug real de
+  // cumplimiento). El backend (/api/estimator/quote-email) ya exige
+  // `consent: true` server-side; este checkbox es lo que hace que ese
+  // valor sea real, no un `true` fijo mandado sin que la persona lo haya
+  // marcado.
+  const [captureConsent, setCaptureConsent] = useState(false);
   const [captureStatus, setCaptureStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   const currentType = projectTypes.find((type) => type.id === selectedType) || projectTypes[0];
@@ -131,7 +139,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
 
   const handleEmailCapture = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (captureStatus === "sending") return;
+    if (captureStatus === "sending" || !captureConsent) return;
 
     setCaptureStatus("sending");
     try {
@@ -145,6 +153,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
           pace: urgency,
           currency,
           locale,
+          consent: captureConsent,
         }),
       });
 
@@ -437,7 +446,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                       />
                       <button
                         type="submit"
-                        disabled={captureStatus === "sending"}
+                        disabled={captureStatus === "sending" || !captureConsent}
                         className="flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-background/10 px-3.5 text-xs font-bold text-background transition-colors hover:bg-background/20 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                       >
                         {captureStatus === "sending" ? (
@@ -447,6 +456,29 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                         )}
                       </button>
                     </div>
+                    {/* Autorización de tratamiento de datos (Ley 1581) —
+                        mismo requisito que la casilla grande de
+                        Contact.tsx, adaptada a este mini-formulario. */}
+                    <label className="flex items-start gap-2 text-[10px] leading-relaxed text-background/60">
+                      <input
+                        type="checkbox"
+                        checked={captureConsent}
+                        onChange={(e) => setCaptureConsent(e.target.checked)}
+                        required
+                        className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-background/30 bg-background/10 text-accent outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                      />
+                      <span>
+                        {content.emailCapture.consent.label}{" "}
+                        <a
+                          href={content.emailCapture.consent.linkUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline hover:text-background"
+                        >
+                          {content.emailCapture.consent.linkText}
+                        </a>
+                      </span>
+                    </label>
                     {captureStatus === "error" && (
                       <span className="flex items-center gap-1 text-[10px] font-medium text-red-400">
                         <WarningCircle size={11} /> {content.emailCapture.errorMessage}

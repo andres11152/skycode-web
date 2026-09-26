@@ -36,7 +36,16 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
         className="[mask-image:radial-gradient(ellipse_65%_55%_at_50%_0%,white,transparent)] opacity-95"
       />
       <div className="relative mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-center lg:gap-10 xl:gap-16">
-        <div className="flex flex-col items-start gap-3 text-left">
+        {/* min-w-0 en ambas columnas: por defecto un ítem de grid tiene
+            `min-width: auto`, así que si algo adentro no puede achicarse
+            (el párrafo largo, o las líneas de código con `white-space: pre`
+            del CodeMockup, que no pueden partirse) empuja la columna más
+            ancha que la pista real de la grilla — la sección lo recorta por
+            el borde derecho en vez de dejar que el texto haga su propio
+            wrap o que el `<pre>` scrollee internamente (bug real en mobile,
+            reportado por el usuario). `min-w-0` apaga ese mínimo automático
+            y deja que cada columna respete el ancho real que le toca. */}
+        <div className="flex min-w-0 flex-col items-start gap-3 text-left">
           <SectionEyebrow className="mb-2">{heroData.badge}</SectionEyebrow>
 
           {/*
@@ -119,7 +128,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           // en auditoría visual). La sección ya tiene su propio
           // `overflow-hidden` (arriba) para el resplandor/grilla, así que
           // este no hacía falta para evitar desbordes horizontales.
-          className="animate-hero-scale-in flex justify-center lg:mt-16 lg:justify-end w-full max-w-full"
+          className="animate-hero-scale-in flex min-w-0 justify-center lg:mt-16 lg:justify-end w-full max-w-full"
         >
           <CodeMockup locale={locale} />
         </div>

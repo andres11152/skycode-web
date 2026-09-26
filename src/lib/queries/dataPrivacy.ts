@@ -131,6 +131,15 @@ export type AnonymizeClientResult = { outcome: "ok" } | { outcome: "not_found" }
  * Deliberadamente NO toca proyectos/facturas/pagos/documentos — esos
  * quedan con sus montos y fechas intactos, solo dejan de estar atados a
  * un nombre real.
+ *
+ * Sí anonimiza también los `leads` que coincidan por email (paso 4, ver
+ * abajo): un cliente real casi siempre empezó como un lead del formulario
+ * de contacto o el cotizador antes de convertirse — sin este paso, ese
+ * lead original quedaba con nombre/teléfono/mensaje en texto plano después
+ * de anonimizar al cliente, dejando el derecho al olvido incompleto (bug
+ * real, corregido junto con la migración 0035). Mismo criterio que el
+ * paso de `proposals`: coincide por el email ORIGINAL, capturado antes de
+ * sobreescribirlo en el paso 1.
  */
 export async function anonymizeClient(clientId: number, dbRunner: QueryRunner): Promise<AnonymizeClientResult> {
   const clientRes = await dbRunner.query(`SELECT email, anonymized_at FROM clients WHERE id = $1;`, [clientId]);
@@ -159,6 +168,13 @@ export async function anonymizeClient(clientId: number, dbRunner: QueryRunner): 
 
   await dbRunner.query(
     `UPDATE proposals SET client_name = $1, client_email = $2 WHERE lower(client_email) = lower($3);`,
+    [anonName, anonEmail, originalEmail]
+  );
+
+  // Sin `notes` (ver el mismo comentario en anonymizeLead, lib/queries/leads.ts).
+  await dbRunner.query(
+    `UPDATE leads SET name = $1, email = $2, phone = NULL, message = '', anonymized_at = COALESCE(anonymized_at, now())
+     WHERE lower(email) = lower($3) AND deleted_at IS NULL;`,
     [anonName, anonEmail, originalEmail]
   );
 

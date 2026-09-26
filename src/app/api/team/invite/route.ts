@@ -25,7 +25,7 @@ const INVITE_LIFETIME_MS = 3 * 24 * 60 * 60 * 1000; // 3 días
 export const POST = withAuth("team:write", async (request, { session }) => {
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`team-invite:${ip}`, 10, 10 * 60 * 1000)) {
+    if (await isRateLimited(`team-invite:${ip}`, 10, 10 * 60 * 1000)) {
       return NextResponse.json(
         { error: "Demasiadas invitaciones enviadas. Intente de nuevo en unos minutos." },
         { status: 429 }

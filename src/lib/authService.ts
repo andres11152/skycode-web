@@ -4,6 +4,7 @@ import { ensureSeedAdmin, comparePassword } from "./auth";
 import { createSessionToken, createPendingTwoFactorToken, verifyPendingTwoFactorToken } from "./session";
 import { invalidateSessionCache } from "./authSession";
 import { logAudit } from "./audit";
+import { isRateLimited } from "./rateLimit";
 import { findUserByEmail, createSessionRecord, revokeSessionRecord } from "./queries/auth";
 import { verifyTotpOrBackupCode } from "./queries/totp";
 
@@ -89,6 +90,21 @@ export async function authenticateUserCredentials({ email, password, ip, userAge
   const isValid = await comparePassword(password, passwordHashToCheck);
 
   if (!user || !isValid || user.status !== "active") {
+    // Se audita el intento fallido (nunca la contraseña en sí) para que
+    // `/dashboard/auditoria` muestre fuerza bruta o cuentas objetivo — sin
+    // esto, un atacante podía intentar miles de credenciales sin dejar
+    // ningún rastro más allá de las métricas del rate limiter en memoria.
+    // `actorId: null` cuando el email no corresponde a ningún usuario real
+    // (no hay fila que referenciar); `actorEmail` sigue siendo el correo
+    // intentado, exista o no, porque es lo único identificable del intento.
+    await logAudit(query, {
+      actorId: user?.id ?? null,
+      actorEmail: email,
+      action: "user.login_failed",
+      entityType: "user",
+      entityId: user?.id ?? email,
+      ip,
+    });
     return { status: "invalid" };
   }
 
@@ -121,12 +137,32 @@ export async function verifyTwoFactorAndCreateSession({ pendingToken, code, ip, 
   const userId = await verifyPendingTwoFactorToken(pendingToken);
   if (!userId) return null;
 
-  const isValidCode = await verifyTotpOrBackupCode(userId, code);
-  if (!isValidCode) return null;
+  // Límite por usuario, además del límite por IP que ya aplica la ruta: un
+  // código de 6 dígitos tiene poquísima entropía, así que rotar IPs contra
+  // la MISMA cuenta objetivo debía quedar igual de bloqueado que insistir
+  // desde la misma IP. No sustituye el límite por IP (uno cubre "un
+  // atacante contra muchas cuentas", el otro "muchas fuentes contra una
+  // cuenta") — ambos deben evadirse a la vez.
+  if (await isRateLimited(`login-2fa-user:${userId}`, 5, 10 * 60 * 1000)) {
+    return null;
+  }
 
   const res = await query("SELECT id, name, email, role, status FROM users WHERE id = $1;", [userId]);
   const row = res.rows[0];
   if (!row || row.status !== "active") return null;
+
+  const isValidCode = await verifyTotpOrBackupCode(userId, code);
+  if (!isValidCode) {
+    await logAudit(query, {
+      actorId: Number(row.id),
+      actorEmail: String(row.email),
+      action: "user.2fa_failed",
+      entityType: "user",
+      entityId: Number(row.id),
+      ip,
+    });
+    return null;
+  }
 
   const publicUser: AuthUserPublic = { id: Number(row.id), name: String(row.name), email: String(row.email), role: String(row.role) };
   return createSessionForUser(publicUser, ip, userAgent);

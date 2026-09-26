@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { Resend } from "resend";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
@@ -31,7 +31,7 @@ const GENERIC_MESSAGE =
 export async function POST(request: Request) {
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`forgot-password:${ip}`, 5, 10 * 60 * 1000)) {
+    if (await isRateLimited(`forgot-password:${ip}`, 5, 10 * 60 * 1000)) {
       return NextResponse.json({ error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." }, { status: 429 });
     }
 
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
 
     // Mismo rate limit por email normalizado que login/team-accept — evita
     // que alguien agote el límite por IP rotando IPs contra una cuenta puntual.
-    if (isRateLimited(`forgot-password-email:${email.trim().toLowerCase()}`, 5, 10 * 60 * 1000)) {
+    if (await isRateLimited(`forgot-password-email:${email.trim().toLowerCase()}`, 5, 10 * 60 * 1000)) {
       return NextResponse.json({ error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." }, { status: 429 });
     }
 
@@ -72,28 +72,45 @@ export async function POST(request: Request) {
     const origin = new URL(request.url).origin;
     const resetUrl = `${origin}/resetear-password/${token}`;
 
-    const apiKey = process.env.RESEND_API_KEY?.trim();
-    const isDummyKey = !apiKey || apiKey === "your_resend_api_key_here" || !apiKey.startsWith("re_");
+    // El envío por Resend (una llamada de red a un tercero, con latencia
+    // variable de cientos de ms a un par de segundos) es, con diferencia,
+    // la parte más lenta de esta rama — mucho más que el par de INSERTs
+    // locales de arriba. Dejarla `await`eada antes de responder abría un
+    // oráculo de timing real: una cuenta inexistente respondía casi de
+    // inmediato (nada que hacer), mientras una cuenta real esperaba a que
+    // Resend contestara. `after()` (Next.js) programa el envío para
+    // después de que la respuesta ya salió — sigue completándose (no es
+    // fire-and-forget descartado, corre hasta el final incluso en runtimes
+    // serverless), pero ya no aporta tiempo a la respuesta que ve el
+    // cliente. Queda un timing gap residual (los dos INSERTs locales de
+    // arriba), pero es órdenes de magnitud más chico y no depende de la
+    // red de un tercero — no vale la pena moverlos también a `after()`
+    // porque el test E2E de este flujo necesita que el token ya exista en
+    // la base apenas responde la request (ver password-reset.e2e.test.ts).
+    after(async () => {
+      const apiKey = process.env.RESEND_API_KEY?.trim();
+      const isDummyKey = !apiKey || apiKey === "your_resend_api_key_here" || !apiKey.startsWith("re_");
 
-    if (!isDummyKey) {
-      try {
-        const resend = new Resend(apiKey);
-        const fromAddress = process.env.RESEND_FROM_EMAIL || "SKYCODE Web <contact@skycode.agency>";
-        await resend.emails.send({
-          from: fromAddress,
-          to: user.email,
-          subject: "Restablecer tu contraseña de SKYCODE Agency",
-          text: `Recibimos una solicitud para restablecer tu contraseña.\n\nSi fuiste tú, hazlo acá (válido por 1 hora):\n${resetUrl}\n\nSi no fuiste tú, ignora este correo — tu contraseña no cambia hasta que abras el enlace.`,
-        });
-      } catch (emailErr) {
-        logError("⚠️ [Forgot Password Resend Warning]", emailErr);
+      if (!isDummyKey) {
+        try {
+          const resend = new Resend(apiKey);
+          const fromAddress = process.env.RESEND_FROM_EMAIL || "SKYCODE Web <contact@skycode.agency>";
+          await resend.emails.send({
+            from: fromAddress,
+            to: user.email,
+            subject: "Restablecer tu contraseña de SKYCODE Agency",
+            text: `Recibimos una solicitud para restablecer tu contraseña.\n\nSi fuiste tú, hazlo acá (válido por 1 hora):\n${resetUrl}\n\nSi no fuiste tú, ignora este correo — tu contraseña no cambia hasta que abras el enlace.`,
+          });
+        } catch (emailErr) {
+          logError("⚠️ [Forgot Password Resend Warning]", emailErr);
+        }
+      } else {
+        // Solo en consola del servidor, nunca en la respuesta HTTP — ver el
+        // comentario de arriba sobre por qué este enlace no puede filtrarse
+        // al cliente que hizo la request.
+        console.warn(`⚠️ [Forgot Password] RESEND_API_KEY no configurada. Enlace de reseteo: ${resetUrl}`);
       }
-    } else {
-      // Solo en consola del servidor, nunca en la respuesta HTTP — ver el
-      // comentario de arriba sobre por qué este enlace no puede filtrarse
-      // al cliente que hizo la request.
-      console.warn(`⚠️ [Forgot Password] RESEND_API_KEY no configurada. Enlace de reseteo: ${resetUrl}`);
-    }
+    });
 
     return NextResponse.json({ success: true, message: GENERIC_MESSAGE });
   } catch (error) {

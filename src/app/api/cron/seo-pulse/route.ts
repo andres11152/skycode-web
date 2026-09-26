@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { verifyCronSecret } from "@/lib/cronAuth";
 import { fetchSearchAnalyticsSafe } from "@/lib/googleSearchConsole";
 import { upsertGscMetrics } from "@/lib/queries/seoMetrics";
 import { logError } from "@/lib/logger";
@@ -19,15 +20,8 @@ import { logError } from "@/lib/logger";
  * "reintentar solo lo que falló".
  */
 export async function POST(request: Request) {
-  const expectedSecret = process.env.CRON_SECRET?.trim();
-  if (!expectedSecret) {
-    return NextResponse.json({ error: "CRON_SECRET no configurado en el servidor." }, { status: 503 });
-  }
-
-  const providedSecret = request.headers.get("x-cron-secret")?.trim();
-  if (providedSecret !== expectedSecret) {
-    return NextResponse.json({ error: "No autorizado." }, { status: 401 });
-  }
+  const authError = verifyCronSecret(request);
+  if (authError) return authError;
 
   if (!process.env.GSC_SITE_URL || !process.env.GSC_SERVICE_ACCOUNT_EMAIL || !process.env.GSC_SERVICE_ACCOUNT_PRIVATE_KEY) {
     return NextResponse.json(

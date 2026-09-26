@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   addLeadActivity,
+  anonymizeLead,
   createLead,
   getActiveLeadsPage,
   getAllMatchingLeads,
@@ -319,5 +320,39 @@ describe("setLeadFollowUp", () => {
 
     const deletedLead = await createTestLead({ deletedAt: new Date() });
     expect(await setLeadFollowUp({ id: deletedLead.id, nextFollowUpAt: "2026-10-15", followUpNote: null }, { query })).toBeNull();
+  });
+});
+
+// Derecho al olvido (Ley 1581) para prospectos que nunca llegaron a ser
+// clientes — ver migración 0035 y el comentario largo en anonymizeLead.
+describe("anonymizeLead", () => {
+  it("reemplaza nombre/email/telefono/mensaje por valores genéricos y marca anonymized_at", async () => {
+    const lead = await createTestLead({ name: "Andrés Real", email: "andres.real@example.com", phone: "+573001112233", message: "Necesito un CRM a medida" });
+
+    const result = await anonymizeLead(lead.id, { query });
+    expect(result).toEqual({ outcome: "ok" });
+
+    const row = await query("SELECT name, email, phone, message, anonymized_at FROM leads WHERE id = $1;", [lead.id]);
+    const updated = row.rows[0];
+    expect(updated.name).toBe(`Prospecto Eliminado #${lead.id}`);
+    expect(updated.email).toBe(`prospecto-eliminado-${lead.id}@anonimizado.local`);
+    expect(updated.phone).toBeNull();
+    expect(updated.message).toBe("");
+    expect(updated.anonymized_at).not.toBeNull();
+  });
+
+  it("es idempotente: devuelve already_anonymized en el segundo intento", async () => {
+    const lead = await createTestLead();
+    await anonymizeLead(lead.id, { query });
+
+    const second = await anonymizeLead(lead.id, { query });
+    expect(second).toEqual({ outcome: "already_anonymized" });
+  });
+
+  it("devuelve not_found para un lead que no existe o ya está borrado lógicamente", async () => {
+    expect(await anonymizeLead(999999, { query })).toEqual({ outcome: "not_found" });
+
+    const deletedLead = await createTestLead({ deletedAt: new Date() });
+    expect(await anonymizeLead(deletedLead.id, { query })).toEqual({ outcome: "not_found" });
   });
 });

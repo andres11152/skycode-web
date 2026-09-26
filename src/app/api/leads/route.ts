@@ -28,6 +28,14 @@ const CreateLeadSchema = z
     estimatedWeeks: z.number().int().min(1).max(104).optional(),
     message: z.string().trim().max(5000).optional(),
     source: z.string().trim().max(100).optional(),
+    // Ley 1581/Decreto 1377 — mismo requisito que ContactSchema en
+    // /api/contact/route.ts. Este endpoint es público (sin sesión, ver
+    // rate limit abajo) y ninguna vista de este proyecto lo llama hoy —
+    // existe para integraciones externas (ej. un formulario de anuncios) —
+    // pero cualquier fuente que cree un lead con datos personales necesita
+    // la misma autorización explícita, sin importar qué UI (si alguna) lo
+    // dispare.
+    consent: z.literal(true),
   })
   .extend(AttributionFieldsSchema.shape);
 
@@ -75,7 +83,7 @@ export const GET = withAuth("leads:read", async (request) => {
 export async function POST(request: Request) {
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`leads:${ip}`, 5, 10 * 60 * 1000)) {
+    if (await isRateLimited(`leads:${ip}`, 5, 10 * 60 * 1000)) {
       return NextResponse.json(
         { error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." },
         { status: 429 }
@@ -87,7 +95,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Datos de solicitud inválidos." }, { status: 400 });
     }
 
-    const lead = await createLead(parsed.data);
+    // El schema ya exigió `consent === true` para llegar hasta acá.
+    const lead = await createLead({ ...parsed.data, consentGivenAt: new Date() });
 
     // Nombre y correo son datos personales del titular (Ley 1581/RGPD, ver
     // TrustStrip) — no deben replicarse en la retención de logs de un

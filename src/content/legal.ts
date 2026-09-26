@@ -15,16 +15,30 @@ export const legalDocuments: LegalDocument[] = [
     title: "Política de Privacidad",
     description:
       "Cómo SkyCode Agency recolecta, usa y protege los datos personales de acuerdo con la Ley 1581 de 2012 (Habeas Data) en Colombia.",
-    updatedAt: "2026-07-21",
+    updatedAt: "2026-09-25",
     content: [
       {
         type: "paragraph",
-        text: `${siteName} ("nosotros", "la Agencia") es responsable del tratamiento de los datos personales que usted nos entrega a través de este sitio web, de acuerdo con la Ley 1581 de 2012, el Decreto 1377 de 2013 y demás normas que las modifiquen o complementen en Colombia.`,
+        text: `${siteName} ("nosotros", "la Agencia"), con domicilio en Colombia, es responsable del tratamiento de los datos personales que usted nos entrega a través de este sitio web, nuestro portal de clientes o cualquier otro canal descrito en esta política, de acuerdo con la Ley 1581 de 2012, el Decreto 1377 de 2013 y demás normas que las modifiquen o complementen.`,
       },
       { type: "heading", level: 2, text: "1. Datos que recolectamos" },
       {
         type: "paragraph",
-        text: "Solo recolectamos los datos que usted nos entrega voluntariamente a través del formulario de contacto de este sitio: nombre o razón social, correo electrónico y el contenido del mensaje. No recolectamos datos de pago, no requerimos crear una cuenta de usuario y no usamos formularios ocultos de captura de datos.",
+        text: "Recolectamos datos personales por varios canales, según cómo interactúe con nosotros:",
+      },
+      {
+        type: "list",
+        items: [
+          "Formulario de contacto y cotizador interactivo: nombre o razón social, correo electrónico, teléfono (opcional) y el contenido de su mensaje o configuración de proyecto.",
+          "Cotizador — \"Recíbelo por correo\": solo su correo electrónico, si elige esa opción en vez de llenar el formulario completo.",
+          "Propuestas comerciales: si acepta una propuesta enviada por nosotros, registramos su nombre tecleado, la dirección IP y el navegador desde el que aceptó, como firma electrónica de ese acuerdo (Ley 527 de 1999).",
+          "Portal de clientes: si su empresa se convierte en cliente, creamos una cuenta con su nombre, correo y, si aplica, las credenciales de acceso al portal donde puede ver sus proyectos, facturas y documentos.",
+          "Datos de navegación técnicos: dirección IP y encabezados estándar del navegador, procesados automáticamente por nuestra infraestructura (hosting, entrega de correo, monitoreo de errores) para que el sitio funcione, sin que construyamos un perfil de navegación con fines publicitarios.",
+        ],
+      },
+      {
+        type: "paragraph",
+        text: "No recolectamos datos de tarjetas de pago directamente — los pagos en línea del portal de clientes los procesa un tercero especializado (ver sección 4), y nosotros solo recibimos la confirmación de que el pago ocurrió, no el número de la tarjeta.",
       },
       { type: "heading", level: 2, text: "2. Finalidad del tratamiento" },
       {
@@ -32,33 +46,57 @@ export const legalDocuments: LegalDocument[] = [
         items: [
           "Responder su solicitud de contacto o cotización.",
           "Dar seguimiento comercial a proyectos en conversación.",
-          "Cumplir obligaciones legales o contractuales cuando exista una relación de servicio vigente.",
+          "Prestar el servicio contratado si usted se convierte en cliente: gestión de proyectos, facturación, soporte y comunicación relacionada.",
+          "Cumplir obligaciones legales, contables o contractuales cuando exista una relación de servicio vigente.",
+          "Enviarle la cotización o confirmación que usted mismo solicitó a través del sitio.",
         ],
       },
       {
         type: "paragraph",
         text: "No usamos sus datos con fines distintos a los descritos, no los vendemos ni los compartimos con terceros para fines publicitarios.",
       },
-      { type: "heading", level: 2, text: "3. Sus derechos (derechos ARCO)" },
+      { type: "heading", level: 2, text: "3. Autorización" },
       {
         type: "paragraph",
-        text: "Como titular de sus datos personales, usted tiene derecho a Acceder, Rectificar, Cancelar y Oponerse (ARCO) al tratamiento de su información, así como a conocer, actualizar y solicitar la supresión de sus datos en cualquier momento.",
+        text: "Antes de recolectar sus datos a través de cualquier formulario público de este sitio, le pedimos marcar expresamente una casilla de autorización que enlaza a esta política — no asumimos su consentimiento por el simple hecho de que usted use el sitio. Sin esa autorización explícita, nuestros formularios no procesan la solicitud.",
+      },
+      { type: "heading", level: 2, text: "4. Cookies y transferencia internacional de datos" },
+      {
+        type: "paragraph",
+        text: "Este sitio usa una única cookie técnica y estrictamente necesaria para mantener su sesión iniciada si usted es cliente o parte de nuestro equipo (portal de clientes o panel interno) — no requiere su consentimiento por ser indispensable para ese funcionamiento, y no la usamos para rastrear su navegación. Vea la Política de Cookies para el detalle completo, incluyendo lo que NO usamos (analítica ni publicidad).",
       },
       {
         type: "paragraph",
-        text: `Para ejercer estos derechos, escríbanos a ${contactEmail} indicando su solicitud. Responderemos dentro de los términos establecidos por la ley.`,
+        text: "Para operar el sitio y el sistema interno nos apoyamos en proveedores externos que, en algunos casos, procesan datos personales desde servidores fuera de Colombia (transferencia internacional, art. 26 de la Ley 1581): alojamiento (hosting) del sitio, envío de correos transaccionales, monitoreo técnico de errores y almacenamiento de archivos en la nube. Los pagos en línea del portal de clientes los procesa una pasarela de pagos colombiana. Exigimos a estos proveedores el mismo nivel de cuidado con sus datos que aplicamos nosotros mismos, y solo les compartimos lo estrictamente necesario para prestar cada servicio.",
       },
-      { type: "heading", level: 2, text: "4. Conservación y seguridad" },
+      { type: "heading", level: 2, text: "5. Sus derechos (derechos ARCO)" },
       {
         type: "paragraph",
-        text: "Conservamos sus datos únicamente durante el tiempo necesario para cumplir la finalidad para la que fueron recolectados, o mientras exista una relación comercial vigente. Todo el tráfico de este sitio viaja cifrado (TLS), y el acceso a los datos recibidos está restringido al personal que necesita tratarlos para responder su solicitud.",
+        text: "Como titular de sus datos personales, usted tiene derecho a Acceder, Rectificar, Cancelar y Oponerse (ARCO) al tratamiento de su información, así como a conocer, actualizar, revocar su autorización y solicitar la supresión (eliminación) de sus datos en cualquier momento — haya llegado a ser cliente nuestro o no.",
       },
-      { type: "heading", level: 2, text: "5. Menores de edad" },
+      {
+        type: "paragraph",
+        text: `Para ejercer estos derechos, escríbanos a ${contactEmail} indicando su solicitud y el correo con el que nos contactó. Atenderemos consultas dentro de los 15 días hábiles siguientes y reclamos (incluida la solicitud de supresión) dentro de los 15 días hábiles siguientes a su radicación, según los términos del Decreto 1377 de 2013; si no es posible resolver el reclamo en ese plazo, se lo informaremos indicando los motivos y la fecha en que se atenderá, sin exceder los 8 días hábiles adicionales que permite la ley.`,
+      },
+      {
+        type: "paragraph",
+        text: "Cuando su solicitud sea de supresión, sus datos identificables se reemplazan de forma permanente por valores genéricos (anonimización) en lugar de borrarse por completo, cuando exista una obligación legal o contable de conservar el registro asociado (por ejemplo, una factura ya emitida) — la Ley 1581 (art. 9) contempla esta excepción explícitamente. En cualquier otro caso, sus datos dejan de ser identificables de forma igualmente permanente.",
+      },
+      {
+        type: "paragraph",
+        text: "Si considera que no hemos atendido su solicitud de forma adecuada, puede presentar una queja ante la Superintendencia de Industria y Comercio (SIC), autoridad de protección de datos personales en Colombia.",
+      },
+      { type: "heading", level: 2, text: "6. Conservación y seguridad" },
+      {
+        type: "paragraph",
+        text: "Conservamos sus datos únicamente durante el tiempo necesario para cumplir la finalidad para la que fueron recolectados, o mientras exista una relación comercial vigente. Todo el tráfico de este sitio viaja cifrado (TLS); las contraseñas de cuentas se almacenan con hash, no en texto plano; los usuarios internos y de portal pueden activar verificación en dos pasos; y el acceso a los datos recibidos está restringido al personal que necesita tratarlos para responder su solicitud o prestar el servicio.",
+      },
+      { type: "heading", level: 2, text: "7. Menores de edad" },
       {
         type: "paragraph",
         text: "Este sitio y nuestros servicios están dirigidos a empresas y personas naturales mayores de edad. No recolectamos intencionalmente datos de menores de 18 años.",
       },
-      { type: "heading", level: 2, text: "6. Cambios a esta política" },
+      { type: "heading", level: 2, text: "8. Cambios a esta política" },
       {
         type: "paragraph",
         text: "Podemos actualizar esta política para reflejar cambios legales u operativos. La fecha de la última actualización aparece al inicio de este documento.",
@@ -70,7 +108,7 @@ export const legalDocuments: LegalDocument[] = [
     title: "Política de Cookies",
     description:
       "Qué cookies usa este sitio (y cuáles no) y cómo puede controlarlas desde su navegador.",
-    updatedAt: "2026-07-21",
+    updatedAt: "2026-09-25",
     content: [
       {
         type: "paragraph",
@@ -79,7 +117,11 @@ export const legalDocuments: LegalDocument[] = [
       { type: "heading", level: 2, text: "1. Qué usamos hoy" },
       {
         type: "paragraph",
-        text: "Este sitio es una página estática. Actualmente no instalamos cookies de analítica, publicidad ni seguimiento de terceros (no usamos Google Analytics, píxeles de redes sociales ni cookies publicitarias). No requerimos su consentimiento porque, hoy, no hay nada de eso que consentir.",
+        text: "Si usted solo navega el sitio público (sin iniciar sesión), no instalamos ninguna cookie: no usamos Google Analytics, píxeles de redes sociales ni cookies publicitarias o de seguimiento de terceros.",
+      },
+      {
+        type: "paragraph",
+        text: "Si usted es cliente o parte de nuestro equipo e inicia sesión en el portal de clientes o el panel interno, sí usamos una única cookie técnica y estrictamente necesaria para mantener su sesión iniciada mientras navega esas páginas — no se instala si usted no inicia sesión, y no la usamos para rastrear su navegación por el sitio público ni para ningún fin distinto a mantenerlo autenticado. Por ser estrictamente necesaria para ese funcionamiento, no requiere su consentimiento bajo los criterios habituales de cookies (a diferencia de una cookie de analítica o publicidad, que sí lo requeriría y que hoy no usamos).",
       },
       { type: "heading", level: 2, text: "2. Si eso cambia" },
       {

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { verifyCronSecret } from "@/lib/cronAuth";
 import { generateDueRetainerInvoices } from "@/lib/queries/retainers";
 import { logError } from "@/lib/logger";
 
@@ -11,15 +12,8 @@ import { logError } from "@/lib/logger";
  * y sin `CRON_SECRET` configurado la ruta se niega a correr.
  */
 export async function POST(request: Request) {
-  const expectedSecret = process.env.CRON_SECRET?.trim();
-  if (!expectedSecret) {
-    return NextResponse.json({ error: "CRON_SECRET no configurado en el servidor." }, { status: 503 });
-  }
-
-  const providedSecret = request.headers.get("x-cron-secret")?.trim();
-  if (providedSecret !== expectedSecret) {
-    return NextResponse.json({ error: "No autorizado." }, { status: 401 });
-  }
+  const authError = verifyCronSecret(request);
+  if (authError) return authError;
 
   try {
     const generated = await generateDueRetainerInvoices();

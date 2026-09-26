@@ -19,6 +19,7 @@ describe("POST /api/leads — captura pública con atribución UTM", () => {
       utm_source: "google",
       utm_medium: "cpc",
       utm_campaign: campaign.utm_campaign,
+      consent: true,
     });
 
     expect(res.status).toBe(200);
@@ -43,6 +44,7 @@ describe("POST /api/leads — captura pública con atribución UTM", () => {
       const res = await client.post("/api/leads", {
         name: "Prospecto",
         email: `flood-${uniqueSuffix()}-${i}@test.local`,
+        consent: true,
       });
       expect(res.status).toBe(200);
     }
@@ -50,6 +52,7 @@ describe("POST /api/leads — captura pública con atribución UTM", () => {
     const blocked = await client.post("/api/leads", {
       name: "Prospecto",
       email: `flood-${uniqueSuffix()}-final@test.local`,
+      consent: true,
     });
     expect(blocked.status).toBe(429);
   });
@@ -61,8 +64,8 @@ describe("GET /api/leads — búsqueda, filtro y paginación autenticadas", () =
     const adminClient = await loginAs(admin.email, "SuperSecret123456");
 
     const suffix = uniqueSuffix();
-    await adminClient.post("/api/leads", { name: "Ana Coincide", email: `ana-${suffix}@test.local` });
-    await adminClient.post("/api/leads", { name: "Otro Lead", email: `otro-${suffix}@test.local` });
+    await adminClient.post("/api/leads", { name: "Ana Coincide", email: `ana-${suffix}@test.local`, consent: true });
+    await adminClient.post("/api/leads", { name: "Otro Lead", email: `otro-${suffix}@test.local`, consent: true });
 
     const salesManager = await createTestUser({ role: "sales_manager", password: "SuperSecret123456" });
     const client = await loginAs(salesManager.email, "SuperSecret123456");
@@ -83,6 +86,7 @@ describe("PATCH /api/leads — asignación de dueño y cambio de estado con hist
     const createRes = await adminClient.post("/api/leads", {
       name: "Lead a asignar",
       email: `asignar-${uniqueSuffix()}@test.local`,
+      consent: true,
     });
     const { lead } = await createRes.json();
 
@@ -108,6 +112,7 @@ describe("PATCH /api/leads — asignación de dueño y cambio de estado con hist
     const createRes = await adminClient.post("/api/leads", {
       name: "Sin cambio real",
       email: `sincambio-${uniqueSuffix()}@test.local`,
+      consent: true,
     });
     const { lead } = await createRes.json();
 
@@ -133,6 +138,7 @@ describe("PATCH /api/leads — asignación de dueño y cambio de estado con hist
     const createRes = await adminClient.post("/api/leads", {
       name: "Con nota manual",
       email: `notamanual-${uniqueSuffix()}@test.local`,
+      consent: true,
     });
     const { lead } = await createRes.json();
 
@@ -158,6 +164,7 @@ describe("PATCH /api/leads — recordatorio de seguimiento", () => {
     const createRes = await adminClient.post("/api/leads", {
       name: "Lead con seguimiento",
       email: `seguimiento-${uniqueSuffix()}@test.local`,
+      consent: true,
     });
     const { lead } = await createRes.json();
 
@@ -183,6 +190,7 @@ describe("PATCH /api/leads — recordatorio de seguimiento", () => {
     const createRes = await adminClient.post("/api/leads", {
       name: "Lead a limpiar",
       email: `limpiar-${uniqueSuffix()}@test.local`,
+      consent: true,
     });
     const { lead } = await createRes.json();
     await adminClient.patch("/api/leads", { id: lead.id, nextFollowUpAt: "2026-10-15", followUpNote: "x" });
@@ -201,6 +209,7 @@ describe("PATCH /api/leads — recordatorio de seguimiento", () => {
     const createRes = await adminClient.post("/api/leads", {
       name: "Fecha inválida",
       email: `fechainvalida-${uniqueSuffix()}@test.local`,
+      consent: true,
     });
     const { lead } = await createRes.json();
 
@@ -215,6 +224,7 @@ describe("PATCH /api/leads — recordatorio de seguimiento", () => {
     const createRes = await adminClient.post("/api/leads", {
       name: "Combo estado + seguimiento",
       email: `combo-${uniqueSuffix()}@test.local`,
+      consent: true,
     });
     const { lead } = await createRes.json();
 
@@ -239,6 +249,7 @@ describe("DELETE /api/leads — borrado lógico", () => {
     const createRes = await adminClient.post("/api/leads", {
       name: "A borrar",
       email: `aborrar-${uniqueSuffix()}@test.local`,
+      consent: true,
     });
     const { lead } = await createRes.json();
 

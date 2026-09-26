@@ -19,7 +19,7 @@ const IdSchema = z.uuid();
 export async function GET(request: Request, { params }: RouteContext) {
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`proposal-view:${ip}`, 30, 10 * 60 * 1000)) {
+    if (await isRateLimited(`proposal-view:${ip}`, 30, 10 * 60 * 1000)) {
       return NextResponse.json({ error: "Demasiadas solicitudes." }, { status: 429 });
     }
 

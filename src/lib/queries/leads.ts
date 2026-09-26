@@ -6,6 +6,7 @@ const LEADS_SELECT = `
          l.message, l.source, l.status, l.created_at,
          l.utm_source, l.utm_medium, l.utm_campaign, l.referrer, l.landing_page,
          l.next_follow_up_at::text AS next_follow_up_at, l.follow_up_note,
+         l.anonymized_at,
          u.id AS owner_id, u.name AS owner_name, u.email AS owner_email,
          COUNT(*) OVER() AS total_count
   FROM leads l
@@ -44,6 +45,7 @@ function shapeLeadRow(row: Record<string, unknown>): Lead {
     // problema de raíz: nunca pasa por un `Date` de JS.
     next_follow_up_at: row.next_follow_up_at ? String(row.next_follow_up_at) : null,
     follow_up_note: row.follow_up_note ? String(row.follow_up_note) : null,
+    anonymized_at: row.anonymized_at ? String(row.anonymized_at) : null,
     owner: ownerId && ownerName && ownerEmail ? { id: ownerId, name: ownerName, email: ownerEmail } : null,
   };
 }
@@ -167,6 +169,15 @@ export interface CreateLeadData {
   fbclid?: string | null;
   referrer?: string | null;
   landing_page?: string | null;
+  /** Timestamp de cuándo la persona marcó la casilla de autorización de
+   * tratamiento de datos (Ley 1581) — `undefined`/no pasado significa que
+   * el caller no exigió consentimiento explícito (nunca debería pasar en
+   * un endpoint público, ver /api/contact, /api/leads,
+   * /api/estimator/quote-email, que lo exigen server-side con
+   * `consent: z.literal(true)` antes de siquiera llamar acá). Se guarda el
+   * momento exacto, no solo un booleano, para poder demostrar cumplimiento
+   * ante la SIC si hace falta. */
+  consentGivenAt?: Date | null;
 }
 
 interface QueryRunner {
@@ -191,9 +202,10 @@ export async function createLead(data: CreateLeadData, dbRunner?: QueryRunner) {
   const res = await executor.query(
     `INSERT INTO leads (
        name, email, phone, service, budget, currency, estimated_weeks, message, source, status,
-       utm_source, utm_medium, utm_campaign, utm_term, utm_content, gclid, fbclid, referrer, landing_page, campaign_id
+       utm_source, utm_medium, utm_campaign, utm_term, utm_content, gclid, fbclid, referrer, landing_page, campaign_id,
+       consent_given_at
      )
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'Nuevo', $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'Nuevo', $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
      RETURNING id, name, email, created_at;`,
     [
       data.name,
@@ -215,10 +227,51 @@ export async function createLead(data: CreateLeadData, dbRunner?: QueryRunner) {
       data.referrer || null,
       data.landing_page || null,
       campaignId,
+      data.consentGivenAt ?? null,
     ]
   );
 
   return res.rows[0];
+}
+
+export type AnonymizeLeadResult = { outcome: "ok" } | { outcome: "not_found" } | { outcome: "already_anonymized" };
+
+/**
+ * Anonimiza un lead — mismo patrón exacto que `anonymizeClient()`
+ * (lib/queries/dataPrivacy.ts): reemplaza nombre/teléfono/mensaje/email
+ * por valores genéricos en vez de un DELETE físico, para conservar la fila
+ * y sus `lead_activities` como rastro de auditoría interno. A diferencia
+ * de un cliente, un lead no tiene facturas/pagos que sustentar
+ * contablemente, así que no hay ninguna excepción legal que impida ir más
+ * lejos — se mantiene la anonimización (en vez de un DELETE real) solo por
+ * consistencia con el resto del sistema y para no romper el historial de
+ * actividades del prospecto. Irreversible, sin endpoint para deshacerlo.
+ */
+export async function anonymizeLead(leadId: number, dbRunner: QueryRunner): Promise<AnonymizeLeadResult> {
+  const leadRes = await dbRunner.query(`SELECT anonymized_at FROM leads WHERE id = $1 AND deleted_at IS NULL;`, [leadId]);
+  const lead = leadRes.rows[0];
+  if (!lead) return { outcome: "not_found" };
+  if (lead.anonymized_at) return { outcome: "already_anonymized" };
+
+  const anonName = `Prospecto Eliminado #${leadId}`;
+  const anonEmail = `prospecto-eliminado-${leadId}@anonimizado.local`;
+
+  // Sin `notes`: esa columna se eliminó en la migración 0005 (el campo
+  // plano se reemplazó por el timeline de `lead_activities`) — un UPDATE
+  // que la referenciara fallaría en runtime contra el esquema real (bug
+  // real, atrapado por dataPrivacy.integration.test.ts al correr esto
+  // contra Postgres de verdad, no solo tsc/eslint). No se toca
+  // `lead_activities`: su `body` es texto libre escrito por el equipo, no
+  // un campo estructurado de identidad, mismo criterio que
+  // `anonymizeClient()` con `audit_log`.
+  await dbRunner.query(
+    `UPDATE leads
+     SET name = $1, email = $2, phone = NULL, message = '', anonymized_at = now()
+     WHERE id = $3;`,
+    [anonName, anonEmail, leadId]
+  );
+
+  return { outcome: "ok" };
 }
 
 export interface UpdateLeadParams {

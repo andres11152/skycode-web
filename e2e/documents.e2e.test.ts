@@ -6,10 +6,32 @@ beforeEach(async () => {
   await resetTestDb();
 });
 
+// `POST /api/documents` ahora valida el contenido REAL del archivo contra
+// su extensión (ver lib/storage.ts::matchesFileSignature) — un Blob de
+// texto plano nombrado ".pdf"/".png" ya no basta, hay que anteponerle la
+// firma de bytes real del formato. `fileBytesWithSignature()` se expone
+// aparte para que las aserciones sobre el contenido descargado comparen
+// byte a byte contra el mismo contenido completo (firma + texto), no solo
+// el texto original — necesario porque la firma de PNG incluye el byte
+// 0x89 (fuera del rango ASCII): construirla como un string de JS y pasarla
+// directo a un `Blob` la codificaría como UTF-8 (0x89 se volvería 2 bytes,
+// no 1), rompiendo la firma real que el servidor espera.
+const MAGIC_BYTES: Record<string, number[]> = {
+  ".pdf": [0x25, 0x50, 0x44, 0x46, 0x2d], // "%PDF-"
+  ".png": [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
+};
+
+function fileBytesWithSignature(filename: string, content: string): Buffer {
+  const ext = filename.slice(filename.lastIndexOf(".")).toLowerCase();
+  const signature = MAGIC_BYTES[ext] ? Buffer.from(MAGIC_BYTES[ext]) : Buffer.alloc(0);
+  return Buffer.concat([signature, Buffer.from(content, "utf-8")]);
+}
+
 function pdfFormData(projectId: number, filename = "contrato.pdf", content = "contenido de prueba") {
   const formData = new FormData();
   formData.append("project_id", String(projectId));
-  formData.append("file", new Blob([content], { type: "application/pdf" }), filename);
+  const bytes = fileBytesWithSignature(filename, content);
+  formData.append("file", new Blob([new Uint8Array(bytes)], { type: "application/pdf" }), filename);
   return formData;
 }
 
@@ -30,7 +52,8 @@ describe("Documentos — subida, descarga y RBAC de extremo a extremo", () => {
 
     const downloadRes = await adminClient.get(`/api/documents/${document.id}/download`);
     expect(downloadRes.status).toBe(200);
-    expect(await downloadRes.text()).toBe("hola mundo");
+    const downloadedBytes = Buffer.from(await downloadRes.arrayBuffer());
+    expect(downloadedBytes.equals(fileBytesWithSignature("contrato.pdf", "hola mundo"))).toBe(true);
     expect(downloadRes.headers.get("content-disposition")).toContain("contrato.pdf");
   });
 
@@ -166,7 +189,8 @@ describe("Documentos — subida desde el portal (cliente)", () => {
 
     const downloadRes = await clientBrowser.get(`/api/documents/${document.id}/download`);
     expect(downloadRes.status).toBe(200);
-    expect(await downloadRes.text()).toBe("contenido binario simulado");
+    const downloadedBytes = Buffer.from(await downloadRes.arrayBuffer());
+    expect(downloadedBytes.equals(fileBytesWithSignature("logo.png", "contenido binario simulado"))).toBe(true);
   });
 
   it("404 si el cliente intenta subir a un proyecto que no es suyo (no confirma que el proyecto existe)", async () => {

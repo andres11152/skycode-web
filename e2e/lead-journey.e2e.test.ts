@@ -33,6 +33,7 @@ describe("Recorrido de negocio: de lead a proyecto ganado", () => {
       utm_source: "google",
       utm_medium: "cpc",
       utm_campaign: campaign.utm_campaign,
+      consent: true,
     });
     expect(leadRes.status).toBe(200);
     const { lead } = await leadRes.json();
@@ -127,6 +128,7 @@ describe("Recorrido de negocio: de lead a proyecto ganado", () => {
       name: "Prospecto Frío",
       email,
       service: "Landing page",
+      consent: true,
     });
     const { lead } = await leadRes.json();
 
@@ -154,6 +156,7 @@ describe("Recorrido de negocio: de lead a proyecto ganado", () => {
     const leadRes = await publicVisitor.post("/api/leads", {
       name: "Prospecto Cualquiera",
       email: `x-${uniqueSuffix()}@test.local`,
+      consent: true,
     });
     const { lead } = await leadRes.json();
 

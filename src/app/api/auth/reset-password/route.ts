@@ -25,7 +25,7 @@ const ResetSchema = z.object({
 export async function POST(request: Request) {
   try {
     const ip = getClientIp(request);
-    if (isRateLimited(`reset-password:${ip}`, 5, 10 * 60 * 1000)) {
+    if (await isRateLimited(`reset-password:${ip}`, 5, 10 * 60 * 1000)) {
       return NextResponse.json({ error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." }, { status: 429 });
     }
 
