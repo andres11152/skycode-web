@@ -41,8 +41,24 @@ function hasValidOrigin(request: NextRequest): boolean {
   const origin = request.headers.get("origin");
   if (!origin) return true;
 
+  // Solo se compara el HOST, nunca el esquema — bug real detectado en
+  // producción (Render): el edge de Render termina TLS y reenvía la
+  // petición al proceso Node por HTTP plano internamente, así que
+  // `request.nextUrl.protocol` llegaba como "http:" aunque el navegador
+  // mandara `Origin: https://skycode.agency` — comparar el origin completo
+  // (esquema incluido, como en la versión anterior) rechazaba TODO login
+  // legítimo con 403. El host sigue siendo la comparación que importa para
+  // esta defensa: el origen de un atacante cross-site tiene un HOST
+  // distinto sin importar el esquema, así que esto no debilita la
+  // protección real. `x-forwarded-host` (el que el navegador realmente
+  // pidió) tiene prioridad sobre `host` (que en un proxy puede ser el
+  // nombre interno del servicio, no el dominio público) cuando ambos
+  // existen.
+  const requestHost = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  if (!requestHost) return false;
+
   try {
-    return new URL(origin).origin === request.nextUrl.origin;
+    return new URL(origin).host === requestHost;
   } catch {
     return false;
   }
