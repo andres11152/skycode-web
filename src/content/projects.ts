@@ -1,68 +1,36 @@
-import { Buildings, Car, FlowArrow, Globe, Graph, Rocket, ShieldCheck, ShoppingCart, Truck } from "@phosphor-icons/react/ssr";
-import type { Icon } from "@phosphor-icons/react";
 import projectsDataEs from "./locales/es/projects.json";
 import projectsDataEn from "./locales/en/projects.json";
 import projectsDataFr from "./locales/fr/projects.json";
 import type { Locale } from "@/lib/i18n";
 
-const coverIconMap: Record<string, Icon> = {
-  Graph,
-  Buildings,
-  ShoppingCart,
-  Rocket,
-  Globe,
-  FlowArrow,
-  Truck,
-  Car,
-  ShieldCheck,
-};
+// Desde la Fase 5 de la migración del portafolio a Postgres, este archivo
+// SOLO trae el copy de UI de la sección (badge/título/descripción/labels de
+// botones) — los casos de estudio en sí ya no viven acá, se leen de
+// Postgres vía `lib/queries/portfolio.ts` (ver CLAUDE.md, "Portafolio").
+// Mismo patrón que `content/blog.ts` dejó `blog.json` con solo `meta`
+// después de migrar los posts a la tabla `articles`.
 
 const projectsByLocale = { es: projectsDataEs, en: projectsDataEn, fr: projectsDataFr };
 
-export interface Project {
-  slug: string;
+export interface PortfolioSectionCopy {
+  badge: string;
   title: string;
-  client: string;
   description: string;
-  tags: string[];
-  link?: string;
-  coverImage?: string;
-  /** Capturas reales adicionales, cuando el cliente las autoriza (ver Lightbox). */
-  gallery?: string[];
-  coverIcon: Icon;
+  viewAll: string;
+  featuredBadge: string;
+  viewCaseStudy: string;
+  exploreProject: string;
 }
 
-export function getProjectsContent(locale: Locale) {
-  const projectsData = projectsByLocale[locale];
+export function getPortfolioSectionContent(locale: Locale): PortfolioSectionCopy {
+  const data = projectsByLocale[locale];
   return {
-    projectsSection: {
-      badge: projectsData.badge,
-      title: projectsData.title,
-      description: projectsData.description,
-      viewAll: projectsData.viewAll,
-      featuredBadge: projectsData.featuredBadge,
-      viewCaseStudy: projectsData.viewCaseStudy,
-      exploreProject: projectsData.exploreProject,
-    },
-    projects: projectsData.items.map((item) => ({
-      slug: item.slug,
-      title: item.title,
-      client: item.client,
-      description: item.description,
-      tags: item.tags,
-      link: "link" in item ? (item.link as string | undefined) : undefined,
-      coverImage: "coverImage" in item ? (item.coverImage as string | undefined) : undefined,
-      gallery: "gallery" in item ? (item.gallery as string[] | undefined) : undefined,
-      coverIcon: coverIconMap[item.iconName] ?? ShoppingCart,
-    })) satisfies Project[],
+    badge: data.badge,
+    title: data.title,
+    description: data.description,
+    viewAll: data.viewAll,
+    featuredBadge: data.featuredBadge,
+    viewCaseStudy: data.viewCaseStudy,
+    exploreProject: data.exploreProject,
   };
 }
-
-export function getProjectBySlug(slug: string, locale: Locale = "es"): Project | undefined {
-  return getProjectsContent(locale).projects.find((project) => project.slug === slug);
-}
-
-// Español por defecto — usado por JSON-LD y por las páginas de detalle (ver AGENTS.md: el
-// mismo patrón ES-only que ya aplica al blog y a lo legal, sin rutas por idioma).
-export const projectsSection = getProjectsContent("es").projectsSection;
-export const projects = getProjectsContent("es").projects;

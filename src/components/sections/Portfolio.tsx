@@ -8,9 +8,10 @@ import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { Button } from "@/components/ui/Button";
 import { EsBadge } from "@/components/ui/EsBadge";
 import { fadeUp, staggerContainer } from "@/lib/animations";
-import { getProjectsContent, type Project } from "@/content/projects";
+import { getPortfolioSectionContent, type PortfolioSectionCopy } from "@/content/projects";
 import { getUiContent } from "@/content/ui";
 import { defaultLocale, t, type Locale } from "@/lib/i18n";
+import type { PortfolioProject } from "@/content/portfolioShared";
 
 function BrowserFrame({
   children,
@@ -40,15 +41,24 @@ function BrowserFrame({
   );
 }
 
+function projectHostname(project: PortfolioProject): string {
+  if (!project.liveUrl) return `skycode.agency/cases/${project.slug}`;
+  try {
+    return new URL(project.liveUrl).hostname;
+  } catch {
+    return `skycode.agency/cases/${project.slug}`;
+  }
+}
+
 function FeaturedProjectCard({
   project,
   uiData,
   sectionCopy,
   showEsBadge,
 }: {
-  project: Project;
+  project: PortfolioProject;
   uiData: ReturnType<typeof getUiContent>;
-  sectionCopy: ReturnType<typeof getProjectsContent>["projectsSection"];
+  sectionCopy: PortfolioSectionCopy;
   showEsBadge: boolean;
 }) {
   return (
@@ -60,12 +70,12 @@ function FeaturedProjectCard({
       >
         {/* Visual Preview */}
         <div className="lg:col-span-7 bg-foreground/5">
-          <BrowserFrame url={project.link ? new URL(project.link).hostname : `skycode.agency/cases/${project.slug}`}>
+          <BrowserFrame url={projectHostname(project)}>
             <div className="relative aspect-[16/10] w-full overflow-hidden bg-foreground/10 sm:min-h-[320px]">
               {project.coverImage ? (
                 <Image
-                  src={project.coverImage}
-                  alt={project.title}
+                  src={project.coverImage.variants.md}
+                  alt={project.coverImage.alt || project.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 60vw"
                   className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
@@ -81,7 +91,7 @@ function FeaturedProjectCard({
           <div>
             <div className="flex items-center justify-between gap-2">
               <span className="font-mono text-xs font-semibold uppercase tracking-wider text-accent-strong">
-                {project.client.split("·")[0].trim()}
+                {project.clientLabel.split("·")[0].trim()}
               </span>
               <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-accent-strong">
                 {sectionCopy.featuredBadge}
@@ -94,19 +104,19 @@ function FeaturedProjectCard({
             </h3>
 
             <p className="mt-3 text-sm leading-relaxed text-foreground/75">
-              {project.description}
+              {project.summary}
             </p>
 
             <ul
               aria-label={t(uiData.portfolioTechUsed, { title: project.title })}
               className="mt-4 flex flex-wrap gap-1.5"
             >
-              {project.tags.map((tag) => (
+              {project.capabilities.map((capability) => (
                 <li
-                  key={tag}
+                  key={capability}
                   className="rounded-md border border-foreground/10 bg-foreground/[0.03] px-2.5 py-1 font-mono text-[11px] text-foreground/80"
                 >
-                  {tag}
+                  {capability}
                 </li>
               ))}
             </ul>
@@ -131,9 +141,9 @@ function ProjectCard({
   sectionCopy,
   showEsBadge,
 }: {
-  project: Project;
+  project: PortfolioProject;
   uiData: ReturnType<typeof getUiContent>;
-  sectionCopy: ReturnType<typeof getProjectsContent>["projectsSection"];
+  sectionCopy: PortfolioSectionCopy;
   showEsBadge: boolean;
 }) {
   return (
@@ -143,12 +153,12 @@ function ProjectCard({
         aria-label={`${uiData.portfolioViewCase}: ${project.title}`}
         className="flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
-        <BrowserFrame url={project.link ? new URL(project.link).hostname : `skycode.agency/cases/${project.slug}`}>
+        <BrowserFrame url={projectHostname(project)}>
           <div className="relative aspect-[16/10] w-full overflow-hidden bg-foreground/10">
             {project.coverImage ? (
               <Image
-                src={project.coverImage}
-                alt={project.title}
+                src={project.coverImage.variants.md}
+                alt={project.coverImage.alt || project.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
@@ -161,7 +171,7 @@ function ProjectCard({
         <div className="flex flex-1 flex-col justify-between p-6">
           <div>
             <span className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground/60">
-              {project.client.split("·")[0].trim()}
+              {project.clientLabel.split("·")[0].trim()}
             </span>
 
             <h3 className="mt-1 text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-accent sm:text-xl">
@@ -170,19 +180,19 @@ function ProjectCard({
             </h3>
 
             <p className="mt-2 text-xs sm:text-sm leading-relaxed text-foreground/75 line-clamp-3">
-              {project.description}
+              {project.summary}
             </p>
 
             <ul
               aria-label={t(uiData.portfolioTechUsed, { title: project.title })}
               className="mt-4 flex flex-wrap gap-1.5"
             >
-              {project.tags.slice(0, 4).map((tag) => (
+              {project.capabilities.slice(0, 4).map((capability) => (
                 <li
-                  key={tag}
+                  key={capability}
                   className="rounded-md border border-foreground/10 bg-foreground/[0.03] px-2 py-0.5 font-mono text-[10px] sm:text-[11px] text-foreground/75"
                 >
-                  {tag}
+                  {capability}
                 </li>
               ))}
             </ul>
@@ -202,12 +212,25 @@ function ProjectCard({
   );
 }
 
-export function Portfolio({ locale = defaultLocale }: { locale?: Locale }) {
+export function Portfolio({
+  locale = defaultLocale,
+  projects,
+}: {
+  locale?: Locale;
+  projects: PortfolioProject[];
+}) {
   const reduced = Boolean(useReducedMotion());
-  const { projects, projectsSection } = getProjectsContent(locale);
+  const sectionCopy = getPortfolioSectionContent(locale);
   const uiData = getUiContent(locale);
 
-  const [featured, ...otherProjects] = projects;
+  if (projects.length === 0) return null;
+
+  // El destacado es el que el equipo marcó como tal desde el dashboard
+  // (`is_featured`), no simplemente el primero de la lista por `sort_order`
+  // — antes (con el JSON estático) el primer ítem del array cumplía ambos
+  // roles a la vez, acá ya no es necesariamente así.
+  const featured = projects.find((project) => project.isFeatured) ?? projects[0];
+  const otherProjects = projects.filter((project) => project.slug !== featured.slug);
 
   return (
     <section
@@ -218,15 +241,15 @@ export function Portfolio({ locale = defaultLocale }: { locale?: Locale }) {
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
-            <SectionEyebrow className="mb-3">{projectsSection.badge}</SectionEyebrow>
+            <SectionEyebrow className="mb-3">{sectionCopy.badge}</SectionEyebrow>
             <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              {projectsSection.title}
+              {sectionCopy.title}
             </h2>
-            <p className="mt-3 text-base text-foreground/80 sm:text-lg">{projectsSection.description}</p>
+            <p className="mt-3 text-base text-foreground/80 sm:text-lg">{sectionCopy.description}</p>
           </div>
 
           <Button href="/portafolio" variant="secondary" size="sm" className="shrink-0">
-            {projectsSection.viewAll}
+            {sectionCopy.viewAll}
           </Button>
         </div>
 
@@ -238,30 +261,30 @@ export function Portfolio({ locale = defaultLocale }: { locale?: Locale }) {
           className="flex flex-col gap-8"
         >
           {/* Flagship Featured Project */}
-          {featured && (
-            <motion.div variants={fadeUp(reduced)}>
-              <FeaturedProjectCard
-                project={featured}
-                uiData={uiData}
-                sectionCopy={projectsSection}
-                showEsBadge={locale !== "es"}
-              />
-            </motion.div>
-          )}
+          <motion.div variants={fadeUp(reduced)}>
+            <FeaturedProjectCard
+              project={featured}
+              uiData={uiData}
+              sectionCopy={sectionCopy}
+              showEsBadge={locale !== "es"}
+            />
+          </motion.div>
 
           {/* Grid for Remaining Projects */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
-            {otherProjects.map((project) => (
-              <motion.div key={project.slug} variants={fadeUp(reduced)}>
-                <ProjectCard
-                  project={project}
-                  uiData={uiData}
-                  sectionCopy={projectsSection}
-                  showEsBadge={locale !== "es"}
-                />
-              </motion.div>
-            ))}
-          </div>
+          {otherProjects.length > 0 && (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
+              {otherProjects.map((project) => (
+                <motion.div key={project.slug} variants={fadeUp(reduced)}>
+                  <ProjectCard
+                    project={project}
+                    uiData={uiData}
+                    sectionCopy={sectionCopy}
+                    showEsBadge={locale !== "es"}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </motion.div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getBlogPosts } from "@/content/blog";
 import { legalDocuments } from "@/content/legal";
-import { projects } from "@/content/projects";
+import { getPublishedPortfolioSlugs } from "@/lib/queries/portfolio";
 import { services } from "@/content/services";
 import { servicePath, servicesIndexPath } from "@/lib/serviceMetadata";
 import { teamPath } from "@/lib/teamMetadata";
@@ -104,8 +104,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // queries, pero no deberían competir con ellas como sitelinks. Ver la
   // nota en SiteNavigationJsonLd de app/layout.tsx — el sitemap es una
   // señal débil para esto, el enlazado interno pesa mucho más.
-  const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
-    url: `${siteUrl}/portafolio/${project.slug}`,
+  const portfolioSlugs = await getPublishedPortfolioSlugs();
+  const projectRoutes: MetadataRoute.Sitemap = portfolioSlugs.map((slug) => ({
+    url: `${siteUrl}/portafolio/${slug}`,
     changeFrequency: "monthly",
     priority: 0.4,
   }));

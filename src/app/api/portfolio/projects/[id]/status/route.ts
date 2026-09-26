@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { withTransaction } from "@/lib/db";
+import { withTransaction, query } from "@/lib/db";
 import { requireSession } from "@/lib/withAuth";
 import { hasPermission } from "@/lib/rbac";
 import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { setPortfolioProjectStatus } from "@/lib/queries/portfolio";
+import { revalidatePortfolioPaths } from "@/lib/revalidatePortfolio";
 import { logError } from "@/lib/logger";
 
 interface RouteContext {
@@ -74,6 +75,10 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     if (result.outcome !== "ok") {
       return NextResponse.json({ error: ERROR_MESSAGES[result.outcome] }, { status: 400 });
     }
+
+    const slugRes = await query("SELECT slug FROM portfolio_projects WHERE id = $1;", [projectId]);
+    if (slugRes.rows[0]) revalidatePortfolioPaths(String(slugRes.rows[0].slug));
+
     return NextResponse.json({ success: true });
   } catch (error) {
     logError("❌ [API PATCH Portfolio Project Status Error]", error);

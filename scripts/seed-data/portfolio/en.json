@@ -1,0 +1,145 @@
+{
+  "badge": "Portfolio & Case Studies",
+  "title": "Portfolio",
+  "description": "Real solutions engineered to solve operational bottlenecks and accelerate business growth.",
+  "viewAll": "See all projects",
+  "items": [
+    {
+      "slug": "sentry-crm",
+      "title": "Sentry CRM · Omnichannel CRM & AI Assistant",
+      "client": "Sentry CRM · Lead Management & Automation",
+      "description": "Multi-tenant platform to centralize WhatsApp Business conversations, route queries with AI assistants, and monitor sales funnels directly inside the chat interface.",
+      "tags": [
+        "Multi-tenant SaaS",
+        "WhatsApp Cloud API",
+        "AI Agents",
+        "Next.js & PostgreSQL"
+      ],
+      "iconName": "Graph",
+      "coverImage": "/projects/sentry-crm/dashboard.webp",
+      "gallery": [
+        "/projects/sentry-crm/dashboard.webp",
+        "/projects/sentry-crm/inbox-chat.webp",
+        "/projects/sentry-crm/login.webp",
+        "/projects/sentry-crm/capture-4.webp",
+        "/projects/sentry-crm/capture-5.webp",
+        "/projects/sentry-crm/capture-6.webp",
+        "/projects/sentry-crm/capture-7.webp",
+        "/projects/sentry-crm/capture-8.webp",
+        "/projects/sentry-crm/capture-9.webp",
+        "/projects/sentry-crm/capture-10.webp",
+        "/projects/sentry-crm/capture-11.webp",
+        "/projects/sentry-crm/capture-12.webp",
+        "/projects/sentry-crm/capture-13.webp",
+        "/projects/sentry-crm/capture-14.webp",
+        "/projects/sentry-crm/capture-15.webp",
+        "/projects/sentry-crm/capture-16.webp",
+        "/projects/sentry-crm/capture-17.webp",
+        "/projects/sentry-crm/capture-18.webp",
+        "/projects/sentry-crm/capture-19.webp"
+      ]
+    },
+    {
+      "slug": "servifuturo",
+      "title": "ServiFuturo · Fleet Management & Operational Control",
+      "client": "ServiFuturo S.A.S. · Corporate Transport & Logistics",
+      "description": "Comprehensive dispatch and monitoring system for corporate transport: live trip tracking, automated service settlements, and full audit logs for regulatory compliance.",
+      "tags": [
+        "Fleet Management",
+        "Real-Time Dispatch",
+        "Next.js & Node",
+        "PostgreSQL"
+      ],
+      "iconName": "Truck",
+      "link": "https://servifuturo.cloud/",
+      "coverImage": "/projects/servifuturo/servifuturo-02.webp",
+      "gallery": [
+        "/projects/servifuturo/servifuturo-01.webp",
+        "/projects/servifuturo/servifuturo-02.webp",
+        "/projects/servifuturo/servifuturo-03.webp",
+        "/projects/servifuturo/servifuturo-04.webp",
+        "/projects/servifuturo/servifuturo-05.webp",
+        "/projects/servifuturo/servifuturo-06.webp",
+        "/projects/servifuturo/servifuturo-07.webp",
+        "/projects/servifuturo/servifuturo-08.webp",
+        "/projects/servifuturo/servifuturo-09.webp",
+        "/projects/servifuturo/servifuturo-10.webp",
+        "/projects/servifuturo/servifuturo-11.webp",
+        "/projects/servifuturo/servifuturo-12.webp",
+        "/projects/servifuturo/servifuturo-13.webp",
+        "/projects/servifuturo/servifuturo-14.webp"
+      ]
+    },
+    {
+      "slug": "equilibrio-arquitectonico",
+      "title": "Equilibrio Arquitectónico · Corporate Website & Digital Catalog",
+      "client": "Equilibrio Arquitectónico S.A.S. · Architectural Glass Systems",
+      "description": "High-performance corporate site showcasing residential and commercial architectural installations in tempered glass and aluminum, built to drive direct quote requests.",
+      "tags": [
+        "Web Engineering",
+        "Digital Catalog",
+        "SEO & Performance",
+        "Next.js"
+      ],
+      "iconName": "Buildings",
+      "link": "https://equilibrioarquitectonico.com/",
+      "coverImage": "/projects/equilibrio-arquitectonico/hero.webp",
+      "gallery": [
+        "/projects/equilibrio-arquitectonico/hero.webp",
+        "/projects/equilibrio-arquitectonico/nosotros.webp",
+        "/projects/equilibrio-arquitectonico/servicios.webp",
+        "/projects/equilibrio-arquitectonico/proyectos.webp",
+        "/projects/equilibrio-arquitectonico/proceso.webp",
+        "/projects/equilibrio-arquitectonico/contacto.webp"
+      ]
+    },
+    {
+      "slug": "cda-revifull",
+      "title": "CDA Revifull · Online Appointment & Inspection Booking",
+      "client": "CDA Revifull S.A.S. · Automotive Diagnostic Center",
+      "description": "Fast online booking platform for mandatory vehicle and motorcycle technical inspections in Bogotá, with automated reminders and instant WhatsApp support.",
+      "tags": [
+        "Online Booking",
+        "Automotive",
+        "WhatsApp API",
+        "Next.js"
+      ],
+      "iconName": "Car",
+      "link": "https://cdarevifull.com/",
+      "coverImage": "/projects/cda-revifull/hero.webp",
+      "gallery": [
+        "/projects/cda-revifull/hero.webp",
+        "/projects/cda-revifull/servicios.webp",
+        "/projects/cda-revifull/proceso.webp",
+        "/projects/cda-revifull/ubicacion.webp",
+        "/projects/cda-revifull/contacto.webp"
+      ]
+    },
+    {
+      "slug": "moncyre",
+      "title": "Moncyre Studios · Streetwear & Apparel E-Commerce",
+      "client": "Moncyre Studios · Urban Fashion Brand",
+      "description": "E-commerce storefront for urban fashion and footwear: seamless mobile experience, dynamic product discovery, and localized payment gateway and courier integrations.",
+      "tags": [
+        "E-Commerce",
+        "Fashion & Apparel",
+        "Payment Gateways",
+        "Next.js"
+      ],
+      "iconName": "ShoppingCart",
+      "link": "https://moncyre.com/",
+      "coverImage": "/projects/moncyre/hero.webp",
+      "gallery": [
+        "/projects/moncyre/hero.webp",
+        "/projects/moncyre/colecciones-drops.webp",
+        "/projects/moncyre/catalogo-productos.webp",
+        "/projects/moncyre/lookbook-estilo.webp",
+        "/projects/moncyre/detalle-producto.webp",
+        "/projects/moncyre/footer-newsletter.webp"
+      ]
+    }
+  ],
+  "featuredBadge": "Featured Case",
+  "viewCaseStudy": "View case study",
+  "exploreProject": "Explore project"
+}

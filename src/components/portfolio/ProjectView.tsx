@@ -3,18 +3,18 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowSquareOut, CheckCircle, CornersOut } from "@phosphor-icons/react";
 import { m as motion, useReducedMotion } from "framer-motion";
-import { projects, getProjectBySlug } from "@/content/projects";
 import { Button } from "@/components/ui/Button";
 import { ProjectCover } from "@/components/ui/ProjectCover";
 import { Lightbox } from "@/components/ui/Lightbox";
+import { TechIcon } from "@/components/portfolio/TechIcon";
 import { fadeUp, staggerContainer } from "@/lib/animations";
+import { getPortfolioIcon, type PortfolioProject } from "@/content/portfolioShared";
 
 // Prácticas reales, ya establecidas en TrustStrip (content/locales/es/trust.json) —
 // se reusan aquí tal cual, no se inventan métricas ni resultados específicos por
-// cliente (los clientes son confidenciales, ver content/projects.ts).
+// cliente (los clientes son confidenciales, ver lib/queries/portfolio.ts).
 const APPROACH_ITEMS = [
   "Buenas prácticas OWASP",
   "Cumplimiento normativo de datos",
@@ -24,25 +24,30 @@ const APPROACH_ITEMS = [
 
 const COVER_ASPECT = "aspect-[16/9] sm:aspect-[21/9]";
 
-export function ProjectView({ slug }: { slug: string }) {
+interface NextProjectLink {
+  slug: string;
+  title: string;
+}
+
+export function ProjectView({
+  project,
+  nextProject,
+}: {
+  project: PortfolioProject;
+  nextProject: NextProjectLink | null;
+}) {
   const reduced = Boolean(useReducedMotion());
-  const project = getProjectBySlug(slug);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  if (!project) {
-    notFound();
-  }
+  const galleryImages = project.images.length > 0 ? project.images : [];
 
-  const currentIndex = projects.findIndex((item) => item.slug === slug);
-  const nextProject = projects[(currentIndex + 1) % projects.length];
-
-  const slides = (project.gallery ?? []).length > 0
-    ? (project.gallery ?? []).map((src, index) => (
-        <div key={src} className={`relative ${COVER_ASPECT} w-full`}>
+  const slides = galleryImages.length > 0
+    ? galleryImages.map((image, index) => (
+        <div key={image.id} className={`relative ${COVER_ASPECT} w-full`}>
           <Image
-            src={src}
-            alt={`${project.title} — captura ${index + 1}`}
+            src={image.variants.lg}
+            alt={image.alt || `${project.title} — captura ${index + 1}`}
             fill
             sizes="90vw"
             className="object-contain"
@@ -52,8 +57,8 @@ export function ProjectView({ slug }: { slug: string }) {
     : [
         <ProjectCover
           key="cover"
-          icon={project.coverIcon}
-          imageSrc={project.coverImage}
+          icon={getPortfolioIcon(project.industryIcon)}
+          imageSrc={project.coverImage?.variants.lg}
           className={`${COVER_ASPECT} w-full`}
           iconClassName="h-24 w-24"
         />,
@@ -91,8 +96,8 @@ export function ProjectView({ slug }: { slug: string }) {
 
         <div className="group relative">
           <ProjectCover
-            icon={project.coverIcon}
-            imageSrc={project.coverImage}
+            icon={getPortfolioIcon(project.industryIcon)}
+            imageSrc={project.coverImage?.variants.lg}
             className={`${COVER_ASPECT} w-full rounded-xl`}
             iconClassName="h-20 w-20 sm:h-24 sm:w-24"
             priority={true}
@@ -114,12 +119,12 @@ export function ProjectView({ slug }: { slug: string }) {
           <div className="flex min-w-0 flex-col gap-8">
             <header className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center gap-2">
-                {project.tags.map((tag) => (
+                {project.capabilities.map((capability) => (
                   <span
-                    key={tag}
+                    key={capability}
                     className="rounded-full bg-foreground/5 px-3 py-1 text-xs font-medium uppercase tracking-wide text-foreground/70"
                   >
-                    {tag}
+                    {capability}
                   </span>
                 ))}
               </div>
@@ -129,8 +134,62 @@ export function ProjectView({ slug }: { slug: string }) {
             </header>
 
             <p className="max-w-2xl text-lg leading-relaxed text-foreground/80">
-              {project.description}
+              {project.summary}
             </p>
+
+            {project.technologies.length > 0 && (
+              <motion.div variants={fadeUp(reduced)} className="flex flex-col gap-3">
+                <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60">
+                  Stack tecnológico
+                </h2>
+                <ul className="flex flex-wrap gap-3">
+                  {project.technologies.map((technology) => (
+                    <li
+                      key={technology.id}
+                      title={technology.name}
+                      className="flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.02] px-3 py-1.5 text-xs font-medium text-foreground/80"
+                    >
+                      <TechIcon technology={technology} size={16} />
+                      {technology.name}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
+            {(project.challenge || project.solution || project.results) && (
+              <motion.div variants={fadeUp(reduced)} className="grid gap-6 sm:grid-cols-3">
+                {project.challenge && (
+                  <div className="rounded-xl border border-foreground/10 p-5">
+                    <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/60">El reto</h2>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/80">{project.challenge}</p>
+                  </div>
+                )}
+                {project.solution && (
+                  <div className="rounded-xl border border-foreground/10 p-5">
+                    <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/60">La solución</h2>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/80">{project.solution}</p>
+                  </div>
+                )}
+                {project.results && (
+                  <div className="rounded-xl border border-foreground/10 p-5">
+                    <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/60">Los resultados</h2>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/80">{project.results}</p>
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {project.metrics.length > 0 && (
+              <motion.div variants={fadeUp(reduced)} className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {project.metrics.map((metric, index) => (
+                  <div key={`${metric.label}-${index}`} className="rounded-xl border border-accent/20 bg-accent/[0.04] p-5 text-center">
+                    <p className="text-2xl font-bold tracking-tight text-accent-strong">{metric.value}</p>
+                    <p className="mt-1 text-xs text-foreground/70">{metric.label}</p>
+                  </div>
+                ))}
+              </motion.div>
+            )}
 
             <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60">
@@ -146,15 +205,15 @@ export function ProjectView({ slug }: { slug: string }) {
               </ul>
             </motion.div>
 
-            {project.gallery && project.gallery.length > 0 && (
+            {galleryImages.length > 0 && (
               <motion.div variants={fadeUp(reduced)} className="flex flex-col gap-4">
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60">
-                  Capturas de la plataforma ({project.gallery.length})
+                  Capturas de la plataforma ({galleryImages.length})
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {project.gallery.map((src, index) => (
+                  {galleryImages.map((image, index) => (
                     <button
-                      key={src}
+                      key={image.id}
                       type="button"
                       onClick={() => {
                         setLightboxIndex(index);
@@ -163,8 +222,8 @@ export function ProjectView({ slug }: { slug: string }) {
                       className="group relative aspect-[16/10] overflow-hidden rounded-lg border border-foreground/10 bg-foreground/5 outline-none transition-all hover:border-accent/40 focus-visible:ring-2 focus-visible:ring-accent"
                     >
                       <Image
-                        src={src}
-                        alt={`${project.title} — captura ${index + 1}`}
+                        src={image.variants.sm}
+                        alt={image.alt || `${project.title} — captura ${index + 1}`}
                         fill
                         sizes="(max-width: 640px) 50vw, 33vw"
                         className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
@@ -187,10 +246,10 @@ export function ProjectView({ slug }: { slug: string }) {
               <span className="text-xs font-medium uppercase tracking-wide text-foreground/70">
                 Cliente
               </span>
-              <p className="mt-1 text-sm text-foreground/80">{project.client}</p>
+              <p className="mt-1 text-sm text-foreground/80">{project.clientLabel}</p>
 
-              {project.link && (
-                <Button href={project.link} variant="secondary" size="md" className="mt-5 w-full">
+              {project.liveUrl && (
+                <Button href={project.liveUrl} variant="secondary" size="md" className="mt-5 w-full">
                   Visitar sitio en vivo
                   <ArrowSquareOut size={16} />
                 </Button>
@@ -206,23 +265,25 @@ export function ProjectView({ slug }: { slug: string }) {
               </Button>
             </div>
 
-            <Link
-              href={`/portafolio/${nextProject.slug}`}
-              className="group flex items-center justify-between gap-3 rounded-xl border border-foreground/10 p-6 outline-none transition-colors hover:border-accent/30 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              <div className="min-w-0">
-                <span className="text-xs font-medium uppercase tracking-wide text-foreground/70">
-                  Siguiente proyecto
-                </span>
-                <p className="mt-1 truncate text-sm font-semibold text-foreground group-hover:text-accent-strong">
-                  {nextProject.title}
-                </p>
-              </div>
-              <ArrowRight
-                size={16}
-                className="shrink-0 text-foreground/60 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-accent-strong"
-              />
-            </Link>
+            {nextProject && (
+              <Link
+                href={`/portafolio/${nextProject.slug}`}
+                className="group flex items-center justify-between gap-3 rounded-xl border border-foreground/10 p-6 outline-none transition-colors hover:border-accent/30 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                <div className="min-w-0">
+                  <span className="text-xs font-medium uppercase tracking-wide text-foreground/70">
+                    Siguiente proyecto
+                  </span>
+                  <p className="mt-1 truncate text-sm font-semibold text-foreground group-hover:text-accent-strong">
+                    {nextProject.title}
+                  </p>
+                </div>
+                <ArrowRight
+                  size={16}
+                  className="shrink-0 text-foreground/60 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-accent-strong"
+                />
+              </Link>
+            )}
           </motion.aside>
         </div>
 

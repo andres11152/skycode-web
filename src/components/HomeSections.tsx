@@ -8,6 +8,7 @@ import {
   HomeInteractiveTestimonials,
 } from "@/components/HomeInteractiveSections";
 import { getBlogPosts } from "@/content/blog";
+import { getPublishedPortfolioProjects } from "@/lib/queries/portfolio";
 import type { Locale } from "@/lib/i18n";
 
 const Highlights = dynamic(() =>
@@ -34,7 +35,10 @@ export async function HomeSections({ locale }: { locale: Locale }) {
   // recibe los posts ya listos por prop en vez de leerlos él mismo, porque
   // desde la Fase 3 del plan de SEO `getBlogPosts` lee de Postgres y ya no
   // es síncrono (ver content/blog.ts).
-  const recentPosts = (await getBlogPosts(locale)).slice(0, 3);
+  const [recentPosts, portfolioProjects] = await Promise.all([
+    getBlogPosts(locale).then((posts) => posts.slice(0, 3)),
+    getPublishedPortfolioProjects(locale),
+  ]);
 
   return (
     <main id="main-content" className="flex flex-1 flex-col">
@@ -44,7 +48,7 @@ export async function HomeSections({ locale }: { locale: Locale }) {
       </div>
       <Highlights locale={locale} />
       <Services locale={locale} />
-      <Portfolio locale={locale} />
+      <Portfolio locale={locale} projects={portfolioProjects} />
       <Process locale={locale} />
       <ProjectEstimatorTeaser locale={locale} />
       <HomeInteractiveTestimonials locale={locale} />

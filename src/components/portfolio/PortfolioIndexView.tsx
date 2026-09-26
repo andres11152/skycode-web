@@ -7,11 +7,18 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { ProjectCover } from "@/components/ui/ProjectCover";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { cn } from "@/lib/utils";
-import { projects, projectsSection } from "@/content/projects";
+import { getPortfolioIcon, type PortfolioProject } from "@/content/portfolioShared";
+import type { PortfolioSectionCopy } from "@/content/projects";
 import { getUiContent } from "@/content/ui";
 import { defaultLocale, t } from "@/lib/i18n";
 
-export function PortfolioIndexView() {
+export function PortfolioIndexView({
+  projects,
+  sectionCopy,
+}: {
+  projects: PortfolioProject[];
+  sectionCopy: PortfolioSectionCopy;
+}) {
   const reduced = Boolean(useReducedMotion());
   const uiData = getUiContent(defaultLocale);
 
@@ -35,10 +42,10 @@ export function PortfolioIndexView() {
           </nav>
 
           <h1 className="text-4xl font-bold tracking-tight text-balance text-foreground sm:text-5xl">
-            {projectsSection.title}
+            {sectionCopy.title}
           </h1>
           <p className="max-w-2xl text-lg text-foreground/80">
-            {projectsSection.description}
+            {sectionCopy.description}
           </p>
         </div>
 
@@ -64,38 +71,38 @@ export function PortfolioIndexView() {
                   </span>
 
                   <ProjectCover
-                    icon={project.coverIcon}
-                    imageSrc={project.coverImage}
+                    icon={getPortfolioIcon(project.industryIcon)}
+                    imageSrc={project.coverImage?.variants.sm}
                     className="hidden h-16 w-16 shrink-0 rounded-xl transition-transform duration-300 ease-out group-hover:scale-105 sm:flex sm:h-20 sm:w-20"
                   />
 
                   <div className="col-span-2 min-w-0 sm:col-span-1">
                     <span className="text-xs font-medium uppercase tracking-wide text-foreground/70">
-                      {project.client}
+                      {project.clientLabel}
                     </span>
                     <h2 className="mt-1 flex items-center gap-2 text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-accent sm:text-2xl">
                       {project.title}
                     </h2>
                     <p className="mt-1.5 max-w-2xl text-sm text-foreground/70 line-clamp-2">
-                      {project.description}
+                      {project.summary}
                     </p>
                     <ul
                       aria-label={t(uiData.portfolioTechUsed, { title: project.title })}
                       className="mt-3 flex flex-wrap gap-2"
                     >
-                      {project.tags.map((tag) => (
+                      {project.capabilities.map((capability) => (
                         <li
-                          key={tag}
+                          key={capability}
                           className="rounded-full bg-foreground/5 px-2.5 py-1 text-xs text-foreground/70"
                         >
-                          {tag}
+                          {capability}
                         </li>
                       ))}
                     </ul>
                   </div>
 
                   <div className="flex items-center gap-2 self-start justify-self-end sm:self-center">
-                    {project.link && (
+                    {project.liveUrl && (
                       <span
                         aria-hidden="true"
                         className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/60"

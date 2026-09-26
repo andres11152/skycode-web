@@ -119,6 +119,14 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    // Imágenes del portafolio (ver lib/portfolioStorage.ts) viven en un
+    // bucket público de Cloudflare R2, no en `public/` — `next/image`
+    // rechaza cualquier host externo no declarado acá, sin importar
+    // `unoptimized`. El wildcard cubre la URL de desarrollo `pub-*.r2.dev`
+    // que Cloudflare genera por defecto; si más adelante se conecta un
+    // dominio propio (ver `.env.example`, `R2_PORTFOLIO_PUBLIC_BASE_URL`),
+    // hay que agregar también ese hostname acá.
+    remotePatterns: [{ protocol: "https", hostname: "*.r2.dev" }],
   },
   experimental: {
     // `@phosphor-icons/react` exporta 3.000+ iconos desde un solo índice —
