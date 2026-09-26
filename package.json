@@ -39,6 +39,7 @@
     "react-dom": "19.2.4",
     "resend": "^6.18.0",
     "sharp": "^0.35.4",
+    "simple-icons": "^16.32.0",
     "tailwind-merge": "^3.6.0",
     "web-push": "^3.6.7",
     "zod": "^4.4.3"

@@ -60,8 +60,18 @@ export interface PortfolioTechnology {
   name: string;
   category: PortfolioTechCategory;
   iconSource: "simple-icons" | "custom";
+  /** `simple-icons`: el slug del paquete (ver lib/simpleIcons.ts). `custom`: la URL pública del SVG subido al bucket del portafolio. */
   iconRef: string;
   websiteUrl: string | null;
+  /**
+   * Ya resuelto server-side (ver `lib/simpleIcons.ts` y
+   * `shapeTechnology()` en lib/queries/portfolio.ts) — nunca se resuelve
+   * en el cliente, así el paquete `simple-icons` (27MB con +3400 íconos)
+   * jamás llega al bundle del navegador. `null` cuando `iconSource` es
+   * `custom` (ahí `iconRef` ya es una URL de imagen lista para usar) o
+   * cuando el slug no matchea ningún ícono del paquete instalado.
+   */
+  icon: { title: string; hex: string; viewBox: string; pathD: string } | null;
 }
 
 export interface PortfolioMetric {

@@ -1,6 +1,7 @@
 import { query } from "../db";
 import { logError } from "../logger";
 import type { Locale } from "../i18n";
+import { shapeTechnology } from "./portfolioTechnologies";
 import {
   resolveLocalizedText,
   type PortfolioImage,
@@ -21,18 +22,6 @@ function shapeImage(row: Record<string, unknown>, locale: Locale): PortfolioImag
     width: Number(row.width),
     height: Number(row.height),
     alt: resolveLocalizedText(row.alt, locale),
-  };
-}
-
-function shapeTechnology(row: Record<string, unknown>): PortfolioTechnology {
-  return {
-    id: Number(row.id),
-    slug: String(row.slug),
-    name: String(row.name),
-    category: row.category as PortfolioTechnology["category"],
-    iconSource: row.icon_source as PortfolioTechnology["iconSource"],
-    iconRef: String(row.icon_ref),
-    websiteUrl: row.website_url ? String(row.website_url) : null,
   };
 }
 

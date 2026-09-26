@@ -1,19 +1,30 @@
 import { query } from "../db";
+import { getSimpleIcon } from "../simpleIcons";
 import type { PortfolioTechCategory, PortfolioTechnology } from "@/content/portfolioShared";
 
 interface QueryRunner {
   query: typeof query;
 }
 
-function shapeTechnology(row: Record<string, unknown>): PortfolioTechnology {
+/**
+ * Compartida con lib/queries/portfolio.ts (evita duplicar la resolución de
+ * ícono en dos lugares) — resuelve el ícono de `simple-icons` SERVER-SIDE
+ * acá mismo, nunca en el cliente (ver `PortfolioTechnology.icon` en
+ * content/portfolioShared.ts). Para `iconSource === "custom"`, `iconRef`
+ * ya es una URL de imagen lista para usar — no hay nada que resolver.
+ */
+export function shapeTechnology(row: Record<string, unknown>): PortfolioTechnology {
+  const iconSource = row.icon_source as PortfolioTechnology["iconSource"];
+  const iconRef = String(row.icon_ref);
   return {
     id: Number(row.id),
     slug: String(row.slug),
     name: String(row.name),
     category: row.category as PortfolioTechCategory,
-    iconSource: row.icon_source as PortfolioTechnology["iconSource"],
-    iconRef: String(row.icon_ref),
+    iconSource,
+    iconRef,
     websiteUrl: row.website_url ? String(row.website_url) : null,
+    icon: iconSource === "simple-icons" ? getSimpleIcon(iconRef) : null,
   };
 }
 
