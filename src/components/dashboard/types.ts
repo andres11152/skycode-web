@@ -421,6 +421,43 @@ export interface SessionUser {
   role: string;
 }
 
+/** Las 3 variantes cuadradas que genera `lib/avatarStorage.ts` al subir — URLs públicas absolutas del bucket. */
+export interface AvatarVariants {
+  sm: string;
+  md: string;
+  lg: string;
+}
+
+/**
+ * Perfil de cuenta, SIN datos financieros a propósito — lo consume la
+ * pantalla de autogestión y viaja al navegador de esa persona. La ficha de
+ * admin usa `TeamMemberDetail`, que agrega costo/capacidad y 2FA.
+ */
+export interface UserProfile {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  phone: string | null;
+  jobTitle: string | null;
+  bio: string | null;
+  timezone: string;
+  locale: string;
+  hireDate: string | null;
+  avatar: AvatarVariants | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TeamMemberDetail extends UserProfile {
+  hourlyCost: number | null;
+  hourlyCostCurrency: Currency;
+  weeklyHoursCapacity: number;
+  /** Solo el booleano — el secreto TOTP nunca sale de la base (ver lib/queries/totp.ts). */
+  totpEnabled: boolean;
+}
+
 export interface UserSessionRow {
   id: string;
   created_at: string;
