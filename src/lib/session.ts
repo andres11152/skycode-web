@@ -35,6 +35,15 @@ export interface UserSession {
   role: string;
   /** Solo tiene valor cuando role === "client"; enlaza a la fila real en `clients`. */
   clientId: number | string | null;
+  /**
+   * Variante chica (64px) del avatar, para el header del dashboard/portal.
+   * Viaja en la sesión resuelta (no en el JWT, que solo guarda el `sid`):
+   * así el chrome no necesita una consulta propia en cada página. Como
+   * `resolveSession()` cachea 15s, un avatar recién subido por OTRA persona
+   * tarda ese tiempo en verse en sus sesiones; el propio dueño lo ve al
+   * instante porque la ruta de subida invalida su entrada de caché.
+   */
+  avatarUrl: string | null;
 }
 
 export interface SessionTokenPayload {

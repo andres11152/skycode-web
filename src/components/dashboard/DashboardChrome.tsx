@@ -6,7 +6,6 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LogOut,
-  ShieldCheck,
   LayoutDashboard,
   TrendingUp,
   Layers,
@@ -36,6 +35,8 @@ import {
 } from "lucide-react";
 import { hasPermission, type Permission } from "@/lib/rbac";
 import { NotificationBell } from "./NotificationBell";
+import { UserAvatar } from "./UserAvatar";
+import { roleLabel } from "./roleLabels";
 import type { SessionUser } from "./types";
 
 interface NavItem {
@@ -221,13 +222,20 @@ export function DashboardChrome({ user, children }: { user: SessionUser; childre
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 text-xs text-foreground/80 font-mono">
-              <ShieldCheck size={14} className="text-green-700" />
-              <span>{user.name}</span>
-              <span className="rounded bg-foreground/10 px-1.5 py-0.5 text-[10px] uppercase text-foreground/60">
-                {user.role}
+            {/* La identidad del header lleva a "Mi Cuenta" — el patrón que
+                cualquiera espera de un panel (clic en tu nombre/foto = tu
+                perfil), en vez de un texto inerte. */}
+            <Link
+              href="/dashboard/cuenta"
+              aria-label={`Mi cuenta: ${user.name}, ${roleLabel(user.role)}`}
+              className="hidden min-h-11 items-center gap-2.5 rounded-full py-1 pl-1 pr-3 text-xs transition-colors hover:bg-foreground/5 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:flex"
+            >
+              <UserAvatar name={user.name} src={user.avatarUrl} size="sm" decorative />
+              <span className="flex flex-col leading-tight">
+                <span className="font-semibold text-foreground">{user.name}</span>
+                <span className="text-[10px] text-foreground/70">{roleLabel(user.role)}</span>
               </span>
-            </div>
+            </Link>
             <NotificationBell />
             <button
               onClick={handleLogout}

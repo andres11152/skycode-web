@@ -419,6 +419,7 @@ export interface SessionUser {
   name: string;
   email: string;
   role: string;
+  avatarUrl?: string | null;
 }
 
 /** Las 3 variantes cuadradas que genera `lib/avatarStorage.ts` al subir — URLs públicas absolutas del bucket. */

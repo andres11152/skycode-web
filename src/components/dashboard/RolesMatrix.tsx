@@ -1,12 +1,6 @@
 import { Check, Minus, ShieldCheck } from "lucide-react";
 import { ALL_PERMISSIONS, ALL_ROLES, getRolePermissions, type Permission, type Role } from "@/lib/rbac";
-
-const ROLE_LABELS: Record<Role, string> = {
-  admin: "Admin",
-  sales_manager: "Comercial",
-  traffiker: "Traffiker",
-  client: "Cliente (portal)",
-};
+import { ROLE_LABELS } from "./roleLabels";
 
 const DOMAIN_LABELS: Record<string, string> = {
   leads: "Leads y Ventas",

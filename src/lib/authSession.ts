@@ -51,7 +51,7 @@ export async function resolveSession(sessionId: string): Promise<UserSession | n
   }
 
   const res = await query(
-    `SELECT u.id, u.name, u.email, u.role, u.status, u.client_id
+    `SELECT u.id, u.name, u.email, u.role, u.status, u.client_id, u.avatar_variants->>'sm' AS avatar_url
      FROM sessions s
      JOIN users u ON u.id = s.user_id
      WHERE s.id = $1 AND s.revoked_at IS NULL AND s.expires_at > now();`,
@@ -70,6 +70,7 @@ export async function resolveSession(sessionId: string): Promise<UserSession | n
     email: row.email,
     role: row.role,
     clientId: row.client_id,
+    avatarUrl: row.avatar_url ?? null,
   };
   cache.set(sessionId, { session, expiresAtMs: Date.now() + CACHE_TTL_MS });
   return session;

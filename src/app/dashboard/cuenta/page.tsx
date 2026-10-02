@@ -1,12 +1,6 @@
-import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import { requireSessionOrRedirect } from "@/lib/withAuth";
-import { verifySessionToken } from "@/lib/session";
-import { getActiveUserSessions } from "@/lib/queries/sessions";
-import { getTotpStatus } from "@/lib/queries/totp";
-import { SessionsView } from "@/components/dashboard/SessionsView";
-import { TwoFactorSetup } from "@/components/dashboard/TwoFactorSetup";
-import { PushNotificationSetup } from "@/components/dashboard/PushNotificationSetup";
+import { AccountView } from "@/components/dashboard/AccountView";
 
 export const metadata: Metadata = {
   title: "Mi Cuenta | SKYCODE Agency",
@@ -15,22 +9,5 @@ export const metadata: Metadata = {
 
 export default async function DashboardAccountPage() {
   const session = await requireSessionOrRedirect();
-
-  // La sesión "actual" (para marcarla distinto en la lista) se identifica
-  // por su sessionId, que `requireSessionOrRedirect()` no expone — se
-  // vuelve a leer la cookie acá, mismo patrón que withAuth.ts.
-  const cookieStore = await cookies();
-  const token = cookieStore.get("skycode_session")?.value;
-  const payload = token ? await verifySessionToken(token) : null;
-  const currentSessionId = payload?.sessionId ?? null;
-
-  const [sessions, totpStatus] = await Promise.all([getActiveUserSessions(session.id), getTotpStatus(session.id)]);
-
-  return (
-    <div className="space-y-6">
-      <TwoFactorSetup initialEnabled={totpStatus.enabled} initialRemainingBackupCodes={totpStatus.remainingBackupCodes} />
-      <PushNotificationSetup />
-      <SessionsView user={session} sessions={sessions} currentSessionId={currentSessionId} />
-    </div>
-  );
+  return <AccountView userId={session.id} audience="team" />;
 }

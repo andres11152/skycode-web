@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Monitor, MapPin, ShieldCheck, LogOut } from "lucide-react";
 import { Alert } from "./ui/Alert";
-import type { SessionUser, UserSessionRow } from "./types";
+import type { UserSessionRow } from "./types";
 
 /**
  * Heurística simple sobre el User-Agent crudo, no una librería de
@@ -44,11 +44,9 @@ function describeUserAgent(userAgent: string | null): string {
 }
 
 export function SessionsView({
-  user,
   sessions: initialSessions,
   currentSessionId,
 }: {
-  user: SessionUser;
   sessions: UserSessionRow[];
   currentSessionId: string | null;
 }) {
@@ -85,19 +83,18 @@ export function SessionsView({
   };
 
   return (
-    <div className="space-y-8">
+    // Sin `<h1>` propio: la página que lo monta (/dashboard/cuenta,
+    // /portal/cuenta) lo pone arriba de todo. Antes el `<h1>` vivía acá,
+    // y como este componente se renderiza al final, la jerarquía de
+    // encabezados quedaba invertida (h3 de 2FA antes del h1 de la página).
+    <section aria-labelledby="sessions-title" className="space-y-3">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Mi Cuenta</h1>
-        <p className="mt-1 text-xs text-foreground/70 font-sans">
-          Sesiones activas de {user.name} — cierre las que no reconozca
+        <h2 id="sessions-title" className="text-sm font-bold text-foreground">
+          Sesiones activas
+        </h2>
+        <p className="mt-0.5 text-xs text-foreground/70">
+          Dispositivos con tu cuenta abierta — cierra los que no reconozcas.
         </p>
-      </div>
-
-      <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-1">
-        <div className="text-xs text-foreground/60">Correo</div>
-        <div className="text-sm font-mono text-foreground">{user.email}</div>
-        <div className="mt-3 text-xs text-foreground/60">Rol</div>
-        <div className="text-sm font-mono uppercase text-foreground/80">{user.role}</div>
       </div>
 
       {error && <Alert tone="error">{error}</Alert>}
@@ -161,6 +158,6 @@ export function SessionsView({
           </table>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

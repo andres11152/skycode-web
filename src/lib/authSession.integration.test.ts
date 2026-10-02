@@ -19,7 +19,20 @@ describe("resolveSession", () => {
       email: user.email,
       role: "sales_manager",
       clientId: null,
+      avatarUrl: null,
     });
+  });
+
+  it("expone la variante chica del avatar para el header", async () => {
+    const user = await createTestUser();
+    await query(
+      `UPDATE users SET avatar_variants = $1 WHERE id = $2;`,
+      [JSON.stringify({ sm: "https://cdn.test/a-sm.webp", md: "https://cdn.test/a-md.webp", lg: "https://cdn.test/a-lg.webp" }), user.id]
+    );
+    const session = await createTestSession(user.id);
+
+    const resolved = await resolveSession(session.id);
+    expect(resolved?.avatarUrl).toBe("https://cdn.test/a-sm.webp");
   });
 
   it("devuelve null para un id de sesión que no existe", async () => {

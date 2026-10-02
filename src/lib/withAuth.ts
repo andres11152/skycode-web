@@ -15,8 +15,14 @@ export interface AuthedContext {
  * permiso de rol específico. Para endpoints con lógica de acceso propia que
  * no se expresa como "este rol puede esto" — ej. `/api/projects` GET, donde
  * un cliente ve solo lo suyo por dueño, no por permiso.
+ *
+ * `sessionId` se devuelve junto a la sesión para las rutas que actúan
+ * sobre la sesión actual en sí — cambiar la contraseña revoca todas las
+ * demás pero debe preservar esta, e invalidar la caché de
+ * `resolveSession()` tras editar el propio perfil. Antes había que volver
+ * a leer la cookie a mano en cada una de esas rutas.
  */
-export async function requireSession(): Promise<{ session: UserSession } | { error: NextResponse }> {
+export async function requireSession(): Promise<{ session: UserSession; sessionId: string } | { error: NextResponse }> {
   const cookieStore = await cookies();
   const token = cookieStore.get("skycode_session")?.value;
   if (!token) {
@@ -33,7 +39,7 @@ export async function requireSession(): Promise<{ session: UserSession } | { err
     return { error: NextResponse.json({ error: "Sesión inválida o expirada." }, { status: 401 }) };
   }
 
-  return { session };
+  return { session, sessionId: payload.sessionId };
 }
 
 /**
