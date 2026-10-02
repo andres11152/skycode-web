@@ -412,6 +412,8 @@ export interface TeamMember {
   hourly_cost_currency: Currency;
   weekly_hours_capacity: number;
   created_at: string;
+  job_title?: string | null;
+  avatar_url?: string | null;
 }
 
 export interface SessionUser {

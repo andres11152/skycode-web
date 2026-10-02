@@ -2,6 +2,9 @@
 
 import { useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { UserAvatar } from "./UserAvatar";
+import { ROLE_LABELS as SHARED_ROLE_LABELS } from "./roleLabels";
 import { AnimatePresence } from "framer-motion";
 import { Users2, RefreshCw, UserPlus, Copy, Check, Ban, PlayCircle } from "lucide-react";
 import { EmptyState } from "./EmptyState";
@@ -13,10 +16,12 @@ import { Alert } from "./ui/Alert";
 import type { Currency } from "@/lib/currency";
 import type { TeamMember, TeamRole } from "./types";
 
+// Mismas etiquetas que Roles y Permisos, Mi Cuenta y la ficha de persona
+// (antes acá decía "Sales Manager" y en el resto del panel "Comercial").
 const ROLE_LABELS: Record<TeamRole, string> = {
-  admin: "Admin",
-  sales_manager: "Sales Manager",
-  traffiker: "Traffiker",
+  admin: SHARED_ROLE_LABELS.admin,
+  sales_manager: SHARED_ROLE_LABELS.sales_manager,
+  traffiker: SHARED_ROLE_LABELS.traffiker,
 };
 
 export function TeamTable({ initialMembers, currentUserId }: { initialMembers: TeamMember[]; currentUserId: number | string }) {
@@ -196,15 +201,28 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
                   return (
                     <tr key={member.id}>
                       <td className="px-5 py-4">
-                        <div className="font-bold text-foreground flex items-center gap-2">
-                          <span>{member.name}</span>
-                          {isSelf && (
-                            <span className="rounded bg-foreground/10 px-1.5 py-0.5 text-[10px] uppercase text-foreground/60">
-                              Tú
+                        {/* La persona es el enlace a su ficha — el patrón esperado
+                            en cualquier directorio (mismo que Clientes). */}
+                        <Link
+                          href={`/dashboard/equipo/${member.id}`}
+                          className="group flex items-center gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        >
+                          <UserAvatar name={member.name} src={member.avatar_url} size="sm" decorative />
+                          <span className="min-w-0">
+                            <span className="flex items-center gap-2 font-bold text-foreground group-hover:text-accent-strong group-hover:underline">
+                              {member.name}
+                              {isSelf && (
+                                <span className="rounded bg-foreground/10 px-1.5 py-0.5 text-[10px] uppercase text-foreground/70 no-underline">
+                                  Tú
+                                </span>
+                              )}
                             </span>
-                          )}
-                        </div>
-                        <div className="text-[11px] text-foreground/60 font-mono">{member.email}</div>
+                            <span className="block text-[11px] font-mono text-foreground/70">
+                              {member.job_title ? `${member.job_title} · ` : ""}
+                              {member.email}
+                            </span>
+                          </span>
+                        </Link>
                       </td>
                       <td className="px-5 py-4">
                         <select

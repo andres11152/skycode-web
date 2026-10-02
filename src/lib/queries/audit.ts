@@ -41,6 +41,28 @@ export async function getAuditLogEntries({
   return res.rows.map(shapeAuditRow);
 }
 
+/**
+ * Actividad de una persona para su ficha en `/dashboard/equipo/[id]`: lo
+ * que ELLA hizo (`actor_id`) más lo que se le hizo a su cuenta (cambios de
+ * rol, desactivación, perfil — `entity_type = 'user'`). Sin paginar: la
+ * ficha muestra lo reciente, el historial completo vive en /dashboard/auditoria.
+ *
+ * `diff` se devuelve vacío a propósito: la ficha solo pinta acción, autor
+ * y fecha, y algunos diffs llevan datos de otras entidades que no hace
+ * falta mandar al navegador solo para listar una línea.
+ */
+export async function getUserActivity(userId: number, limit = 25): Promise<AuditLogEntry[]> {
+  const res = await query(
+    `SELECT id, actor_id, actor_email, action, entity_type, entity_id, NULL AS diff, ip, created_at
+     FROM audit_log
+     WHERE actor_id = $1 OR (entity_type = 'user' AND entity_id = $2)
+     ORDER BY created_at DESC
+     LIMIT $3;`,
+    [userId, String(userId), limit]
+  );
+  return res.rows.map(shapeAuditRow);
+}
+
 function shapeAuditRow(row: Record<string, unknown>): AuditLogEntry {
   return {
     id: Number(row.id),
@@ -51,7 +73,7 @@ function shapeAuditRow(row: Record<string, unknown>): AuditLogEntry {
     entity_id: row.entity_id ? String(row.entity_id) : null,
     diff: row.diff,
     ip: row.ip ? String(row.ip) : null,
-    created_at: String(row.created_at ?? ""),
+    created_at: row.created_at instanceof Date ? row.created_at.toISOString() : String(row.created_at ?? ""),
   };
 }
 

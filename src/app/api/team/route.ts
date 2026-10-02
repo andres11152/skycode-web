@@ -7,6 +7,7 @@ import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { getTeamMembers, updateTeamMember } from "@/lib/queries/team";
 import { CURRENCIES } from "@/lib/currency";
+import { profileFields } from "@/lib/profileValidation";
 import { logError } from "@/lib/logger";
 
 const UpdateTeamMemberSchema = z.object({
@@ -18,7 +19,28 @@ const UpdateTeamMemberSchema = z.object({
   // Tope en 168 (24h × 7 días) — cualquier valor por encima de eso no
   // representa una semana real, sin importar cuán extremo sea el caso.
   weeklyHoursCapacity: z.number().positive().max(168).optional(),
+  // Ficha de persona — mismos validadores que la autogestión
+  // (lib/profileValidation.ts), para que un campo no acepte cosas
+  // distintas según quién lo edite.
+  name: profileFields.name.optional(),
+  email: profileFields.email.optional(),
+  phone: profileFields.phone.optional(),
+  jobTitle: profileFields.jobTitle.optional(),
+  hireDate: profileFields.hireDate.optional(),
 });
+
+const UPDATABLE_KEYS = [
+  "role",
+  "status",
+  "hourlyCost",
+  "hourlyCostCurrency",
+  "weeklyHoursCapacity",
+  "name",
+  "email",
+  "phone",
+  "jobTitle",
+  "hireDate",
+] as const;
 
 /**
  * GET /api/team - Lista el equipo interno (no clientes de portal).
@@ -49,17 +71,14 @@ export const PATCH = withAuth("team:write", async (request, { session }) => {
   try {
     const parsed = UpdateTeamMemberSchema.safeParse(await request.json());
     if (!parsed.success) {
-      return NextResponse.json({ error: "Datos de solicitud inválidos." }, { status: 400 });
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? "Datos de solicitud inválidos." },
+        { status: 400 }
+      );
     }
-    const { id, role, status, hourlyCost, hourlyCostCurrency, weeklyHoursCapacity } = parsed.data;
+    const { id, role, status } = parsed.data;
 
-    if (
-      role === undefined &&
-      status === undefined &&
-      hourlyCost === undefined &&
-      hourlyCostCurrency === undefined &&
-      weeklyHoursCapacity === undefined
-    ) {
+    if (UPDATABLE_KEYS.every((key) => parsed.data[key] === undefined)) {
       return NextResponse.json({ error: "Sin campos para actualizar." }, { status: 400 });
     }
     if (role !== undefined && !isValidRole(role)) {
@@ -78,7 +97,7 @@ export const PATCH = withAuth("team:write", async (request, { session }) => {
     const ip = getClientIp(request);
 
     const member = await withTransaction(async (client) => {
-      const result = await updateTeamMember({ id, role, status, hourlyCost, hourlyCostCurrency, weeklyHoursCapacity }, client);
+      const result = await updateTeamMember(parsed.data, client);
       if (!result) return null;
 
       const { before, after } = result;
@@ -109,6 +128,10 @@ export const PATCH = withAuth("team:write", async (request, { session }) => {
       },
     });
   } catch (error) {
+    // `users.email` es UNIQUE: otra cuenta ya usa ese correo.
+    if (error instanceof Error && "code" in error && (error as { code?: string }).code === "23505") {
+      return NextResponse.json({ error: "Ya existe otra cuenta con ese correo." }, { status: 409 });
+    }
     logError("❌ [API PATCH Team Error]", error);
     return NextResponse.json({ error: "Error al actualizar el miembro del equipo." }, { status: 500 });
   }

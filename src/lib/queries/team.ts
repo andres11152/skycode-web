@@ -8,7 +8,8 @@ import type { TeamMember, TeamMemberDetail } from "@/components/dashboard/types"
  */
 export async function getTeamMembers(): Promise<TeamMember[]> {
   const res = await query(
-    `SELECT id, name, email, role, status, hourly_cost, hourly_cost_currency, weekly_hours_capacity, created_at
+    `SELECT id, name, email, role, status, hourly_cost, hourly_cost_currency, weekly_hours_capacity, created_at,
+            job_title, avatar_variants->>'sm' AS avatar_url
      FROM users WHERE role != 'client' ORDER BY created_at ASC;`
   );
   return res.rows.map((row) => ({
@@ -21,6 +22,8 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
     hourly_cost_currency: (row.hourly_cost_currency as TeamMember["hourly_cost_currency"]) ?? "COP",
     weekly_hours_capacity: Number(row.weekly_hours_capacity),
     created_at: String(row.created_at ?? ""),
+    job_title: row.job_title ? String(row.job_title) : null,
+    avatar_url: row.avatar_url ? String(row.avatar_url) : null,
   }));
 }
 
