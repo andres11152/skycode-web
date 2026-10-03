@@ -31,6 +31,12 @@
     "ctaDescription": "Tell us about your case and we'll reply within 24 hours with an honest technical assessment, no strings attached.",
     "featuredCta": "Read the article",
     "rssCopy": "Copy feed link",
-    "rssCopied": "Feed link copied"
+    "rssCopied": "Feed link copied",
+    "rssModalTitle": "Subscribe via RSS",
+    "rssModalDescription": "Copy this address into your feed reader, or open it directly in one:",
+    "rssOpenFeedly": "Open in Feedly",
+    "rssOpenInoreader": "Open in Inoreader",
+    "rssViewFeed": "View the feed (XML)",
+    "rssClose": "Close"
   }
 }

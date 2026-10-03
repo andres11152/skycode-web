@@ -11,6 +11,17 @@ export function rssFeedPath(locale: Locale): string {
   return `${prefix}/feed.xml`;
 }
 
+/**
+ * `application/xml` y no `application/rss+xml`: Safari y Firefox descargan un
+ * `application/rss+xml` en silencio en vez de mostrarlo, y el enlace "ver el
+ * feed" parecía no hacer nada. Con `application/xml` todos los navegadores lo
+ * muestran; los lectores de feeds (Feedly, Inoreader, NetNewsWire) detectan
+ * RSS por el contenido, no por este encabezado. El descubrimiento automático
+ * sigue declarado con `<link rel="alternate" type="application/rss+xml">`
+ * (lib/blogMetadata.ts) — ese es el `type` del enlace, no de la respuesta.
+ */
+export const RSS_CONTENT_TYPE = "application/xml; charset=utf-8";
+
 function xmlEscape(value: string): string {
   return value
     .replace(/&/g, "&amp;")

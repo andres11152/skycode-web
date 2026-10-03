@@ -31,6 +31,12 @@
     "ctaDescription": "Parlez-nous de votre cas et nous répondons en moins de 24 heures avec une évaluation technique honnête, sans engagement.",
     "featuredCta": "Lire l'article",
     "rssCopy": "Copier le lien du flux",
-    "rssCopied": "Lien du flux copié"
+    "rssCopied": "Lien du flux copié",
+    "rssModalTitle": "S'abonner via RSS",
+    "rssModalDescription": "Copiez cette adresse dans votre lecteur de flux, ou ouvrez-la directement dans l'un d'eux :",
+    "rssOpenFeedly": "Ouvrir dans Feedly",
+    "rssOpenInoreader": "Ouvrir dans Inoreader",
+    "rssViewFeed": "Voir le flux (XML)",
+    "rssClose": "Fermer"
   }
 }
