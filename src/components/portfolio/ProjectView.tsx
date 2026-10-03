@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowSquareOut, CheckCircle, CornersOut } from "@phosphor-icons/react";
 import { m as motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
+import { CoverTransition } from "@/components/ui/CoverTransition";
 import { ProjectCover } from "@/components/ui/ProjectCover";
 import { Lightbox } from "@/components/ui/Lightbox";
 import { TechIcon } from "@/components/portfolio/TechIcon";
@@ -101,13 +102,15 @@ export function ProjectView({
         </nav>
 
         <div className="group relative">
-          <ProjectCover
-            icon={getPortfolioIcon(project.industryIcon)}
-            imageSrc={project.coverImage?.variants.lg}
-            className={`${COVER_ASPECT} w-full rounded-xl`}
-            iconClassName="h-20 w-20 sm:h-24 sm:w-24"
-            priority={true}
-          />
+          <CoverTransition slug={project.slug}>
+            <ProjectCover
+              icon={getPortfolioIcon(project.industryIcon)}
+              imageSrc={project.coverImage?.variants.lg}
+              className={`${COVER_ASPECT} w-full rounded-xl`}
+              iconClassName="h-20 w-20 sm:h-24 sm:w-24"
+              priority={true}
+            />
+          </CoverTransition>
           <button
             type="button"
             onClick={() => {

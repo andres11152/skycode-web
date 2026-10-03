@@ -155,6 +155,32 @@
   animation: pop-in var(--dur-fast) var(--ease-out) both;
 }
 
+/*
+ * Transiciones de vista (portada del portafolio, ver ui/CoverTransition.tsx).
+ * Solo el par `.morph` anima; el desenfoque a mitad de camino oculta la
+ * deformación al interpolar una miniatura cuadrada hacia una portada ancha.
+ */
+::view-transition-group(.morph) {
+  animation-duration: 400ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);

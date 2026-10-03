@@ -4,6 +4,7 @@ import Link from "next/link";
 import { m as motion, useReducedMotion } from "framer-motion";
 import { ArrowSquareOut, ArrowUpRight } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { CoverTransition } from "@/components/ui/CoverTransition";
 import { ProjectCover } from "@/components/ui/ProjectCover";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { cn } from "@/lib/utils";
@@ -70,11 +71,13 @@ export function PortfolioIndexView({
                     {String(index + 1).padStart(2, "0")}
                   </span>
 
-                  <ProjectCover
-                    icon={getPortfolioIcon(project.industryIcon)}
-                    imageSrc={project.coverImage?.variants.sm}
-                    className="hidden h-16 w-16 shrink-0 rounded-xl transition-transform duration-300 ease-out group-hover:scale-105 sm:flex sm:h-20 sm:w-20"
-                  />
+                  <CoverTransition slug={project.slug}>
+                    <ProjectCover
+                      icon={getPortfolioIcon(project.industryIcon)}
+                      imageSrc={project.coverImage?.variants.sm}
+                      className="hidden h-16 w-16 shrink-0 rounded-xl transition-transform duration-300 ease-out group-hover:scale-105 sm:flex sm:h-20 sm:w-20"
+                    />
+                  </CoverTransition>
 
                   <div className="col-span-2 min-w-0 sm:col-span-1">
                     <span className="text-xs font-medium uppercase tracking-wide text-foreground/70">
