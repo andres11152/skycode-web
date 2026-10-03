@@ -64,6 +64,8 @@ export interface BlogMeta {
   rssTitle: string;
   rssDescription: string;
   rssCta: string;
+  rssCopy: string;
+  rssCopied: string;
   /** Con `{date}`: "Actualizado el 3 de mayo de 2026". */
   updatedOn: string;
   authorLabel: string;

@@ -4,9 +4,10 @@ import { getBlogMeta, readingTime, type BlogPost } from "@/content/blogShared";
 import type { PublicTeamMember } from "@/content/teamShared";
 import { blogPostPath } from "@/lib/blogPaths";
 import { rssFeedPath } from "@/lib/rss";
+import { siteUrl } from "@/lib/site";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { formatDate } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
+import { CopyButton } from "@/components/ui/CopyButton";
 import { MorphTransition } from "@/components/ui/CoverTransition";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { PostCard } from "@/components/blog/PostCard";
@@ -14,9 +15,6 @@ import { PostCover } from "@/components/blog/PostCover";
 import { PostRow } from "@/components/blog/PostRow";
 import { AuthorChip } from "@/components/blog/AuthorChip";
 
-/** Receta de `Button variant="secondary"` invertida para las bandas oscuras. */
-const SECONDARY_ON_DARK =
-  "border-background/25 text-background hover:border-background/40 hover:bg-background/10 focus-visible:ring-offset-foreground";
 
 /**
  * `/blog` — Server Component: sin ninguna isla cliente propia (los
@@ -137,10 +135,25 @@ export function BlogIndexView({
             </h2>
             <p className="mt-3 text-lg leading-relaxed text-background/80">{meta.rssDescription}</p>
           </div>
-          <Button href={rssFeedPath(locale)} variant="secondary" size="lg" showFlowArrows={false} className={SECONDARY_ON_DARK}>
-            <RssSimple size={18} aria-hidden="true" />
-            {meta.rssCta}
-          </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* `<a>` y no `Button`/`Link`: Link hace navegación del lado del cliente, y /feed.xml es un
+                Route Handler que devuelve XML (no una página de Next) — la petición RSC fallaba, recargaba
+                el blog dos veces y terminaba en una navegación completa que se sentía como un error. */}
+            <a
+              href={rssFeedPath(locale)}
+              type="application/rss+xml"
+              className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full border border-background/25 px-9 py-3.5 text-base font-semibold text-background outline-none transition-[background-color,border-color,transform] duration-200 ease-[var(--ease-out)] hover:border-background/40 hover:bg-background/10 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground active:scale-[0.97] motion-reduce:active:scale-100"
+            >
+              <RssSimple size={18} aria-hidden="true" />
+              {meta.rssCta}
+            </a>
+            <CopyButton
+              value={`${siteUrl}${rssFeedPath(locale)}`}
+              label={meta.rssCopy}
+              copiedLabel={meta.rssCopied}
+              className="border border-background/25 text-background/80 hover:border-background/40 hover:bg-background/10 hover:text-background focus-visible:ring-offset-foreground"
+            />
+          </div>
         </div>
       </section>
     </main>

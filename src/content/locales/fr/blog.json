@@ -29,6 +29,8 @@
     "prevLabel": "Article précédent",
     "nextLabel": "Article suivant",
     "ctaDescription": "Parlez-nous de votre cas et nous répondons en moins de 24 heures avec une évaluation technique honnête, sans engagement.",
-    "featuredCta": "Lire l'article"
+    "featuredCta": "Lire l'article",
+    "rssCopy": "Copier le lien du flux",
+    "rssCopied": "Lien du flux copié"
   }
 }

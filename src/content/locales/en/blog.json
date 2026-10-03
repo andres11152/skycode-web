@@ -29,6 +29,8 @@
     "prevLabel": "Previous article",
     "nextLabel": "Next article",
     "ctaDescription": "Tell us about your case and we'll reply within 24 hours with an honest technical assessment, no strings attached.",
-    "featuredCta": "Read the article"
+    "featuredCta": "Read the article",
+    "rssCopy": "Copy feed link",
+    "rssCopied": "Feed link copied"
   }
 }
