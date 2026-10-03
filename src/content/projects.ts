@@ -12,6 +12,37 @@ import type { Locale } from "@/lib/i18n";
 
 const projectsByLocale = { es: projectsDataEs, en: projectsDataEn, fr: projectsDataFr };
 
+export interface PortfolioIndexCopy {
+  countLabel: string;
+  stackLabel: string;
+  empty: string;
+  ctaTitle: string;
+  ctaButton: string;
+}
+
+export interface PortfolioDetailCopy {
+  client: string;
+  capabilities: string;
+  liveSite: string;
+  visitSite: string;
+  stack: string;
+  challenge: string;
+  solution: string;
+  results: string;
+  metrics: string;
+  gallery: string;
+  galleryPrev: string;
+  galleryNext: string;
+  galleryRegion: string;
+  expandImage: string;
+  approachTitle: string;
+  approach: string[];
+  nextCase: string;
+  viewAllCases: string;
+  ctaTitle: string;
+  ctaButton: string;
+}
+
 export interface PortfolioSectionCopy {
   badge: string;
   title: string;
@@ -20,6 +51,8 @@ export interface PortfolioSectionCopy {
   featuredBadge: string;
   viewCaseStudy: string;
   exploreProject: string;
+  index: PortfolioIndexCopy;
+  detail: PortfolioDetailCopy;
 }
 
 export function getPortfolioSectionContent(locale: Locale): PortfolioSectionCopy {
@@ -32,5 +65,7 @@ export function getPortfolioSectionContent(locale: Locale): PortfolioSectionCopy
     featuredBadge: data.featuredBadge,
     viewCaseStudy: data.viewCaseStudy,
     exploreProject: data.exploreProject,
+    index: data.index,
+    detail: data.detail,
   };
 }

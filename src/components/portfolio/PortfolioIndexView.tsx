@@ -2,16 +2,212 @@
 
 import Link from "next/link";
 import { m as motion, useReducedMotion } from "framer-motion";
-import { ArrowSquareOut, ArrowUpRight } from "@phosphor-icons/react";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
-import { CoverTransition } from "@/components/ui/CoverTransition";
-import { ProjectCover } from "@/components/ui/ProjectCover";
-import { fadeUp, staggerContainer } from "@/lib/animations";
+import { ArrowUpRight } from "@phosphor-icons/react";
+import { Button } from "@/components/ui/Button";
+import { CaseVisual } from "@/components/portfolio/CaseVisual";
+import { TechIcon } from "@/components/portfolio/TechIcon";
+import { fadeUp, scaleUp } from "@/lib/animations";
 import { cn } from "@/lib/utils";
-import { getPortfolioIcon, type PortfolioProject } from "@/content/portfolioShared";
+import { getProjectHostname, type PortfolioProject, type PortfolioTechnology } from "@/content/portfolioShared";
 import type { PortfolioSectionCopy } from "@/content/projects";
-import { getUiContent } from "@/content/ui";
-import { defaultLocale, t } from "@/lib/i18n";
+
+const FOCUS_LIGHT =
+  "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+// Enlace estirado: el <a> es solo el título (su nombre accesible coincide con el texto
+// visible, WCAG 2.5.3) y su ::after cubre la tarjeta entera, así toda ella es clicable.
+// El anillo de foco se dibuja en ese ::after (el <a> en sí queda sin caja visible).
+const STRETCH_LIGHT =
+  "outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-accent focus-visible:after:ring-offset-2 focus-visible:after:ring-offset-background";
+const STRETCH_DARK =
+  "outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-accent focus-visible:after:ring-offset-2 focus-visible:after:ring-offset-foreground";
+
+const VIEWPORT = { once: true, margin: "-80px" } as const;
+
+/** Tecnologías únicas de todos los casos, las más repetidas primero (datos reales, nada inventado). */
+function topTechnologies(projects: PortfolioProject[], limit: number): PortfolioTechnology[] {
+  const counts = new Map<number, { technology: PortfolioTechnology; count: number }>();
+  for (const project of projects) {
+    for (const technology of project.technologies) {
+      const entry = counts.get(technology.id);
+      if (entry) entry.count += 1;
+      else counts.set(technology.id, { technology, count: 1 });
+    }
+  }
+  return [...counts.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit)
+    .map((entry) => entry.technology);
+}
+
+function pad(n: number): string {
+  return String(n).padStart(2, "0");
+}
+
+function FeaturedCase({
+  project,
+  copy,
+}: {
+  project: PortfolioProject;
+  copy: PortfolioSectionCopy;
+}) {
+  return (
+    // Banda oscura (bg-foreground): una de las secciones invertidas del sitio.
+    // No hay otra oscura contigua en esta página — el resto de capítulos son claros.
+    <section aria-label={copy.featuredBadge} className="mt-14 bg-foreground sm:mt-20">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="group relative grid gap-10 rounded-xl py-14 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-16 lg:py-24">
+          <div className="lg:col-span-7">
+            <CaseVisual
+              slug={project.slug}
+              imageSrc={project.coverImage?.variants.lg ?? null}
+              alt={project.coverImage?.alt || project.title}
+              industryIcon={project.industryIcon}
+              url={getProjectHostname(project)}
+              sizes="(max-width: 1024px) 100vw, 700px"
+              priority
+              parallax
+              onDark
+            />
+          </div>
+
+          <div className="flex flex-col lg:col-span-5">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-sm text-background/70">{pad(1)}</span>
+              <span aria-hidden="true" className="h-px w-8 bg-background/25" />
+              <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent">
+                {copy.featuredBadge}
+              </span>
+            </div>
+
+            <p className="mt-6 text-xs font-medium uppercase tracking-wide text-background/70">
+              {project.clientLabel}
+            </p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-balance text-background sm:text-4xl">
+              <Link href={`/portafolio/${project.slug}`} className={STRETCH_DARK}>
+                {project.title}
+              </Link>
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-background/80 sm:text-lg">{project.summary}</p>
+
+            {project.capabilities.length > 0 && (
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {project.capabilities.map((capability) => (
+                  <li
+                    key={capability}
+                    className="rounded-full border border-background/15 px-3 py-1 text-xs text-background/80"
+                  >
+                    {capability}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <span aria-hidden="true" className="mt-8 inline-flex items-center gap-3 text-sm font-semibold text-background">
+              {copy.viewCaseStudy}
+              <span
+                aria-hidden="true"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-background/25 transition-colors duration-200 group-hover:border-background group-hover:bg-background group-hover:text-foreground"
+              >
+                <ArrowUpRight
+                  size={18}
+                  className="motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+                />
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CaseChapter({
+  project,
+  number,
+  flip,
+  reduced,
+  copy,
+}: {
+  project: PortfolioProject;
+  number: number;
+  flip: boolean;
+  reduced: boolean;
+  copy: PortfolioSectionCopy;
+}) {
+  return (
+    <article className="border-t border-foreground/10">
+      <div className="group relative grid gap-8 rounded-xl py-12 sm:py-16 lg:grid-cols-12 lg:items-center lg:gap-16">
+        <motion.div
+          variants={scaleUp(reduced)}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT}
+          className={cn("lg:col-span-7", flip && "lg:order-2")}
+        >
+          <CaseVisual
+            slug={project.slug}
+            imageSrc={project.coverImage?.variants.lg ?? null}
+            alt={project.coverImage?.alt || project.title}
+            industryIcon={project.industryIcon}
+            url={getProjectHostname(project)}
+            sizes="(max-width: 1024px) 100vw, 700px"
+            parallax
+            className="transition-colors duration-300 group-hover:border-foreground/25"
+          />
+        </motion.div>
+
+        <motion.div
+          variants={fadeUp(reduced)}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT}
+          className="flex flex-col lg:col-span-5"
+        >
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-sm text-foreground/60">{pad(number)}</span>
+            <span aria-hidden="true" className="h-px w-8 bg-foreground/20" />
+            <span className="text-xs font-medium uppercase tracking-wide text-foreground/70">
+              {project.clientLabel}
+            </span>
+          </div>
+
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-4xl">
+            <Link href={`/portafolio/${project.slug}`} className={STRETCH_LIGHT}>
+              {project.title}
+            </Link>
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-foreground/80">{project.summary}</p>
+
+          {project.capabilities.length > 0 && (
+            <ul className="mt-5 flex flex-wrap gap-2">
+              {project.capabilities.map((capability) => (
+                <li
+                  key={capability}
+                  className="rounded-full bg-foreground/5 px-3 py-1 text-xs text-foreground/70"
+                >
+                  {capability}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <span aria-hidden="true" className="mt-7 inline-flex items-center gap-3 text-sm font-semibold text-foreground">
+            {copy.viewCaseStudy}
+            <span
+              aria-hidden="true"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-foreground/15 transition-colors duration-200 group-hover:border-accent-strong group-hover:bg-accent-strong group-hover:text-accent-foreground"
+            >
+              <ArrowUpRight
+                size={18}
+                className="motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+              />
+            </span>
+          </span>
+        </motion.div>
+      </div>
+    </article>
+  );
+}
 
 export function PortfolioIndexView({
   projects,
@@ -21,114 +217,94 @@ export function PortfolioIndexView({
   sectionCopy: PortfolioSectionCopy;
 }) {
   const reduced = Boolean(useReducedMotion());
-  const uiData = getUiContent(defaultLocale);
+
+  const featured = projects.find((project) => project.isFeatured) ?? projects[0];
+  const rest = featured ? projects.filter((project) => project.slug !== featured.slug) : [];
+  const technologies = topTechnologies(projects, 8);
 
   return (
-    <main id="main-content" className="px-6 pt-28 pb-24 sm:pt-36 sm:pb-32">
-      <div className="mx-auto max-w-5xl">
-        <div className="flex max-w-2xl flex-col items-start gap-4 text-left">
-          <nav aria-label="Ruta de navegación">
-            <ol className="flex items-center gap-2 text-sm text-foreground/60">
-              <li>
-                <Link
-                  href="/"
-                  className="rounded outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
-                  Inicio
-                </Link>
-              </li>
-              <li aria-hidden="true">/</li>
-              <li className="text-foreground">Portafolio</li>
-            </ol>
-          </nav>
+    <main id="main-content" className="pt-28 sm:pt-36">
+      <header className="mx-auto max-w-6xl px-6">
+        <nav aria-label="Ruta de navegación">
+          <ol className="flex items-center gap-2 text-sm text-foreground/60">
+            <li>
+              <Link href="/" className={cn("rounded hover:text-foreground", FOCUS_LIGHT)}>
+                Inicio
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li className="text-foreground">Portafolio</li>
+          </ol>
+        </nav>
 
-          <h1 className="text-4xl font-bold tracking-tight text-balance text-foreground sm:text-5xl">
-            {sectionCopy.title}
-          </h1>
-          <p className="max-w-2xl text-lg text-foreground/80">
-            {sectionCopy.description}
-          </p>
+        <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16">
+          <div className="lg:col-span-8">
+            <h1 className="text-4xl font-bold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
+              {sectionCopy.title}
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-foreground/80">
+              {sectionCopy.description}
+            </p>
+          </div>
+
+          {projects.length > 0 && (
+            <div className="flex flex-col gap-5 lg:col-span-4 lg:items-end">
+              <p className="flex items-baseline gap-3 lg:flex-col lg:items-end lg:gap-0">
+                <span className="font-mono text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
+                  {pad(projects.length)}
+                </span>
+                <span className="text-xs font-medium uppercase tracking-wide text-foreground/70">
+                  {sectionCopy.index.countLabel}
+                </span>
+              </p>
+              {technologies.length > 0 && (
+                <ul aria-label={sectionCopy.index.stackLabel} className="flex flex-wrap items-center gap-x-4 gap-y-2 lg:justify-end">
+                  {technologies.map((technology) => (
+                    <li key={technology.id} title={technology.name} className="flex items-center">
+                      <TechIcon technology={technology} size={20} />
+                      <span className="sr-only">{technology.name}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
         </div>
+      </header>
 
-        <motion.div
-          variants={staggerContainer(reduced, 0.06)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          className="mt-16 flex flex-col border-t border-foreground/10"
-        >
-          {projects.map((project, index) => (
-            <motion.div key={project.slug} variants={fadeUp(reduced)}>
-              <SpotlightCard>
-                <Link
-                  href={`/portafolio/${project.slug}`}
-                  data-cursor="project"
-                  data-cursor-text="Ver Proyecto ↗"
-                  aria-label={`${uiData.portfolioViewCase}: ${project.title}`}
-                  className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-foreground/10 py-6 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:grid-cols-[2.5rem_5rem_1fr_auto] sm:gap-6 sm:py-8"
-                >
-                  <span aria-hidden="true" className="hidden font-mono text-sm text-foreground/60 sm:block">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
+      {!featured ? (
+        <p className="mx-auto max-w-6xl px-6 py-24 text-lg text-foreground/80">{sectionCopy.index.empty}</p>
+      ) : (
+        <>
+          <FeaturedCase project={featured} copy={sectionCopy} />
 
-                  <CoverTransition slug={project.slug}>
-                    <ProjectCover
-                      icon={getPortfolioIcon(project.industryIcon)}
-                      imageSrc={project.coverImage?.variants.sm}
-                      className="hidden h-16 w-16 shrink-0 rounded-xl transition-transform duration-300 ease-out group-hover:scale-105 sm:flex sm:h-20 sm:w-20"
-                    />
-                  </CoverTransition>
+          {rest.length > 0 && (
+            <div className="mx-auto max-w-6xl px-6 pt-8 sm:pt-12">
+              {rest.map((project, index) => (
+                <CaseChapter
+                  key={project.slug}
+                  project={project}
+                  number={index + 2}
+                  flip={index % 2 === 1}
+                  reduced={reduced}
+                  copy={sectionCopy}
+                />
+              ))}
+            </div>
+          )}
 
-                  <div className="col-span-2 min-w-0 sm:col-span-1">
-                    <span className="text-xs font-medium uppercase tracking-wide text-foreground/70">
-                      {project.clientLabel}
-                    </span>
-                    <h2 className="mt-1 flex items-center gap-2 text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-accent sm:text-2xl">
-                      {project.title}
-                    </h2>
-                    <p className="mt-1.5 max-w-2xl text-sm text-foreground/70 line-clamp-2">
-                      {project.summary}
-                    </p>
-                    <ul
-                      aria-label={t(uiData.portfolioTechUsed, { title: project.title })}
-                      className="mt-3 flex flex-wrap gap-2"
-                    >
-                      {project.capabilities.map((capability) => (
-                        <li
-                          key={capability}
-                          className="rounded-full bg-foreground/5 px-2.5 py-1 text-xs text-foreground/70"
-                        >
-                          {capability}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="flex items-center gap-2 self-start justify-self-end sm:self-center">
-                    {project.liveUrl && (
-                      <span
-                        aria-hidden="true"
-                        className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/60"
-                      >
-                        <ArrowSquareOut size={16} />
-                      </span>
-                    )}
-                    <span
-                      className={cn(
-                        "flex h-9 w-9 items-center justify-center rounded-full border border-foreground/10 text-foreground/50 transition-all duration-200 ease-out",
-                        "group-hover:border-accent/30 group-hover:bg-accent/10 group-hover:text-accent",
-                        reduced ? "" : "group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
-                      )}
-                    >
-                      <ArrowUpRight size={16} />
-                    </span>
-                  </div>
-                </Link>
-              </SpotlightCard>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
+          <section aria-label={sectionCopy.index.ctaTitle} className="mx-auto max-w-6xl px-6 pb-24 sm:pb-32">
+            <div className="flex flex-col gap-6 border-t border-foreground/10 pt-12 sm:flex-row sm:items-center sm:justify-between sm:pt-16">
+              <p className="max-w-xl text-2xl font-bold tracking-tight text-balance text-foreground sm:text-3xl">
+                {sectionCopy.index.ctaTitle}
+              </p>
+              <Button href="/#contacto" variant="accent" size="lg" className="shrink-0">
+                {sectionCopy.index.ctaButton}
+              </Button>
+            </div>
+          </section>
+        </>
+      )}
     </main>
   );
 }

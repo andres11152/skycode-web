@@ -5,5 +5,39 @@
   "viewAll": "See all projects",
   "featuredBadge": "Featured Case",
   "viewCaseStudy": "View case study",
-  "exploreProject": "Explore project"
+  "exploreProject": "Explore project",
+  "index": {
+    "countLabel": "case studies",
+    "stackLabel": "Technologies in these cases",
+    "empty": "New case studies are coming soon.",
+    "ctaTitle": "Have a similar project in mind?",
+    "ctaButton": "Talk to an engineer"
+  },
+  "detail": {
+    "client": "Client",
+    "capabilities": "Capabilities",
+    "liveSite": "Live site",
+    "visitSite": "Visit site",
+    "stack": "Tech stack",
+    "challenge": "The challenge",
+    "solution": "The solution",
+    "results": "The results",
+    "metrics": "Results in numbers",
+    "gallery": "Platform screenshots",
+    "galleryPrev": "Previous screenshots",
+    "galleryNext": "Next screenshots",
+    "galleryRegion": "Scrollable screenshot gallery",
+    "expandImage": "Enlarge image",
+    "approachTitle": "On this project, as on every one, we apply",
+    "approach": [
+      "OWASP best practices",
+      "Data regulation compliance",
+      "Technical documentation included",
+      "100% transferable code"
+    ],
+    "nextCase": "Next case",
+    "viewAllCases": "View all cases",
+    "ctaTitle": "Have a similar project in mind?",
+    "ctaButton": "Talk to an engineer"
+  }
 }

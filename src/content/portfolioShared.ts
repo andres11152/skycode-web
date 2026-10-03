@@ -113,6 +113,17 @@ export function resolveLocalizedText(value: unknown, locale: Locale): string {
   return record[locale] || record.es || "";
 }
 
+/** Host que se muestra en la barra del marco de navegador: el real si hay `liveUrl`, o uno de marca si no. */
+export function getProjectHostname(project: Pick<PortfolioProject, "slug" | "liveUrl">): string {
+  const fallback = `skycode.agency/cases/${project.slug}`;
+  if (!project.liveUrl) return fallback;
+  try {
+    return new URL(project.liveUrl).hostname;
+  } catch {
+    return fallback;
+  }
+}
+
 export function getPortfolioIcon(name: string): Icon {
   return PORTFOLIO_ICON_MAP[name] ?? Buildings;
 }

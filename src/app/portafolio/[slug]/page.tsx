@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectView } from "@/components/portfolio/ProjectView";
 import { getPublishedPortfolioProjectBySlug, getPublishedPortfolioSlugs } from "@/lib/queries/portfolio";
+import { getPortfolioSectionContent } from "@/content/projects";
 import { defaultLocale } from "@/lib/i18n";
 import { ogImageUrl, siteName, siteUrl } from "@/lib/site";
-import type { PortfolioProject } from "@/content/portfolioShared";
+import { getProjectHostname, type PortfolioProject } from "@/content/portfolioShared";
 
 // Mismo fallback que /portafolio (ver ese archivo) — la revalidación real
 // bajo demanda ocurre al cambiar el estado de publicación de un caso.
@@ -113,7 +114,20 @@ export default async function ProjectPage({ params }: PageProps) {
       <ProjectJsonLd project={project} />
       <ProjectView
         project={project}
-        nextProject={nextProject ? { slug: nextProject.slug, title: nextProject.title } : null}
+        nextProject={
+          nextProject
+            ? {
+                slug: nextProject.slug,
+                title: nextProject.title,
+                clientLabel: nextProject.clientLabel,
+                coverSrc: nextProject.coverImage?.variants.lg ?? null,
+                coverAlt: nextProject.coverImage?.alt || nextProject.title,
+                industryIcon: nextProject.industryIcon,
+                hostname: getProjectHostname(nextProject),
+              }
+            : null
+        }
+        copy={getPortfolioSectionContent(defaultLocale).detail}
       />
     </>
   );

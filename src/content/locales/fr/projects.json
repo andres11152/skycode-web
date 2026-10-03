@@ -5,5 +5,39 @@
   "viewAll": "Voir tous les projets",
   "featuredBadge": "Étude de Cas",
   "viewCaseStudy": "Voir l'étude de cas",
-  "exploreProject": "Explorer le projet"
+  "exploreProject": "Explorer le projet",
+  "index": {
+    "countLabel": "études de cas",
+    "stackLabel": "Technologies de ces cas",
+    "empty": "De nouvelles études de cas arrivent bientôt.",
+    "ctaTitle": "Un projet similaire en tête ?",
+    "ctaButton": "Parler à un ingénieur"
+  },
+  "detail": {
+    "client": "Client",
+    "capabilities": "Compétences",
+    "liveSite": "Site en ligne",
+    "visitSite": "Visiter le site",
+    "stack": "Stack technique",
+    "challenge": "Le défi",
+    "solution": "La solution",
+    "results": "Les résultats",
+    "metrics": "Résultats en chiffres",
+    "gallery": "Captures de la plateforme",
+    "galleryPrev": "Captures précédentes",
+    "galleryNext": "Captures suivantes",
+    "galleryRegion": "Galerie de captures défilable",
+    "expandImage": "Agrandir l'image",
+    "approachTitle": "Sur ce projet, comme sur tous, nous appliquons",
+    "approach": [
+      "Bonnes pratiques OWASP",
+      "Conformité réglementaire des données",
+      "Documentation technique incluse",
+      "Code 100 % transférable"
+    ],
+    "nextCase": "Cas suivant",
+    "viewAllCases": "Voir tous les cas",
+    "ctaTitle": "Un projet similaire en tête ?",
+    "ctaButton": "Parler à un ingénieur"
+  }
 }

@@ -1,213 +1,152 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { m as motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "@phosphor-icons/react";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { Button } from "@/components/ui/Button";
 import { EsBadge } from "@/components/ui/EsBadge";
+import { CaseVisual } from "@/components/portfolio/CaseVisual";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { getPortfolioSectionContent, type PortfolioSectionCopy } from "@/content/projects";
 import { getUiContent } from "@/content/ui";
 import { defaultLocale, t, type Locale } from "@/lib/i18n";
-import type { PortfolioProject } from "@/content/portfolioShared";
+import { getProjectHostname, type PortfolioProject } from "@/content/portfolioShared";
 
-function BrowserFrame({
-  children,
-  url,
+// Enlace estirado: el <a> es solo el título (nombre accesible = texto visible, WCAG 2.5.3)
+// y su ::after cubre la tarjeta entera; el anillo de foco se dibuja en ese ::after.
+const STRETCH =
+  "outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-accent focus-visible:after:ring-offset-2 focus-visible:after:ring-offset-background";
+
+// Cuántos casos secundarios acompañan al destacado en la home. El resto vive
+// en /portafolio (botón "Ver todos"): la home es un adelanto, no el catálogo.
+const SECONDARY_COUNT = 2;
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+/** Flecha circular de cada caso: mismo gesto que el índice de /portafolio. */
+function CaseArrow() {
+  return (
+    <span
+      aria-hidden="true"
+      className="flex h-11 w-11 items-center justify-center rounded-full border border-foreground/15 transition-colors duration-200 group-hover:border-accent-strong group-hover:bg-accent-strong group-hover:text-accent-foreground"
+    >
+      <ArrowUpRight
+        size={18}
+        className="motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+      />
+    </span>
+  );
+}
+
+function FeaturedCase({
+  project,
+  uiData,
+  sectionCopy,
+  showEsBadge,
 }: {
-  children: React.ReactNode;
-  url?: string;
+  project: PortfolioProject;
+  uiData: ReturnType<typeof getUiContent>;
+  sectionCopy: PortfolioSectionCopy;
+  showEsBadge: boolean;
 }) {
   return (
-    <div className="overflow-hidden rounded-t-xl border-b border-foreground/10 bg-foreground/[0.04]">
-      {/* Browser chrome header */}
-      <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-2.5">
-        <div className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-foreground/20" />
-          <span className="h-2 w-2 rounded-full bg-foreground/20" />
-          <span className="h-2 w-2 rounded-full bg-foreground/20" />
-        </div>
-        {url && (
-          <span className="max-w-[200px] truncate rounded bg-foreground/5 px-2 py-0.5 font-mono text-[10px] text-foreground/50 sm:max-w-xs">
-            {url}
-          </span>
-        )}
-        <div className="w-6" />
+    <div className="group relative grid gap-8 rounded-xl lg:grid-cols-12 lg:items-center lg:gap-14">
+      <div className="lg:col-span-7">
+        <CaseVisual
+          slug={project.slug}
+          imageSrc={project.coverImage?.variants.lg ?? null}
+          alt={project.coverImage?.alt || project.title}
+          industryIcon={project.industryIcon}
+          url={getProjectHostname(project)}
+          sizes="(max-width: 1024px) 100vw, 700px"
+          className="transition-colors duration-300 group-hover:border-foreground/25"
+        />
       </div>
-      {children}
+
+      <div className="flex flex-col lg:col-span-5">
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-sm text-foreground/60">{pad(1)}</span>
+          <span aria-hidden="true" className="h-px w-8 bg-foreground/20" />
+          <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-strong">
+            {sectionCopy.featuredBadge}
+          </span>
+        </div>
+
+        <p className="mt-5 text-xs font-medium uppercase tracking-wide text-foreground/70">{project.clientLabel}</p>
+        <h3 className="mt-2 text-2xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-3xl">
+          <Link href={`/portafolio/${project.slug}`} className={STRETCH}>
+            {project.title}
+          </Link>
+          {showEsBadge && <EsBadge />}
+        </h3>
+        <p className="mt-4 text-base leading-relaxed text-foreground/80">{project.summary}</p>
+
+        {project.capabilities.length > 0 && (
+          <ul
+            aria-label={t(uiData.portfolioTechUsed, { title: project.title })}
+            className="mt-5 flex flex-wrap gap-2"
+          >
+            {project.capabilities.map((capability) => (
+              <li key={capability} className="rounded-full bg-foreground/5 px-3 py-1 text-xs text-foreground/70">
+                {capability}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <span aria-hidden="true" className="mt-7 inline-flex items-center gap-3 text-sm font-semibold text-foreground">
+          {sectionCopy.viewCaseStudy}
+          <CaseArrow />
+        </span>
+      </div>
     </div>
   );
 }
 
-function projectHostname(project: PortfolioProject): string {
-  if (!project.liveUrl) return `skycode.agency/cases/${project.slug}`;
-  try {
-    return new URL(project.liveUrl).hostname;
-  } catch {
-    return `skycode.agency/cases/${project.slug}`;
-  }
-}
-
-function FeaturedProjectCard({
+function SecondaryCase({
   project,
-  uiData,
+  number,
   sectionCopy,
   showEsBadge,
 }: {
   project: PortfolioProject;
-  uiData: ReturnType<typeof getUiContent>;
+  number: number;
   sectionCopy: PortfolioSectionCopy;
   showEsBadge: boolean;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-xl border border-foreground/10 bg-background transition-all duration-300 hover:border-accent/40 hover:shadow-2xl hover:shadow-accent/5">
-      <Link
-        href={`/portafolio/${project.slug}`}
-        aria-label={`${uiData.portfolioViewCase}: ${project.title}`}
-        className="grid grid-cols-1 lg:grid-cols-12 outline-none focus-visible:ring-2 focus-visible:ring-accent"
-      >
-        {/* Visual Preview */}
-        <div className="lg:col-span-7 bg-foreground/5">
-          <BrowserFrame url={projectHostname(project)}>
-            <div className="relative aspect-[16/10] w-full overflow-hidden bg-foreground/10 sm:min-h-[320px]">
-              {project.coverImage ? (
-                <Image
-                  src={project.coverImage.variants.md}
-                  alt={project.coverImage.alt || project.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                  className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                />
-              ) : null}
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent opacity-40 transition-opacity group-hover:opacity-10" />
-            </div>
-          </BrowserFrame>
+    <div className="group relative flex h-full flex-col rounded-xl">
+      <CaseVisual
+        slug={project.slug}
+        imageSrc={project.coverImage?.variants.md ?? null}
+        alt={project.coverImage?.alt || project.title}
+        industryIcon={project.industryIcon}
+        url={getProjectHostname(project)}
+        sizes="(max-width: 640px) 100vw, 560px"
+        className="transition-colors duration-300 group-hover:border-foreground/25"
+      />
+
+      <div className="mt-6 flex flex-1 flex-col">
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-sm text-foreground/60">{pad(number)}</span>
+          <span aria-hidden="true" className="h-px w-6 bg-foreground/20" />
+          <span className="truncate text-xs font-medium uppercase tracking-wide text-foreground/70">
+            {project.clientLabel.split("·")[0].trim()}
+          </span>
         </div>
-
-        {/* Content details */}
-        <div className="flex flex-col justify-between p-6 sm:p-8 lg:col-span-5">
-          <div>
-            <div className="flex items-center justify-between gap-2">
-              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-accent-strong">
-                {project.clientLabel.split("·")[0].trim()}
-              </span>
-              <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-accent-strong">
-                {sectionCopy.featuredBadge}
-              </span>
-            </div>
-
-            <h3 className="mt-2 text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-accent sm:text-2xl">
-              {project.title}
-              {showEsBadge && <EsBadge />}
-            </h3>
-
-            <p className="mt-3 text-sm leading-relaxed text-foreground/75">
-              {project.summary}
-            </p>
-
-            <ul
-              aria-label={t(uiData.portfolioTechUsed, { title: project.title })}
-              className="mt-4 flex flex-wrap gap-1.5"
-            >
-              {project.capabilities.map((capability) => (
-                <li
-                  key={capability}
-                  className="rounded-md border border-foreground/10 bg-foreground/[0.03] px-2.5 py-1 font-mono text-[11px] text-foreground/80"
-                >
-                  {capability}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="mt-6 flex items-center gap-2 font-heading text-sm font-bold text-accent">
-            <span>{sectionCopy.viewCaseStudy}</span>
-            <ArrowUpRight
-              size={16}
-              className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-            />
-          </div>
-        </div>
-      </Link>
-    </div>
-  );
-}
-
-function ProjectCard({
-  project,
-  uiData,
-  sectionCopy,
-  showEsBadge,
-}: {
-  project: PortfolioProject;
-  uiData: ReturnType<typeof getUiContent>;
-  sectionCopy: PortfolioSectionCopy;
-  showEsBadge: boolean;
-}) {
-  return (
-    <div className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-foreground/10 bg-background transition-all duration-300 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/5">
-      <Link
-        href={`/portafolio/${project.slug}`}
-        aria-label={`${uiData.portfolioViewCase}: ${project.title}`}
-        className="flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-accent"
-      >
-        <BrowserFrame url={projectHostname(project)}>
-          <div className="relative aspect-[16/10] w-full overflow-hidden bg-foreground/10">
-            {project.coverImage ? (
-              <Image
-                src={project.coverImage.variants.md}
-                alt={project.coverImage.alt || project.title}
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-              />
-            ) : null}
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent opacity-40 transition-opacity group-hover:opacity-10" />
-          </div>
-        </BrowserFrame>
-
-        <div className="flex flex-1 flex-col justify-between p-6">
-          <div>
-            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground/60">
-              {project.clientLabel.split("·")[0].trim()}
-            </span>
-
-            <h3 className="mt-1 text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-accent sm:text-xl">
-              {project.title}
-              {showEsBadge && <EsBadge />}
-            </h3>
-
-            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-foreground/75 line-clamp-3">
-              {project.summary}
-            </p>
-
-            <ul
-              aria-label={t(uiData.portfolioTechUsed, { title: project.title })}
-              className="mt-4 flex flex-wrap gap-1.5"
-            >
-              {project.capabilities.slice(0, 4).map((capability) => (
-                <li
-                  key={capability}
-                  className="rounded-md border border-foreground/10 bg-foreground/[0.03] px-2 py-0.5 font-mono text-[10px] sm:text-[11px] text-foreground/75"
-                >
-                  {capability}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="mt-5 flex items-center justify-between border-t border-foreground/5 pt-4">
-            <span className="font-heading text-xs font-bold text-accent group-hover:underline">
-              {sectionCopy.exploreProject}
-            </span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-              <ArrowUpRight size={14} />
-            </span>
-          </div>
-        </div>
-      </Link>
+        <h3 className="mt-3 text-xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-2xl">
+          <Link href={`/portafolio/${project.slug}`} className={STRETCH}>
+            {project.title}
+          </Link>
+          {showEsBadge && <EsBadge />}
+        </h3>
+        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-foreground/80">{project.summary}</p>
+        <span aria-hidden="true" className="mt-auto inline-flex items-center gap-3 pt-5 text-sm font-semibold text-foreground">
+          {sectionCopy.exploreProject}
+          <CaseArrow />
+        </span>
+      </div>
     </div>
   );
 }
@@ -226,11 +165,10 @@ export function Portfolio({
   if (projects.length === 0) return null;
 
   // El destacado es el que el equipo marcó como tal desde el dashboard
-  // (`is_featured`), no simplemente el primero de la lista por `sort_order`
-  // — antes (con el JSON estático) el primer ítem del array cumplía ambos
-  // roles a la vez, acá ya no es necesariamente así.
+  // (`is_featured`), no simplemente el primero de la lista por `sort_order`.
   const featured = projects.find((project) => project.isFeatured) ?? projects[0];
-  const otherProjects = projects.filter((project) => project.slug !== featured.slug);
+  const secondary = projects.filter((project) => project.slug !== featured.slug).slice(0, SECONDARY_COUNT);
+  const showEsBadge = locale !== "es";
 
   return (
     <section
@@ -242,9 +180,7 @@ export function Portfolio({
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
             <SectionEyebrow className="mb-3">{sectionCopy.badge}</SectionEyebrow>
-            <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              {sectionCopy.title}
-            </h2>
+            <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">{sectionCopy.title}</h2>
             <p className="mt-3 text-base text-foreground/80 sm:text-lg">{sectionCopy.description}</p>
           </div>
 
@@ -258,28 +194,21 @@ export function Portfolio({
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="flex flex-col gap-8"
+          className="flex flex-col gap-14 lg:gap-20"
         >
-          {/* Flagship Featured Project */}
           <motion.div variants={fadeUp(reduced)}>
-            <FeaturedProjectCard
-              project={featured}
-              uiData={uiData}
-              sectionCopy={sectionCopy}
-              showEsBadge={locale !== "es"}
-            />
+            <FeaturedCase project={featured} uiData={uiData} sectionCopy={sectionCopy} showEsBadge={showEsBadge} />
           </motion.div>
 
-          {/* Grid for Remaining Projects */}
-          {otherProjects.length > 0 && (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
-              {otherProjects.map((project) => (
+          {secondary.length > 0 && (
+            <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:gap-x-12">
+              {secondary.map((project, index) => (
                 <motion.div key={project.slug} variants={fadeUp(reduced)}>
-                  <ProjectCard
+                  <SecondaryCase
                     project={project}
-                    uiData={uiData}
+                    number={index + 2}
                     sectionCopy={sectionCopy}
-                    showEsBadge={locale !== "es"}
+                    showEsBadge={showEsBadge}
                   />
                 </motion.div>
               ))}
