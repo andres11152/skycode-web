@@ -61,11 +61,11 @@ describe("POST /api/auth/login", () => {
     expect(res.status).toBe(400);
   });
 
-  it("bloquea después de 5 intentos fallidos desde la misma IP con 429", async () => {
+  it("bloquea el PAR correo+IP tras 8 fallos con 429 — ni con la contraseña correcta pasa", async () => {
     await createTestUser({ email: "victima@test.local", password: "SuperSecret123456" });
     const client = new TestClient("10.9.9.9"); // IP fija y exclusiva de este test
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 8; i++) {
       const res = await client.post("/api/auth/login", { email: "victima@test.local", password: "mal" });
       expect(res.status).toBe(401);
     }
@@ -73,13 +73,12 @@ describe("POST /api/auth/login", () => {
     const blocked = await client.post("/api/auth/login", { email: "victima@test.local", password: "mal" });
     expect(blocked.status).toBe(429);
 
-    // Ni siquiera con la contraseña correcta pasa mientras dure el bloqueo.
     const evenWithGoodPassword = await client.post("/api/auth/login", {
       email: "victima@test.local",
       password: "SuperSecret123456",
     });
     expect(evenWithGoodPassword.status).toBe(429);
-  });
+  }, 60_000);
 
   it("no revela por timing si el email existe o no (oráculo de timing)", async () => {
     const user = await createTestUser({ password: "SuperSecret123456" });

@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { hashPassword } from "../passwordHash";
 import { query } from "../db";
 
 /**
@@ -61,6 +62,8 @@ export interface TestUserOverrides {
   clientId?: number | null;
   hourlyCost?: number | null;
   hourlyCostCurrency?: "COP" | "USD";
+  /** Hashea con bcrypt (formato anterior a la migración a scrypt) para probar el re-hash transparente. */
+  legacyBcrypt?: boolean;
 }
 
 export interface TestUser {
@@ -74,11 +77,24 @@ export interface TestUser {
 
 const DEFAULT_PASSWORD = "TestPassword123456";
 
+// scrypt cuesta ~180 ms por hash; los tests crean cientos de usuarios con las
+// mismas pocas contraseñas, así que se memoiza por texto plano (reutilizar la
+// sal entre usuarios de PRUEBA no importa; en producción cada hash tiene la
+// suya). Sin esto la suite E2E sumaba un minuto solo en crear usuarios.
+const hashCache = new Map<string, string>();
+async function hashPasswordCached(plain: string): Promise<string> {
+  const cached = hashCache.get(plain);
+  if (cached) return cached;
+  const hash = await hashPassword(plain);
+  hashCache.set(plain, hash);
+  return hash;
+}
+
 /** Inserta un usuario directo por SQL (bypass del flujo de invitación) para tests que solo necesitan una sesión ya lista. */
 export async function createTestUser(overrides: TestUserOverrides = {}): Promise<TestUser> {
   const email = overrides.email ?? `user-${Date.now()}-${Math.random().toString(36).slice(2)}@test.local`;
   const plainPassword = overrides.password ?? DEFAULT_PASSWORD;
-  const passwordHash = await bcrypt.hash(plainPassword, 10);
+  const passwordHash = overrides.legacyBcrypt ? await bcrypt.hash(plainPassword, 10) : await hashPasswordCached(plainPassword);
 
   const res = await query(
     `INSERT INTO users (name, email, password_hash, role, status, client_id, hourly_cost, hourly_cost_currency)

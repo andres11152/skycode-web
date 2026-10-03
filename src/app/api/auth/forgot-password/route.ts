@@ -3,7 +3,8 @@ import { Resend } from "resend";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { query } from "@/lib/db";
-import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+import { isRateLimited } from "@/lib/rateLimit";
+import { guardAuthRequest, verifyHumanChallenge } from "@/lib/authShield";
 import { findUserByEmail } from "@/lib/queries/auth";
 import { createPasswordResetToken } from "@/lib/queries/passwordReset";
 import { logAudit } from "@/lib/audit";
@@ -30,16 +31,26 @@ const GENERIC_MESSAGE =
  */
 export async function POST(request: Request) {
   try {
-    const ip = getClientIp(request);
-    if (await isRateLimited(`forgot-password:${ip}`, 5, 10 * 60 * 1000)) {
-      return NextResponse.json({ error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." }, { status: 429 });
-    }
+    const guard = await guardAuthRequest(request, "forgot-password");
+    if (!guard.ok) return guard.response;
+    const { ip, body } = guard;
 
-    const parsed = RequestSchema.safeParse(await request.json());
+    const parsed = RequestSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json({ error: "Correo electrónico inválido." }, { status: 400 });
     }
     const { email } = parsed.data;
+
+    const gate = await verifyHumanChallenge({ surface: "forgot-password", ip, identifier: email, body });
+    if (!gate.ok) {
+      if (gate.kind === "pow") return gate.response;
+      // Honeypot: mismo mensaje genérico que una solicitud normal.
+      return NextResponse.json({ success: true, message: GENERIC_MESSAGE });
+    }
+
+    if (await isRateLimited(`forgot-password:${ip}`, 5, 10 * 60 * 1000)) {
+      return NextResponse.json({ error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." }, { status: 429 });
+    }
 
     // Mismo rate limit por email normalizado que login/team-accept — evita
     // que alguien agote el límite por IP rotando IPs contra una cuenta puntual.

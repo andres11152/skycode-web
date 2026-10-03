@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifySessionToken } from "@/lib/session";
 import { SESSION_COOKIE_NAME } from "@/lib/sessionCookie";
+import { getClientIp } from "@/lib/clientIp";
+import { shouldShed } from "@/lib/loadShed";
+import { originMatchesHost } from "@/lib/requestOrigin";
 
 const HOME_PATHS = new Set(["/", "/en", "/fr"]);
 
@@ -40,32 +43,50 @@ function hasValidOrigin(request: NextRequest): boolean {
   if (ORIGIN_CHECK_EXEMPT_PREFIXES.some((prefix) => request.nextUrl.pathname.startsWith(prefix))) return true;
 
   const origin = request.headers.get("origin");
-  if (!origin) return true;
-
-  // Solo se compara el HOST, nunca el esquema — bug real detectado en
-  // producción (Render): el edge de Render termina TLS y reenvía la
-  // petición al proceso Node por HTTP plano internamente, así que
-  // `request.nextUrl.protocol` llegaba como "http:" aunque el navegador
-  // mandara `Origin: https://skycode.agency` — comparar el origin completo
-  // (esquema incluido, como en la versión anterior) rechazaba TODO login
-  // legítimo con 403. El host sigue siendo la comparación que importa para
-  // esta defensa: el origen de un atacante cross-site tiene un HOST
-  // distinto sin importar el esquema, así que esto no debilita la
-  // protección real. `x-forwarded-host` (el que el navegador realmente
-  // pidió) tiene prioridad sobre `host` (que en un proxy puede ser el
-  // nombre interno del servicio, no el dominio público) cuando ambos
-  // existen.
-  const requestHost = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  if (!requestHost) return false;
-
-  try {
-    return new URL(origin).host === requestHost;
-  } catch {
-    return false;
+  if (!origin) {
+    // Sin `Origin`: sigue aceptándose (cron, webhooks y tests server-to-server
+    // no lo mandan), salvo que el propio navegador declare que la petición
+    // es de otro sitio — `Sec-Fetch-Site: cross-site` lo pone el navegador y
+    // JS de terceros no puede falsificarlo ni quitarlo.
+    return request.headers.get("sec-fetch-site") !== "cross-site";
   }
+
+  // Comparación solo por host (el porqué del esquema ignorado y de
+  // `x-forwarded-host`, bug real de producción en Render, está documentado
+  // en lib/requestOrigin.ts).
+  return originMatchesHost(request.headers);
 }
 
+// Rutas que aceptan credenciales o emiten retos: las únicas que un atacante
+// puede martillar sin tener sesión y donde cada petición, aun rechazada,
+// termina costando CPU o una consulta a Postgres. Se descartan con un token
+// bucket en memoria ANTES de llegar al handler (ver lib/loadShed.ts) — no
+// reemplaza los límites respaldados en Postgres, que siguen siendo la
+// autoridad. 40 de ráfaga y ~42/min sostenido por IP: varias veces lo que
+// usa una persona real (reto + login + 2FA), muy por debajo de un script.
+const CREDENTIAL_PATHS = new Set([
+  "/api/auth/login",
+  "/api/auth/login/verify-2fa",
+  "/api/auth/forgot-password",
+  "/api/auth/reset-password",
+  "/api/auth/challenge",
+  "/api/team/accept",
+]);
+const CREDENTIAL_SHED = { capacity: 40, refillPerSecond: 0.7 };
+
 export async function proxy(request: NextRequest) {
+  if (CREDENTIAL_PATHS.has(request.nextUrl.pathname)) {
+    const ip = getClientIp(request);
+    // "unknown" (sin cabeceras de IP) no se limita: agruparía a todo el
+    // mundo en un solo bucket y un atacante podría bloquear a todos.
+    if (ip !== "unknown" && shouldShed(`cred:${ip}`, CREDENTIAL_SHED)) {
+      return NextResponse.json(
+        { error: "Demasiadas solicitudes. Intente de nuevo en unos minutos." },
+        { status: 429, headers: { "Retry-After": "30" } },
+      );
+    }
+  }
+
   if (request.nextUrl.pathname.startsWith("/api/") && !hasValidOrigin(request)) {
     return NextResponse.json({ error: "Origen no autorizado." }, { status: 403 });
   }

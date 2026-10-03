@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { m as motion } from "framer-motion";
 import { ArrowRight, CheckCircle, Lock, User } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { HoneypotField, SecurityCheckStatus } from "@/components/auth/AuthShieldFields";
+import { usePowChallenge } from "@/lib/usePowChallenge";
 
 export function AcceptInviteView({ token }: { token: string }) {
   const router = useRouter();
@@ -18,6 +20,10 @@ export function AcceptInviteView({ token }: { token: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  // Honeypot + proof-of-work (ver lib/authShield.ts): el reto se resuelve en
+  // segundo plano mientras se completa el formulario.
+  const [website, setWebsite] = useState("");
+  const pow = usePowChallenge("team-accept");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,11 +31,13 @@ export function AcceptInviteView({ token }: { token: string }) {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/team/accept", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, name, password }),
-      });
+      const res = await pow.submit(token, (p) =>
+        fetch("/api/team/accept", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, name, password, website, pow: p }),
+        }),
+      );
 
       const data = await res.json();
 
@@ -79,7 +87,8 @@ export function AcceptInviteView({ token }: { token: string }) {
                 <p className="text-xs text-background/70">Redirigiendo al panel...</p>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="relative space-y-4">
+                <HoneypotField value={website} onChange={setWebsite} />
                 {error && (
                   <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300">
                     {error}
@@ -124,6 +133,8 @@ export function AcceptInviteView({ token }: { token: string }) {
                     />
                   </div>
                 </div>
+
+                <SecurityCheckStatus status={pow.status} />
 
                 <button
                   type="submit"

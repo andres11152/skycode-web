@@ -6,6 +6,8 @@ import Image from "next/image";
 import { m as motion } from "framer-motion";
 import { ArrowRight, CheckCircle, Envelope } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { HoneypotField, SecurityCheckStatus } from "@/components/auth/AuthShieldFields";
+import { usePowChallenge } from "@/lib/usePowChallenge";
 
 export function ForgotPasswordView() {
   const emailId = useId();
@@ -13,6 +15,10 @@ export function ForgotPasswordView() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  // Honeypot + proof-of-work (ver lib/authShield.ts): el reto se resuelve en
+  // segundo plano mientras se completa el formulario.
+  const [website, setWebsite] = useState("");
+  const pow = usePowChallenge("forgot-password");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,11 +26,13 @@ export function ForgotPasswordView() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      const res = await pow.submit(email, (p) =>
+        fetch("/api/auth/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, website, pow: p }),
+        }),
+      );
       const data = await res.json();
 
       if (!res.ok) {
@@ -72,7 +80,8 @@ export function ForgotPasswordView() {
                 <p className="text-xs text-background/70">{message}</p>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="relative space-y-4">
+                <HoneypotField value={website} onChange={setWebsite} />
                 {error && (
                   <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300">
                     {error}
@@ -97,6 +106,8 @@ export function ForgotPasswordView() {
                     />
                   </div>
                 </div>
+
+                <SecurityCheckStatus status={pow.status} />
 
                 <button
                   type="submit"

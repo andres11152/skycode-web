@@ -1,14 +1,18 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+import { isRateLimited } from "@/lib/rateLimit";
 import { verifyTwoFactorAndCreateSession } from "@/lib/authService";
-import { logError } from "@/lib/logger";
+import { verifyPendingTwoFactorToken } from "@/lib/session";
+import { guardAuthRequest, recordAuthFailure, recordAuthSuccess, verifyHumanChallenge } from "@/lib/authShield";
 import { setSessionCookie } from "@/lib/sessionCookie";
+import { logError } from "@/lib/logger";
 
 const Verify2faSchema = z.object({
   pendingToken: z.string().min(1).max(2000),
   code: z.string().trim().min(1).max(20),
 });
+
+const INVALID_CODE = { error: "Código inválido o expirado." };
 
 /**
  * POST /api/auth/login/verify-2fa - Segundo paso del login cuando
@@ -17,26 +21,36 @@ const Verify2faSchema = z.object({
  * lib/queries/totp.ts::verifyTotpOrBackupCode).
  *
  * Un código de 6 dígitos tiene muchísima menos entropía que una
- * contraseña (1 en un millón) — el límite por IP de abajo es
- * deliberadamente más estricto que el del login normal (5 intentos en 10
- * minutos igual, pero acá cada intento vale mucho más porque el espacio
- * de búsqueda es diminuto). El `pendingToken` en sí ya expira a los 5
- * minutos (ver lib/session.ts), lo que también acota la ventana de
- * fuerza bruta.
+ * contraseña (1 en un millón) — por eso, además de los límites de abajo
+ * (por IP y, dentro de `verifyTwoFactorAndCreateSession`, por usuario) y de
+ * la expiración de 5 min del `pendingToken`, cada intento exige su propio
+ * proof-of-work y los fallos suben la dificultad (ver lib/authShield.ts).
  */
 export async function POST(request: Request) {
   try {
-    const ip = getClientIp(request);
+    const guard = await guardAuthRequest(request, "verify-2fa");
+    if (!guard.ok) return guard.response;
+    const { ip, body } = guard;
+
     if (await isRateLimited(`login-2fa:${ip}`, 8, 10 * 60 * 1000)) {
-      return NextResponse.json(
-        { error: "Demasiados intentos. Intente de nuevo en unos minutos." },
-        { status: 429 }
-      );
+      return NextResponse.json({ error: "Demasiados intentos. Intente de nuevo en unos minutos." }, { status: 429 });
     }
 
-    const parsed = Verify2faSchema.safeParse(await request.json());
+    const parsed = Verify2faSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json({ error: "Datos inválidos." }, { status: 400 });
+    }
+
+    // El `pendingToken` es JWT firmado (verificación de CPU, sin base): si no
+    // es válido ni vale la pena pedir el proof-of-work.
+    const userId = await verifyPendingTwoFactorToken(parsed.data.pendingToken);
+    if (userId === null) return NextResponse.json(INVALID_CODE, { status: 401 });
+    const identifier = `user:${userId}`;
+
+    const gate = await verifyHumanChallenge({ surface: "verify-2fa", ip, identifier, body });
+    if (!gate.ok) {
+      if (gate.kind === "pow") return gate.response;
+      return NextResponse.json(INVALID_CODE, { status: 401 });
     }
 
     const result = await verifyTwoFactorAndCreateSession({
@@ -47,13 +61,14 @@ export async function POST(request: Request) {
     });
 
     if (!result) {
-      return NextResponse.json({ error: "Código inválido o expirado." }, { status: 401 });
+      await recordAuthFailure({ surface: "verify-2fa", ip, identifier });
+      return NextResponse.json(INVALID_CODE, { status: 401 });
     }
 
+    await recordAuthSuccess({ surface: "verify-2fa", ip, identifier });
+
     const response = NextResponse.json({ success: true, user: result.user });
-
     setSessionCookie(response, result.token);
-
     return response;
   } catch (error) {
     logError("❌ [API Verify 2FA Error]", error);

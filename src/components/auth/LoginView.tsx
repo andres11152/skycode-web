@@ -7,6 +7,18 @@ import { useRouter } from "next/navigation";
 import { m as motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, CheckCircle, Envelope, Eye, EyeSlash, Lock, ShieldCheck } from "@phosphor-icons/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { HoneypotField, SecurityCheckStatus } from "@/components/auth/AuthShieldFields";
+import { usePowChallenge } from "@/lib/usePowChallenge";
+
+/** El `pendingToken` de 2FA es un JWT; su payload (sin verificar — solo para calcular la dificultad del reto) trae el id del usuario. */
+function userIdFromPendingToken(token: string): string | undefined {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))) as { pending2fa?: number };
+    return payload.pending2fa !== undefined ? `user:${payload.pending2fa}` : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 export function LoginView() {
   const router = useRouter();
@@ -24,17 +36,25 @@ export function LoginView() {
   const [pendingToken, setPendingToken] = useState<string | null>(null);
   const [totpCode, setTotpCode] = useState("");
 
+  // Campo señuelo (honeypot) y proof-of-work (ver lib/authShield.ts): el reto
+  // se resuelve en segundo plano mientras se escribe, así el envío no espera.
+  const [website, setWebsite] = useState("");
+  const loginPow = usePowChallenge("login");
+  const twoFactorPow = usePowChallenge("verify-2fa", { enabled: pendingToken !== null });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await loginPow.submit(email, (pow) =>
+        fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, website, pow }),
+        }),
+      );
 
       const data = await res.json();
 
@@ -62,11 +82,13 @@ export function LoginView() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login/verify-2fa", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pendingToken, code: totpCode }),
-      });
+      const res = await twoFactorPow.submit(userIdFromPendingToken(pendingToken), (pow) =>
+        fetch("/api/auth/login/verify-2fa", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pendingToken, code: totpCode, website, pow }),
+        }),
+      );
 
       const data = await res.json();
 
@@ -121,7 +143,8 @@ export function LoginView() {
                 <p className="text-xs text-background/70">Redirigiendo a la consola principal...</p>
               </motion.div>
             ) : pendingToken ? (
-              <form onSubmit={handleVerifyTwoFactor} className="space-y-4">
+              <form onSubmit={handleVerifyTwoFactor} className="relative space-y-4">
+                <HoneypotField value={website} onChange={setWebsite} />
                 {error && (
                   <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300">
                     {error}
@@ -153,6 +176,8 @@ export function LoginView() {
                   />
                 </div>
 
+                <SecurityCheckStatus status={twoFactorPow.status} />
+
                 <button
                   type="submit"
                   disabled={loading || totpCode.trim().length === 0}
@@ -182,7 +207,8 @@ export function LoginView() {
                 </button>
               </form>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="relative space-y-4">
+                <HoneypotField value={website} onChange={setWebsite} />
                 {error && (
                   <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300">
                     {error}
@@ -203,7 +229,7 @@ export function LoginView() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="ejemplo@skycode.agency"
                       className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 pl-10 pr-4 text-xs text-background placeholder:text-background/60 outline-none focus:border-accent focus:ring-1 focus:ring-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground transition-all font-mono"
-                      autoComplete="email"
+                      autoComplete="username"
                     />
                   </div>
                 </div>
@@ -242,6 +268,8 @@ export function LoginView() {
                     </button>
                   </div>
                 </div>
+
+                <SecurityCheckStatus status={loginPow.status} />
 
                 <button
                   type="submit"

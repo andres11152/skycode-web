@@ -5,7 +5,8 @@ import { withTransaction } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 import { createSessionToken } from "@/lib/session";
 import { logAudit } from "@/lib/audit";
-import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+import { isRateLimited } from "@/lib/rateLimit";
+import { guardAuthRequest, verifyHumanChallenge } from "@/lib/authShield";
 import { findUserByEmail, createSessionRecord } from "@/lib/queries/auth";
 import { findValidInvite, acceptTeamInviteAndCreateUser } from "@/lib/queries/team";
 import { SESSION_LIFETIME_MS } from "@/lib/authService";
@@ -25,15 +26,11 @@ const AcceptInviteSchema = z.object({
  */
 export async function POST(request: Request) {
   try {
-    const ip = getClientIp(request);
-    if (await isRateLimited(`team-accept:${ip}`, 5, 10 * 60 * 1000)) {
-      return NextResponse.json(
-        { error: "Demasiados intentos. Intente de nuevo en unos minutos." },
-        { status: 429 }
-      );
-    }
+    const guard = await guardAuthRequest(request, "team-accept");
+    if (!guard.ok) return guard.response;
+    const { ip, body } = guard;
 
-    const parsed = AcceptInviteSchema.safeParse(await request.json());
+    const parsed = AcceptInviteSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Nombre y contraseña son requeridos (mínimo 12 caracteres)." },
@@ -41,6 +38,19 @@ export async function POST(request: Request) {
       );
     }
     const { token, name, password } = parsed.data;
+
+    const gate = await verifyHumanChallenge({ surface: "team-accept", ip, identifier: token, body });
+    if (!gate.ok) {
+      if (gate.kind === "pow") return gate.response;
+      return NextResponse.json({ error: "La invitación no es válida o expiró." }, { status: 400 });
+    }
+
+    if (await isRateLimited(`team-accept:${ip}`, 5, 10 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Demasiados intentos. Intente de nuevo en unos minutos." },
+        { status: 429 }
+      );
+    }
 
     const invite = await findValidInvite(token);
     if (!invite) {

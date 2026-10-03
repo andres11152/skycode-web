@@ -54,6 +54,17 @@ async function sweepExpiredRateLimits(): Promise<void> {
  * segunda ida y vuelta para decidir si conviene registrar el intento.
  */
 export async function isRateLimited(key: string, limit: number, windowMs: number): Promise<boolean> {
+  return (await incrementAttempts(key, windowMs)) > limit;
+}
+
+/**
+ * Suma 1 al contador de `key` (abriendo una ventana nueva si la anterior
+ * venció) y devuelve el total de la ventana vigente. Es el `UPSERT` atómico
+ * de siempre; `isRateLimited` es solo `incrementAttempts(...) > limit`.
+ * Existe aparte para quien necesita el NÚMERO (ej. subir la dificultad del
+ * proof-of-work según los fallos acumulados), no solo un sí/no.
+ */
+export async function incrementAttempts(key: string, windowMs: number): Promise<number> {
   await sweepExpiredRateLimits();
 
   const res = await query(
@@ -74,38 +85,29 @@ export async function isRateLimited(key: string, limit: number, windowMs: number
     [key, windowMs]
   );
 
-  const count = Number(res.rows[0].count);
-  return count > limit;
+  return Number(res.rows[0].count);
 }
 
-// Cuántos proxies de confianza hay delante de esta app (el edge del hosting
-// — Vercel/Render — cuenta como uno). Cada proxy de confianza *añade* al
-// final de X-Forwarded-For la IP que él mismo observó directamente; todo lo
-// que venga antes de esa posición lo puede escribir el propio cliente en su
-// request original, así que tomar la entrada más a la izquierda (como hacía
-// este archivo antes) dejaba que cualquiera evadiera los rate limiters del
-// sistema mandando `X-Forwarded-For: <valor aleatorio>` en cada intento.
-const TRUSTED_PROXY_HOPS = Math.max(1, Number(process.env.TRUSTED_PROXY_HOPS) || 1);
-
-// Si la app queda detrás de Cloudflare (recomendado para absorber DDoS
-// volumétrico, ver docs/auth-hardening.md), la IP real del visitante llega en
-// `CF-Connecting-IP`, puesta por Cloudflare — NO se puede confiar en ella si
-// el tráfico puede llegar a Render sin pasar por Cloudflare (cualquiera la
-// falsificaría), así que solo se lee con `TRUST_CLOUDFLARE=true`, que se
-// activa cuando el origen ya está restringido a las IPs de Cloudflare.
-const TRUST_CLOUDFLARE = process.env.TRUST_CLOUDFLARE === "true";
-
-export function getClientIp(request: Request): string {
-  if (TRUST_CLOUDFLARE) {
-    const cfIp = request.headers.get("cf-connecting-ip")?.trim();
-    if (cfIp) return cfIp;
-  }
-
-  const forwardedFor = request.headers.get("x-forwarded-for");
-  if (forwardedFor) {
-    const ips = forwardedFor.split(",").map((ip) => ip.trim()).filter(Boolean);
-    const trustedIndex = ips.length - TRUSTED_PROXY_HOPS;
-    if (ips[trustedIndex]) return ips[trustedIndex];
-  }
-  return request.headers.get("x-real-ip") || "unknown";
+/**
+ * Lee el contador de `key` SIN incrementarlo (0 si no existe o su ventana
+ * ya venció). Para decisiones de solo lectura — "¿esta IP ya acumuló
+ * demasiados fallos?" — que no deben contar como un intento más.
+ */
+export async function peekAttempts(key: string, windowMs: number): Promise<number> {
+  const res = await query(
+    `SELECT count FROM rate_limits
+     WHERE key = $1 AND now() - window_start < ($2::numeric * interval '1 millisecond');`,
+    [key, windowMs]
+  );
+  return res.rows[0] ? Number(res.rows[0].count) : 0;
 }
+
+/** Borra el contador de `key` (ej. los fallos de un email tras un login exitoso). */
+export async function resetAttempts(key: string): Promise<void> {
+  await query("DELETE FROM rate_limits WHERE key = $1;", [key]);
+}
+
+// `getClientIp` vive en un módulo aparte (sin `pg`) para poder usarse desde
+// proxy.ts, que corre en Edge Runtime. Se re-exporta acá para no tocar a los
+// ~20 llamadores existentes.
+export { getClientIp } from "./clientIp";
