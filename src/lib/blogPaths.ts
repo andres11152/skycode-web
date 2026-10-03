@@ -30,3 +30,10 @@ export function authorUrl(locale: Locale, authorSlug: string): string {
   const prefix = homePath === "/" ? "" : homePath;
   return `${siteUrl}${prefix}/equipo#${authorSlug}`;
 }
+
+/** Perfil del autor en `/equipo#slug`, ruta relativa y con prefijo de idioma — para enlaces dentro del sitio (`authorUrl` es la absoluta del JSON-LD). */
+export function authorPath(locale: Locale, authorSlug: string): string {
+  const homePath = localeHomePath(locale);
+  const prefix = homePath === "/" ? "" : homePath;
+  return `${prefix}/equipo#${authorSlug}`;
+}

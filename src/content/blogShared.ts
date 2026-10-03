@@ -58,6 +58,22 @@ export interface BlogMeta {
   ctaButton: string;
   copyCode: string;
   copiedCode: string;
+  featuredLabel: string;
+  featuredCta: string;
+  moreHeading: string;
+  rssTitle: string;
+  rssDescription: string;
+  rssCta: string;
+  /** Con `{date}`: "Actualizado el 3 de mayo de 2026". */
+  updatedOn: string;
+  authorLabel: string;
+  authorProfile: string;
+  serviceLabel: string;
+  serviceCta: string;
+  relatedHeading: string;
+  prevLabel: string;
+  nextLabel: string;
+  ctaDescription: string;
 }
 
 const blogMetaByLocale: Record<Locale, BlogMeta> = {

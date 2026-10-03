@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getBlogPosts } from "@/content/blog";
 import { BlogIndexView } from "@/components/blog/BlogIndexView";
 import { buildBlogIndexMetadata } from "@/lib/blogMetadata";
+import { getBlogAuthors } from "@/lib/blogData";
 
 export const metadata: Metadata = buildBlogIndexMetadata("es");
 
@@ -13,6 +14,6 @@ export const metadata: Metadata = buildBlogIndexMetadata("es");
 export const revalidate = 3600;
 
 export default async function BlogPage() {
-  const posts = await getBlogPosts("es");
-  return <BlogIndexView locale="es" posts={posts} />;
+  const [posts, authors] = await Promise.all([getBlogPosts("es"), getBlogAuthors("es")]);
+  return <BlogIndexView locale="es" posts={posts} authors={authors} />;
 }

@@ -14,6 +14,21 @@
     "ctaQuestion": "¿Necesita esto implementado, no solo explicado?",
     "ctaButton": "Hablar con un ingeniero",
     "copyCode": "Copiar código",
-    "copiedCode": "Código copiado"
+    "copiedCode": "Código copiado",
+    "featuredLabel": "Destacado",
+    "moreHeading": "Más artículos",
+    "rssTitle": "Léelo en tu propio lector",
+    "rssDescription": "Cada artículo nuevo llega a tu lector de feeds. Sin cuentas, sin correo y sin rastreo.",
+    "rssCta": "Suscribirse por RSS",
+    "updatedOn": "Actualizado el {date}",
+    "authorLabel": "Escrito por",
+    "authorProfile": "Ver perfil del equipo",
+    "serviceLabel": "Servicio relacionado",
+    "serviceCta": "Ver el servicio",
+    "relatedHeading": "Sigue leyendo",
+    "prevLabel": "Artículo anterior",
+    "nextLabel": "Artículo siguiente",
+    "ctaDescription": "Cuéntanos tu caso y te respondemos en menos de 24 horas con una evaluación técnica honesta, sin compromiso.",
+    "featuredCta": "Leer el artículo"
   }
 }

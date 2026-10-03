@@ -30,15 +30,18 @@ export function formatMoney(amount: number, currency: Currency): string {
 // dispara el error de hidratación de React #418 (bug real, reportado por un
 // visitante). Fijarlo hace el resultado determinista sin importar dónde
 // corra ni la zona horaria del visitante.
-const dateFormatter = new Intl.DateTimeFormat("es-CO", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-  timeZone: "America/Bogota",
-});
+const DATE_LOCALES = { es: "es-CO", en: "en-US", fr: "fr-FR" } as const;
 
-export function formatDate(isoDate: string) {
-  return dateFormatter.format(new Date(isoDate));
+const dateFormatters = Object.fromEntries(
+  Object.entries(DATE_LOCALES).map(([locale, tag]) => [
+    locale,
+    new Intl.DateTimeFormat(tag, { day: "numeric", month: "long", year: "numeric", timeZone: "America/Bogota" }),
+  ]),
+) as Record<keyof typeof DATE_LOCALES, Intl.DateTimeFormat>;
+
+/** `locale` por defecto `es`: los llamadores que no lo pasan conservan el formato de siempre. */
+export function formatDate(isoDate: string, locale: keyof typeof DATE_LOCALES = "es") {
+  return dateFormatters[locale].format(new Date(isoDate));
 }
 
 export function slugify(text: string): string {

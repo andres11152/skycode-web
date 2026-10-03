@@ -4,6 +4,7 @@ import { getBlogPosts, getPostBySlug } from "@/content/blog";
 import { ArticleView } from "@/components/blog/ArticleView";
 import { ArticleJsonLd } from "@/components/blog/ArticleJsonLd";
 import { buildBlogPostMetadata } from "@/lib/blogMetadata";
+import { getArticleContext } from "@/lib/blogData";
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts("en");
@@ -30,10 +31,12 @@ export default async function BlogPostPageEn({ params }: PageProps) {
     notFound();
   }
 
+  const context = await getArticleContext(post, "en");
+
   return (
     <>
       <ArticleJsonLd post={post} locale="en" />
-      <ArticleView post={post} locale="en" />
+      <ArticleView post={post} locale="en" context={context} />
     </>
   );
 }

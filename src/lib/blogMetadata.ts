@@ -84,13 +84,14 @@ export async function buildBlogPostMetadata(locale: Locale, slug: string): Promi
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
       authors: [post.author],
-      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: post.title }],
+      // Sin `images` a propósito: la imagen de cada post la aporta
+      // `opengraph-image.tsx` de su ruta (lib/blogOgImage.tsx). Declararla
+      // aquí la pisaría con la imagen genérica compartida.
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.description,
-      images: [ogImageUrl],
     },
   };
 }
