@@ -7,7 +7,7 @@
 // (archivados tal cual en scripts/seed-data/team/{locale}.json — el JSON que
 // sirve el sitio hoy solo trae el copy de la sección) a `team_profiles` +
 // `team_profile_translations` (migración 0037), y sube cada foto de
-// `public/team/*.webp` al bucket público de R2 con el mismo pipeline que
+// `scripts/seed-data/team/photos/*.webp` al bucket público de R2 con el mismo pipeline que
 // `lib/portfolioStorage.ts` (anchos 400/800/1600 conservando la proporción
 // retrato — la tarjeta de /equipo es 3:4, no un avatar cuadrado).
 //
@@ -28,7 +28,6 @@ import sharp from "sharp";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = join(__dirname, "..");
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -111,7 +110,9 @@ try {
     // ningún perfil a medias en la base (como mucho, objetos huérfanos).
     let photo = null;
     if (esMember.photo) {
-      const filePath = join(REPO_ROOT, "public", esMember.photo.replace(/^\//, ""));
+      // Las fotos originales ya no viven en public/ (dejaron de servirse al
+      // migrar): están archivadas junto al JSON en seed-data/team/photos/.
+      const filePath = join(__dirname, "seed-data", "team", "photos", esMember.photo.split("/").pop());
       if (existsSync(filePath)) {
         photo = await uploadPhoto(readFileSync(filePath));
         console.log(`  Foto subida: ${esMember.photo} -> ${photo.storageKey}`);
