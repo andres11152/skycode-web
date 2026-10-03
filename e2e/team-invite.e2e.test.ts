@@ -31,7 +31,7 @@ describe("Invitación de equipo → aceptar → login automático → redirecci�
       password: "ContraseñaSegura123456",
     });
     expect(acceptRes.status).toBe(200);
-    expect(inviteeClient.hasCookie("skycode_session")).toBe(true);
+    expect(inviteeClient.hasSessionCookie()).toBe(true);
 
     const meRes = await inviteeClient.get("/api/auth/me");
     const me = await meRes.json();

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { SESSION_COOKIE_NAME } from "@/lib/sessionCookie";
 import { cookies } from "next/headers";
 import { verifySessionToken } from "@/lib/session";
 import { resolveSession } from "@/lib/authSession";
@@ -6,7 +7,7 @@ import { resolveSession } from "@/lib/authSession";
 export async function GET() {
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get("skycode_session")?.value;
+    const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
     if (!token) {
       return NextResponse.json({ authenticated: false, user: null }, { status: 401 });

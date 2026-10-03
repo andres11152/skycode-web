@@ -81,6 +81,22 @@ export class TestClient {
     return this.cookies.has(name);
   }
 
+  /**
+   * ¿Hay cookie de sesión? El servidor de pruebas corre `next start`
+   * (NODE_ENV=production → nombre `__Host-skycode_session`), pero este
+   * proceso corre bajo vitest (NODE_ENV=test), así que `SESSION_COOKIE_NAME`
+   * importado acá daría el nombre equivocado. Se aceptan ambos.
+   */
+  hasSessionCookie(): boolean {
+    return this.cookies.has("__Host-skycode_session") || this.cookies.has("skycode_session");
+  }
+
+  /** Fuerza una cookie de sesión inválida bajo ambos nombres posibles (ver `hasSessionCookie`). */
+  setRawSessionCookie(value: string): void {
+    this.cookies.set("__Host-skycode_session", value);
+    this.cookies.set("skycode_session", value);
+  }
+
   /** Para tests que necesitan forzar una cookie inválida/corrupta sin pasar por un login real. */
   setRawCookie(name: string, value: string): void {
     this.cookies.set(name, value);

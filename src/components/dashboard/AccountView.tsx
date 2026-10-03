@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { SESSION_COOKIE_NAME } from "@/lib/sessionCookie";
 import { notFound } from "next/navigation";
 import { verifySessionToken } from "@/lib/session";
 import { getActiveUserSessions } from "@/lib/queries/sessions";
@@ -33,7 +34,7 @@ export async function AccountView({ userId, audience }: { userId: number | strin
   // la contraseña) se identifica por su sessionId, que
   // `requireSessionOrRedirect()` no expone — se relee la cookie acá.
   const cookieStore = await cookies();
-  const token = cookieStore.get("skycode_session")?.value;
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   const payload = token ? await verifySessionToken(token) : null;
   const currentSessionId = payload?.sessionId ?? null;
 

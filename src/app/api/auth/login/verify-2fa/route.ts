@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
-import { verifyTwoFactorAndCreateSession, SESSION_LIFETIME_MS } from "@/lib/authService";
+import { verifyTwoFactorAndCreateSession } from "@/lib/authService";
 import { logError } from "@/lib/logger";
+import { setSessionCookie } from "@/lib/sessionCookie";
 
 const Verify2faSchema = z.object({
   pendingToken: z.string().min(1).max(2000),
@@ -51,15 +52,7 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json({ success: true, user: result.user });
 
-    response.cookies.set({
-      name: "skycode_session",
-      value: result.token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: SESSION_LIFETIME_MS / 1000,
-      path: "/",
-    });
+    setSessionCookie(response, result.token);
 
     return response;
   } catch (error) {

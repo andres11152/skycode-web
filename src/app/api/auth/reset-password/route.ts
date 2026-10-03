@@ -9,6 +9,7 @@ import { createSessionToken } from "@/lib/session";
 import { createSessionRecord } from "@/lib/queries/auth";
 import { logAudit } from "@/lib/audit";
 import { logError } from "@/lib/logger";
+import { setSessionCookie } from "@/lib/sessionCookie";
 import { SESSION_LIFETIME_MS } from "@/lib/authService";
 
 const ResetSchema = z.object({
@@ -82,15 +83,7 @@ export async function POST(request: Request) {
       success: true,
       user: { id: user.id, name: user.name, email: user.email, role: user.role },
     });
-    response.cookies.set({
-      name: "skycode_session",
-      value: jwt,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: SESSION_LIFETIME_MS / 1000,
-      path: "/",
-    });
+    setSessionCookie(response, jwt);
 
     return response;
   } catch (error) {

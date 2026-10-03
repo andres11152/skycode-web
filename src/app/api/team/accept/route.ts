@@ -10,6 +10,7 @@ import { findUserByEmail, createSessionRecord } from "@/lib/queries/auth";
 import { findValidInvite, acceptTeamInviteAndCreateUser } from "@/lib/queries/team";
 import { SESSION_LIFETIME_MS } from "@/lib/authService";
 import { logError } from "@/lib/logger";
+import { setSessionCookie } from "@/lib/sessionCookie";
 
 const AcceptInviteSchema = z.object({
   token: z.uuid(),
@@ -91,15 +92,7 @@ export async function POST(request: Request) {
     const jwt = await createSessionToken({ sessionId });
 
     const response = NextResponse.json({ success: true, user });
-    response.cookies.set({
-      name: "skycode_session",
-      value: jwt,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: SESSION_LIFETIME_MS / 1000,
-      path: "/",
-    });
+    setSessionCookie(response, jwt);
 
     return response;
   } catch (error) {

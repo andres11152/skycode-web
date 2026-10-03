@@ -1,23 +1,22 @@
 import { randomUUID } from "node:crypto";
 import { query } from "./db";
-import { ensureSeedAdmin, comparePassword } from "./auth";
+import { ensureSeedAdmin } from "./auth";
+import { DUMMY_SCRYPT_HASH, hashPassword, needsRehash, verifyPassword } from "./passwordHash";
 import { createSessionToken, createPendingTwoFactorToken, verifyPendingTwoFactorToken } from "./session";
 import { invalidateSessionCache } from "./authSession";
 import { logAudit } from "./audit";
 import { isRateLimited } from "./rateLimit";
 import { findUserByEmail, createSessionRecord, revokeSessionRecord } from "./queries/auth";
 import { verifyTotpOrBackupCode } from "./queries/totp";
+import { logError } from "./logger";
 
-export const SESSION_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000; // 7 días
+import { SESSION_LIFETIME_MS } from "./sessionCookie";
+export { SESSION_LIFETIME_MS };
 
-// Hash bcrypt real (60 chars, cost 10) de una contraseña aleatoria descartada
-// — DEBE ser un hash válido: uno con formato incorrecto hace que
-// bcrypt.compare() falle por longitud/formato en <1ms en vez de ejecutar el
-// work factor completo (~65ms), lo que reabre el oráculo de timing que esto
-// existe para cerrar (un correo inexistente respondería visiblemente más
-// rápido que uno real). Verificado con un benchmark real: con un hash
-// malformado la relación era de ~1200x; con este, ambas rutas miden lo mismo.
-export const DUMMY_HASH = "$2b$10$DHmTJ6VSGrz344hSNr9l/.3Eh7aLbuSCNolwzZ9z0lL8eeTBxoGXW";
+// Hash señuelo para cuando el correo no existe — ver DUMMY_SCRYPT_HASH en
+// lib/passwordHash.ts (scrypt real con los parámetros vigentes, no uno
+// malformado que se rechazaría al instante y reabriría el oráculo de timing).
+export const DUMMY_HASH = DUMMY_SCRYPT_HASH;
 
 export interface AuthenticateParams {
   email: string;
@@ -87,7 +86,7 @@ export async function authenticateUserCredentials({ email, password, ip, userAge
 
   // 3. Comparación constante de hash contra timing-attacks
   const passwordHashToCheck = user?.password_hash || DUMMY_HASH;
-  const isValid = await comparePassword(password, passwordHashToCheck);
+  const isValid = await verifyPassword(password, passwordHashToCheck);
 
   if (!user || !isValid || user.status !== "active") {
     // Se audita el intento fallido (nunca la contraseña en sí) para que
@@ -106,6 +105,18 @@ export async function authenticateUserCredentials({ email, password, ip, userAge
       ip,
     });
     return { status: "invalid" };
+  }
+
+  // Migración transparente de hash: una cuenta con hash bcrypt (o scrypt con
+  // parámetros más débiles) se re-hashea con los vigentes ahora que tenemos
+  // la contraseña en claro y acaba de verificarse. Mejor esfuerzo: un fallo
+  // acá no debe impedir el login.
+  if (needsRehash(user.password_hash)) {
+    try {
+      await query("UPDATE users SET password_hash = $1, updated_at = now() WHERE id = $2;", [await hashPassword(password), user.id]);
+    } catch (error) {
+      logError("⚠️ [Auth] No se pudo re-hashear la contraseña", error, { userId: user.id });
+    }
   }
 
   const publicUser: AuthUserPublic = { id: user.id, name: user.name, email: user.email, role: user.role };

@@ -17,7 +17,7 @@ describe("POST /api/auth/login", () => {
     const body = await res.json();
     expect(body.success).toBe(true);
     expect(body.user).toMatchObject({ id: user.id, email: user.email, role: "admin" });
-    expect(client.hasCookie("skycode_session")).toBe(true);
+    expect(client.hasSessionCookie()).toBe(true);
   });
 
   it("contraseña incorrecta: 401, sin setear cookie", async () => {
@@ -26,7 +26,7 @@ describe("POST /api/auth/login", () => {
 
     const res = await client.post("/api/auth/login", { email: user.email, password: "contraseña-equivocada" });
     expect(res.status).toBe(401);
-    expect(client.hasCookie("skycode_session")).toBe(false);
+    expect(client.hasSessionCookie()).toBe(false);
   });
 
   it("email que no existe: 401 (mismo mensaje que contraseña incorrecta, no filtra qué correos existen)", async () => {
@@ -149,7 +149,7 @@ describe("GET /api/auth/me", () => {
 
   it("cookie manipulada/corrupta: 401, no 500", async () => {
     const client = new TestClient();
-    client.setRawCookie("skycode_session", "esto-no-es-un-jwt-valido");
+    client.setRawSessionCookie("esto-no-es-un-jwt-valido");
 
     const res = await client.get("/api/auth/me");
     expect(res.status).toBe(401);

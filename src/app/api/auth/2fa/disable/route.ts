@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { SESSION_COOKIE_NAME } from "@/lib/sessionCookie";
 import { cookies } from "next/headers";
 import { z } from "zod";
 import { requireSession } from "@/lib/withAuth";
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
     // alguien más tenía sesión abierta con esta cuenta, quitar el segundo
     // factor debe sacarlo de inmediato — sobre todo acá, donde justo se
     // está reduciendo la seguridad de la cuenta. Excluye la sesión actual.
-    const token = (await cookies()).get("skycode_session")?.value;
+    const token = (await cookies()).get(SESSION_COOKIE_NAME)?.value;
     const payload = token ? await verifySessionToken(token) : null;
     if (payload) {
       await revokeOtherSessions(session.id, payload.sessionId);

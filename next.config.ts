@@ -105,6 +105,11 @@ const SECURITY_HEADERS = [
       `frame-src 'self' ${BOLD_CHECKOUT_ORIGIN}`,
       // Reemplaza y refuerza X-Frame-Options en navegadores modernos.
       "frame-ancestors 'none'",
+      // El worker del proof-of-work del login (public/pow-worker.js) es de
+      // este mismo origen; sin esta directiva `worker-src` caería a
+      // `script-src`, que ya lo permitiría, pero declararlo explícito evita
+      // que un cambio futuro en `script-src` rompa el login en silencio.
+      "worker-src 'self'",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -118,6 +123,24 @@ const SECURITY_HEADERS = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
+  // Aísla la ventana de este sitio de cualquier otra que la abra o que ella
+  // abra (cierra la clase de ataques que usan `window.opener`) y evita que
+  // otros orígenes incrusten nuestros recursos (Spectre-class side channels).
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+  { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
+];
+
+// Rutas de autenticación: nunca deben guardarse en cachés compartidas ni del
+// navegador (respuestas con `pendingToken`, tokens de reseteo, formularios
+// con estado de seguridad). `private, no-store` además impide que un proxy o
+// CDN intermedio las conserve.
+const AUTH_NO_STORE_SOURCES = [
+  "/api/auth/:path*",
+  "/login",
+  "/olvide-password",
+  "/resetear-password/:path*",
+  "/invitar/:path*",
 ];
 
 const nextConfig: NextConfig = {
@@ -145,6 +168,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/(.*)", headers: SECURITY_HEADERS },
+      ...AUTH_NO_STORE_SOURCES.map((source) => ({
+        source,
+        headers: [{ key: "Cache-Control", value: "private, no-store, max-age=0" }],
+      })),
       {
         source: "/:all*(svg|jpg|jpeg|png|webp|ico|woff|woff2)",
         headers: [

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifySessionToken } from "@/lib/session";
+import { SESSION_COOKIE_NAME } from "@/lib/sessionCookie";
 
 const HOME_PATHS = new Set(["/", "/en", "/fr"]);
 
@@ -76,7 +77,7 @@ export async function proxy(request: NextRequest) {
   // `layout.tsx` de `/dashboard` y `/portal` (Server Components en Node),
   // que además deciden a cuál de los dos redirigir según el rol.
   if (request.nextUrl.pathname.startsWith("/dashboard") || request.nextUrl.pathname.startsWith("/portal")) {
-    const token = request.cookies.get("skycode_session")?.value;
+    const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
     const session = token ? await verifySessionToken(token) : null;
 
     if (!session) {

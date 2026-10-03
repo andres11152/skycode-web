@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { SESSION_COOKIE_NAME } from "@/lib/sessionCookie";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -24,7 +25,7 @@ export interface AuthedContext {
  */
 export async function requireSession(): Promise<{ session: UserSession; sessionId: string } | { error: NextResponse }> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("skycode_session")?.value;
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!token) {
     return { error: NextResponse.json({ error: "No autorizado. Inicie sesión." }, { status: 401 }) };
   }
@@ -54,7 +55,7 @@ export async function requireSession(): Promise<{ session: UserSession; sessionI
  */
 export const requireSessionOrRedirect = cache(async (): Promise<UserSession> => {
   const cookieStore = await cookies();
-  const token = cookieStore.get("skycode_session")?.value;
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!token) redirect("/login");
 
   const payload = await verifySessionToken(token);

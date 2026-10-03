@@ -1,5 +1,5 @@
 import { query } from "../db";
-import { comparePassword, hashPassword } from "../auth";
+import { compareBackupCode, hashBackupCode } from "../auth";
 import { generateBackupCodes, generateTotpSecret, verifyTotpCode } from "../totp";
 
 export interface TotpStatus {
@@ -58,7 +58,7 @@ export async function confirmTotpSetup(userId: number | string, code: string): P
   }
 
   const backupCodes = generateBackupCodes();
-  const hashedCodes = await Promise.all(backupCodes.map((c) => hashPassword(c)));
+  const hashedCodes = await Promise.all(backupCodes.map((c) => hashBackupCode(c)));
 
   await query("UPDATE users SET totp_enabled = true, totp_backup_codes = $1 WHERE id = $2;", [hashedCodes, userId]);
 
@@ -88,7 +88,7 @@ export async function regenerateBackupCodes(userId: number | string, code: strin
   if (!isValid) return null;
 
   const backupCodes = generateBackupCodes();
-  const hashedCodes = await Promise.all(backupCodes.map((c) => hashPassword(c)));
+  const hashedCodes = await Promise.all(backupCodes.map((c) => hashBackupCode(c)));
   await query("UPDATE users SET totp_backup_codes = $1 WHERE id = $2;", [hashedCodes, userId]);
 
   return backupCodes;
@@ -115,7 +115,7 @@ export async function verifyTotpOrBackupCode(userId: number | string, code: stri
   // primero que calce debe cortar el ciclo antes de seguir gastando CPU en
   // bcrypt.compare() para los demás.
   for (const hash of backupHashes) {
-    if (await comparePassword(cleanCode, hash)) {
+    if (await compareBackupCode(cleanCode, hash)) {
       const remaining = backupHashes.filter((h) => h !== hash);
       await query("UPDATE users SET totp_backup_codes = $1 WHERE id = $2;", [remaining, userId]);
       return true;

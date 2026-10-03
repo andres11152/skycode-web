@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
-import { authenticateUserCredentials, SESSION_LIFETIME_MS } from "@/lib/authService";
+import { authenticateUserCredentials } from "@/lib/authService";
 import { logError } from "@/lib/logger";
+import { setSessionCookie } from "@/lib/sessionCookie";
 
 const LoginSchema = z.object({
   email: z.string().email().trim().max(254),
@@ -67,15 +68,7 @@ export async function POST(request: Request) {
     });
 
     // Settear Cookie HTTP-Only segura
-    response.cookies.set({
-      name: "skycode_session",
-      value: authResult.token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: SESSION_LIFETIME_MS / 1000,
-      path: "/",
-    });
+    setSessionCookie(response, authResult.token);
 
     return response;
   } catch (error) {

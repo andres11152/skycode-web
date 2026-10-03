@@ -29,7 +29,7 @@ describe("Login con 2FA activo — POST /api/auth/login + POST /api/auth/login/v
     const body = await res.json();
     expect(body.needsTwoFactor).toBe(true);
     expect(typeof body.pendingToken).toBe("string");
-    expect(client.hasCookie("skycode_session")).toBe(false);
+    expect(client.hasSessionCookie()).toBe(false);
   });
 
   it("flujo completo: password -> pendingToken -> código TOTP correcto -> sesión real", async () => {
@@ -44,7 +44,7 @@ describe("Login con 2FA activo — POST /api/auth/login + POST /api/auth/login/v
 
     const verifyBody = await verifyRes.json();
     expect(verifyBody.user).toMatchObject({ id: user.id, email: user.email });
-    expect(client.hasCookie("skycode_session")).toBe(true);
+    expect(client.hasSessionCookie()).toBe(true);
   });
 
   it("un código de respaldo también funciona en el segundo paso, y se consume", async () => {
@@ -56,7 +56,7 @@ describe("Login con 2FA activo — POST /api/auth/login + POST /api/auth/login/v
 
     const verifyRes = await client.post("/api/auth/login/verify-2fa", { pendingToken, code: backupCodes[0] });
     expect(verifyRes.status).toBe(200);
-    expect(client.hasCookie("skycode_session")).toBe(true);
+    expect(client.hasSessionCookie()).toBe(true);
 
     // El mismo código de respaldo ya no sirve para un segundo login.
     const client2 = new TestClient();
@@ -75,7 +75,7 @@ describe("Login con 2FA activo — POST /api/auth/login + POST /api/auth/login/v
 
     const verifyRes = await client.post("/api/auth/login/verify-2fa", { pendingToken, code: "000000" });
     expect(verifyRes.status).toBe(401);
-    expect(client.hasCookie("skycode_session")).toBe(false);
+    expect(client.hasSessionCookie()).toBe(false);
   });
 
   it("un pendingToken inventado/de otra sesión no sirve para entrar", async () => {
@@ -97,7 +97,7 @@ describe("Login con 2FA activo — POST /api/auth/login + POST /api/auth/login/v
     const body = await res.json();
 
     expect(body.needsTwoFactor).toBeUndefined();
-    expect(client.hasCookie("skycode_session")).toBe(true);
+    expect(client.hasSessionCookie()).toBe(true);
   });
 });
 

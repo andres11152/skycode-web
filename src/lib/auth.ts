@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { query } from "./db";
+import { hashPassword as hashPasswordScrypt, verifyPassword } from "./passwordHash";
 
 export type { UserSession } from "./session";
 
@@ -58,15 +59,32 @@ async function runEnsureSeedAdmin() {
 }
 
 /**
- * Compara contraseña plana con hash almacenado.
+ * Compara contraseña plana con hash almacenado — scrypt (vigente) o bcrypt
+ * (hashes anteriores a la migración, ver lib/passwordHash.ts).
  */
 export async function comparePassword(plain: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(plain, hash);
+  return verifyPassword(plain, hash);
 }
 
 /**
- * Genera hash de contraseña.
+ * Genera el hash de una contraseña nueva (scrypt, ver lib/passwordHash.ts).
  */
 export async function hashPassword(plain: string): Promise<string> {
-  return bcrypt.hash(plain, 10);
+  return hashPasswordScrypt(plain);
+}
+
+/**
+ * Hash bcrypt de un secreto de ALTA entropía y un solo uso (los códigos de
+ * respaldo de 2FA, ver lib/queries/totp.ts). No se usa scrypt acá a
+ * propósito: son 8 hashes por cuenta que se comparan uno por uno, y 8 × ~180
+ * ms de scrypt en cada verificación sería lentitud sin beneficio — un código
+ * de respaldo aleatorio no es un secreto elegido por una persona, así que el
+ * factor de trabajo adicional no protege nada que bcrypt cost 10 no proteja.
+ */
+export async function hashBackupCode(code: string): Promise<string> {
+  return bcrypt.hash(code, 10);
+}
+
+export async function compareBackupCode(code: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(code, hash);
 }

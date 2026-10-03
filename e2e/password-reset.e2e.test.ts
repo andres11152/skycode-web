@@ -73,7 +73,7 @@ describe("Recuperación de contraseña", () => {
       password: "NuevaContraseñaSegura123",
     });
     expect(res.status).toBe(200);
-    expect(client.hasCookie("skycode_session")).toBe(true);
+    expect(client.hasSessionCookie()).toBe(true);
 
     const meRes = await client.get("/api/auth/me");
     const me = await meRes.json();
