@@ -38,7 +38,7 @@ export function CookieBanner() {
     <div
       role="region"
       aria-label={cookieData.ariaLabel}
-      className="fixed inset-x-0 bottom-0 z-[65] border-t border-foreground/10 bg-background/95 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl animate-in fade-in slide-in-from-bottom-5 duration-300"
+      className="fixed inset-x-0 bottom-0 z-[65] border-t border-foreground/10 bg-background/95 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl animate-enter-from-bottom"
     >
       {/* Compacto en mobile a propósito: la versión anterior (icono +
           párrafo + botón, los tres apilados en `flex-col`) ocupaba ~22% del

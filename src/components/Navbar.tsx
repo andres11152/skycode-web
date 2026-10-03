@@ -153,7 +153,7 @@ export function Navbar() {
         {isOpen && (
           <div
             className={cn(
-              "absolute inset-x-0 top-14 z-40 flex flex-col gap-3 rounded-xl p-4 sm:hidden animate-in fade-in zoom-in-95 duration-200",
+              "absolute inset-x-0 top-14 z-40 flex flex-col gap-3 rounded-xl p-4 sm:hidden animate-enter-pop origin-top",
               MOBILE_GLASS,
             )}
           >

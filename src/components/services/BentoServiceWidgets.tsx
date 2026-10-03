@@ -522,9 +522,11 @@ export function LegacyMigrationWidget({ locale = defaultLocale }: WidgetProps) {
           <span className="text-background font-bold">{progress}%</span>
         </div>
         <div className="h-2 w-full rounded-full bg-background/20 overflow-hidden">
+          {/* scaleX (compuesto en GPU) en vez de animar `width`, que fuerza layout en cada frame. */}
           <motion.div
-            className="h-full bg-accent"
-            animate={{ width: `${progress}%` }}
+            className="h-full w-full origin-left bg-accent"
+            initial={false}
+            animate={{ scaleX: progress / 100 }}
             transition={{ duration: 0.2 }}
           />
         </div>

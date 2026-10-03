@@ -44,7 +44,7 @@ export function LanguageSwitcher({
 
       {open && (
         <ul
-          className="absolute right-0 top-12 z-50 min-w-[165px] overflow-hidden rounded-xl border border-foreground/15 bg-background/95 p-1.5 shadow-2xl backdrop-blur-2xl shadow-black/20 animate-in fade-in zoom-in-95 duration-150"
+          className="absolute right-0 top-12 z-50 min-w-[165px] overflow-hidden rounded-xl border border-foreground/15 bg-background/95 p-1.5 shadow-2xl backdrop-blur-2xl shadow-black/20 animate-enter-pop origin-top-right"
         >
           {locales.map((loc) => (
             <li key={loc}>

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle, Sparkle } from "@phosphor-icons/react";
-import { m as motion, useReducedMotion } from "framer-motion";
 import {
   CodeConsoleWidget,
   MobileAppPreviewWidget,
@@ -22,11 +21,14 @@ import { getTrustContent } from "@/content/trust";
 import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { InlineText } from "@/components/blog/InlineText";
-import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 
 export function ServiceView({ slug, locale = defaultLocale }: { slug: string; locale?: Locale }) {
-  const reduced = Boolean(useReducedMotion());
+  // Sin animación de entrada a propósito: el contenedor con
+  // initial/animate se quitó en 509d3ba porque dejaba el contenido en
+  // opacity 0 hasta hidratar y cargar las features diferidas de Motion,
+  // retrasando el LCP. Los `motion.div variants` que quedaron sin
+  // disparador no animaban nada; ahora son elementos normales.
   const service = getServiceBySlug(slug, locale);
 
   if (!service) {
@@ -95,7 +97,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
             ))}
 
             {/* Interactive Demo & Environment Simulation Box */}
-            <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6 bg-foreground/[0.02]">
+            <div className="rounded-xl border border-foreground/10 p-6 bg-foreground/[0.02]">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60 mb-4 flex items-center gap-2">
                 <Sparkle size={14} className="text-accent" /> {servicePageData.interactiveDemoHeading}
               </h2>
@@ -108,9 +110,9 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
               {slug === "arquitectura-documentacion" && <ArchitectureDocWidget />}
               {slug === "migracion-datos-legacy" && <LegacyMigrationWidget locale={locale} />}
               {slug === "inteligencia-artificial-aplicada" && <AiAppliedWidget locale={locale} />}
-            </motion.div>
+            </div>
 
-            <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6">
+            <div className="rounded-xl border border-foreground/10 p-6">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60">
                 {servicePageData.includesHeading}
               </h2>
@@ -122,7 +124,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
 
             {details && (
               <>
@@ -163,7 +165,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
               </>
             )}
 
-            <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6">
+            <div className="rounded-xl border border-foreground/10 p-6">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60">
                 {servicePageData.approachHeading}
               </h2>
@@ -175,7 +177,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
 
             {details && (
               <>
@@ -219,8 +221,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
             )}
           </div>
 
-          <motion.aside
-            variants={fadeUp(reduced)}
+          <aside
             className="flex flex-col gap-6 lg:sticky lg:top-28 lg:h-fit"
           >
             <div className="rounded-xl border border-foreground/10 bg-foreground/[0.02] p-6">
@@ -249,10 +250,10 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
                 className="shrink-0 text-foreground/60 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-accent-strong"
               />
             </Link>
-          </motion.aside>
+          </aside>
         </div>
 
-        <motion.div variants={fadeUp(reduced)} className="border-t border-foreground/10 pt-8">
+        <div className="border-t border-foreground/10 pt-8">
           <Link
             href={servicesIndexHref}
             className="inline-flex items-center gap-1.5 rounded-full text-sm font-medium text-foreground/70 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -260,7 +261,7 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
             <ArrowLeft size={14} />
             {servicePageData.backToServices}
           </Link>
-        </motion.div>
+        </div>
       </div>
     </main>
   );

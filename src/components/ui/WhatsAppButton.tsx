@@ -31,7 +31,7 @@ export function WhatsAppButton({
         <div
           role="dialog"
           aria-label={uiData.whatsappHeading}
-          className="mb-3 w-80 rounded-xl border border-foreground/15 bg-foreground/95 p-4 text-background shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150"
+          className="mb-3 w-80 rounded-xl border border-foreground/15 bg-foreground/95 p-4 text-background shadow-2xl backdrop-blur-xl animate-enter-pop origin-bottom-right"
         >
           <div className="flex items-center justify-between border-b border-background/10 pb-3 mb-3">
             <div className="flex items-center gap-2.5">

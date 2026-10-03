@@ -121,8 +121,9 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
 
         <div
           aria-hidden="true"
-          // Sin overflow-hidden: el editor flota con `animate-float`
-          // (translateY) y su `shadow-2xl` quedaba recortado en un borde
+          // Sin overflow-hidden: cuando el editor flotaba (translateY, ya no
+          // — la clase `animate-float` nunca existió y se quitó del código),
+          // su `shadow-2xl` quedaba recortado en un borde
           // duro visible cada vez que subía/bajaba — un rectángulo gris con
           // esquina cuadrada sobre el fondo claro del Hero (bug real, visto
           // en auditoría visual). La sección ya tiene su propio

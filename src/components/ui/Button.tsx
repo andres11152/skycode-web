@@ -8,6 +8,12 @@ type ButtonBaseProps = {
   className?: string;
   children: React.ReactNode;
   showFlowArrows?: boolean;
+  /**
+   * Solo para `<button>`: muestra un spinner en el lugar de la flecha,
+   * deshabilita el botón y anuncia `aria-busy`. El spinner ocupa el mismo
+   * hueco de 16px que la flecha, así el botón no cambia de ancho al enviar.
+   */
+  loading?: boolean;
 };
 
 type ButtonAsButton = ButtonBaseProps &
@@ -51,12 +57,13 @@ export function Button({
   variant = "primary",
   size = "md",
   showFlowArrows = true,
+  loading = false,
   className,
   children,
   ...props
 }: ButtonProps) {
   const classes = cn(
-    "group relative inline-flex items-center justify-center gap-2 rounded-full font-semibold text-center cursor-pointer transition-[background-color,border-color,filter] duration-200 ease-out active:scale-[0.98]",
+    "group relative inline-flex items-center justify-center gap-2 rounded-full font-semibold text-center cursor-pointer transition-[background-color,border-color,filter,transform] duration-200 ease-[var(--ease-out)] active:scale-[0.97] active:duration-100 motion-reduce:active:scale-100",
     "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     "disabled:opacity-50 disabled:pointer-events-none",
     variantStyles[variant],
@@ -67,7 +74,12 @@ export function Button({
   const content = (
     <>
       <span>{children}</span>
-      {showFlowArrows && (
+      {loading ? (
+        <span
+          aria-hidden="true"
+          className="h-4 w-4 shrink-0 rounded-full border-2 border-current border-r-transparent motion-safe:animate-spin"
+        />
+      ) : showFlowArrows && (
         <ArrowRight
           aria-hidden="true"
           weight="bold"
@@ -96,8 +108,14 @@ export function Button({
     );
   }
 
+  const buttonProps = props as React.ButtonHTMLAttributes<HTMLButtonElement>;
   return (
-    <button className={classes} {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}>
+    <button
+      className={classes}
+      {...buttonProps}
+      disabled={buttonProps.disabled || loading}
+      aria-busy={loading || undefined}
+    >
       {content}
     </button>
   );

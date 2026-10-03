@@ -180,7 +180,7 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
 
                         {/* Tooltip Pill: solo se renderiza y muestra cuando este elemento específico es el hoveredTech */}
                         {isHovered && (
-                          <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 flex items-center z-50 whitespace-nowrap rounded-full border border-accent/30 bg-background/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-md shadow-accent/10 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150">
+                          <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 flex items-center z-50 whitespace-nowrap rounded-full border border-accent/30 bg-background/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-md shadow-accent/10 backdrop-blur-md animate-enter-pop origin-bottom">
                             {name}
                             {/* Triángulo inferior del indicador */}
                             <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-accent/40" />

@@ -18,6 +18,10 @@
   --accent-strong: #006998;
   --accent-foreground: #ffffff;
   --accent-secondary: #ffd100;
+  /* Tokens de movimiento — espejo de DURATION/EASE_OUT en lib/animations.ts. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
 }
 
 @theme inline {

@@ -2,19 +2,21 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react";
-import { m as motion, useReducedMotion } from "framer-motion";
 import type { BlogBlock, BlogPost } from "@/content/blogShared";
 import { getBlogMeta, readingTime } from "@/content/blogShared";
 import { blogIndexPath } from "@/lib/blogPaths";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
-import { fadeUp, staggerContainer } from "@/lib/animations";
 import { formatDate, slugify } from "@/lib/utils";
 import { ArticleBody } from "@/components/blog/ArticleBody";
 
 export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; locale?: Locale }) {
-  const reduced = Boolean(useReducedMotion());
+  // Sin animación de entrada a propósito: el contenedor con
+  // initial/animate se quitó en 509d3ba porque dejaba el contenido en
+  // opacity 0 hasta hidratar y cargar las features diferidas de Motion,
+  // retrasando el LCP. Los `motion.div variants` que quedaron sin
+  // disparador no animaban nada; ahora son elementos normales.
   // Solo h2: los posts largos (ej. el marco de 6 pasos en h3 del post de
   // migración) llevaban el índice a ~20 entradas, más alto que la pantalla
   // dentro de un aside `sticky`, y el CTA de abajo quedaba inalcanzable.
@@ -79,11 +81,11 @@ export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; 
               </div>
             </header>
 
-            <motion.div variants={fadeUp(reduced)} className="max-w-2xl">
+            <div className="max-w-2xl">
               <ArticleBody blocks={post.content} />
-            </motion.div>
+            </div>
 
-            <motion.div variants={fadeUp(reduced)}>
+            <div>
               <Link
                 href={blogPath}
                 className="inline-flex items-center gap-1.5 rounded-full text-sm font-medium text-foreground/70 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -91,11 +93,10 @@ export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; 
                 <ArrowLeft size={14} />
                 {meta.backToBlog}
               </Link>
-            </motion.div>
+            </div>
           </div>
 
-          <motion.aside
-            variants={fadeUp(reduced)}
+          <aside
             className="flex flex-col gap-6 lg:sticky lg:top-28 lg:h-fit"
           >
             {headings.length > 0 && (
@@ -124,7 +125,7 @@ export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; 
                 {meta.ctaButton}
               </Button>
             </div>
-          </motion.aside>
+          </aside>
         </div>
       </article>
     </main>

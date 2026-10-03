@@ -1,6 +1,6 @@
 "use client";
 
-import { LazyMotion } from "framer-motion";
+import { LazyMotion, MotionConfig } from "framer-motion";
 
 const loadFeatures = () => import("@/lib/framerMotionFeatures").then((mod) => mod.default);
 
@@ -17,11 +17,21 @@ const loadFeatures = () => import("@/lib/framerMotionFeatures").then((mod) => mo
  * chico. `strict={false}`: si algún componente nuevo importa `motion` sin
  * alias, degrada a cargar su propio bundle completo en vez de tumbar la
  * página — más seguro que un `throw` en producción.
+ *
+ * `MotionConfig reducedMotion="user"`: red de seguridad global para
+ * `prefers-reduced-motion`. Con la preferencia activa, Motion desactiva por
+ * sí mismo las animaciones de transform y layout (deja los fundidos de
+ * opacidad) en TODO componente, incluidos los que no leen
+ * `useReducedMotion()` a mano (ej. BentoServiceWidgets). No reemplaza la
+ * regla de leerlo explícitamente — eso sigue siendo necesario para quitar
+ * espacio de scroll, timers o efectos que no son animaciones de Motion.
  */
 export function LazyMotionProvider({ children }: { children: React.ReactNode }) {
   return (
-    <LazyMotion features={loadFeatures} strict={false}>
-      {children}
-    </LazyMotion>
+    <MotionConfig reducedMotion="user">
+      <LazyMotion features={loadFeatures} strict={false}>
+        {children}
+      </LazyMotion>
+    </MotionConfig>
   );
 }

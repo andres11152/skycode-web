@@ -83,6 +83,35 @@
   transform: scale(0.98);
 }
 
+/*
+ * Entradas de popovers, menús y banners — reemplazan `animate-in fade-in
+ * zoom-in-95` / `slide-in-from-bottom-5`, utilidades de tailwindcss-animate
+ * que nunca estuvieron instaladas: esas clases no hacían nada. Solo
+ * opacity/transform, con los tokens de theme.css. El origen del zoom lo pone
+ * cada uso (`origin-top-right`, etc.).
+ */
+@keyframes enter-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+}
+
+@keyframes enter-from-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+.animate-enter-pop {
+  animation: enter-pop var(--dur-fast) var(--ease-out) both;
+}
+
+.animate-enter-from-bottom {
+  animation: enter-from-bottom var(--dur-base) var(--ease-out) both;
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -160,7 +189,9 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-hero-fade-up,
   .animate-hero-scale-in,
-  .animate-marquee {
+  .animate-marquee,
+  .animate-enter-pop,
+  .animate-enter-from-bottom {
     animation: none !important;
   }
 
