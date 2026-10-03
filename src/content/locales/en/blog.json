@@ -12,6 +12,8 @@
     "backToBlog": "Back to blog",
     "tocHeading": "In this article",
     "ctaQuestion": "Need this implemented, not just explained?",
-    "ctaButton": "Talk to an engineer"
+    "ctaButton": "Talk to an engineer",
+    "copyCode": "Copy code",
+    "copiedCode": "Code copied"
   }
 }

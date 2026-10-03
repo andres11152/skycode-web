@@ -82,7 +82,7 @@ export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; 
             </header>
 
             <div className="max-w-2xl">
-              <ArticleBody blocks={post.content} />
+              <ArticleBody blocks={post.content} copyCodeLabel={meta.copyCode} copiedCodeLabel={meta.copiedCode} />
             </div>
 
             <div>

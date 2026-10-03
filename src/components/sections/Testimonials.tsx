@@ -102,6 +102,18 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
         >
             <motion.div
               layout
+              // Swipe horizontal en táctil: `touch-action: pan-y` deja el scroll
+              // vertical de la página intacto y solo se interpreta el gesto
+              // claramente horizontal (≥60px y más horizontal que vertical).
+              // Es un atajo: flechas, puntos y teclado siguen siendo el camino
+              // accesible.
+              style={{ touchAction: "pan-y" }}
+              onPanEnd={(_, info) => {
+                const { x, y } = info.offset;
+                if (Math.abs(x) < 60 || Math.abs(x) < Math.abs(y)) return;
+                if (x < 0) goNext();
+                else goPrev();
+              }}
               className="relative overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
             >
               <AnimatePresence mode="wait" initial={false}>

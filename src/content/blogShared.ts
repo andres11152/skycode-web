@@ -56,6 +56,8 @@ export interface BlogMeta {
   tocHeading: string;
   ctaQuestion: string;
   ctaButton: string;
+  copyCode: string;
+  copiedCode: string;
 }
 
 const blogMetaByLocale: Record<Locale, BlogMeta> = {

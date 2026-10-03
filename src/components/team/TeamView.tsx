@@ -158,7 +158,7 @@ export function TeamView({ locale = defaultLocale, members }: { locale?: Locale;
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`LinkedIn de ${member.name}`}
-                            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-foreground/5 hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/70 transition-[background-color,color,transform] duration-200 ease-[var(--ease-out)] hover:-translate-y-0.5 hover:bg-foreground/5 hover:text-foreground motion-reduce:hover:translate-y-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <LinkedinLogo size={18} />
                           </a>
@@ -169,7 +169,7 @@ export function TeamView({ locale = defaultLocale, members }: { locale?: Locale;
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`GitHub de ${member.name}`}
-                            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-foreground/5 hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/70 transition-[background-color,color,transform] duration-200 ease-[var(--ease-out)] hover:-translate-y-0.5 hover:bg-foreground/5 hover:text-foreground motion-reduce:hover:translate-y-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <GithubLogo size={18} />
                           </a>

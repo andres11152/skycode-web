@@ -169,6 +169,14 @@
   will-change: transform;
 }
 
+/* El marquee se detiene al pasar el puntero (para leer un claim) o al
+   enfocar algo dentro — WCAG 2.2.2: contenido que se mueve solo necesita
+   una forma de pausarlo. */
+.marquee-pause:hover .animate-marquee,
+.marquee-pause:focus-within .animate-marquee {
+  animation-play-state: paused;
+}
+
 @keyframes shiny-text {
   0%, 10% {
     background-position: 180% 0;

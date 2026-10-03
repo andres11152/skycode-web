@@ -1,8 +1,18 @@
 import type { BlogBlock } from "@/content/blogShared";
 import { slugify } from "@/lib/utils";
+import { CopyButton } from "@/components/ui/CopyButton";
 import { InlineText } from "./InlineText";
 
-export function ArticleBody({ blocks }: { blocks: BlogBlock[] }) {
+export function ArticleBody({
+  blocks,
+  copyCodeLabel,
+  copiedCodeLabel,
+}: {
+  blocks: BlogBlock[];
+  /** Si faltan, los bloques de código no muestran botón de copiar (ej. documentos legales, que no llevan código). */
+  copyCodeLabel?: string;
+  copiedCodeLabel?: string;
+}) {
   return (
     <div className="flex flex-col gap-5">
       {blocks.map((block, index) => {
@@ -52,12 +62,21 @@ export function ArticleBody({ blocks }: { blocks: BlogBlock[] }) {
             );
           case "code":
             return (
-              <pre
-                key={index}
-                className="overflow-x-auto rounded-xl bg-foreground p-5 font-mono text-[13px] leading-relaxed text-background/90"
-              >
-                <code>{block.code}</code>
-              </pre>
+              <div key={index} className="group/code relative">
+                <pre className="overflow-x-auto rounded-xl bg-foreground p-5 pr-14 font-mono text-[13px] leading-relaxed text-background/90">
+                  <code>{block.code}</code>
+                </pre>
+                {/* Visible siempre en táctil (no hay hover) y al hover/foco en
+                    escritorio; tonos claros sobre el bloque oscuro. */}
+                {copyCodeLabel && copiedCodeLabel && (
+                <CopyButton
+                  value={block.code}
+                  label={copyCodeLabel}
+                  copiedLabel={copiedCodeLabel}
+                  className="absolute right-1.5 top-1.5 text-background/70 hover:bg-background/10 hover:text-background focus-visible:ring-offset-foreground [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/code:opacity-100 [@media(hover:hover)]:focus-visible:opacity-100 transition-[opacity,background-color,color]"
+                />
+                )}
+              </div>
             );
           case "faq":
             return (

@@ -21,7 +21,7 @@ export function PostCard({
   return (
     <Link
       href={blogPostPath(locale, post.slug)}
-      className="group flex h-full flex-col rounded-xl border border-foreground/10 p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] outline-none transition-shadow hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="group flex h-full flex-col rounded-xl border border-foreground/10 p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] outline-none transition-[box-shadow,transform] duration-200 ease-[var(--ease-out)] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] motion-reduce:hover:translate-y-0 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-foreground/60">
         <span>{post.tags[0]}</span>

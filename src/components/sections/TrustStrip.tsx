@@ -69,7 +69,7 @@ export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
     <div
       role="group"
       aria-label={trustData.ariaLabel}
-      className="relative w-full overflow-hidden border-y border-background/10 bg-foreground py-5"
+      className="marquee-pause relative w-full overflow-hidden border-y border-background/10 bg-foreground py-5"
     >
       {/* Desvanecimiento de bordes con gradiente para una estética premium */}
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-foreground to-transparent" />
