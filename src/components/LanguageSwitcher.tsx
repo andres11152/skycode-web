@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
 import { CheckIcon } from "@/components/icons/UiIcons";
 import { DURATION, EASE_OUT } from "@/lib/animations";
 import { cn } from "@/lib/utils";
-import { locales, localeHomePath, localeNames, type Locale } from "@/lib/i18n";
+import { switchLocalePath } from "@/lib/localePaths";
+import { locales, localeNames, type Locale } from "@/lib/i18n";
 
 const LOCALE_CODE: Record<Locale, string> = { es: "ES", en: "EN", fr: "FR" };
 const LOCALE_FLAG: Record<Locale, string> = { es: "🇨🇴", en: "🇺🇸", fr: "🇫🇷" };
@@ -19,6 +21,8 @@ export function LanguageSwitcher({
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
+  // Conserva la página al cambiar de idioma (portafolio, FAQ, servicios…); ver lib/localePaths.ts.
+  const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   // Origen arriba-derecha: el menú "nace" del botón. Con reduced motion solo fundido.
@@ -67,7 +71,7 @@ export function LanguageSwitcher({
           {locales.map((loc) => (
             <li key={loc}>
               <Link
-                href={localeHomePath(loc)}
+                href={switchLocalePath(pathname, loc)}
                 onClick={() => {
                   setOpen(false);
                   try {
