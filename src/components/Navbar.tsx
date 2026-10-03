@@ -13,6 +13,7 @@ import { EsBadge } from "@/components/ui/EsBadge";
 import { getNavContent } from "@/content/nav";
 import { localeHomePath } from "@/lib/i18n";
 import { blogIndexPath } from "@/lib/blogPaths";
+import { faqPath } from "@/lib/faqPaths";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { DURATION, EASE_OUT, SPRING_SNAPPY } from "@/lib/animations";
@@ -42,7 +43,7 @@ export function Navbar() {
     // El blog ya tiene versión en los tres idiomas (ver CLAUDE.md) — deja
     // de ser esOnly, su ruta usa el mismo helper que servicios/equipo.
     { label: navData.blog, href: blogIndexPath(locale), esOnly: false },
-    { label: navData.faq, href: `${prefix}/#faq`, esOnly: false },
+    { label: navData.faq, href: faqPath(locale), esOnly: false },
   ];
   const contactHref = `${prefix}/#contacto`;
   // Estando ya en esta home, sus anclas (`/#servicios`, el logo, el CTA)

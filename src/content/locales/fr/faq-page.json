@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "title": "FAQ sur le développement logiciel",
+    "description": "Réponses claires sur la propriété du code, le paiement 50/50, la garantie de 90 jours, la sécurité et les intégrations avec SkyCode."
+  },
+  "page": {
+    "badge": "Centre de réponses",
+    "title": "Questions fréquentes",
+    "description": "Des réponses claires sur la propriété du code, les paiements, la garantie, la sécurité et les intégrations. Sans petites lignes.",
+    "breadcrumbHome": "Accueil",
+    "breadcrumbAria": "Fil d'Ariane",
+    "countLabel": "réponses · {topics} thèmes",
+    "searchLabel": "Rechercher dans les questions",
+    "searchPlaceholder": "Cherchez : garantie, paiement…",
+    "searchHint": "Appuyez sur / pour chercher",
+    "clearSearch": "Effacer la recherche",
+    "resultsOne": "{count} résultat pour « {query} »",
+    "resultsMany": "{count} résultats pour « {query} »",
+    "noResultsTitle": "Aucun résultat pour « {query} »",
+    "noResultsBody": "Essayez un autre mot ou posez-nous votre question : nous répondons sous 24 heures ouvrées.",
+    "topicsLabel": "Thèmes",
+    "topicsAria": "Thèmes de la FAQ",
+    "copyLink": "Copier le lien vers cette question",
+    "linkCopied": "Lien copié",
+    "ctaTitle": "Vous n'avez pas trouvé votre réponse ?",
+    "ctaBody": "Décrivez-nous votre cas : un ingénieur l'examine directement et nous répondons sous 24 heures ouvrées.",
+    "ctaPrimary": "Parler à un ingénieur",
+    "ctaSecondary": "Estimer mon projet"
+  },
+  "categories": [
+    {
+      "id": "propiedad",
+      "title": "Propriété et contrat",
+      "description": "À qui appartient le code et ce qui se passe si vous changez d'équipe.",
+      "items": [
+        {
+          "id": "codigo-100-tuyo",
+          "question": "À qui appartient le code une fois le logiciel livré ?",
+          "answer": "100 % à vous dès le premier jour. Nous transférons la pleine propriété des dépôts et des accès, sans abonnement captif ni dépendance technique. Si vous poursuivez plus tard avec une autre équipe ou en interne, rien ne vous en empêche."
+        },
+        {
+          "id": "documentacion-traspaso",
+          "question": "Fournissez-vous une documentation pour qu'une autre équipe reprenne le projet ?",
+          "answer": "Oui. Nous livrons les dépôts, les variables d'environnement et les schémas d'architecture, avec une documentation technique claire, afin que votre équipe ou d'autres développeurs fassent évoluer le code en toute autonomie. Le détail se trouve dans notre service de [documentation et passation technique](/fr/servicios/arquitectura-documentacion)."
+        },
+        {
+          "id": "sin-dependencia",
+          "question": "Dois-je souscrire la maintenance chez vous pour continuer à utiliser le système ?",
+          "answer": "Non. Le code et les accès sont à vous dès le premier jour : pas de mensualités imposées ni de licences récurrentes. Si vous souhaitez un accompagnement continu, vous pouvez prendre un contrat de maintenance SLA sur mesure, mais c'est optionnel ; si vous préférez une autre équipe ou l'interne, la transition se fait sans friction."
+        }
+      ]
+    },
+    {
+      "id": "pagos",
+      "title": "Paiement et budget",
+      "description": "Comment et quand on paie, et comment connaître le coût avant de s'engager.",
+      "items": [
+        {
+          "id": "formas-de-pago",
+          "question": "Quelles sont les modalités de paiement ? Faut-il tout payer d'avance ?",
+          "answer": "50 % d'acompte à la signature du contrat avec un calendrier convenu, et les 50 % restants à la réception du projet en état de fonctionnement, testé de bout en bout et validé par vous."
+        },
+        {
+          "id": "presupuesto-estimado",
+          "question": "Comment connaître le coût de mon projet avant de m'engager ?",
+          "answer": "Nous échangeons d'abord, évaluons la faisabilité technique et vous remettons un plan clair avec un budget honnête, sans engagement. Pour vous faire une idée avant de parler à qui que ce soit, l'[estimateur interactif](/fr/cotizador) calcule un investissement et un délai approximatifs, en pesos colombiens ou en dollars, selon le type de projet, les modules et le rythme de livraison."
+        }
+      ]
+    },
+    {
+      "id": "proceso",
+      "title": "Méthode et communication",
+      "description": "Comment démarre un projet, comment suivre l'avancement et avec qui vous parlez.",
+      "items": [
+        {
+          "id": "como-empieza",
+          "question": "Comment démarre un projet avec SkyCode ?",
+          "answer": "En quatre étapes. 1) Nous échangeons et cadrons votre idée, avec un plan clair et un budget honnête. 2) Nous fixons des dates précises, signons le contrat et démarrons avec 50 % d'acompte et des dépôts à votre nom. 3) Vous suivez de vrais avancements chaque semaine via un lien privé. 4) À la livraison, les 50 % restants sont réglés, uniquement une fois tout testé et en fonctionnement sur vos serveurs."
+        },
+        {
+          "id": "avances-semanales",
+          "question": "Comment s'organisent le suivi et la communication pendant le projet ?",
+          "answer": "Nous livrons des versions fonctionnelles chaque semaine sur un environnement de préproduction pour que vous testiez l'application et échangiez en direct avec les développeurs, sans intermédiaire."
+        },
+        {
+          "id": "hablo-con-ingenieros",
+          "question": "Est-ce que je parle aux ingénieurs qui programment ou à un intermédiaire ?",
+          "answer": "Aux ingénieurs. Il n'y a pas d'intermédiaire : pendant le développement, vous parlez directement à ceux qui construisent votre projet, et lors de votre premier message, Andrés, César ou Ximena examine personnellement votre demande."
+        },
+        {
+          "id": "tiempo-de-respuesta",
+          "question": "Sous quel délai répondez-vous à une demande ?",
+          "answer": "Sous 24 heures ouvrées, avec une évaluation sincère de la façon d'aborder votre projet et sans réponses génériques de robots. Vous pouvez nous écrire via le [formulaire de contact](/fr/#contacto) ou sur WhatsApp."
+        },
+        {
+          "id": "portal-cliente",
+          "question": "Puis-je suivre mon projet, mes factures et mes documents en ligne ?",
+          "answer": "Oui. Les clients disposent d'un portail où ils suivent l'avancement de leurs projets et livrables (et peuvent les valider ou laisser des commentaires), consultent et téléchargent leurs factures et documents, et ouvrent des demandes de support."
+        },
+        {
+          "id": "empresas-internacionales",
+          "question": "Travaillez-vous avec des entreprises hors de Colombie ?",
+          "answer": "Oui. Nous opérons depuis la Colombie avec des entreprises internationales, et le site comme notre accompagnement sont disponibles en espagnol, en anglais et en français. En matière de données personnelles, nous travaillons avec des cadres comme la loi colombienne 1581 et le RGPD."
+        }
+      ]
+    },
+    {
+      "id": "integraciones",
+      "title": "Intégrations et périmètre",
+      "description": "À quels systèmes nous nous connectons et quels projets nous construisons.",
+      "items": [
+        {
+          "id": "integraciones",
+          "question": "Pouvez-vous vous connecter à ce que j'utilise déjà (paiement, facturation, WhatsApp) ?",
+          "answer": "Oui. Nous intégrons vos systèmes aux passerelles de paiement (Wompi, Stripe, PayU), logiciels comptables et ERP (Siigo, Alegra, SAP) ainsi qu'à l'API WhatsApp, pour que tout circule sans tâches manuelles répétitives. Plus d'informations sur les [intégrations et API](/fr/servicios/apis-integraciones)."
+        },
+        {
+          "id": "migracion-legacy",
+          "question": "Pouvez-vous migrer les données d'un ancien système ou de tableurs dispersés ?",
+          "answer": "Oui. Nous extrayons, nettoyons et migrons les données depuis des systèmes obsolètes, des fichiers XML ou des tableurs dispersés vers des bases de données modernes, sans interrompre vos opérations. Détails dans [migration et modernisation de données](/fr/servicios/migracion-datos-legacy)."
+        },
+        {
+          "id": "apps-moviles",
+          "question": "Développez-vous des applications mobiles iOS et Android ?",
+          "answer": "Oui. Nous construisons des applications fluides pour vos clients ou vos équipes terrain, conçues pour synchroniser en arrière-plan et fonctionner normalement même sans connexion internet. Découvrez le service d'[applications mobiles](/fr/servicios/desarrollo-aplicaciones-moviles)."
+        },
+        {
+          "id": "inteligencia-artificial",
+          "question": "Quelles solutions d'intelligence artificielle mettez-vous en place ?",
+          "answer": "Des assistants intelligents et l'automatisation du traitement de documents, connectés à la base de connaissances de votre entreprise, pour réduire les tâches manuelles. Détails dans [IA appliquée aux métiers](/fr/servicios/inteligencia-artificial-aplicada)."
+        }
+      ]
+    },
+    {
+      "id": "seguridad",
+      "title": "Sécurité et données",
+      "description": "Comment nous protégeons les informations de vos utilisateurs et les vôtres.",
+      "items": [
+        {
+          "id": "seguridad-datos",
+          "question": "Comment garantissez-vous la protection et la conformité des données ?",
+          "answer": "Chiffrement des données au repos et en transit, gestion des droits par rôles et conformité réglementaire (loi colombienne 1581 et RGPD). La sécurité est pensée dès l'architecture, pas ajoutée en rustine à la fin. Plus d'informations sur la [sécurité et la protection des données](/fr/servicios/seguridad-cumplimiento)."
+        },
+        {
+          "id": "datos-de-contacto",
+          "question": "Comment traitez-vous les coordonnées que je vous envoie ?",
+          "answer": "Le formulaire de contact demande votre consentement exprès au traitement de vos coordonnées afin de répondre à votre demande. La manière dont nous les traitons et vos droits sont décrits dans la [politique de confidentialité](/politica-privacidad) (en espagnol)."
+        }
+      ]
+    },
+    {
+      "id": "soporte",
+      "title": "Garantie et support",
+      "description": "Ce qui se passe après la livraison si quelque chose ne va pas.",
+      "items": [
+        {
+          "id": "garantia-90-dias",
+          "question": "Que se passe-t-il si nous trouvons une erreur après le lancement ?",
+          "answer": "Vous bénéficiez d'une garantie de stabilité technique de 90 jours après la livraison. Si un bug apparaît ou si quelque chose ne se comporte pas comme convenu, nous le corrigeons immédiatement sans frais supplémentaires."
+        },
+        {
+          "id": "mantenimiento-sla",
+          "question": "Proposez-vous de la maintenance après les 90 jours de garantie ?",
+          "answer": "Oui, en option : un contrat de maintenance SLA sur mesure. La garantie de 90 jours couvre les corrections techniques sans frais ; l'accompagnement continu est distinct et vous en décidez."
+        }
+      ]
+    }
+  ]
+}

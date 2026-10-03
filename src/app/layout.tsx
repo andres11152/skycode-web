@@ -198,6 +198,7 @@ function SiteNavigationJsonLd() {
     { name: "Portafolio", url: `${siteUrl}/portafolio` },
     { name: "Blog Técnico", url: `${siteUrl}/blog` },
     { name: "Equipo", url: `${siteUrl}/equipo` },
+    { name: "Preguntas Frecuentes", url: `${siteUrl}/preguntas-frecuentes` },
     { name: "Contacto", url: `${siteUrl}/#contacto` },
   ];
 

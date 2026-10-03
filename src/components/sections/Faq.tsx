@@ -1,89 +1,58 @@
 "use client";
 
-import { useState } from "react";
-import { m as motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Plus } from "@phosphor-icons/react";
+import Link from "next/link";
+import { ArrowRight } from "@phosphor-icons/react";
+import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
+import { FaqAccordionItem } from "@/components/faq/FaqAccordionItem";
 import { getFaqContent } from "@/content/faq";
-import { defaultLocale, type Locale } from "@/lib/i18n";
+import { faqPath } from "@/lib/faqPaths";
+import { defaultLocale, t, type Locale } from "@/lib/i18n";
 
 export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
-  const reduced = Boolean(useReducedMotion());
   const faqData = getFaqContent(locale);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-
-  const toggleFaq = (index: number) => {
-    setActiveIndex(activeIndex === index ? null : index);
-  };
+  const faqHref = faqPath(locale);
 
   return (
     <section id="faq" className="scroll-mt-24 bg-foreground/[0.01] px-6 py-20 sm:py-24 lg:py-28 border-t border-foreground/5">
-      {/* max-w-6xl (no max-w-4xl): mismo ancho de contenedor que el resto de
-          secciones, para que el encabezado (badge/h2/descripción, alineado a
-          la izquierda como el resto del sitio) arranque en el mismo borde.
-          El acordeón en sí se queda en `max-w-3xl` (las preguntas no deben
+      {/* max-w-6xl: mismo ancho de contenedor que el resto de secciones. El
+          acordeón en sí se queda en `max-w-3xl` (las preguntas no deben
           estirarse a todo el ancho) pero centrado dentro de ese contenedor
-          — a pedido explícito, para que no quede pegado al borde izquierdo
-          dejando un vacío grande a la derecha en desktop. */}
+          — a pedido explícito. El acordeón es el mismo componente (y el mismo
+          catálogo, por `id`) que usa la página /preguntas-frecuentes. */}
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12 max-w-xl">
-          <SectionEyebrow className="mb-3">{faqData.badge}</SectionEyebrow>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            {faqData.title}
-          </h2>
-          <p className="mt-3 text-foreground/80">
-            {faqData.description}
-          </p>
+        <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-xl">
+            <SectionEyebrow className="mb-3">{faqData.badge}</SectionEyebrow>
+            <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">{faqData.title}</h2>
+            <p className="mt-3 text-foreground/80">{faqData.description}</p>
+          </div>
+
+          <Button href={faqHref} variant="secondary" size="sm" className="shrink-0">
+            {faqData.viewAll}
+          </Button>
         </div>
 
         <div className="mx-auto flex max-w-3xl flex-col border-t border-foreground/10">
-          {faqData.items.map((item, index) => {
-            const isOpen = activeIndex === index;
-            return (
-              <div
-                key={index}
-                className="border-b border-foreground/10"
-              >
-                <button
-                  type="button"
-                  onClick={() => toggleFaq(index)}
-                  className="flex w-full items-center justify-between py-6 text-left outline-none group focus-visible:text-accent"
-                  aria-expanded={isOpen}
-                  aria-controls={`faq-answer-${index}`}
-                >
-                  <span className="text-base font-semibold text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-lg">
-                    {item.question}
-                  </span>
-                  <span className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-foreground/60 transition-all duration-300 group-hover:bg-accent-strong group-hover:text-white group-hover:scale-110 active:scale-95 group-hover:shadow-[0_0_15px_rgba(0,137,205,0.25)]">
-                    <motion.span
-                      animate={{ rotate: isOpen ? 135 : 0, scale: isOpen ? 1.05 : 1 }}
-                      transition={{ duration: reduced ? 0.01 : 0.3, ease: [0.16, 1, 0.3, 1] }}
-                      className="flex items-center justify-center"
-                    >
-                      <Plus size={16} weight="bold" />
-                    </motion.span>
-                  </span>
-                </button>
+          {faqData.items.map((item) => (
+            <FaqAccordionItem key={item.id} item={item} />
+          ))}
+        </div>
 
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      id={`faq-answer-${index}`}
-                      initial={{ height: 0, opacity: 0, y: -6 }}
-                      animate={{ height: "auto", opacity: 1, y: 0 }}
-                      exit={{ height: 0, opacity: 0, y: -4 }}
-                      transition={{ duration: reduced ? 0.01 : 0.35, ease: [0.16, 1, 0.3, 1] }}
-                      className="overflow-hidden"
-                    >
-                      <div className="pb-6 pr-12 text-sm text-foreground/85 leading-relaxed sm:text-base">
-                        {item.answer}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
+        <div className="mx-auto mt-8 max-w-3xl">
+          <Link
+            href={faqHref}
+            className="group inline-flex min-h-11 items-center gap-2 rounded-full text-sm font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <span className="underline decoration-foreground/30 underline-offset-4 transition-colors group-hover:decoration-foreground">
+              {t(faqData.moreQuestions, { count: String(faqData.totalCount) })}
+            </span>
+            <ArrowRight
+              size={16}
+              aria-hidden="true"
+              className="motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-0.5"
+            />
+          </Link>
         </div>
       </div>
     </section>

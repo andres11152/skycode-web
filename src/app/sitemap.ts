@@ -6,6 +6,8 @@ import { services } from "@/content/services";
 import { servicePath, servicesIndexPath } from "@/lib/serviceMetadata";
 import { teamPath } from "@/lib/teamMetadata";
 import { estimatorPath } from "@/lib/estimatorMetadata";
+import { faqPath } from "@/lib/faqPaths";
+import { faqLanguageAlternates } from "@/lib/faqMetadata";
 import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
 import { siteUrl } from "@/lib/site";
 
@@ -165,6 +167,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     alternates: { languages: estimatorLanguages },
   }));
 
+  // Páginas de preguntas frecuentes: el slug se traduce por idioma
+  // (`/preguntas-frecuentes`, `/en/faq`, `/fr/faq`), así que el hreflang
+  // cruzado es lo que las relaciona — no un segmento común.
+  const faqLanguages = faqLanguageAlternates();
+  const faqRoutes: MetadataRoute.Sitemap = (["es", "en", "fr"] as const).map((locale) => ({
+    url: `${siteUrl}${faqPath(locale)}`,
+    changeFrequency: "monthly",
+    priority: 0.7,
+    alternates: { languages: faqLanguages },
+  }));
+
   return [
     ...staticRoutes,
     ...blogIndexRoutes,
@@ -175,5 +188,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...servicesIndexRoutes,
     ...teamRoutes,
     ...estimatorRoutes,
+    ...faqRoutes,
   ];
 }

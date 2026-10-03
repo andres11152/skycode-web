@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { getServicesContent } from "@/content/services";
 import { useRecentArticles } from "@/lib/useRecentArticles";
 import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
+import { faqPath } from "@/lib/faqPaths";
 import { contactEmail, contactPhone, siteName, socials, whatsappHref } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { getFooterContent } from "@/content/footer";
@@ -114,6 +115,7 @@ export function Footer() {
     { label: "Portfolio", href: "/portafolio", esOnly },
     { label: navData.equipo, href: `${prefix}/equipo`, esOnly: false },
     { label: "Blog", href: blogIndexPath(locale), esOnly: false },
+    { label: navData.faq, href: faqPath(locale), esOnly: false },
     { label: footerData.getInTouchHeading, href: `${prefix}/#contacto`, esOnly: false },
   ];
 

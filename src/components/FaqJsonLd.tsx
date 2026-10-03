@@ -1,4 +1,5 @@
 import { getFaqContent } from "@/content/faq";
+import { stripInlineLinks } from "@/lib/inlineLinks";
 import type { Locale } from "@/lib/i18n";
 
 /** Mismo bloque de FAQ real en los tres locales de la home — se reusa aquí en vez
@@ -14,7 +15,7 @@ export function FaqJsonLd({ locale }: { locale: Locale }) {
       name: item.question,
       acceptedAnswer: {
         "@type": "Answer",
-        text: item.answer,
+        text: stripInlineLinks(item.answer),
       },
     })),
   };

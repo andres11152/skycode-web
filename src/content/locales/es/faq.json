@@ -2,30 +2,14 @@
   "badge": "Dudas Frecuentes",
   "title": "Preguntas Frecuentes",
   "description": "Respuestas directas sobre propiedad intelectual, formas de pago, garantías y metodología.",
-  "items": [
-    {
-      "question": "¿El código realmente me pertenece al 100% o quedo amarrado a ustedes?",
-      "answer": "100% tuyo desde el primer día. Te entregamos repositorios a tu nombre y todas las credenciales de acceso. Cero letras chicas ni mensualidades forzadas. Si mañana decides continuarlo con otro equipo o in-house, puedes hacerlo sin ninguna traba."
-    },
-    {
-      "question": "¿Qué pasa si después de lanzar encontramos un error o algo falla?",
-      "answer": "Tienes 90 días de garantía de estabilidad técnica posterior al lanzamiento. Si surge algún bug o algo no se comporta como se acordó, lo corregimos de inmediato sin costo adicional."
-    },
-    {
-      "question": "¿Cómo son las formas de pago? ¿Tengo que pagar todo por adelantado?",
-      "answer": "50% de anticipo al firmar contrato con cronograma acordado, y el 50% restante al recibir el proyecto funcionando, probado de punta a punta y con tu visto bueno final."
-    },
-    {
-      "question": "¿Se puede conectar con lo que ya uso (pasarelas de pago, facturación, WhatsApp)?",
-      "answer": "Sí. Integramos pasarelas de pago (Wompi, Stripe, PayU), software contable y ERPs (Siigo, Alegra, SAP) y la API de WhatsApp para que todo fluya sin trabajo manual repetitivo."
-    },
-    {
-      "question": "¿Cómo sé cómo va mi proyecto durante las semanas de desarrollo?",
-      "answer": "Entregamos avances funcionales cada semana en un entorno privado para que interactúes con el sistema y hables directo con los ingenieros que están programando, sin intermediarios."
-    },
-    {
-      "question": "¿Cómo cuidan la seguridad y los datos de mis usuarios?",
-      "answer": "Cifrado de datos en reposo y en tránsito, control de acceso por roles y cumplimiento normativo (Ley 1581 y RGPD). La seguridad viene pensada desde la arquitectura, no como parche al final."
-    }
+  "viewAll": "Ver todas las preguntas",
+  "moreQuestions": "¿Más dudas? Ver las {count} preguntas frecuentes",
+  "featured": [
+    "codigo-100-tuyo",
+    "garantia-90-dias",
+    "formas-de-pago",
+    "integraciones",
+    "avances-semanales",
+    "seguridad-datos"
   ]
 }

@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "title": "Custom Software Development FAQ",
+    "description": "Straight answers on code ownership, 50/50 payment terms, the 90-day warranty, security and integrations when you hire SkyCode for custom software."
+  },
+  "page": {
+    "badge": "Answer center",
+    "title": "Frequently asked questions",
+    "description": "Straight answers on code ownership, payments, warranty, security and integrations. No fine print.",
+    "breadcrumbHome": "Home",
+    "breadcrumbAria": "Breadcrumb",
+    "countLabel": "answers · {topics} topics",
+    "searchLabel": "Search the questions",
+    "searchPlaceholder": "Search: warranty, payments…",
+    "searchHint": "Press / to search",
+    "clearSearch": "Clear search",
+    "resultsOne": "{count} result for “{query}”",
+    "resultsMany": "{count} results for “{query}”",
+    "noResultsTitle": "We couldn't find “{query}”",
+    "noResultsBody": "Try another word or tell us your question: we reply within 24 business hours.",
+    "topicsLabel": "Topics",
+    "topicsAria": "FAQ topics",
+    "copyLink": "Copy link to this question",
+    "linkCopied": "Link copied",
+    "ctaTitle": "Didn't find your answer?",
+    "ctaBody": "Tell us your case: an engineer reviews it directly and we reply within 24 business hours.",
+    "ctaPrimary": "Talk to an engineer",
+    "ctaSecondary": "Estimate my project"
+  },
+  "categories": [
+    {
+      "id": "propiedad",
+      "title": "Ownership & contract",
+      "description": "Who owns the code and what happens if you ever switch teams.",
+      "items": [
+        {
+          "id": "codigo-100-tuyo",
+          "question": "Who owns the code once the software is delivered?",
+          "answer": "100% yours from day one. We transfer full repository ownership and credentials with zero vendor lock-in or recurring software licensing fees. If you later continue with another team or in-house, nothing stands in your way."
+        },
+        {
+          "id": "documentacion-traspaso",
+          "question": "Do you provide documentation so another team can take over the project?",
+          "answer": "Yes. We hand over versioned repositories, environment setups and architecture diagrams, with clear technical documentation, so your internal team or future partners can maintain the code with full autonomy. It is detailed in our [documentation and technical handover](/en/servicios/arquitectura-documentacion) service."
+        },
+        {
+          "id": "sin-dependencia",
+          "question": "Do I have to hire you for maintenance to keep using the system?",
+          "answer": "No. Because the code and the access are yours from day one, there are no forced monthly fees or recurring licenses. If you want ongoing support you can add an SLA maintenance contract tailored to you, but it's optional; if you prefer another team or going in-house, the transition has no friction."
+        }
+      ]
+    },
+    {
+      "id": "pagos",
+      "title": "Payments & budget",
+      "description": "How and when you pay, and how to know the cost before committing.",
+      "items": [
+        {
+          "id": "formas-de-pago",
+          "question": "What are the payment terms? Do I pay everything upfront?",
+          "answer": "50% upfront when you sign the contract with an agreed schedule, and the remaining 50% when you receive the project working, tested end to end and with your final approval."
+        },
+        {
+          "id": "presupuesto-estimado",
+          "question": "How do I know what my project will cost before hiring?",
+          "answer": "First we talk, assess technical feasibility and give you a clear plan with an honest budget, no commitment. To get an idea before talking to anyone, the [interactive estimator](/en/cotizador) calculates an approximate investment and timeline, in Colombian pesos or US dollars, based on the project type, modules and delivery pace."
+        }
+      ]
+    },
+    {
+      "id": "proceso",
+      "title": "Process & communication",
+      "description": "How a project starts, how you follow progress and who you talk to.",
+      "items": [
+        {
+          "id": "como-empieza",
+          "question": "How does a project with SkyCode start?",
+          "answer": "In four steps. 1) We talk and shape your idea, with a clear plan and an honest budget. 2) We set exact dates, sign the contract and start with the 50% upfront payment and repositories in your name. 3) You get real progress every week on a private link. 4) At launch the final 50% is paid, only once everything is tested and running on your servers."
+        },
+        {
+          "id": "avances-semanales",
+          "question": "How do you handle communication and milestones during development?",
+          "answer": "We ship functional increments every week to a staging environment where you test features directly and talk straight to the engineers writing the code, with no middlemen."
+        },
+        {
+          "id": "hablo-con-ingenieros",
+          "question": "Do I talk to the engineers who write the code or to an intermediary?",
+          "answer": "To the engineers. There are no intermediaries: during development you talk directly to the people building your project, and when you first write to us, Andrés, César or Ximena reviews your inquiry personally."
+        },
+        {
+          "id": "tiempo-de-respuesta",
+          "question": "How long do you take to answer an inquiry?",
+          "answer": "Under 24 business hours, with an honest assessment of how to approach your project and no generic bot replies. You can write to us through the [contact form](/en/#contacto) or on WhatsApp."
+        },
+        {
+          "id": "portal-cliente",
+          "question": "Can I follow my project, invoices and documents online?",
+          "answer": "Yes. Clients get a portal where they follow the progress of their projects and deliverables (and can approve them or leave comments), view and download invoices and documents, and open support requests."
+        },
+        {
+          "id": "empresas-internacionales",
+          "question": "Do you work with companies outside Colombia?",
+          "answer": "Yes. We operate from Colombia with international companies, and the site and our service are available in Spanish, English and French. On data privacy we work with frameworks such as Colombian Law 1581 and the GDPR."
+        }
+      ]
+    },
+    {
+      "id": "integraciones",
+      "title": "Integrations & scope",
+      "description": "Which systems we connect to and what kinds of projects we build.",
+      "items": [
+        {
+          "id": "integraciones",
+          "question": "Can you connect with what I already use (payment gateways, invoicing, WhatsApp)?",
+          "answer": "Yes. We integrate payment gateways (Wompi, Stripe, PayU), accounting software and ERPs (Siigo, Alegra, SAP) and the WhatsApp API so everything flows without repetitive manual work. More on [integrations and APIs](/en/servicios/apis-integraciones)."
+        },
+        {
+          "id": "migracion-legacy",
+          "question": "Can you migrate data from an old system or scattered spreadsheets?",
+          "answer": "Yes. We safely extract, clean and migrate data from outdated systems, XML dumps or legacy spreadsheets into modern databases, without disrupting your live operation. Details in [data migration and modernization](/en/servicios/migracion-datos-legacy)."
+        },
+        {
+          "id": "apps-moviles",
+          "question": "Do you build mobile apps for iOS and Android?",
+          "answer": "Yes. We build fast apps for customers or field staff, designed to sync in the background and keep working normally even without an internet connection. See the [mobile applications](/en/servicios/desarrollo-aplicaciones-moviles) service."
+        },
+        {
+          "id": "inteligencia-artificial",
+          "question": "What kind of artificial intelligence solutions do you implement?",
+          "answer": "Smart assistants and automated document workflows connected to your company's knowledge bases, focused on saving operational hours. Details in [applied business AI](/en/servicios/inteligencia-artificial-aplicada)."
+        }
+      ]
+    },
+    {
+      "id": "seguridad",
+      "title": "Security & data",
+      "description": "How we protect your users' information and yours.",
+      "items": [
+        {
+          "id": "seguridad-datos",
+          "question": "How do you protect the security and data of my users?",
+          "answer": "Encryption of data at rest and in transit, role-based access control and regulatory compliance (Colombian Law 1581 and GDPR). Security is designed into the architecture, not patched on at the end. More on [security and data protection](/en/servicios/seguridad-cumplimiento)."
+        },
+        {
+          "id": "datos-de-contacto",
+          "question": "How do you handle the contact details I send you?",
+          "answer": "The contact form asks for your express consent to process your contact details in order to answer your inquiry. How we handle them and what your rights are is described in the [privacy policy](/politica-privacidad) (in Spanish)."
+        }
+      ]
+    },
+    {
+      "id": "soporte",
+      "title": "Warranty & support",
+      "description": "What happens after launch if something fails.",
+      "items": [
+        {
+          "id": "garantia-90-dias",
+          "question": "What happens if we find a bug or something fails after launch?",
+          "answer": "You get a 90-day technical stability warranty after launch. If a bug appears or something doesn't behave as agreed, we fix it right away at no extra cost."
+        },
+        {
+          "id": "mantenimiento-sla",
+          "question": "Do you offer maintenance after the 90-day warranty?",
+          "answer": "Yes, as an optional service: an SLA maintenance contract tailored to you. The 90-day warranty covers technical fixes at no charge; ongoing support is separate and up to you."
+        }
+      ]
+    }
+  ]
+}

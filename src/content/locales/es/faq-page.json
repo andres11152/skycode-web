@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "title": "Preguntas frecuentes de software a medida",
+    "description": "Respuestas directas sobre propiedad del código, pagos 50/50, garantía de 90 días, seguridad e integraciones al contratar desarrollo de software con SkyCode."
+  },
+  "page": {
+    "badge": "Centro de respuestas",
+    "title": "Preguntas frecuentes",
+    "description": "Respuestas directas sobre propiedad del código, pagos, garantía, seguridad e integraciones. Sin letra chica.",
+    "breadcrumbHome": "Inicio",
+    "breadcrumbAria": "Ruta de navegación",
+    "countLabel": "respuestas · {topics} temas",
+    "searchLabel": "Buscar en las preguntas",
+    "searchPlaceholder": "Busca: garantía, pagos…",
+    "searchHint": "Pulsa / para buscar",
+    "clearSearch": "Limpiar búsqueda",
+    "resultsOne": "{count} resultado para «{query}»",
+    "resultsMany": "{count} resultados para «{query}»",
+    "noResultsTitle": "No encontramos «{query}»",
+    "noResultsBody": "Prueba con otra palabra o cuéntanos tu duda: te respondemos en menos de 24 horas hábiles.",
+    "topicsLabel": "Temas",
+    "topicsAria": "Temas de preguntas frecuentes",
+    "copyLink": "Copiar enlace a esta pregunta",
+    "linkCopied": "Enlace copiado",
+    "ctaTitle": "¿No encontraste tu respuesta?",
+    "ctaBody": "Cuéntanos tu caso: lo revisa directamente un ingeniero y te respondemos en menos de 24 horas hábiles.",
+    "ctaPrimary": "Hablar con un ingeniero",
+    "ctaSecondary": "Calcular mi proyecto"
+  },
+  "categories": [
+    {
+      "id": "propiedad",
+      "title": "Propiedad y contrato",
+      "description": "Quién es dueño del código y qué pasa si algún día cambias de equipo.",
+      "items": [
+        {
+          "id": "codigo-100-tuyo",
+          "question": "¿El código realmente me pertenece al 100% o quedo amarrado a ustedes?",
+          "answer": "100% tuyo desde el primer día. Te entregamos repositorios a tu nombre y todas las credenciales de acceso. Cero letras chicas ni mensualidades forzadas. Si mañana decides continuarlo con otro equipo o in-house, puedes hacerlo sin ninguna traba."
+        },
+        {
+          "id": "documentacion-traspaso",
+          "question": "¿Entregan documentación para que otro equipo pueda continuar el proyecto?",
+          "answer": "Sí. Entregamos repositorios, variables de entorno y diagramas de arquitectura, con documentación técnica clara, para que tu equipo interno u otros desarrolladores continúen el código con total autonomía. Está detallado en nuestro servicio de [documentación y transferencia técnica](/servicios/arquitectura-documentacion)."
+        },
+        {
+          "id": "sin-dependencia",
+          "question": "¿Tengo que contratarles el mantenimiento para seguir usando el sistema?",
+          "answer": "No. Como el código y los accesos son tuyos desde el primer día, no hay mensualidades forzadas ni licencias recurrentes. Si quieres acompañamiento continuo puedes contratar un mantenimiento con SLA a la medida, pero es opcional; si prefieres otro equipo o hacerlo in-house, la transición no tiene ninguna traba."
+        }
+      ]
+    },
+    {
+      "id": "pagos",
+      "title": "Pagos y presupuesto",
+      "description": "Cómo se paga, cuándo y cómo saber el costo antes de comprometerte.",
+      "items": [
+        {
+          "id": "formas-de-pago",
+          "question": "¿Cómo son las formas de pago? ¿Tengo que pagar todo por adelantado?",
+          "answer": "50% de anticipo al firmar contrato con cronograma acordado, y el 50% restante al recibir el proyecto funcionando, probado de punta a punta y con tu visto bueno final."
+        },
+        {
+          "id": "presupuesto-estimado",
+          "question": "¿Cómo sé cuánto costará mi proyecto antes de contratar?",
+          "answer": "Primero conversamos, evaluamos la viabilidad técnica y te damos un plan claro con un presupuesto honesto, sin compromiso. Para hacerte una idea antes de hablar con nadie, el [cotizador interactivo](/cotizador) calcula una inversión y un tiempo aproximados, en pesos colombianos o dólares, según el tipo de proyecto, los módulos y el ritmo de entrega."
+        }
+      ]
+    },
+    {
+      "id": "proceso",
+      "title": "Proceso y comunicación",
+      "description": "Cómo arranca un proyecto, cómo te enteras del avance y con quién hablas.",
+      "items": [
+        {
+          "id": "como-empieza",
+          "question": "¿Cómo empieza un proyecto con SkyCode?",
+          "answer": "En cuatro pasos. 1) Charlamos y aterrizamos tu idea, con un plan claro y un presupuesto honesto. 2) Definimos fechas exactas, firmamos contrato e iniciamos con el 50% de anticipo y repositorios a tu nombre. 3) Tienes avances reales cada semana en un enlace privado. 4) En el lanzamiento se abona el 50% final, solo cuando todo está probado y funcionando en tus servidores."
+        },
+        {
+          "id": "avances-semanales",
+          "question": "¿Cómo sé cómo va mi proyecto durante las semanas de desarrollo?",
+          "answer": "Entregamos avances funcionales cada semana en un entorno privado para que interactúes con el sistema y hables directo con los ingenieros que están programando, sin intermediarios."
+        },
+        {
+          "id": "hablo-con-ingenieros",
+          "question": "¿Hablo con los ingenieros que programan o con un intermediario?",
+          "answer": "Con los ingenieros. No hay intermediarios: durante el desarrollo hablas directo con quienes están programando tu proyecto, y cuando nos escribes por primera vez tu consulta la revisa directamente Andrés, César o Ximena."
+        },
+        {
+          "id": "tiempo-de-respuesta",
+          "question": "¿Cuánto tardan en responder una consulta?",
+          "answer": "Menos de 24 horas hábiles, con una valoración sincera de cómo encarar tu proyecto y sin respuestas genéricas de bots. Puedes escribirnos desde el [formulario de contacto](/#contacto) o por WhatsApp."
+        },
+        {
+          "id": "portal-cliente",
+          "question": "¿Puedo seguir el avance de mi proyecto, mis facturas y mis documentos en línea?",
+          "answer": "Sí. Los clientes tienen acceso a un portal donde ven el avance de sus proyectos y entregables (y pueden aprobarlos o dejar comentarios), consultan y descargan facturas y documentos, y abren solicitudes de soporte."
+        },
+        {
+          "id": "empresas-internacionales",
+          "question": "¿Trabajan con empresas de fuera de Colombia?",
+          "answer": "Sí. Operamos desde Colombia con empresas internacionales, y el sitio y la atención están disponibles en español, inglés y francés. En privacidad de datos trabajamos con marcos como la Ley 1581 y el RGPD."
+        }
+      ]
+    },
+    {
+      "id": "integraciones",
+      "title": "Integraciones y alcance",
+      "description": "Con qué sistemas nos conectamos y qué tipos de proyecto construimos.",
+      "items": [
+        {
+          "id": "integraciones",
+          "question": "¿Se puede conectar con lo que ya uso (pasarelas de pago, facturación, WhatsApp)?",
+          "answer": "Sí. Integramos pasarelas de pago (Wompi, Stripe, PayU), software contable y ERPs (Siigo, Alegra, SAP) y la API de WhatsApp para que todo fluya sin trabajo manual repetitivo. Más en [integraciones y APIs](/servicios/apis-integraciones)."
+        },
+        {
+          "id": "migracion-legacy",
+          "question": "¿Pueden migrar los datos de un sistema antiguo o de planillas dispersas?",
+          "answer": "Sí. Extraemos, saneamos y migramos la información desde sistemas obsoletos, archivos XML o planillas dispersas hacia bases de datos modernas, sin interrumpir tu operación activa. Detalle en [migración y modernización de datos](/servicios/migracion-datos-legacy)."
+        },
+        {
+          "id": "apps-moviles",
+          "question": "¿Desarrollan aplicaciones móviles para iOS y Android?",
+          "answer": "Sí. Construimos apps ágiles para clientes o personal de campo, optimizadas para sincronizar en segundo plano y seguir funcionando con normalidad incluso sin conexión a internet. Conoce el servicio de [aplicaciones móviles](/servicios/desarrollo-aplicaciones-moviles)."
+        },
+        {
+          "id": "inteligencia-artificial",
+          "question": "¿Qué soluciones de inteligencia artificial implementan?",
+          "answer": "Asistentes inteligentes y automatización de documentos conectados a las bases de conocimiento de tu empresa, enfocados en ahorrar horas operativas. Detalle en [IA aplicada al negocio](/servicios/inteligencia-artificial-aplicada)."
+        }
+      ]
+    },
+    {
+      "id": "seguridad",
+      "title": "Seguridad y datos",
+      "description": "Cómo protegemos la información de tus usuarios y la tuya.",
+      "items": [
+        {
+          "id": "seguridad-datos",
+          "question": "¿Cómo cuidan la seguridad y los datos de mis usuarios?",
+          "answer": "Cifrado de datos en reposo y en tránsito, control de acceso por roles y cumplimiento normativo (Ley 1581 y RGPD). La seguridad viene pensada desde la arquitectura, no como parche al final. Más en [seguridad y protección de datos](/servicios/seguridad-cumplimiento)."
+        },
+        {
+          "id": "datos-de-contacto",
+          "question": "¿Cómo tratan los datos de contacto que les envío?",
+          "answer": "El formulario de contacto pide tu aceptación expresa del tratamiento de tus datos de contacto para responder tu consulta. Cómo los tratamos y cuáles son tus derechos está en la [política de privacidad](/politica-privacidad)."
+        }
+      ]
+    },
+    {
+      "id": "soporte",
+      "title": "Garantía y soporte",
+      "description": "Qué pasa después del lanzamiento si algo falla.",
+      "items": [
+        {
+          "id": "garantia-90-dias",
+          "question": "¿Qué pasa si después de lanzar encontramos un error o algo falla?",
+          "answer": "Tienes 90 días de garantía de estabilidad técnica posterior al lanzamiento. Si surge algún bug o algo no se comporta como se acordó, lo corregimos de inmediato sin costo adicional."
+        },
+        {
+          "id": "mantenimiento-sla",
+          "question": "¿Ofrecen mantenimiento después de los 90 días de garantía?",
+          "answer": "Sí, como servicio opcional: un contrato de mantenimiento con SLA a la medida. La garantía de 90 días cubre las correcciones técnicas sin costo; el acompañamiento continuo es aparte y lo decides tú."
+        }
+      ]
+    }
+  ]
+}

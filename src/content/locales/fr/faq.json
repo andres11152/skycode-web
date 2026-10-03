@@ -2,26 +2,14 @@
   "badge": "Questions Fréquentes",
   "title": "Questions Fréquentes",
   "description": "Des réponses claires sur la propriété du code, les garanties, les paiements et notre méthode d'ingénierie.",
-  "items": [
-    {
-      "question": "À qui appartient le code une fois le logiciel livré ?",
-      "answer": "100 % à vous dès le premier jour. Nous transférons la pleine propriété des dépôts et des accès, sans abonnement captif ni dépendance technique."
-    },
-    {
-      "question": "Comment garantissez-vous la protection et la conformité des données ?",
-      "answer": "Nous appliquons le principe de Privacy by Design : chiffrement des données au repos et en transit, gestion granulaire des rôles et conformité stricte au RGPD."
-    },
-    {
-      "question": "Pouvez-vous connecter nos logiciels à des passerelles de paiement et des ERP ?",
-      "answer": "Oui. Nous intégrons vos systèmes aux passerelles de paiement (Stripe, Wompi, PayU), logiciels comptables et ERP (SAP, Siigo, Alegra) ainsi qu'aux API de messagerie."
-    },
-    {
-      "question": "Quelle garantie et quel accompagnement proposez-vous après la livraison ?",
-      "answer": "Chaque projet inclut une garantie de stabilité technique de 90 jours couvrant toute correction sans frais, avec la possibilité d'un contrat de maintenance SLA sur mesure."
-    },
-    {
-      "question": "Comment s'organisent le suivi et la communication pendant le projet ?",
-      "answer": "Nous livrons des versions fonctionnelles chaque semaine sur un environnement de préproduction pour que vous testiez l'application et échangiez en direct avec les développeurs."
-    }
+  "viewAll": "Voir toutes les questions",
+  "moreQuestions": "Une autre question ? Voir les {count} questions fréquentes",
+  "featured": [
+    "codigo-100-tuyo",
+    "garantia-90-dias",
+    "formas-de-pago",
+    "integraciones",
+    "avances-semanales",
+    "seguridad-datos"
   ]
 }
