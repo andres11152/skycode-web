@@ -1,3 +1,4 @@
+import { rethrowDbErrorAtRuntime } from "@/lib/dbBuildGuard";
 import { query } from "../db";
 import { logError } from "../logger";
 import type { Locale } from "../i18n";
@@ -117,6 +118,7 @@ export async function getPublishedPortfolioProjects(locale: Locale): Promise<Por
     return projects.filter((p): p is PortfolioProject => p !== null);
   } catch (error) {
     logError("Error al leer el portafolio publicado", error);
+    rethrowDbErrorAtRuntime(error);
     return [];
   }
 }
@@ -132,6 +134,7 @@ export async function getPublishedPortfolioProjectBySlug(slug: string, locale: L
     return await assembleProject(row, locale);
   } catch (error) {
     logError("Error al leer el caso de portafolio", error);
+    rethrowDbErrorAtRuntime(error);
     return null;
   }
 }
@@ -158,6 +161,7 @@ export async function getPublishedPortfolioLocaleMap(): Promise<{ slug: string; 
     }));
   } catch (error) {
     logError("Error al leer los idiomas del portafolio", error);
+    rethrowDbErrorAtRuntime(error);
     return [];
   }
 }
@@ -169,6 +173,7 @@ export async function getPublishedPortfolioSlugs(): Promise<string[]> {
     return res.rows.map((row) => String(row.slug));
   } catch (error) {
     logError("Error al leer los slugs del portafolio", error);
+    rethrowDbErrorAtRuntime(error);
     return [];
   }
 }

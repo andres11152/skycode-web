@@ -1,3 +1,4 @@
+import { rethrowDbErrorAtRuntime } from "@/lib/dbBuildGuard";
 import { query } from "../db";
 import { logError } from "../logger";
 // De blogShared, no de content/blog.ts — ese archivo importa de acá
@@ -110,6 +111,7 @@ export async function getPublishedArticles(locale: Locale): Promise<BlogPost[]> 
     // real contra una DB de verdad (`dynamicParams = true` + `revalidate`
     // en las páginas del blog resuelven esa primera carga vía ISR).
     logError("❌ [Articles] getPublishedArticles falló (¿build sin DATABASE_URL?)", error);
+    rethrowDbErrorAtRuntime(error);
     return [];
   }
 }
@@ -126,6 +128,7 @@ export async function getPublishedArticleBySlug(slug: string, locale: Locale): P
     return toBlogPost(shapeArticleRow(res.rows[0]));
   } catch (error) {
     logError("❌ [Articles] getPublishedArticleBySlug falló (¿build sin DATABASE_URL?)", error);
+    rethrowDbErrorAtRuntime(error);
     return null;
   }
 }
