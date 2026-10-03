@@ -109,15 +109,17 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange, labels =
           transition={{ duration: reduced ? 0.01 : 0.2 }}
           onClick={onClose}
         >
+          {/* Botón cerrar con fondo oscuro frosted de alto contraste */}
           <button
             type="button"
             onClick={onClose}
             aria-label={labels.close}
-            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full text-background/70 outline-none transition-colors hover:bg-background/10 hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+            className="absolute right-4 top-4 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-foreground/85 text-background border border-background/20 backdrop-blur-md shadow-lg outline-none transition-all hover:bg-foreground hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
           >
-            <X size={20} />
+            <X size={20} weight="bold" />
           </button>
 
+          {/* Flechas laterales para desktop (en mobile pasan a la parte inferior) */}
           {hasMultiple && (
             <>
               <button
@@ -127,9 +129,9 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange, labels =
                   onIndexChange((index - 1 + slides.length) % slides.length);
                 }}
                 aria-label={labels.prev}
-                className="absolute left-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-background/70 outline-none transition-colors hover:bg-background/10 hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground sm:left-4"
+                className="absolute left-4 top-1/2 z-20 hidden -translate-y-1/2 items-center justify-center rounded-full bg-foreground/85 h-11 w-11 text-background shadow-xl backdrop-blur-md border border-background/20 outline-none transition-all hover:bg-foreground hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground sm:flex"
               >
-                <CaretLeft size={22} />
+                <CaretLeft size={22} weight="bold" />
               </button>
               <button
                 type="button"
@@ -138,9 +140,9 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange, labels =
                   onIndexChange((index + 1) % slides.length);
                 }}
                 aria-label={labels.next}
-                className="absolute right-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-background/70 outline-none transition-colors hover:bg-background/10 hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground sm:right-4"
+                className="absolute right-4 top-1/2 z-20 hidden -translate-y-1/2 items-center justify-center rounded-full bg-foreground/85 h-11 w-11 text-background shadow-xl backdrop-blur-md border border-background/20 outline-none transition-all hover:bg-foreground hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground sm:flex"
               >
-                <CaretRight size={22} />
+                <CaretRight size={22} weight="bold" />
               </button>
             </>
           )}
@@ -156,7 +158,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange, labels =
           <div
             ref={canvasRef}
             onClick={(e) => e.stopPropagation()}
-            className="relative h-[80vh] w-[92vw] max-w-6xl overflow-hidden rounded-xl bg-foreground/40"
+            className="relative h-[74vh] w-[92vw] max-w-6xl overflow-hidden rounded-xl bg-foreground/40 sm:h-[80vh]"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -183,6 +185,50 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange, labels =
               </motion.div>
             </AnimatePresence>
 
+            {/* Contador de slides en desktop (esquina inferior izquierda) */}
+            {hasMultiple && (
+              <div className="absolute bottom-4 left-4 z-20 hidden rounded-full bg-foreground/85 px-3.5 py-1.5 font-mono text-xs font-medium text-background/90 backdrop-blur-md border border-background/20 shadow-lg select-none sm:block">
+                {index + 1} / {slides.length}
+              </div>
+            )}
+
+            {/* En mobile: cápsula de navegación inferior centrada (flecha prev, contador, flecha next) */}
+            {hasMultiple && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full bg-foreground/85 p-1 text-background shadow-xl backdrop-blur-md border border-background/20 sm:hidden"
+              >
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onIndexChange((index - 1 + slides.length) % slides.length);
+                  }}
+                  aria-label={labels.prev}
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-background transition-all hover:bg-background/20 active:scale-90 focus-visible:ring-2 focus-visible:ring-accent"
+                >
+                  <CaretLeft size={20} weight="bold" />
+                </button>
+
+                <div className="px-2 font-mono text-xs font-medium text-background/90 select-none">
+                  {index + 1} / {slides.length}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onIndexChange((index + 1) % slides.length);
+                  }}
+                  aria-label={labels.next}
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-background transition-all hover:bg-background/20 active:scale-90 focus-visible:ring-2 focus-visible:ring-accent"
+                >
+                  <CaretRight size={20} weight="bold" />
+                </button>
+              </div>
+            )}
+
+            {/* Botón de zoom de alto contraste */}
             <button
               type="button"
               onClick={(e) => {
@@ -190,16 +236,10 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange, labels =
                 setZoomed((value) => !value);
               }}
               aria-label={zoomed ? labels.zoomOut : labels.zoomIn}
-              className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-background/10 text-background outline-none backdrop-blur-sm transition-colors hover:bg-background/20 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              className="absolute bottom-4 right-4 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-foreground/85 text-background border border-background/20 backdrop-blur-md shadow-lg outline-none transition-all hover:bg-foreground hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
             >
-              {zoomed ? <MagnifyingGlassMinus size={18} /> : <MagnifyingGlassPlus size={18} />}
+              {zoomed ? <MagnifyingGlassMinus size={18} weight="bold" /> : <MagnifyingGlassPlus size={18} weight="bold" />}
             </button>
-
-            {hasMultiple && (
-              <div className="absolute bottom-4 left-4 rounded-full bg-background/10 px-3 py-1 font-mono text-xs text-background/80 backdrop-blur-sm">
-                {index + 1} / {slides.length}
-              </div>
-            )}
           </div>
         </motion.div>
       )}
