@@ -3,6 +3,7 @@ import {
   getPublishedPortfolioProjects,
   getPublishedPortfolioProjectBySlug,
   getPublishedPortfolioSlugs,
+  getPublishedPortfolioLocaleMap,
   getAdminPortfolioList,
   getAdminPortfolioDetail,
   createPortfolioProject,
@@ -117,6 +118,56 @@ describe("getPublishedPortfolioProjects / getPublishedPortfolioProjectBySlug", (
 
     const enDetail = await getPublishedPortfolioProjectBySlug("caso-prueba", "en");
     expect(enDetail?.title).toBe("Caso de Prueba"); // fallback a español, no vacío
+    expect(enDetail?.translated).toBe(false); // y la UI lo sabe: EsBadge, fuera del índice en /en
+    expect((await getPublishedPortfolioProjectBySlug("caso-prueba", "es"))?.translated).toBe(true);
+  });
+
+  it("con traducción real al inglés, `translated` es true y se sirve ese texto", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    const { projectId } = await createFullProject(admin);
+    await withTransaction((c) =>
+      upsertPortfolioTranslation(
+        projectId,
+        "en",
+        { title: "Test Case", clientLabel: "Test Client", summary: "Case summary", challenge: "", solution: "", results: "", capabilities: [] },
+        c
+      )
+    );
+    await withTransaction((c) => setPortfolioProjectStatus(projectId, "published", admin.id, c));
+
+    const en = await getPublishedPortfolioProjectBySlug("caso-prueba", "en");
+    expect(en?.title).toBe("Test Case");
+    expect(en?.translated).toBe(true);
+    const list = await getPublishedPortfolioProjects("en");
+    expect(list.map((p) => p.translated)).toEqual([true]);
+  });
+
+  it("getPublishedPortfolioLocaleMap lista solo los idiomas con traducción real (español siempre)", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    const { projectId } = await createFullProject(admin);
+    await withTransaction((c) =>
+      upsertPortfolioTranslation(
+        projectId,
+        "fr",
+        { title: "Cas de test", clientLabel: "Client", summary: "Résumé", challenge: "", solution: "", results: "", capabilities: [] },
+        c
+      )
+    );
+    await withTransaction((c) => setPortfolioProjectStatus(projectId, "published", admin.id, c));
+
+    const map = await getPublishedPortfolioLocaleMap();
+    expect(map).toHaveLength(1);
+    expect(map[0].slug).toBe("caso-prueba");
+    expect([...map[0].locales].sort()).toEqual(["es", "fr"]); // sin "en": no hay traducción
+  });
+
+  it("getPublishedPortfolioLocaleMap omite borradores y archivados", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    const { projectId } = await createFullProject(admin);
+    expect(await getPublishedPortfolioLocaleMap()).toEqual([]); // borrador
+    await withTransaction((c) => setPortfolioProjectStatus(projectId, "published", admin.id, c));
+    await withTransaction((c) => setPortfolioProjectStatus(projectId, "archived", admin.id, c));
+    expect(await getPublishedPortfolioLocaleMap()).toEqual([]);
   });
 
   it("un caso archivado deja de aparecer en público", async () => {

@@ -20,6 +20,15 @@ export interface PortfolioIndexCopy {
   ctaButton: string;
 }
 
+export interface PortfolioLightboxCopy {
+  dialog: string;
+  close: string;
+  prev: string;
+  next: string;
+  zoomIn: string;
+  zoomOut: string;
+}
+
 export interface PortfolioDetailCopy {
   client: string;
   capabilities: string;
@@ -41,6 +50,9 @@ export interface PortfolioDetailCopy {
   viewAllCases: string;
   ctaTitle: string;
   ctaButton: string;
+  /** Plantilla con `{title}` e `{index}` — alt de cada captura cuando no tiene texto alternativo propio. */
+  captureAlt: string;
+  lightbox: PortfolioLightboxCopy;
 }
 
 export interface PortfolioSectionCopy {
@@ -53,6 +65,8 @@ export interface PortfolioSectionCopy {
   exploreProject: string;
   index: PortfolioIndexCopy;
   detail: PortfolioDetailCopy;
+  breadcrumb: { home: string; aria: string; portfolio: string };
+  meta: { indexTitle: string };
 }
 
 export function getPortfolioSectionContent(locale: Locale): PortfolioSectionCopy {
@@ -67,5 +81,7 @@ export function getPortfolioSectionContent(locale: Locale): PortfolioSectionCopy
     exploreProject: data.exploreProject,
     index: data.index,
     detail: data.detail,
+    breadcrumb: data.breadcrumb,
+    meta: data.meta,
   };
 }

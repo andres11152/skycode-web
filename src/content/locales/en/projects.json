@@ -38,6 +38,23 @@
     "nextCase": "Next case",
     "viewAllCases": "View all cases",
     "ctaTitle": "Have a similar project in mind?",
-    "ctaButton": "Talk to an engineer"
+    "ctaButton": "Talk to an engineer",
+    "captureAlt": "{title} — screenshot {index}",
+    "lightbox": {
+      "dialog": "Image gallery",
+      "close": "Close",
+      "prev": "Previous image",
+      "next": "Next image",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
+    }
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "aria": "Breadcrumb",
+    "portfolio": "Portfolio"
+  },
+  "meta": {
+    "indexTitle": "Custom Software Case Studies"
   }
 }

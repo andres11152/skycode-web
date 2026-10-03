@@ -6,8 +6,8 @@ import { buildPortfolioIndexMetadata } from "@/lib/portfolioMetadata";
 // al cambiar el estado de un caso desde el dashboard) no llega a dispararse.
 export const revalidate = 3600;
 
-export const metadata: Metadata = buildPortfolioIndexMetadata("es");
+export const metadata: Metadata = buildPortfolioIndexMetadata("fr");
 
-export default function PortafolioPage() {
-  return <PortfolioIndexPage locale="es" />;
+export default function PortfolioPageFr() {
+  return <PortfolioIndexPage locale="fr" />;
 }

@@ -10,6 +10,8 @@ import { fadeUp, scaleUp } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 import { getProjectHostname, type PortfolioProject, type PortfolioTechnology } from "@/content/portfolioShared";
 import type { PortfolioSectionCopy } from "@/content/projects";
+import { portfolioCasePath } from "@/lib/portfolioPaths";
+import { localeHomePath, type Locale } from "@/lib/i18n";
 
 const FOCUS_LIGHT =
   "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -46,9 +48,11 @@ function pad(n: number): string {
 function FeaturedCase({
   project,
   copy,
+  locale,
 }: {
   project: PortfolioProject;
   copy: PortfolioSectionCopy;
+  locale: Locale;
 }) {
   return (
     // Banda oscura (bg-foreground): una de las secciones invertidas del sitio.
@@ -83,7 +87,7 @@ function FeaturedCase({
               {project.clientLabel}
             </p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-balance text-background sm:text-4xl">
-              <Link href={`/portafolio/${project.slug}`} className={STRETCH_DARK}>
+              <Link href={portfolioCasePath(locale, project.slug)} className={STRETCH_DARK}>
                 {project.title}
               </Link>
             </h2>
@@ -127,12 +131,14 @@ function CaseChapter({
   flip,
   reduced,
   copy,
+  locale,
 }: {
   project: PortfolioProject;
   number: number;
   flip: boolean;
   reduced: boolean;
   copy: PortfolioSectionCopy;
+  locale: Locale;
 }) {
   return (
     <article className="border-t border-foreground/10">
@@ -172,7 +178,7 @@ function CaseChapter({
           </div>
 
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-4xl">
-            <Link href={`/portafolio/${project.slug}`} className={STRETCH_LIGHT}>
+            <Link href={portfolioCasePath(locale, project.slug)} className={STRETCH_LIGHT}>
               {project.title}
             </Link>
           </h2>
@@ -210,9 +216,11 @@ function CaseChapter({
 }
 
 export function PortfolioIndexView({
+  locale,
   projects,
   sectionCopy,
 }: {
+  locale: Locale;
   projects: PortfolioProject[];
   sectionCopy: PortfolioSectionCopy;
 }) {
@@ -221,19 +229,21 @@ export function PortfolioIndexView({
   const featured = projects.find((project) => project.isFeatured) ?? projects[0];
   const rest = featured ? projects.filter((project) => project.slug !== featured.slug) : [];
   const technologies = topTechnologies(projects, 8);
+  const homeHref = localeHomePath(locale);
+  const contactHref = `${homeHref === "/" ? "" : homeHref}/#contacto`;
 
   return (
     <main id="main-content" className="pt-28 sm:pt-36">
       <header className="mx-auto max-w-6xl px-6">
-        <nav aria-label="Ruta de navegación">
+        <nav aria-label={sectionCopy.breadcrumb.aria}>
           <ol className="flex items-center gap-2 text-sm text-foreground/60">
             <li>
-              <Link href="/" className={cn("rounded hover:text-foreground", FOCUS_LIGHT)}>
-                Inicio
+              <Link href={homeHref} className={cn("rounded hover:text-foreground", FOCUS_LIGHT)}>
+                {sectionCopy.breadcrumb.home}
               </Link>
             </li>
             <li aria-hidden="true">/</li>
-            <li className="text-foreground">Portafolio</li>
+            <li className="text-foreground">{sectionCopy.breadcrumb.portfolio}</li>
           </ol>
         </nav>
 
@@ -276,7 +286,7 @@ export function PortfolioIndexView({
         <p className="mx-auto max-w-6xl px-6 py-24 text-lg text-foreground/80">{sectionCopy.index.empty}</p>
       ) : (
         <>
-          <FeaturedCase project={featured} copy={sectionCopy} />
+          <FeaturedCase project={featured} copy={sectionCopy} locale={locale} />
 
           {rest.length > 0 && (
             <div className="mx-auto max-w-6xl px-6 pt-8 sm:pt-12">
@@ -288,6 +298,7 @@ export function PortfolioIndexView({
                   flip={index % 2 === 1}
                   reduced={reduced}
                   copy={sectionCopy}
+                  locale={locale}
                 />
               ))}
             </div>
@@ -298,7 +309,7 @@ export function PortfolioIndexView({
               <p className="max-w-xl text-2xl font-bold tracking-tight text-balance text-foreground sm:text-3xl">
                 {sectionCopy.index.ctaTitle}
               </p>
-              <Button href="/#contacto" variant="accent" size="lg" className="shrink-0">
+              <Button href={contactHref} variant="accent" size="lg" className="shrink-0">
                 {sectionCopy.index.ctaButton}
               </Button>
             </div>

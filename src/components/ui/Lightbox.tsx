@@ -6,19 +6,39 @@ import { CaretLeft, CaretRight, MagnifyingGlassMinus, MagnifyingGlassPlus, X } f
 import { cn } from "@/lib/utils";
 import { useFocusTrap } from "@/lib/useFocusTrap";
 
+export interface LightboxLabels {
+  dialog: string;
+  close: string;
+  prev: string;
+  next: string;
+  zoomIn: string;
+  zoomOut: string;
+}
+
+const DEFAULT_LABELS: LightboxLabels = {
+  dialog: "Galería de imágenes",
+  close: "Cerrar",
+  prev: "Imagen anterior",
+  next: "Imagen siguiente",
+  zoomIn: "Acercar",
+  zoomOut: "Alejar",
+};
+
 interface LightboxProps {
   open: boolean;
   onClose: () => void;
   slides: React.ReactNode[];
   index: number;
   onIndexChange: (index: number) => void;
+  /** Textos accesibles; por defecto en español. Las páginas en otros idiomas los pasan traducidos. */
+  labels?: LightboxLabels;
 }
 
 // Nivel de zoom fijo (en vez de un slider) — suficiente para leer detalle
 // de una captura de pantalla sin la complejidad de pinch-to-zoom real.
 const ZOOM_SCALE = 1.8;
 
-export function Lightbox({ open, onClose, slides, index, onIndexChange }: LightboxProps) {
+export function Lightbox({ open, onClose, slides, index, onIndexChange, labels = DEFAULT_LABELS }: LightboxProps) {
   const reduced = Boolean(useReducedMotion());
   const [zoomed, setZoomed] = useState(false);
   const [dragConstraints, setDragConstraints] = useState({ left: 0, right: 0, top: 0, bottom: 0 });
@@ -81,7 +101,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange }: Lightb
           ref={dialogRef}
           role="dialog"
           aria-modal="true"
-          aria-label="Galería de imágenes"
+          aria-label={labels.dialog}
           className="fixed inset-0 z-[70] flex items-center justify-center bg-foreground/95 p-4 backdrop-blur-sm sm:p-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -92,7 +112,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange }: Lightb
           <button
             type="button"
             onClick={onClose}
-            aria-label="Cerrar"
+            aria-label={labels.close}
             className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full text-background/70 outline-none transition-colors hover:bg-background/10 hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
           >
             <X size={20} />
@@ -106,7 +126,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange }: Lightb
                   e.stopPropagation();
                   onIndexChange((index - 1 + slides.length) % slides.length);
                 }}
-                aria-label="Imagen anterior"
+                aria-label={labels.prev}
                 className="absolute left-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-background/70 outline-none transition-colors hover:bg-background/10 hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground sm:left-4"
               >
                 <CaretLeft size={22} />
@@ -117,7 +137,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange }: Lightb
                   e.stopPropagation();
                   onIndexChange((index + 1) % slides.length);
                 }}
-                aria-label="Imagen siguiente"
+                aria-label={labels.next}
                 className="absolute right-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-background/70 outline-none transition-colors hover:bg-background/10 hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground sm:right-4"
               >
                 <CaretRight size={22} />
@@ -169,7 +189,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange }: Lightb
                 e.stopPropagation();
                 setZoomed((value) => !value);
               }}
-              aria-label={zoomed ? "Alejar" : "Acercar"}
+              aria-label={zoomed ? labels.zoomOut : labels.zoomIn}
               className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-background/10 text-background outline-none backdrop-blur-sm transition-colors hover:bg-background/20 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
             >
               {zoomed ? <MagnifyingGlassMinus size={18} /> : <MagnifyingGlassPlus size={18} />}

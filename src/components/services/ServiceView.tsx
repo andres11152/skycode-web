@@ -283,7 +283,7 @@ export function ServiceView({
                 <ul className="grid gap-6 sm:grid-cols-2">
                   {projects.map((project) => (
                     <li key={project.slug}>
-                      <ServiceCaseCard project={project} />
+                      <ServiceCaseCard project={project} locale={locale} />
                     </li>
                   ))}
                 </ul>

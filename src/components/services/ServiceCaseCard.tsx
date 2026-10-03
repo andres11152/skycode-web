@@ -3,13 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "@phosphor-icons/react/ssr";
 import { getPortfolioIcon, type PortfolioProject } from "@/content/portfolioShared";
+import { portfolioCasePath } from "@/lib/portfolioPaths";
+import type { Locale } from "@/lib/i18n";
 
 /**
  * Caso del portafolio como prueba de un servicio — compartido por el índice
  * (`/servicios`, con los servicios aplicados como chips) y el detalle
- * (`/servicios/[slug]`, sin chips: ahí el servicio ya es obvio). El detalle
- * del caso sigue siendo ES-only (`/portafolio/[slug]`), igual que el enlace
- * de la sección Portfolio de la home en `/en` y `/fr`.
+ * (`/servicios/[slug]`, sin chips: ahí el servicio ya es obvio). El enlace va
+ * al caso en el idioma de la página (`portfolioCasePath`).
  *
  * Portada propia en vez de `ProjectCover`: ese es un componente cliente que
  * recibe el ícono (una función) por prop, y una función no puede cruzar de
@@ -17,11 +18,13 @@ import { getPortfolioIcon, type PortfolioProject } from "@/content/portfolioShar
  */
 export function ServiceCaseCard({
   project,
+  locale,
   headingLevel = "h3",
   serviceTitles,
   servicesLabel,
 }: {
   project: PortfolioProject;
+  locale: Locale;
   headingLevel?: "h2" | "h3";
   serviceTitles?: string[];
   servicesLabel?: string;
@@ -30,7 +33,7 @@ export function ServiceCaseCard({
 
   return (
     <Link
-      href={`/portafolio/${project.slug}`}
+      href={portfolioCasePath(locale, project.slug)}
       className="group scroll-reveal flex h-full flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background outline-none transition-colors duration-200 hover:border-foreground/20 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-foreground/10 bg-foreground">

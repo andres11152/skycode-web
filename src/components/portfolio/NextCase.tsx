@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react";
 import { CaseVisual } from "@/components/portfolio/CaseVisual";
+import { portfolioCasePath } from "@/lib/portfolioPaths";
+import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export interface NextCaseData {
@@ -22,11 +24,11 @@ export interface NextCaseData {
  * empareja elementos visibles en ambos estados y Next puede conservar el scroll
  * al navegar; si no empareja, cae al crossfade normal sin romper nada.
  */
-export function NextCase({ next, label }: { next: NextCaseData; label: string }) {
+export function NextCase({ next, label, locale }: { next: NextCaseData; label: string; locale: Locale }) {
   return (
     <section aria-label={label} className="mx-auto max-w-6xl px-6">
       <Link
-        href={`/portafolio/${next.slug}`}
+        href={portfolioCasePath(locale, next.slug)}
         className={cn(
           "group grid gap-8 rounded-xl border-t border-foreground/10 py-14 sm:py-20 lg:grid-cols-12 lg:items-end lg:gap-16",
           "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background",

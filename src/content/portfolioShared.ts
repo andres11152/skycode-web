@@ -98,6 +98,14 @@ export interface PortfolioProject {
   coverImage: PortfolioImage | null;
   metrics: PortfolioMetric[];
   publishedAt: string | null;
+  /**
+   * `false` cuando el texto salió del respaldo en español porque este caso no
+   * tiene traducción real al idioma pedido (siempre `true` en español). Las
+   * superficies lo usan para marcar el contenido con `EsBadge` y excluirlo de
+   * índices/sitemap en `/en` y `/fr`, en vez de servir español bajo una URL
+   * en otro idioma sin avisar.
+   */
+  translated: boolean;
 }
 
 /**

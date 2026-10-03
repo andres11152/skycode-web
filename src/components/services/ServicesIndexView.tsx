@@ -12,6 +12,7 @@ import { getProcessContent } from "@/content/process";
 import { getTrustContent } from "@/content/trust";
 import type { PortfolioProject } from "@/content/portfolioShared";
 import { stripInlineLinks } from "@/lib/inlineLinks";
+import { portfolioIndexPath } from "@/lib/portfolioPaths";
 import { localeHomePath, t, type Locale } from "@/lib/i18n";
 
 /** Receta de `Button variant="secondary"` invertida para las bandas oscuras. */
@@ -173,7 +174,7 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
                 </h2>
                 <p className="mt-4 text-lg leading-relaxed text-foreground/80">{copy.casesDescription}</p>
               </div>
-              <Button href="/portafolio" variant="secondary" size="sm" className="shrink-0">
+              <Button href={portfolioIndexPath(locale)} variant="secondary" size="sm" className="shrink-0">
                 {copy.casesViewAll}
               </Button>
             </div>
@@ -183,6 +184,7 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
                 <li key={project.slug}>
                   <ServiceCaseCard
                     project={project}
+                    locale={locale}
                     serviceTitles={serviceTitles}
                     servicesLabel={t(copy.casesServicesLabel, { title: project.title })}
                   />

@@ -11,6 +11,7 @@ import { getServicesContent } from "@/content/services";
 import { useRecentArticles } from "@/lib/useRecentArticles";
 import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
 import { faqPath } from "@/lib/faqPaths";
+import { portfolioIndexPath } from "@/lib/portfolioPaths";
 import { contactEmail, contactPhone, siteName, socials, whatsappHref } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { getFooterContent } from "@/content/footer";
@@ -106,13 +107,13 @@ export function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const recentPosts = useRecentArticles(locale, 4, footerRef);
 
-  // Portfolio sigue sin traducir (a diferencia del blog) — es la única
-  // ruta que queda esOnly acá.
+  // Los documentos legales siguen solo en español (ver CLAUDE.md): sus enlaces
+  // llevan el badge ES fuera de /. El resto de rutas ya tiene versión por idioma.
   const esOnly = locale !== "es";
   const exploreLinks = [
     { label: footerData.homeLabel, href: homePath, esOnly: false },
     { label: footerData.servicesHeading, href: `${prefix}/servicios`, esOnly: false },
-    { label: "Portfolio", href: "/portafolio", esOnly },
+    { label: navData.portafolio, href: portfolioIndexPath(locale), esOnly: false },
     { label: navData.equipo, href: `${prefix}/equipo`, esOnly: false },
     { label: "Blog", href: blogIndexPath(locale), esOnly: false },
     { label: navData.faq, href: faqPath(locale), esOnly: false },

@@ -17,10 +17,10 @@ type PageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  return buildPortfolioCaseMetadata("es", slug);
+  return buildPortfolioCaseMetadata("en", slug);
 }
 
-export default async function ProjectPage({ params }: PageProps) {
+export default async function ProjectPageEn({ params }: PageProps) {
   const { slug } = await params;
-  return <PortfolioCasePage locale="es" slug={slug} />;
+  return <PortfolioCasePage locale="en" slug={slug} />;
 }

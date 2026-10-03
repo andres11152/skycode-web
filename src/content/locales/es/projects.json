@@ -38,6 +38,23 @@
     "nextCase": "Siguiente caso",
     "viewAllCases": "Ver todos los casos",
     "ctaTitle": "¿Tiene un proyecto similar en mente?",
-    "ctaButton": "Hablar con un ingeniero"
+    "ctaButton": "Hablar con un ingeniero",
+    "captureAlt": "{title} — captura {index}",
+    "lightbox": {
+      "dialog": "Galería de imágenes",
+      "close": "Cerrar",
+      "prev": "Imagen anterior",
+      "next": "Imagen siguiente",
+      "zoomIn": "Acercar",
+      "zoomOut": "Alejar"
+    }
+  },
+  "breadcrumb": {
+    "home": "Inicio",
+    "aria": "Ruta de navegación",
+    "portfolio": "Portafolio"
+  },
+  "meta": {
+    "indexTitle": "Casos de éxito de software a medida"
   }
 }

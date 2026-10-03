@@ -38,6 +38,23 @@
     "nextCase": "Cas suivant",
     "viewAllCases": "Voir tous les cas",
     "ctaTitle": "Un projet similaire en tête ?",
-    "ctaButton": "Parler à un ingénieur"
+    "ctaButton": "Parler à un ingénieur",
+    "captureAlt": "{title} — capture {index}",
+    "lightbox": {
+      "dialog": "Galerie d'images",
+      "close": "Fermer",
+      "prev": "Image précédente",
+      "next": "Image suivante",
+      "zoomIn": "Zoomer",
+      "zoomOut": "Dézoomer"
+    }
+  },
+  "breadcrumb": {
+    "home": "Accueil",
+    "aria": "Fil d'Ariane",
+    "portfolio": "Portfolio"
+  },
+  "meta": {
+    "indexTitle": "Études de cas de logiciels sur mesure"
   }
 }

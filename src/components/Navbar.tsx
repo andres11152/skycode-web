@@ -14,6 +14,7 @@ import { getNavContent } from "@/content/nav";
 import { localeHomePath } from "@/lib/i18n";
 import { blogIndexPath } from "@/lib/blogPaths";
 import { faqPath } from "@/lib/faqPaths";
+import { portfolioIndexPath } from "@/lib/portfolioPaths";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { DURATION, EASE_OUT, SPRING_SNAPPY } from "@/lib/animations";
@@ -38,7 +39,7 @@ export function Navbar() {
   // Proyecto" se partían en dos líneas (bug real, visto en auditoría visual).
   const navLinks = [
     { label: navData.servicios, href: `${prefix}/servicios`, esOnly: false },
-    { label: navData.portafolio, href: `${prefix}/#portfolio`, esOnly: false },
+    { label: navData.portafolio, href: portfolioIndexPath(locale), esOnly: false },
     { label: navData.equipo, href: `${prefix}/equipo`, esOnly: false },
     // El blog ya tiene versión en los tres idiomas (ver CLAUDE.md) — deja
     // de ser esOnly, su ruta usa el mismo helper que servicios/equipo.

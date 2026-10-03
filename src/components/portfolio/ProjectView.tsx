@@ -16,7 +16,9 @@ import { TechIcon } from "@/components/portfolio/TechIcon";
 import { fadeUp } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 import { getPortfolioIcon, getProjectHostname, type PortfolioProject } from "@/content/portfolioShared";
-import type { PortfolioDetailCopy } from "@/content/projects";
+import type { PortfolioSectionCopy } from "@/content/projects";
+import { portfolioIndexPath } from "@/lib/portfolioPaths";
+import { localeHomePath, t, type Locale } from "@/lib/i18n";
 
 const WRAP = "mx-auto w-full max-w-6xl px-6";
 const FOCUS =
@@ -24,14 +26,20 @@ const FOCUS =
 const VIEWPORT = { once: true, margin: "-80px" } as const;
 
 export function ProjectView({
+  locale,
   project,
   nextProject,
-  copy,
+  sectionCopy,
 }: {
+  locale: Locale;
   project: PortfolioProject;
   nextProject: NextCaseData | null;
-  copy: PortfolioDetailCopy;
+  sectionCopy: PortfolioSectionCopy;
 }) {
+  const copy = sectionCopy.detail;
+  const homeHref = localeHomePath(locale);
+  const contactHref = `${homeHref === "/" ? "" : homeHref}/#contacto`;
+  const indexHref = portfolioIndexPath(locale);
   const reduced = Boolean(useReducedMotion());
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -53,7 +61,7 @@ export function ProjectView({
           <div key={image.id} className="relative h-full w-full">
             <Image
               src={image.variants.lg}
-              alt={image.alt || `${project.title} — captura ${index + 1}`}
+              alt={image.alt || t(copy.captureAlt, { title: project.title, index: String(index + 1) })}
               fill
               sizes="90vw"
               className="object-contain"
@@ -82,17 +90,17 @@ export function ProjectView({
 
       {/* Cabecera: sin animación de entrada — el h1 y el resumen pueden ser el LCP. */}
       <header className={WRAP}>
-        <nav aria-label="Ruta de navegación">
+        <nav aria-label={sectionCopy.breadcrumb.aria}>
           <ol className="flex items-center gap-2 text-sm text-foreground/60">
             <li>
-              <Link href="/" className={cn("rounded hover:text-foreground", FOCUS)}>
-                Inicio
+              <Link href={homeHref} className={cn("rounded hover:text-foreground", FOCUS)}>
+                {sectionCopy.breadcrumb.home}
               </Link>
             </li>
             <li aria-hidden="true">/</li>
             <li>
-              <Link href="/portafolio" className={cn("rounded hover:text-foreground", FOCUS)}>
-                Portafolio
+              <Link href={indexHref} className={cn("rounded hover:text-foreground", FOCUS)}>
+                {sectionCopy.breadcrumb.portfolio}
               </Link>
             </li>
           </ol>
@@ -277,7 +285,7 @@ export function ProjectView({
       </section>
 
       <div className="mt-16 sm:mt-24">
-        {nextProject && <NextCase next={nextProject} label={copy.nextCase} />}
+        {nextProject && <NextCase next={nextProject} label={copy.nextCase} locale={locale} />}
       </div>
 
       <section aria-label={copy.ctaTitle} className={cn(WRAP, "pb-24 sm:pb-32", !nextProject && "mt-8")}>
@@ -286,10 +294,10 @@ export function ProjectView({
             {copy.ctaTitle}
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <Button href="/portafolio" variant="secondary" size="lg">
+            <Button href={indexHref} variant="secondary" size="lg">
               {copy.viewAllCases}
             </Button>
-            <Button href="/#contacto" variant="accent" size="lg">
+            <Button href={contactHref} variant="accent" size="lg">
               {copy.ctaButton}
             </Button>
           </div>
@@ -302,6 +310,7 @@ export function ProjectView({
         slides={slides}
         index={lightboxIndex}
         onIndexChange={setLightboxIndex}
+        labels={copy.lightbox}
       />
     </main>
   );

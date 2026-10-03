@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getBlogPosts } from "@/content/blog";
 import { legalDocuments } from "@/content/legal";
-import { getPublishedPortfolioSlugs } from "@/lib/queries/portfolio";
+import { getPublishedPortfolioLocaleMap } from "@/lib/queries/portfolio";
+import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
+import { portfolioCaseAlternates, portfolioIndexAlternates } from "@/lib/portfolioMetadata";
 import { services } from "@/content/services";
 import { servicePath, servicesIndexPath } from "@/lib/serviceMetadata";
 import { teamPath } from "@/lib/teamMetadata";
@@ -45,11 +47,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
       alternates: { languages: homeLanguages },
     },
-    {
-      url: `${siteUrl}/portafolio`,
-      changeFrequency: "monthly",
+    ...(["es", "en", "fr"] as const).map((locale) => ({
+      url: `${siteUrl}${portfolioIndexPath(locale)}`,
+      changeFrequency: "monthly" as const,
       priority: 0.8,
-    },
+      alternates: { languages: portfolioIndexAlternates() },
+    })),
   ];
 
   // El blog ya tiene versión en los tres idiomas (ver "Internacionalización"
@@ -106,12 +109,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // queries, pero no deberían competir con ellas como sitelinks. Ver la
   // nota en SiteNavigationJsonLd de app/layout.tsx — el sitemap es una
   // señal débil para esto, el enlazado interno pesa mucho más.
-  const portfolioSlugs = await getPublishedPortfolioSlugs();
-  const projectRoutes: MetadataRoute.Sitemap = portfolioSlugs.map((slug) => ({
-    url: `${siteUrl}/portafolio/${slug}`,
-    changeFrequency: "monthly",
-    priority: 0.4,
-  }));
+  // Un caso solo aparece en /en o /fr si tiene traducción REAL a ese idioma
+  // (sin ella se serviría español bajo otra URL): el hreflang también se arma
+  // solo con los idiomas disponibles.
+  const portfolioLocaleMap = await getPublishedPortfolioLocaleMap();
+  const projectRoutes: MetadataRoute.Sitemap = portfolioLocaleMap.flatMap(({ slug, locales: available }) =>
+    (["es", "en", "fr"] as const)
+      .filter((locale) => locale === "es" || available.includes(locale))
+      .map((locale) => ({
+        url: `${siteUrl}${portfolioCasePath(locale, slug)}`,
+        changeFrequency: "monthly" as const,
+        priority: 0.4,
+        alternates: { languages: portfolioCaseAlternates(slug, available) },
+      }))
+  );
 
   const serviceRoutes: MetadataRoute.Sitemap = services.flatMap((service) => {
     const languages = {

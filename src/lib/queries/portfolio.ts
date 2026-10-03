@@ -41,19 +41,19 @@ async function getTranslationRow(projectId: number, locale: Locale) {
     `SELECT ${columns} FROM portfolio_project_translations WHERE project_id = $1 AND locale = $2;`,
     [projectId, locale]
   );
-  if (res.rows[0]) return res.rows[0];
-  if (locale === "es") return null;
+  if (res.rows[0]) return { row: res.rows[0], translated: true };
+  if (locale === "es") return { row: null, translated: true };
   const fallback = await query(
     `SELECT ${columns} FROM portfolio_project_translations WHERE project_id = $1 AND locale = 'es';`,
     [projectId]
   );
-  return fallback.rows[0] ?? null;
+  return { row: fallback.rows[0] ?? null, translated: false };
 }
 
 async function assembleProject(projectRow: Record<string, unknown>, locale: Locale): Promise<PortfolioProject | null> {
   const projectId = Number(projectRow.id);
 
-  const [translation, imagesRes, techRes, metricsRes] = await Promise.all([
+  const [translationResult, imagesRes, techRes, metricsRes] = await Promise.all([
     getTranslationRow(projectId, locale),
     query(`SELECT * FROM portfolio_project_images WHERE project_id = $1 ORDER BY sort_order ASC, id ASC;`, [projectId]),
     query(
@@ -70,6 +70,7 @@ async function assembleProject(projectRow: Record<string, unknown>, locale: Loca
   // mostrar — no debería pasar en la práctica (publicar exige español,
   // ver `setPortfolioProjectStatus`), pero un `null` acá es más honesto
   // que inventar textos vacíos silenciosos.
+  const translation = translationResult.row;
   if (!translation) return null;
 
   const images = imagesRes.rows.map((row) => shapeImage(row, locale));
@@ -95,6 +96,7 @@ async function assembleProject(projectRow: Record<string, unknown>, locale: Loca
     coverImage,
     metrics: metricsRes.rows.map((row) => shapeMetric(row, locale)),
     publishedAt: projectRow.published_at ? String(projectRow.published_at) : null,
+    translated: translationResult.translated,
   };
 }
 
@@ -131,6 +133,32 @@ export async function getPublishedPortfolioProjectBySlug(slug: string, locale: L
   } catch (error) {
     logError("Error al leer el caso de portafolio", error);
     return null;
+  }
+}
+
+/**
+ * Idiomas con traducción REAL de cada caso publicado (español siempre: es el
+ * requisito para publicar). Alimenta el sitemap y el hreflang — un caso sin
+ * traducción al inglés no debe aparecer como página en inglés. Mismo
+ * criterio try/catch que el resto: sin DB, `[]`.
+ */
+export async function getPublishedPortfolioLocaleMap(): Promise<{ slug: string; locales: Locale[] }[]> {
+  try {
+    const res = await query(
+      `SELECT p.slug, array_agg(DISTINCT t.locale) AS locales
+       FROM portfolio_projects p
+       JOIN portfolio_project_translations t ON t.project_id = p.id
+       WHERE p.status = 'published' AND p.deleted_at IS NULL
+       GROUP BY p.slug, p.sort_order, p.id
+       ORDER BY p.sort_order ASC, p.id ASC;`
+    );
+    return res.rows.map((row) => ({
+      slug: String(row.slug),
+      locales: (row.locales as string[]).filter((l): l is Locale => l === "es" || l === "en" || l === "fr"),
+    }));
+  } catch (error) {
+    logError("Error al leer los idiomas del portafolio", error);
+    return [];
   }
 }
 

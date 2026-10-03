@@ -12,6 +12,7 @@ import { getPortfolioSectionContent, type PortfolioSectionCopy } from "@/content
 import { getUiContent } from "@/content/ui";
 import { defaultLocale, t, type Locale } from "@/lib/i18n";
 import { getProjectHostname, type PortfolioProject } from "@/content/portfolioShared";
+import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
 
 // Enlace estirado: el <a> es solo el título (nombre accesible = texto visible, WCAG 2.5.3)
 // y su ::after cubre la tarjeta entera; el anillo de foco se dibuja en ese ::after.
@@ -43,12 +44,12 @@ function FeaturedCase({
   project,
   uiData,
   sectionCopy,
-  showEsBadge,
+  locale,
 }: {
   project: PortfolioProject;
   uiData: ReturnType<typeof getUiContent>;
   sectionCopy: PortfolioSectionCopy;
-  showEsBadge: boolean;
+  locale: Locale;
 }) {
   return (
     <div className="group relative grid gap-8 rounded-xl lg:grid-cols-12 lg:items-center lg:gap-14">
@@ -75,10 +76,10 @@ function FeaturedCase({
 
         <p className="mt-5 text-xs font-medium uppercase tracking-wide text-foreground/70">{project.clientLabel}</p>
         <h3 className="mt-2 text-2xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-3xl">
-          <Link href={`/portafolio/${project.slug}`} className={STRETCH}>
+          <Link href={portfolioCasePath(locale, project.slug)} className={STRETCH}>
             {project.title}
           </Link>
-          {showEsBadge && <EsBadge />}
+          {!project.translated && <EsBadge />}
         </h3>
         <p className="mt-4 text-base leading-relaxed text-foreground/80">{project.summary}</p>
 
@@ -108,12 +109,12 @@ function SecondaryCase({
   project,
   number,
   sectionCopy,
-  showEsBadge,
+  locale,
 }: {
   project: PortfolioProject;
   number: number;
   sectionCopy: PortfolioSectionCopy;
-  showEsBadge: boolean;
+  locale: Locale;
 }) {
   return (
     <div className="group relative flex h-full flex-col rounded-xl">
@@ -136,10 +137,10 @@ function SecondaryCase({
           </span>
         </div>
         <h3 className="mt-3 text-xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-2xl">
-          <Link href={`/portafolio/${project.slug}`} className={STRETCH}>
+          <Link href={portfolioCasePath(locale, project.slug)} className={STRETCH}>
             {project.title}
           </Link>
-          {showEsBadge && <EsBadge />}
+          {!project.translated && <EsBadge />}
         </h3>
         <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-foreground/80">{project.summary}</p>
         <span aria-hidden="true" className="mt-auto inline-flex items-center gap-3 pt-5 text-sm font-semibold text-foreground">
@@ -168,7 +169,6 @@ export function Portfolio({
   // (`is_featured`), no simplemente el primero de la lista por `sort_order`.
   const featured = projects.find((project) => project.isFeatured) ?? projects[0];
   const secondary = projects.filter((project) => project.slug !== featured.slug).slice(0, SECONDARY_COUNT);
-  const showEsBadge = locale !== "es";
 
   return (
     <section
@@ -184,7 +184,7 @@ export function Portfolio({
             <p className="mt-3 text-base text-foreground/80 sm:text-lg">{sectionCopy.description}</p>
           </div>
 
-          <Button href="/portafolio" variant="secondary" size="sm" className="shrink-0">
+          <Button href={portfolioIndexPath(locale)} variant="secondary" size="sm" className="shrink-0">
             {sectionCopy.viewAll}
           </Button>
         </div>
@@ -197,7 +197,7 @@ export function Portfolio({
           className="flex flex-col gap-14 lg:gap-20"
         >
           <motion.div variants={fadeUp(reduced)}>
-            <FeaturedCase project={featured} uiData={uiData} sectionCopy={sectionCopy} showEsBadge={showEsBadge} />
+            <FeaturedCase project={featured} uiData={uiData} sectionCopy={sectionCopy} locale={locale} />
           </motion.div>
 
           {secondary.length > 0 && (
@@ -208,12 +208,19 @@ export function Portfolio({
                     project={project}
                     number={index + 2}
                     sectionCopy={sectionCopy}
-                    showEsBadge={showEsBadge}
+                    locale={locale}
                   />
                 </motion.div>
               ))}
             </div>
           )}
+
+          {/* Botón para explorar el catálogo completo de proyectos */}
+          <div className="flex justify-center pt-4">
+            <Button href={portfolioIndexPath(locale)} variant="secondary" size="lg">
+              {sectionCopy.viewAll}
+            </Button>
+          </div>
         </motion.div>
       </div>
     </section>
