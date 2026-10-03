@@ -1,0 +1,29 @@
+{
+  "sectionAria": "Notre équipe",
+  "title": "L'équipe d'ingénierie derrière le code",
+  "description": "Vous collaborez directement avec les ingénieurs et designers en charge de votre solution, sans intermédiaire commercial.",
+  "ctaLabel": "Échanger avec l'équipe",
+  "members": [
+    {
+      "slug": "andres-betancourt",
+      "name": "Andrés Betancourt",
+      "role": "Backend & Architecture",
+      "description": "Architecture logicielle, APIs et bases de données. Focalisé sur la robustesse, la sécurité et la capacité à encaisser de fortes charges opérationnelles.",
+      "photo": "/team/andres-betancourt.webp"
+    },
+    {
+      "slug": "cesar-leon",
+      "name": "César León",
+      "role": "Frontend & Performance",
+      "description": "Développement frontend sous Next.js et React. Veille à la vitesse de chargement, la réactivité sur mobile et les standards d'accessibilité sans surcharge visuelle.",
+      "photo": "/team/cesar-leon.webp"
+    },
+    {
+      "slug": "ximena-calderon",
+      "name": "Ximena Calderón",
+      "role": "Design Produit & UI/UX",
+      "description": "Design de produit et ergonomie. Conçoit des parcours fluides et des interfaces intuitives pour réduire la courbe d'apprentissage de vos utilisateurs.",
+      "photo": "/team/ximena-calderon.webp"
+    }
+  ]
+}

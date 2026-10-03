@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+  clearTeamProfileAvatar,
+  countArticlesByAuthorSlug,
+  getAdminTeamProfile,
   createTeamProfile,
   getAdminTeamProfiles,
   getPublishedTeamProfiles,
@@ -174,5 +177,39 @@ describe("updateTeamProfile", () => {
 
     const updated = await withTransaction((c) => updateTeamProfile(id, { sortOrder: 9 }, admin.id, c));
     expect(updated).toBe(false);
+  });
+});
+
+describe("getAdminTeamProfile / clearTeamProfileAvatar / countArticlesByAuthorSlug", () => {
+  it("lee un perfil con sus traducciones y null si está borrado", async () => {
+    const admin = await createTestUser();
+    const id = await createPublishableProfile("andres-betancourt", admin.id);
+
+    const profile = await getAdminTeamProfile(id);
+    expect(profile?.translations.es?.name).toBe("Andrés Betancourt");
+    expect(profile?.translations.en).toBeNull();
+
+    await withTransaction((c) => softDeleteTeamProfile(id, c));
+    expect(await getAdminTeamProfile(id)).toBeNull();
+  });
+
+  it("quitar la foto devuelve la clave anterior y deja el perfil sin foto", async () => {
+    const admin = await createTestUser();
+    const id = await createPublishableProfile("andres-betancourt", admin.id);
+    const variants = { sm: "https://cdn.test/a-sm.webp", md: "https://cdn.test/a-md.webp", lg: "https://cdn.test/a-lg.webp" };
+    await withTransaction((c) => setTeamProfileAvatar(id, { storageKey: "k1", variants }, c));
+
+    expect(await withTransaction((c) => clearTeamProfileAvatar(id, c))).toBe("k1");
+    expect((await getAdminTeamProfile(id))?.avatar).toBeNull();
+  });
+
+  it("cuenta los artículos que citan el slug como autor", async () => {
+    await query(
+      `INSERT INTO articles (slug, locale, title, description, author, author_slug, tags, content, status)
+       VALUES ('post-a','es','A','d','Andrés','andres-betancourt','{}','[]','published'),
+              ('post-b','es','B','d','Otra','otra-persona','{}','[]','published');`
+    );
+    expect(await countArticlesByAuthorSlug("andres-betancourt")).toBe(1);
+    expect(await countArticlesByAuthorSlug("nadie")).toBe(0);
   });
 });

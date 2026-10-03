@@ -32,6 +32,7 @@ import {
   PieChart,
   ClipboardCheck,
   Briefcase,
+  IdCard,
 } from "lucide-react";
 import { hasPermission, type Permission } from "@/lib/rbac";
 import { NotificationBell } from "./NotificationBell";
@@ -69,6 +70,11 @@ const NAV_GROUPS: NavGroup[] = [
       // Mismo criterio que Contenido/SEO — publicar el portafolio público
       // es una decisión estratégica de marca, no un módulo operativo.
       { href: "/dashboard/portafolio", label: "Portafolio", icon: Briefcase, permission: "portfolio:read" },
+      // Fichas de la página pública /equipo (marca, no administración de
+      // cuentas — eso es "Equipo" en Administración). Ruta propia y no
+      // /dashboard/equipo/..., porque el resaltado del nav usa startsWith
+      // y encendería los dos ítems a la vez.
+      { href: "/dashboard/perfiles-publicos", label: "Perfiles públicos", icon: IdCard, permission: "team:read" },
     ],
   },
   {

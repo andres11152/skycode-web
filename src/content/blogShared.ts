@@ -30,7 +30,7 @@ export interface BlogPost {
   /** Fecha de última revisión editorial — separada de `publishedAt`, ver la nota en `approveAndPublish` de lib/queries/articles.ts. */
   updatedAt: string;
   author: string;
-  /** Slug del miembro del equipo en `content/team.ts` — enlaza el JSON-LD `author` a `/equipo#slug`. */
+  /** Slug del perfil público en `team_profiles` (ver lib/queries/teamProfiles.ts) — enlaza el JSON-LD `author` a `/equipo#slug`. */
   authorSlug: string;
   tags: string[];
   content: BlogBlock[];

@@ -81,3 +81,43 @@ export const ChangePasswordSchema = z
     message: "La contraseña nueva debe ser distinta de la actual.",
     path: ["newPassword"],
   });
+
+// ---------------------------------------------------------------------------
+// Perfiles públicos de /equipo (team_profiles)
+// ---------------------------------------------------------------------------
+
+/** El slug es el ancla pública `/equipo#slug` a la que enlaza el blog (ver lib/blogPaths.ts::authorUrl). */
+export const TEAM_PROFILE_SLUG = z
+  .string()
+  .trim()
+  .min(2)
+  .max(120)
+  .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "El identificador solo puede tener minúsculas, números y guiones (ej. ana-gomez).");
+
+/** Solo https: un enlace público de la web de la agencia nunca debería mandar a una página sin cifrar. */
+const httpsUrl = z
+  .url("URL inválida.")
+  .trim()
+  .max(300)
+  .refine((value) => value.startsWith("https://"), "La URL debe empezar con https://.");
+
+export const UpdateTeamProfileSchema = z
+  .object({
+    slug: TEAM_PROFILE_SLUG.optional(),
+    userId: z.number().int().positive().nullable().optional(),
+    linkedinUrl: httpsUrl.nullable().optional(),
+    githubUrl: httpsUrl.nullable().optional(),
+    sortOrder: z.number().int().min(0).max(10_000).optional(),
+  })
+  .strict()
+  .refine((data) => Object.keys(data).length > 0, "Sin campos para actualizar.");
+
+export const TEAM_PROFILE_LIMITS = { name: 120, publicRole: 80, publicBio: 400 } as const;
+
+export const TeamProfileTranslationSchema = z
+  .object({
+    name: z.string().trim().min(2, "El nombre es obligatorio.").max(TEAM_PROFILE_LIMITS.name),
+    publicRole: z.string().trim().max(TEAM_PROFILE_LIMITS.publicRole),
+    publicBio: z.string().trim().max(TEAM_PROFILE_LIMITS.publicBio),
+  })
+  .strict();

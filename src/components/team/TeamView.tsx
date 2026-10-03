@@ -3,10 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { m as motion, useReducedMotion } from "framer-motion";
+import { GithubLogo, LinkedinLogo } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/Button";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { fadeUp, staggerContainer } from "@/lib/animations";
-import { getTeamContent } from "@/content/team";
+import { getTeamSectionContent } from "@/content/team";
+import type { PublicTeamMember } from "@/content/teamShared";
 import { getServicePageContent } from "@/content/servicePage";
 import { getNavContent } from "@/content/nav";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
@@ -21,9 +23,14 @@ function initials(name: string): string {
     .toUpperCase();
 }
 
-export function TeamView({ locale = defaultLocale }: { locale?: Locale }) {
+/**
+ * Las personas llegan por prop desde la page (Server Component), que las
+ * lee de Postgres — este componente es cliente (animaciones) y no puede
+ * consultar la base él mismo. Mismo patrón que `Portfolio`/`BlogTeaser`.
+ */
+export function TeamView({ locale = defaultLocale, members }: { locale?: Locale; members: PublicTeamMember[] }) {
   const reduced = Boolean(useReducedMotion());
-  const teamData = getTeamContent(locale);
+  const teamData = getTeamSectionContent(locale);
   const servicePageData = getServicePageContent(locale);
   const navData = getNavContent(locale);
   const homePath = localeHomePath(locale);
@@ -66,7 +73,7 @@ export function TeamView({ locale = defaultLocale }: { locale?: Locale }) {
           viewport={{ once: true, margin: "-80px" }}
           className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {teamData.members.map((member, index) => (
+          {members.map((member, index) => (
             <motion.div
               key={member.slug}
               id={member.slug}
@@ -119,13 +126,13 @@ export function TeamView({ locale = defaultLocale }: { locale?: Locale }) {
                     )}
 
                     {/* Badge de rol — esquina superior derecha */}
-                    <span className="absolute right-3 top-3 rounded-full border border-foreground/10 bg-background/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-foreground/60 backdrop-blur-sm transition-all duration-300 group-hover:border-accent/30 group-hover:text-accent/90">
+                    <span className="absolute right-3 top-3 rounded-full border border-foreground/10 bg-background/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-foreground/70 backdrop-blur-sm transition-all duration-300 group-hover:border-accent/30 group-hover:text-accent/90">
                       {member.role}
                     </span>
                   </div>
 
                   {/* Info del miembro — debajo de la foto */}
-                  <div className="flex flex-col gap-2 px-5 pb-6 pt-4">
+                  <div className="flex flex-1 flex-col gap-2 px-5 pb-6 pt-4">
                     {/* Nombre */}
                     <h2 className="font-heading text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-accent">
                       {member.name}
@@ -138,9 +145,37 @@ export function TeamView({ locale = defaultLocale }: { locale?: Locale }) {
                     />
 
                     {/* Descripción */}
-                    <p className="text-sm leading-relaxed text-foreground/65">
+                    {/* `/80`: texto de lectura, regla AAA de CLAUDE.md. */}
+                    <p className="text-sm leading-relaxed text-foreground/80">
                       {member.description}
                     </p>
+
+                    {(member.linkedinUrl || member.githubUrl) && (
+                      <div className="mt-auto flex gap-1 pt-2">
+                        {member.linkedinUrl && (
+                          <a
+                            href={member.linkedinUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`LinkedIn de ${member.name}`}
+                            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-foreground/5 hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          >
+                            <LinkedinLogo size={18} />
+                          </a>
+                        )}
+                        {member.githubUrl && (
+                          <a
+                            href={member.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`GitHub de ${member.name}`}
+                            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-foreground/5 hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          >
+                            <GithubLogo size={18} />
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </SpotlightCard>

@@ -11,7 +11,7 @@ export interface PublicTeamMember {
   /** Cargo de marketing, traducible (ej. "Backend & Arquitectura") — no el `job_title` interno de la cuenta. */
   role: string;
   description: string;
-  /** URL absoluta de la variante grande del avatar, o null si no tiene foto (TeamView cae a las iniciales). */
+  /** URL absoluta de la variante grande (1600px, proporción original — pipeline del portafolio) o null si no tiene foto: TeamView cae a las iniciales. */
   photo: string | null;
   linkedinUrl: string | null;
   githubUrl: string | null;

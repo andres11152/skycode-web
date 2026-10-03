@@ -101,18 +101,26 @@ export interface AdminTeamProfile {
   translations: Record<Locale, AdminTeamProfileTranslation | null>;
 }
 
-export async function getAdminTeamProfiles(): Promise<AdminTeamProfile[]> {
-  const res = await query(
-    `SELECT p.id, p.slug, p.user_id, p.avatar_variants, p.linkedin_url, p.github_url,
+const ADMIN_PROFILE_SELECT = `SELECT p.id, p.slug, p.user_id, p.avatar_variants, p.linkedin_url, p.github_url,
             p.is_published, p.sort_order, u.name AS linked_user_name
      FROM team_profiles p
-     LEFT JOIN users u ON u.id = p.user_id
-     WHERE p.deleted_at IS NULL
-     ORDER BY p.sort_order ASC, p.id ASC;`
-  );
+     LEFT JOIN users u ON u.id = p.user_id`;
 
+export async function getAdminTeamProfiles(): Promise<AdminTeamProfile[]> {
+  const res = await query(`${ADMIN_PROFILE_SELECT} WHERE p.deleted_at IS NULL ORDER BY p.sort_order ASC, p.id ASC;`);
+  return shapeAdminProfiles(res.rows);
+}
+
+/** Un perfil para su editor en `/dashboard/equipo/perfiles/[id]`. */
+export async function getAdminTeamProfile(id: number): Promise<AdminTeamProfile | null> {
+  const res = await query(`${ADMIN_PROFILE_SELECT} WHERE p.id = $1 AND p.deleted_at IS NULL;`, [id]);
+  const [profile] = await shapeAdminProfiles(res.rows);
+  return profile ?? null;
+}
+
+async function shapeAdminProfiles(rows: Record<string, unknown>[]): Promise<AdminTeamProfile[]> {
   return Promise.all(
-    res.rows.map(async (row) => {
+    rows.map(async (row) => {
       const translationsRes = await query(
         `SELECT locale, name, public_role, public_bio FROM team_profile_translations WHERE profile_id = $1;`,
         [row.id]
@@ -278,4 +286,28 @@ export async function setTeamProfileAvatar(
   );
   const previousKey = previous.rows[0].avatar_storage_key;
   return previousKey ? String(previousKey) : null;
+}
+
+/** Quita la foto y devuelve la clave que había, para borrar sus archivos tras el commit. */
+export async function clearTeamProfileAvatar(id: number, dbRunner: QueryRunner): Promise<string | null> {
+  const previous = await dbRunner.query("SELECT avatar_storage_key FROM team_profiles WHERE id = $1;", [id]);
+  if (previous.rows.length === 0) return null;
+
+  await dbRunner.query(
+    `UPDATE team_profiles SET avatar_storage_key = NULL, avatar_variants = NULL, updated_at = now() WHERE id = $1;`,
+    [id]
+  );
+  const previousKey = previous.rows[0].avatar_storage_key;
+  return previousKey ? String(previousKey) : null;
+}
+
+/**
+ * Cuántos artículos del blog citan este slug como autor
+ * (`articles.author_slug`) — cada uno enlaza a `/equipo#slug` y lo usa en
+ * su JSON-LD `Person`. El editor lo muestra antes de dejar cambiar el slug,
+ * porque cambiarlo rompe esos enlaces en silencio.
+ */
+export async function countArticlesByAuthorSlug(slug: string): Promise<number> {
+  const res = await query("SELECT COUNT(*)::int AS n FROM articles WHERE author_slug = $1;", [slug]);
+  return Number(res.rows[0]?.n ?? 0);
 }

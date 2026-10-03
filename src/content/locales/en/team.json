@@ -2,28 +2,5 @@
   "sectionAria": "Our team",
   "title": "The engineers behind the code",
   "description": "You work directly with the engineers and designers building your platform — no sales layers or intermediaries.",
-  "ctaLabel": "Talk to the team",
-  "members": [
-    {
-      "slug": "andres-betancourt",
-      "name": "Andrés Betancourt",
-      "role": "Backend & Architecture",
-      "description": "System architecture, APIs, and data modeling. Focused on building maintainable, secure backends that handle high-throughput operations smoothly.",
-      "photo": "/team/andres-betancourt.webp"
-    },
-    {
-      "slug": "cesar-leon",
-      "name": "César León",
-      "role": "Frontend & Performance",
-      "description": "Frontend development with Next.js and React. Dedicated to load speeds, mobile responsiveness, and clean accessibility without UI bloat.",
-      "photo": "/team/cesar-leon.webp"
-    },
-    {
-      "slug": "ximena-calderon",
-      "name": "Ximena Calderón",
-      "role": "Product & UI/UX Design",
-      "description": "Digital product design and usability. Crafts intuitive design systems and user flows that eliminate onboarding friction for clients and teams.",
-      "photo": "/team/ximena-calderon.webp"
-    }
-  ]
+  "ctaLabel": "Talk to the team"
 }
