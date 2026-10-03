@@ -122,7 +122,7 @@ export function ServiceView({
               </h1>
               <p className="max-w-2xl text-lg leading-relaxed text-foreground/80">{service.description}</p>
               <div className="flex flex-wrap gap-3 pt-2">
-                <Button href={contactHref} variant="accent" size="md">
+                <Button href={contactHref} variant="accent" size="md" data-contact-service={service.slug}>
                   {pageCopy.ctaButton}
                 </Button>
                 <Button href={hasProcess ? "#proceso" : "#incluye"} variant="secondary" size="md" showFlowArrows={false}>
@@ -147,7 +147,7 @@ export function ServiceView({
               <PageToc items={tocItems} label={copy.tocLabel} layoutId="service-toc-active" />
               <div className="flex flex-col gap-4 rounded-xl border border-foreground/10 p-5">
                 <p className="text-sm font-medium text-foreground">{pageCopy.ctaQuestion}</p>
-                <Button href={contactHref} variant="primary" size="sm" showFlowArrows={false}>
+                <Button href={contactHref} variant="primary" size="sm" showFlowArrows={false} data-contact-service={service.slug}>
                   {pageCopy.ctaButton}
                 </Button>
               </div>
@@ -336,7 +336,7 @@ export function ServiceView({
             {/* CTA visible en móvil, donde no existe el aside. */}
             <div className="flex flex-col items-start gap-4 rounded-xl border border-foreground/10 p-6 lg:hidden">
               <p className="text-base font-medium text-foreground">{pageCopy.ctaQuestion}</p>
-              <Button href={contactHref} variant="primary" size="md" showFlowArrows={false}>
+              <Button href={contactHref} variant="primary" size="md" showFlowArrows={false} data-contact-service={service.slug}>
                 {pageCopy.ctaButton}
               </Button>
             </div>

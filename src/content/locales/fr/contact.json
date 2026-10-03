@@ -16,7 +16,8 @@
     "serviceEmptyOption": "Je ne sais pas encore / je préfère l'expliquer dans le message",
     "serviceOtherOption": "Autre (je précise)",
     "serviceOtherPlaceholder": "Ex. Conseil technique, audit de code...",
-    "serviceOtherLabel": "Dites-nous quel service vous recherchez"
+    "serviceOtherLabel": "Dites-nous quel service vous recherchez",
+    "addPhone": "Ajouter un téléphone / WhatsApp (facultatif)"
   },
   "submitLabel": "Envoyer la demande de contact",
   "habeasData": {

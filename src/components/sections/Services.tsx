@@ -403,6 +403,18 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
             </button>
           ))}
         </div>
+
+        {/* Botón directo a la página de Servicios */}
+        <div className="mt-12 flex justify-center">
+          <Button
+            href={`${servicesPrefix}/servicios`}
+            variant="secondary"
+            size="lg"
+            className="border-background/20 text-background hover:border-background/40 hover:bg-background/10 focus-visible:ring-offset-foreground"
+          >
+            {servicesSection.viewAll}
+          </Button>
+        </div>
       </div>
     </section>
   );

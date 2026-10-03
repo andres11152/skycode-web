@@ -1,6 +1,58 @@
 {
   "sectionAria": "Nuestro equipo",
-  "title": "Las personas detrás de cada línea de código",
-  "description": "Trabajas directamente con los ingenieros y diseñadores a cargo de tu solución, sin intermediarios comerciales.",
-  "ctaLabel": "Hablar directamente con el equipo"
+  "title": "El núcleo técnico de SkyCode",
+  "heroEyebrow": "NUESTRO EQUIPO",
+  "heroTitleLines": [
+    "Ingenieros sénior,",
+    "arquitectura propia,",
+    "resultados medibles."
+  ],
+  "description": "Los ingenieros y diseñadores sénior que lideran tu proyecto. Trabajas directamente con quienes diseñan la arquitectura y escriben el código, respaldados por una red de especialistas en infraestructura, QA, IA y ciberseguridad según lo exija cada entrega.",
+  "networkTitle": "Red de especialistas",
+  "networkDescription": "Para cada proyecto incorporamos a expertos según la demanda: arquitectos cloud, ingenieros de datos, especialistas en seguridad OWASP y analistas de QA. Así escalamos sin que tú tengas que coordinar múltiples proveedores.",
+  "networkItems": [
+    {
+      "iconName": "Cloud",
+      "label": "Infraestructura Cloud & DevOps",
+      "description": "CI/CD automatizado, Terraform, AWS, GCP y despliegues sin caída."
+    },
+    {
+      "iconName": "TestTube",
+      "label": "QA & Testing Automático",
+      "description": "Pruebas E2E, suites de regresión y validación de carga para alta concurrencia."
+    },
+    {
+      "iconName": "ShieldCheck",
+      "label": "Seguridad OWASP & Pentesting",
+      "description": "Auditorías de vulnerabilidades, hardening de servidores y cifrado de datos."
+    },
+    {
+      "iconName": "Brain",
+      "label": "IA & Agentes Autónomos",
+      "description": "Workflows LLM, RAG sobre datos de empresa y pipelines de automatización."
+    },
+    {
+      "iconName": "PenNib",
+      "label": "Diseño UI/UX Avanzado",
+      "description": "Sistemas de diseño a medida, microinteracciones y prototipado de alta fidelidad."
+    },
+    {
+      "iconName": "Plugs",
+      "label": "Integraciones ERP & Pagos",
+      "description": "Pasarelas transaccionales, sincronización contable y webhooks resilientes."
+    }
+  ],
+  "stats": [
+    { "value": "+10K", "label": "usuarios activos en sistemas entregados" },
+    { "value": "+30",  "label": "proyectos en producción" },
+    { "value": "99.9%", "label": "uptime promedio en producción" },
+    { "value": "90d",   "label": "garantía técnica incluida" }
+  ],
+  "closingTitle": "¿Quieres trabajar directamente con este equipo?",
+  "closingDescription": "Agenda una llamada de 15 min para contarnos tu proyecto — hablarás directamente con quien va a construirlo, sin intermediarios comerciales ni cajas negras.",
+  "ctaLabel": "Hablemos de tu proyecto",
+  "ctaSecondary": {
+    "label": "Ver proyectos reales",
+    "href": "/#portfolio"
+  }
 }

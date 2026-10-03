@@ -9,6 +9,7 @@ import { SkipLink } from "@/components/SkipLink";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { AttributionCapture } from "@/components/AttributionCapture";
 import { useLocale } from "@/components/LocaleProvider";
+import { ContactModalProvider } from "@/components/contact/ContactModalProvider";
 
 const WhatsAppButton = dynamic(
   () => import("@/components/ui/WhatsAppButton").then((mod) => mod.WhatsAppButton),
@@ -93,7 +94,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <>
+    <ContactModalProvider>
       <SkipLink />
       <Navbar />
       {children}
@@ -102,6 +103,6 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
       <WhatsAppButton locale={locale} />
       <CookieBanner />
       <AttributionCapture />
-    </>
+    </ContactModalProvider>
   );
 }

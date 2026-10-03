@@ -14,7 +14,7 @@
   },
   "ctaSecondary": {
     "label": "View portfolio",
-    "href": "#portfolio",
+    "href": "/en/portfolio",
     "ariaLabel": "View project portfolio"
   },
   "codeMockup": {
@@ -24,5 +24,11 @@
     "100% proprietary code",
     "90-day stability warranty",
     "Direct engineer communication"
+  ],
+  "stats": [
+    { "value": "+10K", "label": "active users across delivered systems" },
+    { "value": "+30",  "label": "projects in production" },
+    { "value": "99.9%", "label": "average uptime in production" },
+    { "value": "90d",   "label": "technical warranty included" }
   ]
 }

@@ -39,20 +39,10 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
           ))}
         </div>
 
-        <div className="mx-auto mt-8 max-w-3xl">
-          <Link
-            href={faqHref}
-            className="group inline-flex min-h-11 items-center gap-2 rounded-full text-sm font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            <span className="underline decoration-foreground/30 underline-offset-4 transition-colors group-hover:decoration-foreground">
-              {t(faqData.moreQuestions, { count: String(faqData.totalCount) })}
-            </span>
-            <ArrowRight
-              size={16}
-              aria-hidden="true"
-              className="motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-0.5"
-            />
-          </Link>
+        <div className="mx-auto mt-10 flex max-w-3xl justify-center">
+          <Button href={faqHref} variant="secondary" size="md">
+            {t(faqData.moreQuestions, { count: String(faqData.totalCount) })}
+          </Button>
         </div>
       </div>
     </section>

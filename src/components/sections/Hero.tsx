@@ -117,6 +117,29 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
               </div>
             ))}
           </div>
+
+          {/* Métricas de impacto — renderizadas como HTML estático puro del
+              servidor. Solo se muestran cuando el JSON incluye el campo
+              `stats` (backwards-compatible con locales que aún no lo tengan).
+              El separador es aria-hidden para no confundir a lectores de pantalla. */}
+          {"stats" in heroData && Array.isArray(heroData.stats) && heroData.stats.length > 0 && (
+            <dl
+              aria-label="Métricas de impacto de SkyCode"
+              className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4"
+            >
+              {(heroData.stats as { value: string; label: string }[]).map(({ value, label }, i) => (
+                <div key={i} className="flex flex-col gap-0.5">
+                  <dt
+                    aria-label={label}
+                    className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl bg-gradient-to-r from-accent to-accent-strong bg-clip-text text-transparent"
+                  >
+                    {value}
+                  </dt>
+                  <dd className="text-[11px] font-medium leading-snug text-foreground/55">{label}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
         </div>
 
         <div

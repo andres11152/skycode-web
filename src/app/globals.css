@@ -169,6 +169,22 @@
   animation: pop-in var(--dur-fast) var(--ease-out) both;
 }
 
+/* Revelación de texto/acciones en tarjetas cinematográficas de equipo */
+@keyframes team-card-text-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-team-card-reveal {
+  animation: team-card-text-reveal 0.35s var(--ease-out) both;
+}
+
 /*
  * Transiciones de vista (portada del portafolio, ver ui/CoverTransition.tsx).
  * Solo el par `.morph` anima; el desenfoque a mitad de camino oculta la
@@ -347,7 +363,8 @@
   .animate-enter-error,
   .animate-faq-in,
   .animate-shake,
-  .animate-pop-in {
+  .animate-pop-in,
+  .animate-team-card-reveal {
     animation: none !important;
   }
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useDeferredValue, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { ArrowRight, CheckCircle, Clock, EnvelopeSimple, Lightning, Spinner, Tag, WarningCircle } from "@phosphor-icons/react";
 import NumberFlow from "@number-flow/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
@@ -10,14 +9,13 @@ import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProjectEstimatorContent, getDefaultCurrency } from "@/content/projectEstimator";
 import { defaultLocale, localeHomePath, t, type Locale } from "@/lib/i18n";
 import { useGeoCountry } from "@/lib/useGeoCountry";
-import { dispatchContactPrefill, savePendingContactPrefill } from "@/lib/contactPrefillEvent";
+import { openContactModal } from "@/lib/contactModalEvent";
 import { ESTIMATOR_TYPE_TO_SERVICE_SLUG } from "@/lib/leadServices";
 import { logError } from "@/lib/logger";
 
 export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }) {
   const content = getProjectEstimatorContent(locale);
   const { projectTypes, addons } = content;
-  const router = useRouter();
 
   const [currency, setCurrency] = useState<"COP" | "USD">(getDefaultCurrency(locale));
   const [selectedType, setSelectedType] = useState<string>(projectTypes[0].id);
@@ -107,34 +105,13 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
       weeks: String(totalWeeks),
     });
 
-    // Se despacha como evento (ver lib/contactPrefillEvent.ts) en vez de
-    // escribir directo en el DOM del textarea: ese textarea es un campo
-    // controlado por React en Contact.tsx, así que asignar `.value` a mano
-    // se veía en pantalla pero nunca actualizaba el estado `message` — el
-    // envío real (que lee el estado, no el DOM) mandaba el mensaje vacío y
-    // el botón de enviar seguía deshabilitado. El evento también manda el
-    // tipo de proyecto elegido como `service` real, algo que el prefill
-    // anterior (solo texto libre) nunca comunicaba al CRM.
-    const prefillDetail = {
+    // Abre el modal de contacto ya prellenado (mensaje + servicio real para el
+    // CRM): la persona no pierde la página ni el resumen que acaba de armar.
+    openContactModal({
       message: text,
       serviceSlug: ESTIMATOR_TYPE_TO_SERVICE_SLUG[selectedType],
-    };
-
-    const contactSection = document.getElementById("contacto");
-    if (contactSection) {
-      // El cotizador y el formulario de contacto siguen en la misma página
-      // (embebido en algún lugar que no sea /cotizador) — el evento en vivo
-      // alcanza.
-      dispatchContactPrefill(prefillDetail);
-      contactSection.scrollIntoView({ behavior: "smooth" });
-    } else {
-      // Página standalone (/cotizador): no hay `#contacto` acá, hace falta
-      // navegar de verdad a la home. Se guarda el traspaso en
-      // sessionStorage porque la navegación destruye este contexto de JS
-      // antes de que Contact.tsx exista para escuchar el evento.
-      savePendingContactPrefill(prefillDetail);
-      router.push(`${localeHomePath(locale)}#contacto`);
-    }
+      fromEstimator: true,
+    });
   };
 
   const handleEmailCapture = async (e: React.FormEvent) => {

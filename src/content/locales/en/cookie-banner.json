@@ -1,7 +1,41 @@
 {
-  "message": "This site doesn't use analytics or advertising cookies. We only store your language preference in your browser to improve your experience.",
-  "linkText": "View cookie policy",
+  "ariaLabel": "Cookie notice",
+  "message": "We use first-party storage to make the site work and, if you allow it, to remember your country and which campaign brought you here. We don't use third-party analytics or advertising.",
+  "linkText": "Cookie policy",
   "linkUrl": "/politica-cookies",
-  "accept": "Got it",
-  "ariaLabel": "Cookie notice"
+  "acceptAll": "Accept all",
+  "rejectAll": "Reject",
+  "customize": "Customize",
+  "footerLink": "Cookie preferences",
+  "preferences": {
+    "title": "Cookie preferences",
+    "description": "Choose what we may store in your browser. You can change this decision at any time from the footer.",
+    "close": "Close cookie preferences",
+    "save": "Save selection",
+    "alwaysOn": "Always on",
+    "showDetails": "See what is stored",
+    "hideDetails": "Hide details",
+    "lastDecision": "Last decision: {date}",
+    "noDecision": "You haven't decided yet: until then only the necessary ones are used.",
+    "policyLink": "Read the cookie policy",
+    "kinds": {
+      "cookie": "Cookie",
+      "localStorage": "Local storage",
+      "sessionStorage": "Session storage"
+    },
+    "categories": {
+      "necessary": {
+        "label": "Necessary",
+        "description": "Essential: keeping you signed in if you log in, remembering this very choice, and carrying what you configured in the estimator over to the contact form. They can't be turned off."
+      },
+      "preferences": {
+        "label": "Preferences",
+        "description": "Store your country so we can suggest a default currency and phone prefix without looking it up on every visit."
+      },
+      "measurement": {
+        "label": "Measurement",
+        "description": "Store which campaign or page you came from (UTM parameters, ad click identifiers) so it can be attached if you write to us. This site does not send it to advertising networks."
+      }
+    }
+  }
 }

@@ -1,6 +1,58 @@
 {
   "sectionAria": "Our team",
-  "title": "The engineers behind the code",
-  "description": "You work directly with the engineers and designers building your platform — no sales layers or intermediaries.",
-  "ctaLabel": "Talk to the team"
+  "title": "The technical core of SkyCode",
+  "heroEyebrow": "OUR TEAM",
+  "heroTitleLines": [
+    "Senior engineers,",
+    "clean architecture,",
+    "measurable outcomes."
+  ],
+  "description": "Senior engineers and designers who lead your project end-to-end. You work directly with the people who design the architecture and write the code, backed by a specialist network in infrastructure, QA, AI and cybersecurity as each delivery demands.",
+  "networkTitle": "Specialist network",
+  "networkDescription": "For every project we bring in the right experts on demand: cloud architects, data engineers, OWASP security specialists and QA analysts. You scale without having to coordinate multiple vendors.",
+  "networkItems": [
+    {
+      "iconName": "Cloud",
+      "label": "Cloud Infrastructure & DevOps",
+      "description": "Automated CI/CD, Terraform, AWS, GCP, and zero-downtime rollouts."
+    },
+    {
+      "iconName": "TestTube",
+      "label": "QA & Automated Testing",
+      "description": "E2E test suites, regression testing, and high-concurrency stress tests."
+    },
+    {
+      "iconName": "ShieldCheck",
+      "label": "OWASP Security & Pentesting",
+      "description": "Vulnerability audits, infrastructure hardening, and data encryption."
+    },
+    {
+      "iconName": "Brain",
+      "label": "AI & Autonomous Agents",
+      "description": "LLM workflows, enterprise-grade RAG, and automation pipelines."
+    },
+    {
+      "iconName": "PenNib",
+      "label": "Advanced UI/UX Design",
+      "description": "Custom design systems, micro-interactions, and high-fidelity prototypes."
+    },
+    {
+      "iconName": "Plugs",
+      "label": "ERP & Payment Integrations",
+      "description": "Transactional payment gateways, accounting sync, and resilient webhooks."
+    }
+  ],
+  "stats": [
+    { "value": "+10K", "label": "active users across delivered systems" },
+    { "value": "+30",  "label": "projects in production" },
+    { "value": "99.9%", "label": "average uptime in production" },
+    { "value": "90d",   "label": "technical warranty included" }
+  ],
+  "closingTitle": "Ready to work directly with this team?",
+  "closingDescription": "Schedule a 15-minute call to tell us about your project — you'll talk directly to the engineers building your solution, with no sales intermediaries.",
+  "ctaLabel": "Talk to the team",
+  "ctaSecondary": {
+    "label": "Explore real projects",
+    "href": "/en/#portfolio"
+  }
 }

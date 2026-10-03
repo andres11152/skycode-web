@@ -1,7 +1,41 @@
 {
-  "message": "Ce site n'utilise ni cookies d'analyse ni cookies publicitaires. Nous stockons uniquement votre préférence de langue dans votre navigateur pour améliorer votre expérience.",
-  "linkText": "Voir la politique de cookies",
+  "ariaLabel": "Avis sur les cookies",
+  "message": "Nous utilisons un stockage propre pour faire fonctionner le site et, si vous l'autorisez, pour mémoriser votre pays et la campagne d'où vous venez. Nous n'utilisons ni analyse ni publicité de tiers.",
+  "linkText": "Politique de cookies",
   "linkUrl": "/politica-cookies",
-  "accept": "Compris",
-  "ariaLabel": "Avis sur les cookies"
+  "acceptAll": "Tout accepter",
+  "rejectAll": "Refuser",
+  "customize": "Personnaliser",
+  "footerLink": "Préférences des cookies",
+  "preferences": {
+    "title": "Préférences des cookies",
+    "description": "Choisissez ce que nous pouvons enregistrer dans votre navigateur. Vous pouvez modifier ce choix à tout moment depuis le pied de page.",
+    "close": "Fermer les préférences des cookies",
+    "save": "Enregistrer la sélection",
+    "alwaysOn": "Toujours actifs",
+    "showDetails": "Voir ce qui est enregistré",
+    "hideDetails": "Masquer le détail",
+    "lastDecision": "Dernier choix : {date}",
+    "noDecision": "Vous n'avez pas encore choisi : d'ici là, seuls les cookies nécessaires sont utilisés.",
+    "policyLink": "Lire la politique de cookies",
+    "kinds": {
+      "cookie": "Cookie",
+      "localStorage": "Stockage local",
+      "sessionStorage": "Stockage de session"
+    },
+    "categories": {
+      "necessary": {
+        "label": "Nécessaires",
+        "description": "Indispensables : maintenir votre session si vous vous connectez, mémoriser ce choix et transférer au formulaire ce que vous avez configuré dans l'estimateur. Ils ne peuvent pas être désactivés."
+      },
+      "preferences": {
+        "label": "Préférences",
+        "description": "Enregistrent votre pays pour proposer par défaut une devise et un indicatif téléphonique, sans le redemander à chaque visite."
+      },
+      "measurement": {
+        "label": "Mesure",
+        "description": "Enregistrent la campagne ou la page d'où vous venez (paramètres UTM, identifiants de clic publicitaire) pour les joindre si vous nous écrivez. Ce site ne les transmet à aucun réseau publicitaire."
+      }
+    }
+  }
 }

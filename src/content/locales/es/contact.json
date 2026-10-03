@@ -16,7 +16,8 @@
     "serviceEmptyOption": "Aún no lo sé / prefiero explicarlo en el mensaje",
     "serviceOtherOption": "Otro (lo describo)",
     "serviceOtherPlaceholder": "Ej. Consultoría técnica, auditoría de código...",
-    "serviceOtherLabel": "Cuéntanos qué servicio buscas"
+    "serviceOtherLabel": "Cuéntanos qué servicio buscas",
+    "addPhone": "Añadir teléfono / WhatsApp (opcional)"
   },
   "submitLabel": "Enviar mensaje",
   "habeasData": {
@@ -52,4 +53,3 @@
     "serviceOtherError": "Cuéntanos brevemente qué servicio buscas (al menos 3 letras)."
   }
 }
-

@@ -2,7 +2,7 @@ import teamDataEs from "./locales/es/team.json";
 import teamDataEn from "./locales/en/team.json";
 import teamDataFr from "./locales/fr/team.json";
 import type { Locale } from "@/lib/i18n";
-import type { PublicTeamSection } from "./teamShared";
+import type { PublicTeamNetworkItem, PublicTeamSection, PublicTeamStat } from "./teamShared";
 
 // Desde la Fase 5 de perfiles, este archivo SOLO trae el copy de la
 // sección (título, descripción, CTA) — las personas en sí se leen de
@@ -21,5 +21,32 @@ export function getTeamSectionContent(locale: Locale): PublicTeamSection {
     title: data.title,
     description: data.description,
     ctaLabel: data.ctaLabel,
+    ...("heroEyebrow" in data && typeof data.heroEyebrow === "string"
+      ? { heroEyebrow: data.heroEyebrow }
+      : {}),
+    ...("heroTitleLines" in data && Array.isArray(data.heroTitleLines)
+      ? { heroTitleLines: data.heroTitleLines as string[] }
+      : {}),
+    ...("networkTitle" in data && typeof data.networkTitle === "string"
+      ? { networkTitle: data.networkTitle }
+      : {}),
+    ...("networkDescription" in data && typeof data.networkDescription === "string"
+      ? { networkDescription: data.networkDescription }
+      : {}),
+    ...("networkItems" in data && Array.isArray(data.networkItems)
+      ? { networkItems: data.networkItems as PublicTeamNetworkItem[] }
+      : {}),
+    ...("closingTitle" in data && typeof data.closingTitle === "string"
+      ? { closingTitle: data.closingTitle }
+      : {}),
+    ...("closingDescription" in data && typeof data.closingDescription === "string"
+      ? { closingDescription: data.closingDescription }
+      : {}),
+    ...("ctaSecondary" in data && typeof data.ctaSecondary === "object" && data.ctaSecondary !== null
+      ? { ctaSecondary: data.ctaSecondary as { label: string; href: string } }
+      : {}),
+    ...("stats" in data && Array.isArray(data.stats)
+      ? { stats: data.stats as PublicTeamStat[] }
+      : {}),
   };
 }

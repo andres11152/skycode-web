@@ -1,7 +1,41 @@
 {
-  "message": "Este sitio no usa cookies de analítica ni de publicidad. Solo guardamos su preferencia de idioma en el navegador para mejorar su experiencia.",
-  "linkText": "Ver política de cookies",
+  "ariaLabel": "Aviso de cookies",
+  "message": "Usamos almacenamiento propio para que el sitio funcione y, si usted lo permite, para recordar su país y de qué campaña llegó. No usamos analítica ni publicidad de terceros.",
+  "linkText": "Política de cookies",
   "linkUrl": "/politica-cookies",
-  "accept": "Entendido",
-  "ariaLabel": "Aviso de cookies"
+  "acceptAll": "Aceptar todo",
+  "rejectAll": "Rechazar",
+  "customize": "Configurar",
+  "footerLink": "Preferencias de cookies",
+  "preferences": {
+    "title": "Preferencias de cookies",
+    "description": "Elija qué podemos guardar en su navegador. Puede cambiar esta decisión en cualquier momento desde el pie de página.",
+    "close": "Cerrar preferencias de cookies",
+    "save": "Guardar selección",
+    "alwaysOn": "Siempre activas",
+    "showDetails": "Ver qué se guarda",
+    "hideDetails": "Ocultar detalle",
+    "lastDecision": "Última decisión: {date}",
+    "noDecision": "Aún no ha tomado una decisión: hasta entonces solo se usan las necesarias.",
+    "policyLink": "Leer la política de cookies",
+    "kinds": {
+      "cookie": "Cookie",
+      "localStorage": "Almacenamiento local",
+      "sessionStorage": "Almacenamiento de sesión"
+    },
+    "categories": {
+      "necessary": {
+        "label": "Necesarias",
+        "description": "Imprescindibles: mantener su sesión si inicia sesión, recordar esta misma elección y llevar lo que configuró en el cotizador hasta el formulario. No se pueden desactivar."
+      },
+      "preferences": {
+        "label": "Preferencias",
+        "description": "Guardan su país para proponerle moneda e indicativo telefónico por defecto, sin consultarlo en cada visita."
+      },
+      "measurement": {
+        "label": "Medición",
+        "description": "Guardan de qué campaña o página llegó (parámetros UTM e identificadores de clic de anuncios) para adjuntarlo si nos escribe. Este sitio no lo envía a redes publicitarias."
+      }
+    }
+  }
 }

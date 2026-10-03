@@ -1,5 +1,7 @@
 "use client";
 
+import { openCookiePreferences } from "@/lib/useConsent";
+import { getCookieBannerContent } from "@/content/cookieBanner";
 import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -205,6 +207,16 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                {/* Reabre el centro de preferencias (CookieBanner escucha el evento). */}
+                <button
+                  type="button"
+                  onClick={openCookiePreferences}
+                  className={cn(linkClasses, "min-h-11 text-xs sm:min-h-0")}
+                >
+                  {getCookieBannerContent(locale).footerLink}
+                </button>
+              </li>
               <li>
                 <Link
                   href="/login"

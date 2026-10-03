@@ -122,6 +122,7 @@ function OrganizationJsonLd() {
     telephone: contactPhone,
     address: {
       "@type": "PostalAddress",
+      "addressLocality": "Bogotá",
       "addressCountry": "CO",
     },
     areaServed: ["CO", "MX", "CL", "PE", "EC", "PA", "AR", "UY", "US", "FR"],

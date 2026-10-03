@@ -1,0 +1,20 @@
+{
+  "closeLabel": "Cerrar formulario de contacto",
+  "title": "Hablemos de tu proyecto",
+  "description": "Cuéntanos qué necesitas. Te respondemos con una valoración honesta, sin respuestas genéricas de bots.",
+  "asideEyebrow": "Respuesta en menos de 24 h hábiles",
+  "asideTitle": "Habla directo con quien va a programar tu proyecto.",
+  "stepsHeading": "Qué pasa después",
+  "steps": [
+    "Recibimos tu mensaje de inmediato.",
+    "Un ingeniero lo revisa, no un vendedor.",
+    "Te enviamos una valoración clara de cómo encararlo."
+  ],
+  "guarantees": [
+    "Código 100% de tu propiedad",
+    "90 días de garantía técnica",
+    "Trato directo con ingenieros"
+  ],
+  "directHeading": "¿Prefieres escribirnos directo?",
+  "whatsappLabel": "WhatsApp"
+}

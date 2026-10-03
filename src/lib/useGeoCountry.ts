@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { isCategoryAllowed, readConsentNow } from "@/lib/consent";
 
 const COOKIE_NAME = "skycode-geo-country";
 const COOKIE_MAX_AGE = 60 * 60 * 24;
@@ -12,11 +13,9 @@ function readGeoCookie(): string | null {
 
 /**
  * País del visitante (código ISO-2) para personalizar moneda/indicativo por
- * defecto. `proxy.ts` ya deja la cookie `skycode-geo-country` en hosts que
- * exponen `x-vercel-ip-country` (Vercel, gratis). En cualquier otro host (hoy
- * Render), esa cookie no llega, así que acá se cae a `/api/geo` — y el
- * resultado se cachea en la misma cookie para no repetir la llamada en la
- * siguiente visita.
+ * defecto, consultando `/api/geo`. El resultado solo se cachea en la cookie
+ * `skycode-geo-country` si la persona aceptó "preferencias" (ver consent.ts);
+ * sin ese permiso se usa durante la visita y no se guarda nada.
  */
 // Una sola petición por carga de página: el cotizador y el campo de
 // teléfono del formulario usan este hook a la vez, y cada uno hacía su
@@ -28,13 +27,20 @@ function fetchGeoCountry(): Promise<string | null> {
     .then((res) => (res.ok ? (res.json() as Promise<{ country: string | null }>) : null))
     .then((data) => {
       const country = data?.country ?? null;
-      if (country) {
+      // Sin consentimiento de "preferencias" el país se usa solo en esta visita:
+      // se consulta y se aplica, pero no se guarda en una cookie.
+      if (country && isCategoryAllowed(readConsentNow(), "preferences")) {
         document.cookie = `${COOKIE_NAME}=${encodeURIComponent(country)}; Max-Age=${COOKIE_MAX_AGE}; Path=/; SameSite=Lax`;
       }
       return country;
     })
     .catch(() => null);
   return geoRequest;
+}
+
+export function clearGeoCountryCache(): void {
+  if (typeof document === "undefined") return;
+  document.cookie = `${COOKIE_NAME}=; Max-Age=0; Path=/; SameSite=Lax`;
 }
 
 export function useGeoCountry(): string | null {

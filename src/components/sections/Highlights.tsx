@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { m as motion, useReducedMotion } from "framer-motion";
 import { getHighlightsContent } from "@/content/highlights";
+import { Button } from "@/components/ui/Button";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { fadeUp, staggerContainer } from "@/lib/animations";
-import { defaultLocale, type Locale } from "@/lib/i18n";
+import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 import { Brain } from "@phosphor-icons/react";
 import {
   FlutterIcon,
@@ -99,6 +100,8 @@ function VideoShowcase({
 export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
   const reduced = Boolean(useReducedMotion());
   const highlightsData = getHighlightsContent(locale);
+  const homePath = localeHomePath(locale);
+  const prefix = homePath === "/" ? "" : homePath;
   const [hoveredTech, setHoveredTech] = useState<string | null>(null);
 
   return (
@@ -214,6 +217,15 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Botón para conocer al equipo técnico */}
+              <div className="mt-6 flex justify-center border-t border-foreground/10 pt-6 sm:justify-start">
+                <Button href={`${prefix}/equipo`} variant="secondary" size="sm">
+                  {"teamCta" in highlightsData && typeof highlightsData.teamCta === "string"
+                    ? highlightsData.teamCta
+                    : "Conoce a nuestro equipo"}
+                </Button>
               </div>
             </SpotlightCard>
           </motion.div>

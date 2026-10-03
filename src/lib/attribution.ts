@@ -1,3 +1,5 @@
+import { isCategoryAllowed, readConsentNow } from "@/lib/consent";
+
 const STORAGE_KEY = "skycode-attribution";
 
 export interface Attribution {
@@ -21,6 +23,10 @@ export interface Attribution {
  */
 export function captureAttributionOnce(): void {
   if (typeof window === "undefined") return;
+  // Los identificadores de clic de anuncios (gclid/fbclid) son medición de
+  // marketing, no algo estrictamente necesario: sin un "sí" explícito a la
+  // categoría de medición no se guarda nada.
+  if (!isCategoryAllowed(readConsentNow(), "measurement")) return;
   if (localStorage.getItem(STORAGE_KEY)) return;
 
   const params = new URLSearchParams(window.location.search);
@@ -47,5 +53,14 @@ export function getAttribution(): Attribution | null {
     return JSON.parse(raw) as Attribution;
   } catch {
     return null;
+  }
+}
+
+export function clearAttribution(): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Almacenamiento bloqueado: no hay nada guardado que borrar.
   }
 }

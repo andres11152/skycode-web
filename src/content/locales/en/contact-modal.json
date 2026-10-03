@@ -1,0 +1,20 @@
+{
+  "closeLabel": "Close contact form",
+  "title": "Let's talk about your project",
+  "description": "Tell us what you need. We reply with an honest assessment, no generic bot answers.",
+  "asideEyebrow": "Reply within 24 business hours",
+  "asideTitle": "Talk directly to the people who will build your project.",
+  "stepsHeading": "What happens next",
+  "steps": [
+    "We receive your message right away.",
+    "An engineer reads it, not a salesperson.",
+    "We send you a clear assessment of how to approach it."
+  ],
+  "guarantees": [
+    "100% of the code is yours",
+    "90-day technical warranty",
+    "Direct access to engineers"
+  ],
+  "directHeading": "Prefer to write us directly?",
+  "whatsappLabel": "WhatsApp"
+}

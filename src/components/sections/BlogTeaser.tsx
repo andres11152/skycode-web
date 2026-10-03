@@ -50,6 +50,17 @@ export function BlogTeaser({ locale = defaultLocale, posts }: { locale?: Locale;
             </motion.article>
           ))}
         </motion.div>
+
+        {/* Botón para ver todos los artículos del blog */}
+        <div className="mt-12 flex justify-center">
+          <Button
+            href={blogIndexPath(locale)}
+            variant="secondary"
+            size="lg"
+          >
+            {blogTeaserData.viewAll}
+          </Button>
+        </div>
       </div>
     </section>
   );

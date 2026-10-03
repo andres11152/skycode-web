@@ -41,7 +41,11 @@ const dateFormatters = Object.fromEntries(
 
 /** `locale` por defecto `es`: los llamadores que no lo pasan conservan el formato de siempre. */
 export function formatDate(isoDate: string, locale: keyof typeof DATE_LOCALES = "es") {
-  return dateFormatters[locale].format(new Date(isoDate));
+  // `YYYY-MM-DD` es una fecha de calendario, no un instante: `new Date()` la
+  // toma como medianoche UTC y en Bogotá (UTC-5) se mostraba el día anterior.
+  // A mediodía de Bogotá cae en el mismo día en cualquier zona.
+  const instant = /^\d{4}-\d{2}-\d{2}$/.test(isoDate) ? new Date(`${isoDate}T12:00:00-05:00`) : new Date(isoDate);
+  return dateFormatters[locale].format(instant);
 }
 
 export function slugify(text: string): string {

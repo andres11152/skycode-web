@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cn, escapeHtml, formatMoney, slugify, toCsvCell } from "./utils";
+import { cn, escapeHtml, formatDate, formatMoney, slugify, toCsvCell } from "./utils";
 
 describe("toCsvCell", () => {
   it("wraps plain values in quotes", () => {
@@ -90,5 +90,13 @@ describe("cn", () => {
 
   it("ignora valores falsy", () => {
     expect(cn("a", false, undefined, null, "b")).toBe("a b");
+  });
+});
+
+describe("formatDate con fechas sin hora", () => {
+  it("muestra el mismo día de calendario, sin correrse por la zona horaria", () => {
+    expect(formatDate("2026-10-02")).toBe("2 de octubre de 2026");
+    expect(formatDate("2026-10-02", "en")).toBe("October 2, 2026");
+    expect(formatDate("2026-01-01")).toBe("1 de enero de 2026");
   });
 });

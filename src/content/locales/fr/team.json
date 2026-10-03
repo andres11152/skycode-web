@@ -1,6 +1,58 @@
 {
   "sectionAria": "Notre équipe",
-  "title": "L'équipe d'ingénierie derrière le code",
-  "description": "Vous collaborez directement avec les ingénieurs et designers en charge de votre solution, sans intermédiaire commercial.",
-  "ctaLabel": "Échanger avec l'équipe"
+  "title": "Le noyau technique de SkyCode",
+  "heroEyebrow": "NOTRE ÉQUIPE",
+  "heroTitleLines": [
+    "Ingénieurs senior,",
+    "architecture propre,",
+    "résultats mesurables."
+  ],
+  "description": "Les ingénieurs et designers senior qui dirigent votre projet de bout en bout. Vous travaillez directement avec les personnes qui conçoivent l'architecture et écrivent le code, soutenues par un réseau de spécialistes en infrastructure, QA, IA et cybersécurité.",
+  "networkTitle": "Réseau de spécialistes",
+  "networkDescription": "Pour chaque projet, nous intégrons les bons experts à la demande : architectes cloud, ingénieurs données, spécialistes OWASP et analystes QA. Vous montez en charge sans coordonner plusieurs fournisseurs.",
+  "networkItems": [
+    {
+      "iconName": "Cloud",
+      "label": "Infrastructure Cloud & DevOps",
+      "description": "CI/CD automatisé, Terraform, AWS, GCP et déploiements sans interruption."
+    },
+    {
+      "iconName": "TestTube",
+      "label": "QA & Tests automatisés",
+      "description": "Suites de tests E2E, tests de non-régression et validation haute charge."
+    },
+    {
+      "iconName": "ShieldCheck",
+      "label": "Sécurité OWASP & Pentesting",
+      "description": "Audits de vulnérabilités, renforcement système et chiffrement des données."
+    },
+    {
+      "iconName": "Brain",
+      "label": "IA & Agents autonomes",
+      "description": "Flux de travail LLM, RAG d'entreprise et pipelines d'automatisation."
+    },
+    {
+      "iconName": "PenNib",
+      "label": "Design UI/UX avancé",
+      "description": "Systèmes de design sur mesure, micro-interactions et prototypage haute fidélité."
+    },
+    {
+      "iconName": "Plugs",
+      "label": "Intégrations ERP & Paiements",
+      "description": "Passerelles transactionnelles, synchronisation comptable et webhooks résilients."
+    }
+  ],
+  "stats": [
+    { "value": "+10K", "label": "utilisateurs actifs dans les systèmes livrés" },
+    { "value": "+30",  "label": "projets en production" },
+    { "value": "99.9%", "label": "disponibilité moyenne en production" },
+    { "value": "90j",   "label": "garantie technique incluse" }
+  ],
+  "closingTitle": "Prêt à collaborer directement avec cette équipe ?",
+  "closingDescription": "Planifiez un échange de 15 minutes pour nous présenter votre projet — vous parlerez directement avec les ingénieurs qui concevront et bâtiront votre solution.",
+  "ctaLabel": "Échanger avec l'équipe",
+  "ctaSecondary": {
+    "label": "Voir les projets réels",
+    "href": "/fr/#portfolio"
+  }
 }

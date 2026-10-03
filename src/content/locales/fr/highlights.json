@@ -1,25 +1,26 @@
 {
   "sectionAria": "Pourquoi nous choisir",
   "badge": "Pourquoi Skycode",
-  "title": "Un logiciel que votre équipe peut maintenir sans nous",
-  "description": "Nous livrons le code, la documentation et l'ensemble des identifiants. Les produits que nous construisons sont en production aujourd'hui.",
+  "title": "Infrastructure de production. Livraisons sans surprises.",
+  "description": "Des systèmes qui tiennent la charge réelle du business, avec des architectures éprouvées en production pour plus de 10 000 utilisateurs actifs. Chaque livraison inclut documentation technique, tests automatisés et une vraie garantie de 90 jours.",
   "techLabel": "Notre stack technologique",
   "videoAria": "Vidéo de démonstration de notre travail",
   "items": [
     {
       "iconName": "UsersThree",
-      "title": "Communication directe",
-      "description": "Parlez directement aux ingénieurs qui construisent votre logiciel, pas à des gestionnaires de compte. Visibilité totale sur l'avancement en temps réel."
+      "title": "Ingénieurs senior sur chaque projet",
+      "description": "Pas de stagiaires ni de sous-traitants cachés. L'équipe qui chiffre votre projet est celle qui le construit — soutenue par un réseau de spécialistes cloud, sécurité et QA selon vos besoins."
     },
     {
       "iconName": "SealCheck",
       "title": "Garantie post-livraison",
-      "description": "Une période de garantie de stabilité technique sans coût supplémentaire, plus un SLA de support préventif continu."
+      "description": "Nous ne disparaissons pas après la livraison. Tout incident dans les trois premiers mois de production est résolu sans coût supplémentaire. SLA de support préventif disponible."
     },
     {
       "iconName": "LockKey",
       "title": "Confidentialité dès la conception",
-      "description": "RBAC, chiffrement des données sensibles et journaux d'audit immuables — pas un correctif après incident."
+      "description": "Architecture OWASP, RBAC, chiffrement des données sensibles et journaux d'audit immuables. Pas un correctif après incident — le standard de chaque projet livré."
     }
-  ]
+  ],
+  "teamCta": "Découvrir notre équipe"
 }
