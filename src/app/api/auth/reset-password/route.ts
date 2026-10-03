@@ -6,6 +6,7 @@ import { isRateLimited } from "@/lib/rateLimit";
 import { guardAuthRequest, verifyHumanChallenge } from "@/lib/authShield";
 import { findValidResetToken, consumeResetToken } from "@/lib/queries/passwordReset";
 import { hashPassword } from "@/lib/auth";
+import { PWNED_PASSWORD_MESSAGE, isPasswordPwned } from "@/lib/pwnedPasswords";
 import { createSessionToken } from "@/lib/session";
 import { createSessionRecord } from "@/lib/queries/auth";
 import { logAudit } from "@/lib/audit";
@@ -52,6 +53,12 @@ export async function POST(request: Request) {
     const reset = await findValidResetToken(token);
     if (!reset) {
       return NextResponse.json({ error: "El enlace no es válido, ya fue usado o expiró." }, { status: 400 });
+    }
+
+    // Después de validar el enlace (un enlace inválido no debe disparar una
+    // consulta a un servicio externo) y antes de gastar el hash.
+    if (await isPasswordPwned(password)) {
+      return NextResponse.json({ error: PWNED_PASSWORD_MESSAGE }, { status: 400 });
     }
 
     const passwordHash = await hashPassword(password);

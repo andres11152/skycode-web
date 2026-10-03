@@ -1,5 +1,6 @@
 import { query } from "./db";
 import type { UserSession } from "./session";
+import { logError } from "./logger";
 
 interface CacheEntry {
   session: UserSession;
@@ -11,6 +12,14 @@ interface CacheEntry {
 // /api/leads y /api/projects casi al mismo tiempo). TTL corto a propósito:
 // una revocación o un cambio de rol tarda como máximo esto en reflejarse.
 const CACHE_TTL_MS = 15_000;
+
+// Una sesión sin uso por más de esto muere (ver migración 0038). 12 h cubre una
+// jornada laboral completa con pausas; configurable con SESSION_IDLE_HOURS.
+const IDLE_HOURS = Math.max(1, Number(process.env.SESSION_IDLE_HOURS) || 12);
+// `last_seen_at` se renueva como mucho una vez por este intervalo: una
+// escritura por request habría convertido cada carga del dashboard en un
+// UPDATE.
+const TOUCH_INTERVAL_MINUTES = 5;
 const cache = new Map<string, CacheEntry>();
 
 const SWEEP_INTERVAL_MS = 5 * 60 * 1000;
@@ -51,17 +60,29 @@ export async function resolveSession(sessionId: string): Promise<UserSession | n
   }
 
   const res = await query(
-    `SELECT u.id, u.name, u.email, u.role, u.status, u.client_id, u.avatar_variants->>'sm' AS avatar_url
+    `SELECT u.id, u.name, u.email, u.role, u.status, u.client_id, u.avatar_variants->>'sm' AS avatar_url,
+            s.last_seen_at < now() - ($2::numeric * interval '1 minute') AS needs_touch
      FROM sessions s
      JOIN users u ON u.id = s.user_id
-     WHERE s.id = $1 AND s.revoked_at IS NULL AND s.expires_at > now();`,
-    [sessionId]
+     WHERE s.id = $1 AND s.revoked_at IS NULL AND s.expires_at > now()
+       AND s.last_seen_at > now() - ($3::numeric * interval '1 hour');`,
+    [sessionId, TOUCH_INTERVAL_MINUTES, IDLE_HOURS]
   );
 
   const row = res.rows[0];
   if (!row || row.status !== "active") {
     cache.delete(sessionId);
     return null;
+  }
+
+  // Renovación de la marca de actividad (solo si está "vieja"): mejor esfuerzo,
+  // un fallo acá no debe tumbar una sesión válida.
+  if (row.needs_touch) {
+    try {
+      await query("UPDATE sessions SET last_seen_at = now() WHERE id = $1;", [sessionId]);
+    } catch (error) {
+      logError("⚠️ [Auth] No se pudo renovar last_seen_at", error, { sessionId });
+    }
   }
 
   const session: UserSession = {

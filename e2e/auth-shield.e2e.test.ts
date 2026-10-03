@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { TestClient } from "./helpers/client";
 import { BASE_URL } from "./helpers/config";
-import { createTestUser, resetTestDb } from "../src/lib/testHelpers/db";
+import { createTestSession, createTestUser, resetTestDb } from "../src/lib/testHelpers/db";
 import { query } from "../src/lib/db";
 
 const PASSWORD = "SuperSecret123456";
@@ -290,4 +290,72 @@ describe("Otras superficies de credenciales exigen el mismo proof-of-work", () =
     const tokens = await query("SELECT COUNT(*)::int AS n FROM password_resets;");
     expect(tokens.rows[0].n).toBe(0);
   });
+});
+
+
+const CHROME_MAC =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
+const FIREFOX_LINUX = "Mozilla/5.0 (X11; Linux x86_64; rv:127.0) Gecko/20100101 Firefox/127.0";
+
+/** Los avisos de seguridad se envían sin bloquear el login (fire-and-forget): se espera a que aparezcan. */
+async function waitForNotifications(userId: number, expected: number): Promise<{ title: string; body: string }[]> {
+  for (let i = 0; i < 40; i++) {
+    const res = await query("SELECT title, body FROM notifications WHERE user_id = $1 ORDER BY id;", [userId]);
+    if (res.rows.length >= expected) return res.rows;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  return (await query("SELECT title, body FROM notifications WHERE user_id = $1 ORDER BY id;", [userId])).rows;
+}
+
+describe("Avisos de seguridad al dueño de la cuenta", () => {
+  it("un login desde un dispositivo nunca visto crea una notificación", async () => {
+    const user = await createTestUser({ password: PASSWORD });
+    await createTestSession(user.id, { userAgent: CHROME_MAC });
+
+    const client = new TestClient();
+    const pow = await client.solvePow("login", user.email);
+    const res = await client.fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "User-Agent": FIREFOX_LINUX },
+      body: JSON.stringify({ email: user.email, password: PASSWORD, pow }),
+    });
+    expect(res.status).toBe(200);
+
+    const notifications = await waitForNotifications(user.id, 1);
+    expect(notifications).toHaveLength(1);
+    expect(notifications[0].body).toContain("Firefox en Linux");
+  });
+
+  it("un login desde el MISMO dispositivo no avisa", async () => {
+    const user = await createTestUser({ password: PASSWORD });
+    await createTestSession(user.id, { userAgent: CHROME_MAC });
+
+    const client = new TestClient();
+    const pow = await client.solvePow("login", user.email);
+    await client.fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "User-Agent": CHROME_MAC },
+      body: JSON.stringify({ email: user.email, password: PASSWORD, pow }),
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    const notifications = await query("SELECT 1 FROM notifications WHERE user_id = $1;", [user.id]);
+    expect(notifications.rows).toHaveLength(0);
+  });
+
+  it("5 intentos fallidos contra una cuenta real (desde IPs distintas) avisan UNA vez, sin bloquearla", async () => {
+    const user = await createTestUser({ password: PASSWORD });
+
+    for (let i = 0; i < 6; i++) {
+      const res = await new TestClient().post("/api/auth/login", { email: user.email, password: "mal" });
+      expect(res.status).toBe(401);
+    }
+
+    const notifications = await waitForNotifications(user.id, 1);
+    expect(notifications).toHaveLength(1);
+    expect(notifications[0].title).toContain("Intentos fallidos");
+
+    // La cuenta sigue accesible para su dueño.
+    expect((await new TestClient().post("/api/auth/login", { email: user.email, password: PASSWORD })).status).toBe(200);
+  }, 60_000);
 });

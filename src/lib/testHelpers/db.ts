@@ -201,13 +201,14 @@ export async function createTestLead(overrides: TestLeadOverrides = {}) {
 
 export async function createTestSession(
   userId: number,
-  overrides: { expiresAt?: Date; revokedAt?: Date | null } = {}
+  overrides: { expiresAt?: Date; revokedAt?: Date | null; lastSeenAt?: Date; userAgent?: string; ip?: string } = {}
 ) {
   const id = crypto.randomUUID();
   const expiresAt = overrides.expiresAt ?? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const res = await query(
-    `INSERT INTO sessions (id, user_id, expires_at, revoked_at) VALUES ($1, $2, $3, $4) RETURNING *;`,
-    [id, userId, expiresAt, overrides.revokedAt ?? null]
+    `INSERT INTO sessions (id, user_id, expires_at, revoked_at, last_seen_at, user_agent, ip)
+     VALUES ($1, $2, $3, $4, COALESCE($5, now()), $6, $7) RETURNING *;`,
+    [id, userId, expiresAt, overrides.revokedAt ?? null, overrides.lastSeenAt ?? null, overrides.userAgent ?? null, overrides.ip ?? null]
   );
   return res.rows[0] as { id: string; user_id: number; expires_at: string; revoked_at: string | null };
 }

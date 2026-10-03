@@ -3,6 +3,7 @@ import { z } from "zod";
 import { randomUUID } from "node:crypto";
 import { withTransaction } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
+import { PWNED_PASSWORD_MESSAGE, isPasswordPwned } from "@/lib/pwnedPasswords";
 import { createSessionToken } from "@/lib/session";
 import { logAudit } from "@/lib/audit";
 import { isRateLimited } from "@/lib/rateLimit";
@@ -60,6 +61,10 @@ export async function POST(request: Request) {
     const existingUser = await findUserByEmail(invite.email);
     if (existingUser) {
       return NextResponse.json({ error: "Ya existe una cuenta con ese correo." }, { status: 400 });
+    }
+
+    if (await isPasswordPwned(password)) {
+      return NextResponse.json({ error: PWNED_PASSWORD_MESSAGE }, { status: 400 });
     }
 
     const passwordHash = await hashPassword(password);

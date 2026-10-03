@@ -107,3 +107,43 @@ describe("resolveSession", () => {
     expect(resolved?.clientId).toBe(client.id);
   });
 });
+
+describe("resolveSession — expiración por inactividad", () => {
+  const HOURS = 60 * 60 * 1000;
+
+  it("rechaza una sesión que lleva más de 12 h sin usarse, aunque no haya expirado ni esté revocada", async () => {
+    const user = await createTestUser();
+    const session = await createTestSession(user.id, { lastSeenAt: new Date(Date.now() - 13 * HOURS) });
+
+    expect(await resolveSession(session.id)).toBeNull();
+  });
+
+  it("acepta una sesión usada hace menos de 12 h", async () => {
+    const user = await createTestUser();
+    const session = await createTestSession(user.id, { lastSeenAt: new Date(Date.now() - 11 * HOURS) });
+
+    expect(await resolveSession(session.id)).not.toBeNull();
+  });
+
+  it("renueva last_seen_at cuando la marca está vieja (>5 min)", async () => {
+    const user = await createTestUser();
+    const staleAt = new Date(Date.now() - 2 * HOURS);
+    const session = await createTestSession(user.id, { lastSeenAt: staleAt });
+
+    await resolveSession(session.id);
+
+    const row = await query("SELECT last_seen_at FROM sessions WHERE id = $1;", [session.id]);
+    expect(new Date(row.rows[0].last_seen_at).getTime()).toBeGreaterThan(staleAt.getTime() + HOURS);
+  });
+
+  it("NO escribe en la base si la marca es reciente (una escritura por request sería un UPDATE por cada carga)", async () => {
+    const user = await createTestUser();
+    const recent = new Date(Date.now() - 60 * 1000);
+    const session = await createTestSession(user.id, { lastSeenAt: recent });
+
+    await resolveSession(session.id);
+
+    const row = await query("SELECT last_seen_at FROM sessions WHERE id = $1;", [session.id]);
+    expect(new Date(row.rows[0].last_seen_at).getTime()).toBe(recent.getTime());
+  });
+});

@@ -12,6 +12,7 @@ import {
   withMinimumDuration,
 } from "@/lib/authShield";
 import { setSessionCookie } from "@/lib/sessionCookie";
+import { FAILED_LOGIN_ALERT_THRESHOLD, fireAndLog, notifyFailedLoginBurst } from "@/lib/securityAlerts";
 import { logError } from "@/lib/logger";
 
 // Correo normalizado ANTES de usarlo como clave de los contadores de fallos:
@@ -56,7 +57,12 @@ export async function POST(request: Request) {
     );
 
     if (authResult.status === "invalid") {
-      await recordAuthFailure({ surface: "login", ip, identifier: email });
+      const counts = await recordAuthFailure({ surface: "login", ip, identifier: email });
+      // Aviso al dueño de una cuenta REAL al cruzar el umbral (igualdad: una
+      // sola vez por ventana de 15 min, aunque el atacante siga intentando).
+      if (authResult.userId !== null && counts.idFailures === FAILED_LOGIN_ALERT_THRESHOLD) {
+        fireAndLog("ráfaga de fallos", notifyFailedLoginBurst({ userId: authResult.userId, failures: counts.idFailures, ip }));
+      }
       return NextResponse.json(INVALID_CREDENTIALS, { status: 401 });
     }
 

@@ -4,6 +4,7 @@ import { requireSession } from "@/lib/withAuth";
 import { logAudit } from "@/lib/audit";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { comparePassword, hashPassword } from "@/lib/auth";
+import { PWNED_PASSWORD_MESSAGE, isPasswordPwned } from "@/lib/pwnedPasswords";
 import { changeUserPassword, getUserPasswordHash } from "@/lib/queries/userProfile";
 import { ChangePasswordSchema } from "@/lib/profileValidation";
 import { logError } from "@/lib/logger";
@@ -60,6 +61,10 @@ export async function POST(request: Request) {
         ip,
       });
       return NextResponse.json({ error: "La contraseña actual no es correcta." }, { status: 400 });
+    }
+
+    if (await isPasswordPwned(parsed.data.newPassword)) {
+      return NextResponse.json({ error: PWNED_PASSWORD_MESSAGE }, { status: 400 });
     }
 
     const newHash = await hashPassword(parsed.data.newPassword);

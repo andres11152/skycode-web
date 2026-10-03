@@ -9,6 +9,7 @@ import { isRateLimited } from "./rateLimit";
 import { findUserByEmail, createSessionRecord, revokeSessionRecord } from "./queries/auth";
 import { verifyTotpOrBackupCode } from "./queries/totp";
 import { logError } from "./logger";
+import { detectNewDevice, fireAndLog, notifyNewDeviceLogin } from "./securityAlerts";
 
 import { SESSION_LIFETIME_MS } from "./sessionCookie";
 export { SESSION_LIFETIME_MS };
@@ -45,7 +46,8 @@ export interface AuthSuccessResult {
  * traduce cada rama a su propia respuesta HTTP.
  */
 export type AuthenticateResult =
-  | { status: "invalid" }
+  /** `userId` solo viene cuando el correo SÍ existe (para avisar al dueño); nunca llega al cliente. */
+  | { status: "invalid"; userId: number | null }
   | { status: "needs_2fa"; pendingToken: string }
   | { status: "success"; user: AuthUserPublic; token: string };
 
@@ -57,7 +59,17 @@ export type AuthenticateResult =
 async function createSessionForUser(user: AuthUserPublic, ip: string, userAgent?: string | null): Promise<AuthSuccessResult> {
   const sessionId = randomUUID();
   const expiresAt = new Date(Date.now() + SESSION_LIFETIME_MS);
+
+  // Debe evaluarse ANTES de insertar la sesión nueva (si no, siempre
+  // "conocería" el dispositivo). Un fallo de la consulta nunca bloquea el login.
+  const isNewDevice = await detectNewDevice(user.id, userAgent).catch((error) => {
+    logError("⚠️ [Auth] detectNewDevice falló", error, { userId: user.id });
+    return false;
+  });
+
   await createSessionRecord({ id: sessionId, userId: user.id, expiresAt, ip, userAgent });
+
+  if (isNewDevice) fireAndLog("nuevo dispositivo", notifyNewDeviceLogin({ userId: user.id, ip, userAgent }));
 
   await logAudit(query, {
     actorId: user.id,
@@ -104,7 +116,7 @@ export async function authenticateUserCredentials({ email, password, ip, userAge
       entityId: user?.id ?? email,
       ip,
     });
-    return { status: "invalid" };
+    return { status: "invalid", userId: user?.id ?? null };
   }
 
   // Migración transparente de hash: una cuenta con hash bcrypt (o scrypt con
