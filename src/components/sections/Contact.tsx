@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 import { ChatCircle, Envelope, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/Button";
+import { FieldError } from "@/components/ui/FieldError";
 import { PhoneField } from "@/components/ui/PhoneField";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getContactContent } from "@/content/contact";
@@ -166,6 +167,11 @@ export function Contact({
   // campos como "touched" (para mostrar sus errores) y mueve el foco al
   // primer campo inválido, como pide CLAUDE.md.
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  // Temblor corto del bloque del botón en un envío fallido (inválido o error
+  // del servidor). Es una clase CSS que se quita al terminar (`onAnimationEnd`):
+  // no se usa `key` para reiniciarla porque remontar el botón le quitaría el
+  // foco a quien envía con teclado. Con reduced motion la animación no corre.
+  const [shaking, setShaking] = useState(false);
   const idPrefix = useId();
 
   // Escucha el prefill del cotizador (ver lib/contactPrefillEvent.ts) — ya
@@ -216,6 +222,7 @@ export function Contact({
 
     if (!isFormValid) {
       setSubmitAttempted(true);
+      setShaking(true);
       setTouched({ name: true, email: true, message: true, serviceOther: true });
       const firstInvalidId = !isNameValid
         ? `${idPrefix}-name`
@@ -236,6 +243,10 @@ export function Contact({
 
     setIsSubmitting(true);
     setErrorMessage(null);
+    // En un envío exitoso el navegador navega a /gracias; el botón debe
+    // seguir en "enviando" hasta que la página se descarga (antes volvía a
+    // "Enviar" un instante, un parpadeo que invitaba a un segundo clic).
+    let navigating = false;
 
     const formData = new FormData(e.currentTarget);
     const data = {
@@ -277,15 +288,18 @@ export function Contact({
         // que la conversión nunca se registraba aunque el formulario
         // funcionara. No reemplazar por router.push sin agregar un disparo
         // manual de gtag('config'|'event', ...) equivalente.
+        navigating = true;
         window.location.href = thankYouPath;
       } else {
         setErrorMessage(result.error || contactData.errorGeneral);
+        setShaking(true);
       }
     } catch (err) {
       logError("Error al enviar el formulario de contacto", err);
       setErrorMessage(contactData.errorConnection);
+      setShaking(true);
     } finally {
-      setIsSubmitting(false);
+      if (!navigating) setIsSubmitting(false);
     }
   }
 
@@ -336,7 +350,12 @@ export function Contact({
           )}
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        {/* noValidate: sin él, `required` hace que el navegador intercepte el
+            envío con su burbuja nativa (en el idioma del SO, no del sitio) y
+            `handleSubmit` — que marca los campos, muestra los errores
+            traducidos y mueve el foco — nunca llegaba a correr con campos
+            vacíos. `required` se queda por semántica (aria-required). */}
+        <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-5">
           {/* Nombre completo */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor={`${idPrefix}-name`} className={labelClasses}>
@@ -344,6 +363,8 @@ export function Contact({
             </label>
             <input
               id={`${idPrefix}-name`}
+              aria-invalid={touched.name && !isNameValid ? true : undefined}
+              aria-describedby={touched.name && !isNameValid ? `${idPrefix}-name-error` : undefined}
               type="text"
               name="name"
               value={name}
@@ -361,9 +382,7 @@ export function Contact({
               }`}
             />
             {touched.name && !isNameValid && (
-              <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
-                <WarningCircle size={12} /> {contactData.validation.nameError}
-              </p>
+              <FieldError id={`${idPrefix}-name-error`}>{contactData.validation.nameError}</FieldError>
             )}
           </div>
 
@@ -374,6 +393,8 @@ export function Contact({
             </label>
             <input
               id={`${idPrefix}-email`}
+              aria-invalid={touched.email && !isEmailValid ? true : undefined}
+              aria-describedby={touched.email && !isEmailValid ? `${idPrefix}-email-error` : undefined}
               type="email"
               name="email"
               value={email}
@@ -391,9 +412,7 @@ export function Contact({
               }`}
             />
             {touched.email && !isEmailValid && (
-              <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
-                <WarningCircle size={12} /> {contactData.validation.emailError}
-              </p>
+              <FieldError id={`${idPrefix}-email-error`}>{contactData.validation.emailError}</FieldError>
             )}
           </div>
 
@@ -440,6 +459,8 @@ export function Contact({
               </label>
               <input
                 id={`${idPrefix}-service-other`}
+                aria-invalid={touched.serviceOther && !isServiceOtherValid ? true : undefined}
+                aria-describedby={touched.serviceOther && !isServiceOtherValid ? `${idPrefix}-service-other-error` : undefined}
                 type="text"
                 name="serviceOther"
                 value={serviceOther}
@@ -454,9 +475,7 @@ export function Contact({
                 }`}
               />
               {touched.serviceOther && !isServiceOtherValid && (
-                <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
-                  <WarningCircle size={12} /> {contactData.validation.serviceOtherError}
-                </p>
+                <FieldError id={`${idPrefix}-service-other-error`}>{contactData.validation.serviceOtherError}</FieldError>
               )}
             </div>
           )}
@@ -468,6 +487,8 @@ export function Contact({
             </label>
             <textarea
               id={`${idPrefix}-message`}
+              aria-invalid={touched.message && !isMessageValid ? true : undefined}
+              aria-describedby={touched.message && !isMessageValid ? `${idPrefix}-message-error` : undefined}
               name="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -484,9 +505,7 @@ export function Contact({
               }`}
             />
             {touched.message && !isMessageValid && (
-              <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
-                <WarningCircle size={12} /> {contactData.validation.messageError}
-              </p>
+              <FieldError id={`${idPrefix}-message-error`}>{contactData.validation.messageError}</FieldError>
             )}
           </div>
 
@@ -529,7 +548,10 @@ export function Contact({
           </div>
 
           {errorMessage && (
-            <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3.5 text-sm text-red-600 font-medium flex items-center gap-2">
+            <div
+              role="alert"
+              className="animate-enter-error flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3.5 text-sm font-medium text-red-600"
+            >
               <WarningCircle size={16} className="shrink-0" />
               <span>{errorMessage}</span>
             </div>
@@ -539,8 +561,13 @@ export function Contact({
               (salvo mientras envía): un botón gris hasta marcar la casilla
               se leía como roto. Un envío inválido marca los campos y mueve
               el foco al primero con error, en vez de bloquear el clic. */}
-          <div className="flex flex-col gap-2 mt-1">
-            <Button type="submit" size="lg" disabled={isSubmitting}>
+          <div
+            className={cn("mt-1 flex flex-col gap-2", shaking && "animate-shake")}
+            onAnimationEnd={(e) => {
+              if (e.animationName === "shake") setShaking(false);
+            }}
+          >
+            <Button type="submit" size="lg" loading={isSubmitting}>
               {isSubmitting ? contactData.sendingLabel : contactData.submitLabel}
             </Button>
 

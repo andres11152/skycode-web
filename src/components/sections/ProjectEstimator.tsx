@@ -229,34 +229,40 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   const displayPrice = currency === "COP" ? type.priceCop : type.priceUsd;
 
                   return (
-                    <div
+                    // <button> (antes <div onClick>): una tarjeta clicable sin rol ni
+                    // tabIndex no se alcanzaba con el teclado ni se anunciaba. Dentro
+                    // solo contenido de frase (span, no div/h4/p) para que el HTML
+                    // sea válido.
+                    <button
+                      type="button"
                       key={type.id}
+                      aria-pressed={isSelected}
                       onClick={() => setSelectedType(type.id)}
-                      className={`group relative flex cursor-pointer flex-col justify-between rounded-xl border p-4 transition-all ${
+                      className={`group relative flex w-full cursor-pointer flex-col justify-between rounded-xl border p-4 text-left outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] motion-reduce:active:scale-100 ${
                         isSelected
                           ? "border-accent bg-accent/10 shadow-[0_0_20px_rgba(0,137,205,0.15)]"
                           : "border-foreground/10 bg-background/50 hover:border-foreground/20"
                       }`}
                     >
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                      <span className="block">
+                        <span className="mb-2 flex items-center justify-between">
+                          <span className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-200 ${
                             isSelected ? "bg-accent-strong text-white" : "bg-foreground/5 text-foreground/70"
                           }`}>
                             <Icon size={18} />
-                          </div>
-                          {isSelected && <CheckCircle size={16} className="text-accent" />}
-                        </div>
-                        <h4 className="font-bold text-sm text-foreground">{type.title}</h4>
-                        <p className="mt-1 text-xs text-foreground/70 leading-relaxed">{type.desc}</p>
-                      </div>
+                          </span>
+                          {isSelected && <CheckCircle size={16} className="animate-pop-in text-accent" />}
+                        </span>
+                        <span className="block text-sm font-bold text-foreground">{type.title}</span>
+                        <span className="mt-1 block text-xs leading-relaxed text-foreground/70">{type.desc}</span>
+                      </span>
 
-                      <div className="mt-3 border-t border-foreground/5 pt-2 text-[11px]">
+                      <span className="mt-3 block border-t border-foreground/5 pt-2 text-[11px]">
                         <span className="font-mono font-bold text-accent-strong">
                           {content.fromLabel} {formatPrice(displayPrice)}
                         </span>
-                      </div>
-                    </div>
+                      </span>
+                    </button>
                   );
                 })}
               </div>
@@ -274,25 +280,27 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   const addonPrice = currency === "COP" ? addon.priceCop : addon.priceUsd;
 
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={addon.id}
+                      aria-pressed={isChecked}
                       onClick={() => toggleAddon(addon.id)}
-                      className={`flex cursor-pointer items-center justify-between rounded-xl border p-3.5 text-xs transition-all ${
+                      className={`flex w-full cursor-pointer items-center justify-between rounded-xl border p-3.5 text-left text-xs outline-none transition-[border-color,background-color,transform] duration-200 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99] motion-reduce:active:scale-100 ${
                         isChecked
                           ? "border-accent/50 bg-accent/5 font-semibold text-foreground"
                           : "border-foreground/10 bg-background/40 text-foreground/80 hover:border-foreground/20"
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`flex h-4 w-4 items-center justify-center rounded border ${
+                      <span className="flex items-center gap-3">
+                        <span className={`flex h-4 w-4 items-center justify-center rounded border transition-colors duration-200 ${
                           isChecked ? "border-accent bg-accent-strong text-white" : "border-foreground/30"
                         }`}>
-                          {isChecked && <CheckCircle size={12} />}
-                        </div>
+                          {isChecked && <CheckCircle size={12} className="animate-pop-in" />}
+                        </span>
                         <span>{addon.title}</span>
-                      </div>
+                      </span>
                       <span className="font-mono text-foreground/60">+{formatPrice(addonPrice)}</span>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -306,8 +314,10 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <button
+                  type="button"
+                  aria-pressed={urgency === "standard"}
                   onClick={() => setUrgency("standard")}
-                  className={`rounded-xl border p-3 text-left text-xs font-medium transition-all ${
+                  className={`rounded-xl border p-3 text-left text-xs font-medium outline-none transition-[border-color,background-color,transform] duration-200 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] motion-reduce:active:scale-100 ${
                     urgency === "standard"
                       ? "border-accent bg-accent/10 text-foreground font-bold"
                       : "border-foreground/10 bg-background/40 text-foreground/70"
@@ -317,8 +327,10 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   <div className="text-[11px] text-foreground/60">{content.pace.standardDesc}</div>
                 </button>
                 <button
+                  type="button"
+                  aria-pressed={urgency === "express"}
                   onClick={() => setUrgency("express")}
-                  className={`rounded-xl border p-3 text-left text-xs font-medium transition-all ${
+                  className={`rounded-xl border p-3 text-left text-xs font-medium outline-none transition-[border-color,background-color,transform] duration-200 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] motion-reduce:active:scale-100 ${
                     urgency === "express"
                       ? "border-accent bg-accent/10 text-foreground font-bold"
                       : "border-foreground/10 bg-background/40 text-foreground/70"
@@ -414,7 +426,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
               <Magnetic strength={0.25} range={60}>
                 <button
                   onClick={handlePreFillContact}
-                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 active:scale-98 transition-all"
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 active:scale-[0.98] motion-reduce:active:scale-100 transition-[filter,transform] duration-200"
                 >
                   <span>{content.summary.ctaLabel}</span>
                   <ArrowRight size={14} />
@@ -428,12 +440,12 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   sigue siendo el botón de arriba. */}
               <div className="mt-3">
                 {captureStatus === "sent" ? (
-                  <div className="flex min-h-11 items-center justify-center gap-1.5 text-[11px] font-medium text-emerald-400">
+                  <div role="status" className="animate-enter-pop flex min-h-11 items-center justify-center gap-1.5 text-[11px] font-medium text-emerald-400">
                     <CheckCircle size={13} />
                     <span>{content.emailCapture.successMessage}</span>
                   </div>
                 ) : showEmailCapture ? (
-                  <form onSubmit={handleEmailCapture} className="flex flex-col gap-2">
+                  <form onSubmit={handleEmailCapture} className="animate-enter-pop flex origin-top flex-col gap-2">
                     <div className="flex gap-2">
                       <input
                         type="email"
@@ -480,7 +492,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                       </span>
                     </label>
                     {captureStatus === "error" && (
-                      <span className="flex items-center gap-1 text-[10px] font-medium text-red-400">
+                      <span role="alert" className="animate-enter-error flex items-center gap-1 text-[10px] font-medium text-red-400">
                         <WarningCircle size={11} /> {content.emailCapture.errorMessage}
                       </span>
                     )}
