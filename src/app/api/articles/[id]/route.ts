@@ -23,6 +23,10 @@ const BlogBlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("heading"), level: z.union([z.literal(2), z.literal(3)]), text: z.string() }),
   z.object({ type: z.literal("list"), items: z.array(z.string()) }),
   z.object({ type: z.literal("code"), language: z.string(), code: z.string() }),
+  z.object({
+    type: z.literal("faq"),
+    items: z.array(z.object({ question: z.string().trim().min(1).max(300), answer: z.string().trim().min(1).max(2000) })).min(1).max(20),
+  }),
 ]);
 
 const UpdateArticleSchema = z.object({

@@ -1,4 +1,5 @@
 import { getBlogMeta, getBlogPosts, type BlogBlock } from "@/content/blog";
+import { blockPlainText } from "@/content/blogShared";
 import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
 import { siteName, siteUrl } from "@/lib/site";
 import { localeHomePath, type Locale } from "@/lib/i18n";
@@ -22,11 +23,7 @@ function xmlEscape(value: string): string {
 /** Concatena los bloques de un post en texto plano simple, para el `<description>` del item — no HTML, los lectores de feed lo muestran como texto. */
 function blocksToPlainText(blocks: BlogBlock[]): string {
   return blocks
-    .map((block) => {
-      if (block.type === "paragraph" || block.type === "heading") return block.text;
-      if (block.type === "list") return block.items.join(" — ");
-      return "";
-    })
+    .map(blockPlainText)
     .filter(Boolean)
     .join(" ")
     .slice(0, 500);

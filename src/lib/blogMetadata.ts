@@ -61,9 +61,13 @@ export async function buildBlogPostMetadata(locale: Locale, slug: string): Promi
   const existingLocales = await Promise.all(
     (["es", "en", "fr"] as const).map(async (loc) => ((await getPostBySlug(slug, loc)) ? loc : null))
   );
-  const languages = Object.fromEntries(
+  const languages: Record<string, string> = Object.fromEntries(
     existingLocales.filter((loc): loc is Locale => loc !== null).map((loc) => [loc, `${siteUrl}${blogPostPath(loc, slug)}`])
   );
+  // x-default al español (el locale sin prefijo), mismo criterio que
+  // servicios y home — antes faltaba solo en los posts. Únicamente si la
+  // versión en español existe, para no apuntar el default a un 404.
+  if (languages.es) languages["x-default"] = languages.es;
 
   return {
     title: post.title,

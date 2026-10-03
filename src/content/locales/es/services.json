@@ -89,7 +89,88 @@
         "Limpieza, deduplicación y mapeo de datos históricos",
         "Migración por fases sin tiempos de inactividad",
         "Validación estricta de consistencia e integridad"
-      ]
+      ],
+      "seo": {
+        "title": "Servicios de migración de sistemas legacy",
+        "description": "Migramos tu sistema legacy por fases a una plataforma moderna: sin downtime, sin perder datos y con integridad validada. Te respondemos en 24 h."
+      },
+      "details": {
+        "intro": [
+          "Un sistema legado no es solo software viejo: es el que sigue sosteniendo la facturación, el inventario o la operación diaria, pero ya no se puede cambiar sin miedo. Nuestro servicio de migración de sistemas legacy lo reemplaza módulo por módulo, con el sistema anterior funcionando en paralelo hasta que el nuevo demuestra que procesa lo mismo, con los mismos resultados.",
+          "No hacemos migraciones \"Big Bang\" de fin de semana. Usamos el patrón Strangler Fig, sincronización de datos entre ambos sistemas y reconciliación automática antes de cada corte — lo explicamos con detalle en nuestra [guía de migración de sistemas legados sin interrupción](/blog/migracion-sistemas-legados-sin-interrupcion)."
+        ],
+        "stepsHeading": "Cómo migramos un sistema legacy sin downtime",
+        "steps": [
+          {
+            "title": "Auditoría del sistema y de los datos",
+            "text": "Inventariamos módulos, integraciones, tareas programadas y reglas de negocio escondidas en el código o en procedimientos almacenados. Medimos volumen, calidad y duplicados de los datos antes de prometer un plazo."
+          },
+          {
+            "title": "Decisión por módulo: migrar, mantener o retirar",
+            "text": "No todo merece reescribirse. Cada módulo se clasifica: se migra, se encapsula detrás de una API, se reemplaza por un SaaS o se da de baja. Así el presupuesto va a lo que de verdad frena a la operación."
+          },
+          {
+            "title": "Arquitectura objetivo y capa de enrutamiento",
+            "text": "Diseñamos la plataforma nueva y una capa intermedia que decide qué peticiones atiende el sistema viejo y cuáles el nuevo. Es lo que permite migrar por partes sin que los usuarios cambien de herramienta cada semana."
+          },
+          {
+            "title": "Migración de datos por fases",
+            "text": "Extracción, limpieza, deduplicación y mapeo de esquemas con scripts versionados y repetibles. Ambos sistemas se mantienen sincronizados mientras conviven, así que nunca hay un día en que \"los datos están a medio pasar\"."
+          },
+          {
+            "title": "Validación y reconciliación",
+            "text": "Antes de cada corte comparamos conteos, totales y registros críticos entre el sistema legado y el nuevo, y corremos pruebas de regresión sobre los flujos de negocio. Si algo no cuadra, el corte no ocurre."
+          },
+          {
+            "title": "Corte, monitoreo y decommission",
+            "text": "Cambiamos el tráfico de forma gradual y reversible, monitoreamos errores y rendimiento, y solo al final apagamos el sistema anterior, dejando un archivo de consulta de los datos históricos que la ley obliga a conservar."
+          }
+        ],
+        "useCasesHeading": "Casos en los que solemos intervenir",
+        "useCases": [
+          "ERP o software de gestión hecho a medida hace 10-15 años, sin documentación y con una sola persona que entiende el código.",
+          "Operación que vive en planillas de Excel, archivos XML o Access dispersos y necesita una base de datos única con permisos y trazabilidad.",
+          "Aplicaciones de escritorio (Visual Basic, Delphi, PHP antiguo) que deben pasar a web o a la nube sin detener la facturación.",
+          "Bases de datos que no cumplen con la protección de datos exigida hoy (Ley 1581, RGPD) y necesitan cifrado, control de acceso y auditoría — ver nuestro servicio de [seguridad y cumplimiento](/servicios/seguridad-cumplimiento).",
+          "Sistemas que hay que retirar sin migrar todo el histórico: se migra solo lo activo y el resto queda archivado en modo consulta."
+        ],
+        "faqHeading": "Preguntas frecuentes sobre la migración de sistemas legacy",
+        "faqs": [
+          {
+            "question": "¿Cuánto tiempo toma migrar un sistema legacy?",
+            "answer": "Depende del número de módulos y del estado de los datos. Un módulo acotado con datos limpios puede salir a producción en semanas; un ERP completo se planifica por fases de varios meses. Lo importante es que cada fase entrega valor y es reversible: no hay que esperar al final para usar el sistema nuevo."
+          },
+          {
+            "question": "¿Se puede migrar sin detener la operación?",
+            "answer": "Sí, ese es el punto de migrar por fases. El sistema legado sigue funcionando mientras el nuevo asume módulo por módulo, con los datos sincronizados entre ambos. El corte de cada módulo es gradual y se puede revertir si algo falla."
+          },
+          {
+            "question": "¿Qué pasa con los datos históricos?",
+            "answer": "Se auditan antes de mover nada. Lo que se usa en la operación se limpia y se migra con validación de integridad; lo que solo se conserva por obligación legal o contable puede quedar en un archivo de solo lectura, sin cargarlo al sistema nuevo."
+          },
+          {
+            "question": "¿Conviene migrar o seguir manteniendo el sistema actual?",
+            "answer": "Conviene migrar cuando el costo de mantenerlo (horas para cada cambio, fallos, falta de soporte del proveedor, riesgo de seguridad) supera el de modernizarlo, o cuando bloquea integraciones que el negocio necesita. Si el sistema es estable y no frena a nadie, a veces lo correcto es encapsularlo detrás de una API y dejarlo como está."
+          },
+          {
+            "question": "¿Quién se queda con el código y la documentación?",
+            "answer": "Tú. El código es 100% tuyo desde el primer día y entregamos la documentación de arquitectura y de los scripts de migración, para que tu equipo pueda mantener el sistema nuevo sin depender de nosotros."
+          }
+        ],
+        "relatedHeading": "Sigue leyendo",
+        "related": [
+          {
+            "label": "Guía: migración de sistemas legados sin interrupción",
+            "href": "/blog/migracion-sistemas-legados-sin-interrupcion",
+            "description": "Marco paso a paso, errores comunes y cómo dar de baja un sistema sin migrar todos sus datos."
+          },
+          {
+            "label": "Deuda técnica: cómo detectarla a tiempo",
+            "href": "/blog/deuda-tecnica-como-detectarla",
+            "description": "Las señales de que tu sistema actual ya se está convirtiendo en un sistema legado."
+          }
+        ]
+      }
     },
     {
       "slug": "inteligencia-artificial-aplicada",

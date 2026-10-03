@@ -2,6 +2,7 @@ import blogMetaEs from "./locales/es/blog.json";
 import blogMetaEn from "./locales/en/blog.json";
 import blogMetaFr from "./locales/fr/blog.json";
 import type { Locale } from "@/lib/i18n";
+import { stripInlineLinks } from "@/lib/inlineLinks";
 
 // Tipos + funciones puras del blog (sin ningún import de lib/db.ts ni de
 // lib/queries/articles.ts) — separado de content/blog.ts a propósito. Un
@@ -20,7 +21,12 @@ export type BlogBlock =
   | { type: "paragraph"; text: string }
   | { type: "heading"; level: 2 | 3; text: string }
   | { type: "list"; items: string[] }
-  | { type: "code"; language: string; code: string };
+  | { type: "code"; language: string; code: string }
+  // Preguntas frecuentes: se renderizan como h3 + respuesta (va siempre
+  // después de un `heading` de nivel 2 que las presente) y alimentan el
+  // JSON-LD `FAQPage` de ArticleJsonLd. El texto de `paragraph`/`list`/`answer`
+  // admite enlaces internos `[texto](/ruta)`, ver lib/inlineLinks.ts.
+  | { type: "faq"; items: { question: string; answer: string }[] };
 
 export interface BlogPost {
   slug: string;
@@ -63,15 +69,18 @@ export function getBlogMeta(locale: Locale): BlogMeta {
   return blogMetaByLocale[locale];
 }
 
+/** Texto visible de un bloque (sin sintaxis de enlace) — compartido por el conteo de palabras y el RSS. */
+export function blockPlainText(block: BlogBlock): string {
+  if (block.type === "paragraph" || block.type === "heading") return stripInlineLinks(block.text);
+  if (block.type === "list") return block.items.map(stripInlineLinks).join(" — ");
+  if (block.type === "faq") return block.items.map((item) => `${item.question} ${stripInlineLinks(item.answer)}`).join(" ");
+  return "";
+}
+
 function wordCount(blocks: BlogBlock[]): number {
   return blocks.reduce((total, block) => {
-    if (block.type === "paragraph" || block.type === "heading") {
-      return total + block.text.split(/\s+/).length;
-    }
-    if (block.type === "list") {
-      return total + block.items.join(" ").split(/\s+/).length;
-    }
-    return total;
+    const text = blockPlainText(block).trim();
+    return text ? total + text.split(/\s+/).length : total;
   }, 0);
 }
 

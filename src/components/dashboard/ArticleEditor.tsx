@@ -52,6 +52,7 @@ function BlockRow({
     if (type === "paragraph") onChange({ type: "paragraph", text: "" });
     else if (type === "heading") onChange({ type: "heading", level: 2, text: "" });
     else if (type === "list") onChange({ type: "list", items: [""] });
+    else if (type === "faq") onChange({ type: "faq", items: [{ question: "", answer: "" }] });
     else onChange({ type: "code", language: "ts", code: "" });
   };
 
@@ -68,6 +69,7 @@ function BlockRow({
           <option value="heading">Encabezado</option>
           <option value="list">Lista</option>
           <option value="code">Código</option>
+          <option value="faq">Preguntas frecuentes</option>
         </select>
         {!disabled && (
           <div className="flex items-center gap-1">
@@ -108,7 +110,7 @@ function BlockRow({
           disabled={disabled}
           rows={3}
           className={inputClasses}
-          placeholder="Texto del párrafo…"
+          placeholder="Texto del párrafo… (enlace interno: [texto](/ruta))"
         />
       )}
 
@@ -143,6 +145,58 @@ function BlockRow({
           className={inputClasses}
           placeholder={"Un ítem por línea…"}
         />
+      )}
+
+      {block.type === "faq" && (
+        <div className="space-y-3">
+          {block.items.map((item, itemIndex) => {
+            const setItem = (patch: Partial<typeof item>) =>
+              onChange({ type: "faq", items: block.items.map((it, i) => (i === itemIndex ? { ...it, ...patch } : it)) });
+            return (
+              <div key={itemIndex} className="space-y-2 rounded-lg border border-foreground/10 p-3">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={item.question}
+                    onChange={(e) => setItem({ question: e.target.value })}
+                    disabled={disabled}
+                    aria-label={`Pregunta ${itemIndex + 1}`}
+                    className={inputClasses}
+                    placeholder="Pregunta…"
+                  />
+                  {!disabled && block.items.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => onChange({ type: "faq", items: block.items.filter((_, i) => i !== itemIndex) })}
+                      aria-label={`Eliminar pregunta ${itemIndex + 1}`}
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-foreground/60 hover:bg-red-500/10 hover:text-red-700 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+                <textarea
+                  value={item.answer}
+                  onChange={(e) => setItem({ answer: e.target.value })}
+                  disabled={disabled}
+                  aria-label={`Respuesta ${itemIndex + 1}`}
+                  rows={3}
+                  className={inputClasses}
+                  placeholder="Respuesta… (enlace interno: [texto](/ruta))"
+                />
+              </div>
+            );
+          })}
+          {!disabled && (
+            <button
+              type="button"
+              onClick={() => onChange({ type: "faq", items: [...block.items, { question: "", answer: "" }] })}
+              className="rounded-lg border border-foreground/15 px-3 py-1.5 text-xs font-medium text-foreground/80 hover:bg-foreground/5 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              + Agregar pregunta
+            </button>
+          )}
+        </div>
       )}
 
       {block.type === "code" && (

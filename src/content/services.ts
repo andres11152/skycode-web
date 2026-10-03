@@ -49,12 +49,41 @@ const iconMap: Record<string, Icon> = {
 
 const servicesByLocale = { es: servicesDataEs, en: servicesDataEn, fr: servicesDataFr };
 
+/**
+ * Contenido editorial extendido de la página de detalle de un servicio —
+ * opcional, hoy solo lo trae `migracion-datos-legacy` (la página que más
+ * impresiones de búsqueda recibe con una posición pobre: con solo
+ * descripción + 3 features, era demasiado delgada para competir). Los
+ * textos admiten enlaces internos `[texto](/ruta)`, ver lib/inlineLinks.ts.
+ * El carrusel de la home (Services.tsx) no lo usa.
+ */
+export interface ServiceDetails {
+  intro: string[];
+  stepsHeading: string;
+  steps: { title: string; text: string }[];
+  useCasesHeading: string;
+  useCases: string[];
+  faqHeading: string;
+  faqs: { question: string; answer: string }[];
+  relatedHeading: string;
+  related: { label: string; href: string; description: string }[];
+}
+
 export interface Service {
   slug: string;
   title: string;
   description: string;
   coverIcon: Icon;
   features: string[];
+  /**
+   * `<title>`/meta description propios para buscadores, cuando el título
+   * visible (que también usa el carrusel de la home) no incluye la keyword
+   * con la que la gente busca el servicio. El layout raíz agrega
+   * " | SkyCode Agency" (17 caracteres): `seo.title` debe quedar en ≤42
+   * para que el `<title>` final no pase de 60.
+   */
+  seo?: { title: string; description: string };
+  details?: ServiceDetails;
 }
 
 export function getServicesContent(locale: Locale) {
@@ -72,6 +101,8 @@ export function getServicesContent(locale: Locale) {
       description: item.description,
       coverIcon: iconMap[item.iconName] ?? Blueprint,
       features: item.features,
+      seo: item.seo,
+      details: item.details,
     })) satisfies Service[],
   };
 }

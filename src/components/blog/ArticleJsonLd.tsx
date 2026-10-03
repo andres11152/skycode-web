@@ -3,6 +3,7 @@ import { getBlogMeta } from "@/content/blogShared";
 import { blogIndexPath, blogPostPath, authorUrl } from "@/lib/blogPaths";
 import { localeHomePath, type Locale } from "@/lib/i18n";
 import { ogImageUrl, siteName, siteUrl } from "@/lib/site";
+import { stripInlineLinks } from "@/lib/inlineLinks";
 
 /**
  * Extraído de `app/blog/[slug]/page.tsx` para poder reutilizarlo en las
@@ -46,6 +47,23 @@ export function ArticleJsonLd({ post, locale }: { post: BlogPost; locale: Locale
     ],
   };
 
+  // FAQPage solo si el post trae bloques `faq` — sin preguntas no se emite
+  // un FAQPage vacío. El texto va sin la sintaxis de enlace interno.
+  const faqItems = post.content.flatMap((block) => (block.type === "faq" ? block.items : []));
+  const faqJsonLd =
+    faqItems.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          inLanguage: locale,
+          mainEntity: faqItems.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: { "@type": "Answer", text: stripInlineLinks(item.answer) },
+          })),
+        }
+      : null;
+
   return (
     <>
       <script
@@ -60,6 +78,14 @@ export function ArticleJsonLd({ post, locale }: { post: BlogPost; locale: Locale
           __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
         }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
     </>
   );
 }

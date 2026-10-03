@@ -21,6 +21,7 @@ import { getNavContent } from "@/content/nav";
 import { getTrustContent } from "@/content/trust";
 import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
+import { InlineText } from "@/components/blog/InlineText";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 
@@ -45,6 +46,8 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
   // el breadcrumb debe reflejar la jerarquía de rutas real.
   const servicesIndexHref = `${prefix}/servicios`;
   const contactHref = `${prefix}/#contacto`;
+
+  const details = service.details;
 
   const currentIndex = services.findIndex((item) => item.slug === slug);
   const nextService = services[(currentIndex + 1) % services.length];
@@ -85,6 +88,12 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
               {service.description}
             </p>
 
+            {details?.intro.map((paragraph) => (
+              <p key={paragraph} className="max-w-2xl text-base leading-relaxed text-foreground/80">
+                <InlineText text={paragraph} />
+              </p>
+            ))}
+
             {/* Interactive Demo & Environment Simulation Box */}
             <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6 bg-foreground/[0.02]">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60 mb-4 flex items-center gap-2">
@@ -115,6 +124,45 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
               </ul>
             </motion.div>
 
+            {details && (
+              <>
+                <section aria-labelledby="service-steps" className="flex flex-col gap-6">
+                  <h2 id="service-steps" className="text-2xl font-bold tracking-tight text-balance text-foreground sm:text-3xl">
+                    {details.stepsHeading}
+                  </h2>
+                  <ol className="grid gap-4 sm:grid-cols-2">
+                    {details.steps.map((step, index) => (
+                      <li key={step.title} className="flex flex-col gap-2 rounded-xl border border-foreground/10 p-6">
+                        <span className="font-mono text-xs font-medium text-foreground/60">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <h3 className="text-base font-semibold tracking-tight text-foreground">{step.title}</h3>
+                        <p className="text-sm leading-relaxed text-foreground/80">
+                          <InlineText text={step.text} />
+                        </p>
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+
+                <section aria-labelledby="service-use-cases" className="flex flex-col gap-4">
+                  <h2 id="service-use-cases" className="text-2xl font-bold tracking-tight text-balance text-foreground sm:text-3xl">
+                    {details.useCasesHeading}
+                  </h2>
+                  <ul className="flex flex-col gap-3">
+                    {details.useCases.map((useCase) => (
+                      <li key={useCase} className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/80">
+                        <CheckCircle size={18} className="mt-1 shrink-0 text-accent" aria-hidden="true" />
+                        <span>
+                          <InlineText text={useCase} />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </>
+            )}
+
             <motion.div variants={fadeUp(reduced)} className="rounded-xl border border-foreground/10 p-6">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground/60">
                 {servicePageData.approachHeading}
@@ -128,6 +176,47 @@ export function ServiceView({ slug, locale = defaultLocale }: { slug: string; lo
                 ))}
               </ul>
             </motion.div>
+
+            {details && (
+              <>
+                <section aria-labelledby="service-faq" className="flex flex-col gap-2">
+                  <h2 id="service-faq" className="text-2xl font-bold tracking-tight text-balance text-foreground sm:text-3xl">
+                    {details.faqHeading}
+                  </h2>
+                  <div className="mt-2 flex flex-col divide-y divide-foreground/10 border-y border-foreground/10">
+                    {details.faqs.map((item) => (
+                      <div key={item.question} className="flex flex-col gap-2 py-5">
+                        <h3 className="text-lg font-semibold tracking-tight text-foreground">{item.question}</h3>
+                        <p className="text-base leading-relaxed text-foreground/80">
+                          <InlineText text={item.answer} />
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section aria-labelledby="service-related" className="flex flex-col gap-4">
+                  <h2 id="service-related" className="text-sm font-semibold uppercase tracking-wide text-foreground/60">
+                    {details.relatedHeading}
+                  </h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {details.related.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="group flex flex-col gap-2 rounded-xl border border-foreground/10 p-6 outline-none transition-colors hover:border-accent/30 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      >
+                        <span className="flex items-center justify-between gap-3 text-base font-semibold text-foreground group-hover:text-accent-strong">
+                          {link.label}
+                          <ArrowRight size={16} className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+                        </span>
+                        <span className="text-sm leading-relaxed text-foreground/80">{link.description}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              </>
+            )}
           </div>
 
           <motion.aside

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react";
 import { m as motion, useReducedMotion } from "framer-motion";
-import type { BlogPost } from "@/content/blogShared";
+import type { BlogBlock, BlogPost } from "@/content/blogShared";
 import { getBlogMeta, readingTime } from "@/content/blogShared";
 import { blogIndexPath } from "@/lib/blogPaths";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
@@ -15,7 +15,12 @@ import { ArticleBody } from "@/components/blog/ArticleBody";
 
 export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; locale?: Locale }) {
   const reduced = Boolean(useReducedMotion());
-  const headings = post.content.filter((block) => block.type === "heading");
+  // Solo h2: los posts largos (ej. el marco de 6 pasos en h3 del post de
+  // migración) llevaban el índice a ~20 entradas, más alto que la pantalla
+  // dentro de un aside `sticky`, y el CTA de abajo quedaba inalcanzable.
+  const headings = post.content.filter(
+    (block): block is Extract<BlogBlock, { type: "heading" }> => block.type === "heading" && block.level === 2
+  );
   const meta = getBlogMeta(locale);
   const homePath = localeHomePath(locale);
   const blogPath = blogIndexPath(locale);
@@ -98,9 +103,9 @@ export function ArticleView({ post, locale = defaultLocale }: { post: BlogPost; 
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground/70">
                   {meta.tocHeading}
                 </h2>
-                <ul className="mt-4 flex flex-col gap-2.5">
+                <ul className="mt-4 flex flex-col gap-2.5 lg:-mx-1 lg:max-h-[calc(100vh-26rem)] lg:overflow-y-auto lg:px-1 lg:py-0.5">
                   {headings.map((heading) => (
-                    <li key={heading.text} className={heading.level === 3 ? "pl-4" : undefined}>
+                    <li key={heading.text}>
                       <a
                         href={`#${slugify(heading.text)}`}
                         className="rounded text-sm text-foreground/70 outline-none transition-colors hover:text-accent-strong focus-visible:ring-2 focus-visible:ring-accent"

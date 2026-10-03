@@ -89,7 +89,88 @@
         "Deduplication, schema normalization, and historic data cleanup",
         "Zero-downtime phased migration strategies",
         "Strict data integrity checks and validation"
-      ]
+      ],
+      "seo": {
+        "title": "Legacy Software Migration Services",
+        "description": "We migrate your legacy system to a modern platform in phases: zero downtime, no data loss and verified data integrity. Get a reply within 24 hours."
+      },
+      "details": {
+        "intro": [
+          "A legacy system isn't just old software: it's the one still running your billing, inventory or daily operations, yet nobody dares to change it. Our legacy software migration service replaces it module by module, with the old system running in parallel until the new one proves it processes the same transactions with the same results.",
+          "We don't do weekend \"big bang\" cutovers. We use the Strangler Fig pattern, data synchronization between both systems and automated reconciliation before every cutover — all explained in our [guide to legacy system migration without downtime](/en/blog/migracion-sistemas-legados-sin-interrupcion)."
+        ],
+        "stepsHeading": "How we migrate a legacy system with zero downtime",
+        "steps": [
+          {
+            "title": "System and data assessment",
+            "text": "We inventory modules, integrations, scheduled jobs and business rules buried in code or stored procedures, and we measure data volume, quality and duplicates before committing to a timeline."
+          },
+          {
+            "title": "Per-module decision: migrate, retain or retire",
+            "text": "Not everything deserves a rewrite. Each module is classified as rehost, refactor, replace with SaaS, wrap behind an API or retire — so the budget goes where the legacy system actually slows the business down."
+          },
+          {
+            "title": "Target architecture and routing layer",
+            "text": "We design the new platform plus an intermediate layer that decides which requests the old system serves and which the new one does. That's what makes an incremental migration possible without users switching tools every week."
+          },
+          {
+            "title": "Phased data migration",
+            "text": "Extraction, cleansing, deduplication and schema mapping with versioned, repeatable scripts. Both systems stay in sync while they coexist, so there's never a day when the data is \"half migrated\"."
+          },
+          {
+            "title": "Validation and reconciliation",
+            "text": "Before every cutover we compare record counts, totals and critical records between the legacy and the new system, and run regression tests on business workflows. If the numbers don't match, the cutover doesn't happen."
+          },
+          {
+            "title": "Cutover, monitoring and decommissioning",
+            "text": "Traffic moves gradually and reversibly, we monitor errors and performance, and only at the end do we decommission the old system — keeping a read-only archive of the historical data you're legally required to retain."
+          }
+        ],
+        "useCasesHeading": "Typical legacy modernization projects",
+        "useCases": [
+          "A custom ERP or line-of-business app built 10-15 years ago, undocumented, with a single person who understands the code.",
+          "Operations running on scattered Excel spreadsheets, XML files or Access databases that need a single database with permissions and audit trails.",
+          "Desktop applications (Visual Basic, Delphi, legacy PHP) that must move to the web or the cloud without stopping invoicing.",
+          "Databases that don't meet today's data protection requirements (GDPR, CCPA) and need encryption, access control and auditing — see our [security and compliance](/en/servicios/seguridad-cumplimiento) service.",
+          "Systems that must be retired without migrating the full history: only active data moves, the rest stays in a read-only archive."
+        ],
+        "faqHeading": "Legacy system migration FAQ",
+        "faqs": [
+          {
+            "question": "How long does a legacy system migration take?",
+            "answer": "It depends on the number of modules and the state of the data. A well-scoped module with clean data can reach production in weeks; a full ERP is planned in phases over several months. Each phase ships value and is reversible, so you don't wait until the end to use the new system."
+          },
+          {
+            "question": "Can we migrate without downtime?",
+            "answer": "Yes — that's the whole point of a phased migration. The legacy system keeps running while the new one takes over module by module, with data synchronized between them. Each cutover is gradual and can be rolled back if something fails."
+          },
+          {
+            "question": "What happens to our historical data?",
+            "answer": "It's audited before anything moves. Data used in daily operations is cleansed and migrated with integrity checks; data kept only for legal or accounting reasons can live in a read-only archive instead of being loaded into the new system."
+          },
+          {
+            "question": "Should we migrate or keep maintaining the current system?",
+            "answer": "Migrate when the cost of keeping it (hours per change, outages, no vendor support, security exposure) exceeds the cost of modernizing it, or when it blocks integrations the business needs. If the system is stable and blocks no one, wrapping it behind an API and leaving it alone is sometimes the right call."
+          },
+          {
+            "question": "Who owns the code and documentation?",
+            "answer": "You do. The code is 100% yours from day one, and we hand over the architecture documentation and the migration scripts so your team can maintain the new system without depending on us."
+          }
+        ],
+        "relatedHeading": "Keep reading",
+        "related": [
+          {
+            "label": "Guide: legacy system migration without downtime",
+            "href": "/en/blog/migracion-sistemas-legados-sin-interrupcion",
+            "description": "Step-by-step framework, common mistakes and how to decommission a system without migrating all its data."
+          },
+          {
+            "label": "Technical debt: how to spot it early",
+            "href": "/en/blog/deuda-tecnica-como-detectarla",
+            "description": "The signs that your current system is already turning into a legacy system."
+          }
+        ]
+      }
     },
     {
       "slug": "inteligencia-artificial-aplicada",

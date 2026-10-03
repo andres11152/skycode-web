@@ -50,10 +50,12 @@ export function buildServicesIndexMetadata(locale: Locale): Metadata {
 export function buildServiceMetadata(locale: Locale, slug: string): Metadata {
   const service = getServiceBySlug(slug, locale);
   if (!service) return {};
+  const title = service.seo?.title ?? service.title;
+  const description = service.seo?.description ?? service.description;
 
   return {
-    title: service.title,
-    description: service.description,
+    title,
+    description,
     alternates: {
       canonical: servicePath(locale, slug),
       languages: {
@@ -65,14 +67,14 @@ export function buildServiceMetadata(locale: Locale, slug: string): Metadata {
     },
     openGraph: {
       type: "website",
-      title: service.title,
-      description: service.description,
-      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: service.title }],
+      title,
+      description,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
-      title: service.title,
-      description: service.description,
+      title,
+      description,
       images: [ogImageUrl],
     },
   };

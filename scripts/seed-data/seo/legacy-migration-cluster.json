@@ -1,0 +1,698 @@
+{
+  "es": {
+    "title": "Migración de sistemas legados sin downtime",
+    "description": "Guía paso a paso para migrar sistemas legados sin downtime ni pérdida de datos: Strangler Fig, errores comunes, decommission y FAQ. Evalúe su caso.",
+    "afterIntro": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Qué es un sistema legado y cuándo deja de ser un activo"
+      },
+      {
+        "type": "paragraph",
+        "text": "Un sistema legado (o sistema legacy) es software que sigue siendo crítico para la operación pero que fue construido con tecnologías, arquitecturas o prácticas que ya no permiten cambiarlo con seguridad: un ERP hecho a medida hace quince años, una aplicación de escritorio en Visual Basic, una base de datos Access compartida por red o un conjunto de planillas que se volvió el sistema de facturación de facto. La antigüedad por sí sola no lo convierte en un problema; lo que lo convierte en un problema es el costo de cada cambio."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Cada cambio pequeño toma semanas y nadie se atreve a tocar ciertos módulos.",
+          "Solo una persona (a veces externa) entiende cómo funciona el código.",
+          "El proveedor o el lenguaje ya no tiene soporte, o no se consiguen desarrolladores que lo dominen.",
+          "No se puede integrar con herramientas modernas (pasarelas de pago, CRM, APIs de terceros) sin parches frágiles.",
+          "No cumple los requisitos actuales de seguridad y protección de datos."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Si reconoce varias de estas señales, probablemente ya está pagando los intereses de una [deuda técnica acumulada](/blog/deuda-tecnica-como-detectarla). La pregunta deja de ser si migrar y pasa a ser cómo hacerlo sin poner en riesgo la operación — que es exactamente lo que resuelve un [servicio de migración de sistemas legacy](/servicios/migracion-datos-legacy) bien planteado, y lo que detalla esta guía."
+      }
+    ],
+    "beforeStrangler": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Migrar, mantener o reemplazar: cómo decidir qué hacer con cada módulo"
+      },
+      {
+        "type": "paragraph",
+        "text": "Antes de elegir una técnica de migración hay que tomar una decisión más básica, y conviene tomarla módulo por módulo, no para el sistema completo. Las opciones reales son seis, y en un mismo proyecto suelen convivir varias:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Mantener (retain): el módulo es estable, nadie necesita cambiarlo y no bloquea integraciones. Se deja como está, idealmente encapsulado detrás de una API.",
+          "Rehospedar (rehost o lift-and-shift): se mueve tal cual a infraestructura moderna o a la nube. Reduce costos de hardware, pero no resuelve la dificultad de cambiar el código.",
+          "Replataformar (replatform): se mueve con ajustes puntuales — otra base de datos, otro servidor de aplicaciones — sin reescribir la lógica de negocio.",
+          "Refactorizar o rediseñar (refactor/rearchitect): se reescribe con una arquitectura moderna. Es la opción más costosa y la que más valor aporta cuando el módulo cambia seguido.",
+          "Reemplazar (replace): se sustituye por un producto SaaS cuando el proceso no es diferencial para el negocio, como la nómina o la contabilidad estándar.",
+          "Retirar (retire): se da de baja porque ya nadie lo usa o porque otro módulo absorbió su función."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "La regla práctica: refactorice lo que cambia seguido y diferencia al negocio, reemplace lo que es commodity, mantenga lo estable y retire lo que ya no se usa. Mantener un sistema legado no es un fracaso cuando el costo de sostenerlo es menor que el de modernizarlo; se vuelve un error cuando esa comparación nunca se hace de forma explícita."
+      }
+    ],
+    "beforeStrategy": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Marco paso a paso para migrar un sistema legado"
+      },
+      {
+        "type": "paragraph",
+        "text": "Los patrones anteriores se ordenan en un proceso concreto. Este es el marco de seis fases que seguimos en cada migración, y el orden importa: saltarse la auditoría o la reconciliación es la causa más frecuente de migraciones que se alargan o se revierten."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "1. Auditoría del sistema y de los datos"
+      },
+      {
+        "type": "paragraph",
+        "text": "Inventariar módulos, integraciones, tareas programadas, reportes y, sobre todo, las reglas de negocio implícitas: validaciones en procedimientos almacenados, cálculos en macros, excepciones que alguien agregó hace años para un cliente puntual. En paralelo, perfilar los datos — volumen, duplicados, campos vacíos, formatos inconsistentes. Un plazo prometido antes de esta fase es una suposición, no un plan."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "2. Decisión por módulo y priorización"
+      },
+      {
+        "type": "paragraph",
+        "text": "Clasificar cada módulo con el criterio de la sección anterior y ordenar los que se migran según la relación entre bajo riesgo y valor demostrable. El primer módulo debe ser lo bastante pequeño para salir rápido y lo bastante visible para que la organización perciba el avance."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "3. Arquitectura objetivo y capa de enrutamiento"
+      },
+      {
+        "type": "paragraph",
+        "text": "Definir la plataforma de destino y la capa intermedia que repartirá el tráfico entre el sistema viejo y el nuevo. Esa capa es, en la práctica, una API bien diseñada delante del sistema legado — por eso las [buenas prácticas de APIs REST](/blog/buenas-practicas-apis-rest) (versionado, validación en el borde, idempotencia) son la base técnica de cualquier migración incremental."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "4. Migración de datos por fases"
+      },
+      {
+        "type": "paragraph",
+        "text": "Extraer, limpiar, deduplicar y transformar los datos con scripts versionados y repetibles, nunca con exportaciones manuales que no se pueden volver a correr. Mientras ambos sistemas conviven, los datos se sincronizan (con una fuente de verdad clara por cada entidad), de modo que nunca exista un momento en que estén a medio pasar. Es el núcleo de una [migración de datos por fases, sin downtime](/servicios/migracion-datos-legacy)."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "5. Validación y reconciliación"
+      },
+      {
+        "type": "paragraph",
+        "text": "Antes de cada corte, comparar automáticamente conteos de registros, totales contables y una muestra de registros críticos entre el sistema legado y el nuevo, y correr las pruebas de regresión sobre los flujos de negocio. La regla es simple y no negociable: si los números no cuadran, el corte no ocurre."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "6. Corte gradual, monitoreo y decommission"
+      },
+      {
+        "type": "paragraph",
+        "text": "Mover el tráfico de forma progresiva (por módulo, por sucursal o por porcentaje de usuarios), con la posibilidad de revertir en minutos. Monitorear errores y tiempos de respuesta durante la convivencia y, solo cuando el legado ya no recibe tráfico, apagarlo formalmente."
+      }
+    ],
+    "afterStrategy": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Errores comunes en la migración de sistemas legacy"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Migrar los datos tal cual, con duplicados y registros corruptos incluidos: el sistema nuevo hereda los problemas del viejo y pierde credibilidad desde el primer día.",
+          "Subestimar las reglas de negocio ocultas: lo que el sistema hace y nadie documentó aparece como un \"bug\" del sistema nuevo semanas después del corte.",
+          "Congelar el desarrollo del negocio durante meses mientras se reescribe todo, en lugar de entregar valor por fases.",
+          "No definir criterios de aceptación medibles (conteos, totales, tiempos de respuesta) antes de cada corte.",
+          "Apagar el sistema legado el mismo día del último corte, sin período de gracia ni archivo de consulta.",
+          "Tratar la migración como un proyecto solo técnico: sin involucrar a quienes usan el sistema a diario, la adopción falla aunque el código funcione."
+        ]
+      }
+    ],
+    "afterGrace": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Cómo dar de baja un sistema legado sin migrar todos sus datos"
+      },
+      {
+        "type": "paragraph",
+        "text": "No todos los datos de un sistema legado tienen que viajar al sistema nuevo. Migrar quince años de transacciones cerradas encarece y alarga el proyecto, y muchas veces esos datos solo se consultan ante una auditoría. La alternativa es separarlos en tres grupos y tratarlos distinto:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Datos activos (clientes vigentes, saldos abiertos, inventario, contratos en curso): se limpian y se migran con validación de integridad.",
+          "Datos históricos (transacciones cerradas, registros de años anteriores): se exportan a un archivo de solo lectura — una base de consulta, archivos en un formato abierto o un almacenamiento de bajo costo — con un buscador simple para auditorías.",
+          "Datos sin uso ni obligación de conservación: se eliminan de forma documentada, lo que además reduce la superficie de riesgo frente a normas de protección de datos como la Ley 1581 o el RGPD."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Antes de apagar el servidor conviene verificar tres cosas: que los plazos legales de conservación (contables, tributarios, laborales) quedan cubiertos por el archivo; que alguien ajeno al equipo de migración logró encontrar un registro histórico en él; y que ningún proceso, integración o tarea programada sigue leyendo del sistema viejo. Recién entonces el decommission es un trámite y no un riesgo."
+      }
+    ],
+    "beforeClosing": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Ejemplo ilustrativo: de planillas a un sistema de despacho, por fases"
+      },
+      {
+        "type": "paragraph",
+        "text": "Para aterrizar el marco, un escenario compuesto y anonimizado, basado en patrones que se repiten en empresas de logística y transporte: la operación se coordina con planillas de cálculo compartidas y un software de escritorio para liquidar a los conductores. Nadie quiere detener la operación diaria para cambiar de sistema, y los datos de años anteriores son necesarios para auditorías."
+      },
+      {
+        "type": "paragraph",
+        "text": "Aplicando el marco, el primer módulo en migrar no es la liquidación (crítica y llena de excepciones) sino el registro de servicios del día: aislado, visible y fácil de validar comparando conteos contra la planilla. Con la capa de enrutamiento y los datos sincronizados, siguen el seguimiento de rutas y después la liquidación, validada contra los cálculos del sistema anterior durante varios ciclos de pago. El histórico cerrado no se migra: queda en un archivo de consulta. Un sistema de despacho con liquidación automática y trazabilidad para auditorías es, de hecho, uno de los [proyectos de nuestro portafolio](/portafolio)."
+      }
+    ],
+    "afterClosing": [
+      {
+        "type": "paragraph",
+        "text": "Si está evaluando modernizar un sistema que su operación no puede darse el lujo de detener, nuestro [equipo de migración de sistemas legados](/servicios/migracion-datos-legacy) puede revisar su caso y proponerle un plan por fases — respondemos en menos de 24 horas."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Preguntas frecuentes sobre la migración de sistemas legados"
+      },
+      {
+        "type": "faq",
+        "items": [
+          {
+            "question": "¿Qué es la migración de sistemas legados?",
+            "answer": "Es el proceso de trasladar la lógica, los datos y las integraciones de un sistema antiguo pero crítico a una plataforma moderna, idealmente por fases, para que la operación no se detenga mientras ocurre el cambio."
+          },
+          {
+            "question": "¿Cuánto cuesta migrar un sistema legacy?",
+            "answer": "Depende sobre todo de tres variables: cuántos módulos hay que reescribir de verdad (no todos), la calidad de los datos y las integraciones con otros sistemas. Por eso la auditoría inicial es el primer entregable: sin ella, cualquier cifra es una suposición. Migrar por fases, además, reparte la inversión en el tiempo y permite detenerse si un módulo resulta no valer la pena."
+          },
+          {
+            "question": "¿Cuánto tiempo toma una migración de sistemas legacy?",
+            "answer": "Un módulo acotado puede llegar a producción en semanas; un sistema completo, como un ERP, se planifica en fases a lo largo de varios meses. Con el enfoque incremental cada fase ya entrega valor, así que el negocio no espera hasta el final para ver resultados."
+          },
+          {
+            "question": "¿Se puede migrar un sistema legado sin downtime?",
+            "answer": "Sí. Con el patrón Strangler Fig, el sistema viejo y el nuevo conviven detrás de una capa de enrutamiento, con los datos sincronizados. Cada módulo se cambia de forma gradual y reversible, así que la operación no se detiene."
+          },
+          {
+            "question": "¿Cómo se da de baja un sistema legado sin migrar todos los datos?",
+            "answer": "Se migran solo los datos activos y el histórico se archiva en un repositorio de solo lectura que cubra los plazos legales de conservación. Antes de apagar el sistema se verifica que ningún proceso siga leyéndolo y que el archivo permita encontrar registros históricos."
+          },
+          {
+            "question": "¿Qué diferencia hay entre rehospedar, replataformar y refactorizar?",
+            "answer": "Rehospedar mueve el sistema tal cual a otra infraestructura; replataformar lo mueve con ajustes puntuales (por ejemplo, otra base de datos) sin tocar la lógica; refactorizar reescribe la lógica con una arquitectura moderna. Cuanto más profundo el cambio, mayor el costo y mayor el beneficio a largo plazo."
+          }
+        ]
+      }
+    ],
+    "others": {
+      "deuda-tecnica-como-detectarla": {
+        "afterIndex": 21,
+        "block": {
+          "type": "paragraph",
+          "text": "Si tu sistema ya llegó a ese punto, en nuestra [guía para migrar sistemas legados sin interrupción](/blog/migracion-sistemas-legados-sin-interrupcion) detallamos el marco paso a paso, y es el mismo enfoque que aplicamos en proyectos de [modernización de sistemas legados](/servicios/migracion-datos-legacy)."
+        }
+      },
+      "buenas-practicas-apis-rest": {
+        "afterIndex": 25,
+        "block": {
+          "type": "paragraph",
+          "text": "Cuando la API forma parte de un sistema heredado, estas prácticas son además la base de una migración incremental: la capa de enrutamiento del patrón Strangler Fig no es otra cosa que una API bien versionada delante del sistema viejo. Es el enfoque que aplicamos en la [migración de sistemas heredados sin detener la operación](/servicios/migracion-datos-legacy)."
+        }
+      }
+    }
+  },
+  "en": {
+    "title": "Legacy System Migration Without Downtime",
+    "description": "Step-by-step legacy system migration guide: Strangler Fig, zero downtime, no data loss, common mistakes and decommissioning. Plan yours today.",
+    "afterIntro": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "What is a legacy system, and when does it stop being an asset?"
+      },
+      {
+        "type": "paragraph",
+        "text": "A legacy system is software that is still critical to the business but was built with technologies, architectures or practices that no longer let you change it safely: a custom ERP written fifteen years ago, a Visual Basic desktop app, an Access database shared over the network, or a set of spreadsheets that quietly became the de facto billing system. Age alone isn't the problem; the cost of every change is."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Every small change takes weeks, and nobody dares to touch certain modules.",
+          "Only one person (sometimes an outside contractor) understands how the code works.",
+          "The vendor or language is out of support, or you can't hire developers who know it.",
+          "It can't integrate with modern tools (payment gateways, CRMs, third-party APIs) without brittle workarounds.",
+          "It doesn't meet today's security and data protection requirements."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "If several of these sound familiar, you're probably already paying interest on [accumulated technical debt](/en/blog/deuda-tecnica-como-detectarla). The question stops being whether to migrate and becomes how to do it without putting operations at risk — which is exactly what a well-run [legacy software migration service](/en/servicios/migracion-datos-legacy) solves, and what this guide walks through."
+      }
+    ],
+    "beforeStrangler": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Migrate, retain or replace: deciding what to do with each module"
+      },
+      {
+        "type": "paragraph",
+        "text": "Before picking a migration technique there's a more basic decision to make, and it should be made module by module, not for the whole system. These are the real options — most projects end up using several of them:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Retain: the module is stable, nobody needs to change it and it doesn't block integrations. Leave it as is, ideally wrapped behind an API.",
+          "Rehost (lift-and-shift): move it as-is to modern infrastructure or the cloud. It cuts hardware costs but doesn't make the code any easier to change.",
+          "Replatform: move it with targeted changes — a different database or application server — without rewriting business logic.",
+          "Refactor or rearchitect: rewrite it on a modern architecture. The most expensive option, and the one that pays off most when the module changes often.",
+          "Replace: swap it for a SaaS product when the process isn't a differentiator, such as payroll or standard accounting.",
+          "Retire: decommission it because nobody uses it anymore or another module already absorbed its job."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Rule of thumb: refactor what changes often and sets the business apart, replace commodities, retain what's stable and retire what's unused. Keeping a legacy system isn't a failure when maintaining it costs less than modernizing it; it becomes a mistake when nobody ever makes that comparison explicitly."
+      }
+    ],
+    "beforeStrategy": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "A step-by-step framework for legacy system migration"
+      },
+      {
+        "type": "paragraph",
+        "text": "The patterns above fit into a concrete process. This is the six-phase framework we follow on every migration — and the order matters: skipping the assessment or the reconciliation step is the most common reason migrations drag on or get rolled back."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "1. System and data assessment"
+      },
+      {
+        "type": "paragraph",
+        "text": "Inventory modules, integrations, scheduled jobs, reports and, above all, the implicit business rules: validations in stored procedures, calculations in macros, exceptions someone added years ago for one specific customer. In parallel, profile the data — volume, duplicates, empty fields, inconsistent formats. A timeline promised before this phase is a guess, not a plan."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "2. Per-module decision and prioritization"
+      },
+      {
+        "type": "paragraph",
+        "text": "Classify each module using the criteria from the previous section, then order the ones you'll migrate by the ratio of low risk to demonstrable value. The first module should be small enough to ship quickly and visible enough that the organization sees progress."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "3. Target architecture and routing layer"
+      },
+      {
+        "type": "paragraph",
+        "text": "Define the target platform and the intermediate layer that will split traffic between the old and new systems. In practice, that layer is a well-designed API in front of the legacy system — which is why [REST API best practices](/en/blog/buenas-practicas-apis-rest) (versioning, validation at the edge, idempotency) are the technical foundation of any incremental migration."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "4. Phased data migration"
+      },
+      {
+        "type": "paragraph",
+        "text": "Extract, cleanse, deduplicate and transform data with versioned, repeatable scripts — never with one-off manual exports that can't be re-run. While both systems coexist, data stays in sync (with a clear source of truth for each entity), so there's never a moment when it's half migrated. That's the core of a [phased data migration with zero downtime](/en/servicios/migracion-datos-legacy)."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "5. Validation and reconciliation"
+      },
+      {
+        "type": "paragraph",
+        "text": "Before every cutover, automatically compare record counts, accounting totals and a sample of critical records between the legacy and the new system, and run regression tests on business workflows. The rule is simple and non-negotiable: if the numbers don't match, the cutover doesn't happen."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "6. Gradual cutover, monitoring and decommissioning"
+      },
+      {
+        "type": "paragraph",
+        "text": "Shift traffic progressively (by module, by branch or by percentage of users), with the ability to roll back in minutes. Monitor errors and response times while both systems coexist, and only formally shut down the legacy system once it no longer receives any traffic."
+      }
+    ],
+    "afterStrategy": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Common legacy migration mistakes"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Migrating data as-is, duplicates and corrupted records included: the new system inherits the old one's problems and loses credibility on day one.",
+          "Underestimating hidden business rules: whatever the system does that nobody documented shows up as a \"bug\" in the new system weeks after cutover.",
+          "Freezing business development for months while everything gets rewritten, instead of delivering value in phases.",
+          "Not defining measurable acceptance criteria (counts, totals, response times) before each cutover.",
+          "Shutting down the legacy system on the same day as the final cutover, with no grace period and no read-only archive.",
+          "Treating the migration as a purely technical project: without the people who use the system every day, adoption fails even if the code works."
+        ]
+      }
+    ],
+    "afterGrace": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "How to decommission a legacy system without migrating all its data"
+      },
+      {
+        "type": "paragraph",
+        "text": "Not every record in a legacy system needs to move to the new one. Migrating fifteen years of closed transactions makes the project longer and more expensive, and that data is often only ever looked at during an audit. The alternative is to split it into three groups and handle each one differently:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Active data (current customers, open balances, inventory, ongoing contracts): cleansed and migrated with integrity checks.",
+          "Historical data (closed transactions, prior-year records): exported to a read-only archive — a query database, files in an open format or low-cost storage — with a simple search for audits.",
+          "Data with no use and no retention obligation: deleted in a documented way, which also shrinks your exposure under data protection laws such as GDPR or CCPA."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Before turning off the server, verify three things: that legal retention periods (accounting, tax, employment) are covered by the archive; that someone outside the migration team was able to find a historical record in it; and that no process, integration or scheduled job still reads from the old system. Only then is decommissioning a formality rather than a risk."
+      }
+    ],
+    "beforeClosing": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Illustrative example: from spreadsheets to a dispatch system, in phases"
+      },
+      {
+        "type": "paragraph",
+        "text": "To ground the framework, here's a composite, anonymized scenario based on patterns we see repeatedly in logistics and transportation companies: operations are coordinated through shared spreadsheets plus a desktop app for driver settlements. Nobody wants to stop daily operations to switch systems, and prior years' data is needed for audits."
+      },
+      {
+        "type": "paragraph",
+        "text": "Applying the framework, the first module to migrate isn't settlements (critical and full of exceptions) but the daily service log: isolated, visible and easy to validate by comparing counts against the spreadsheet. With the routing layer and synchronized data in place, route tracking comes next, then settlements — validated against the old system's calculations over several pay cycles. Closed history isn't migrated; it lives in a read-only archive. A dispatch system with automated settlements and audit trails is, in fact, one of the [projects in our portfolio](/portafolio)."
+      }
+    ],
+    "afterClosing": [
+      {
+        "type": "paragraph",
+        "text": "If you're considering modernizing a system your operations can't afford to stop, our [legacy system migration team](/en/servicios/migracion-datos-legacy) can review your case and propose a phased plan — we reply within 24 hours."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Legacy system migration: frequently asked questions"
+      },
+      {
+        "type": "faq",
+        "items": [
+          {
+            "question": "What is legacy system migration?",
+            "answer": "It's the process of moving the logic, data and integrations of an old but business-critical system to a modern platform — ideally in phases, so operations never stop while the change happens."
+          },
+          {
+            "question": "How much does legacy software migration cost?",
+            "answer": "It mostly depends on three variables: how many modules genuinely need rewriting (not all of them), the quality of the data and the integrations with other systems. That's why the initial assessment is the first deliverable — without it, any number is a guess. A phased approach also spreads the investment over time and lets you stop if a module turns out not to be worth it."
+          },
+          {
+            "question": "How long does a legacy system migration take?",
+            "answer": "A well-scoped module can reach production in weeks; a full system such as an ERP is planned in phases over several months. With an incremental approach each phase already delivers value, so the business doesn't wait until the end to see results."
+          },
+          {
+            "question": "Can you migrate a legacy system with zero downtime?",
+            "answer": "Yes. With the Strangler Fig pattern, the old and new systems coexist behind a routing layer with synchronized data. Each module is switched over gradually and reversibly, so operations never stop."
+          },
+          {
+            "question": "How do you decommission a legacy system without data migration?",
+            "answer": "Migrate only the active data and archive the history in a read-only repository that covers legal retention periods. Before shutting the system down, confirm that no process still reads from it and that the archive lets you find historical records."
+          },
+          {
+            "question": "What's the difference between rehosting, replatforming and refactoring?",
+            "answer": "Rehosting moves the system as-is to new infrastructure; replatforming moves it with targeted changes (for example, a different database) without touching the logic; refactoring rewrites the logic on a modern architecture. The deeper the change, the higher the cost and the bigger the long-term payoff."
+          }
+        ]
+      }
+    ],
+    "others": {
+      "deuda-tecnica-como-detectarla": {
+        "afterIndex": 21,
+        "block": {
+          "type": "paragraph",
+          "text": "If your system has already reached that point, our [guide to migrating legacy systems without downtime](/en/blog/migracion-sistemas-legados-sin-interrupcion) lays out the step-by-step framework — the same approach we apply in our [legacy system modernization](/en/servicios/migracion-datos-legacy) projects."
+        }
+      },
+      "buenas-practicas-apis-rest": {
+        "afterIndex": 25,
+        "block": {
+          "type": "paragraph",
+          "text": "When the API is part of a legacy system, these practices are also the foundation of an incremental migration: the routing layer in the Strangler Fig pattern is nothing more than a well-versioned API in front of the old system. It's the approach we use for [legacy application migration without stopping operations](/en/servicios/migracion-datos-legacy)."
+        }
+      }
+    }
+  },
+  "fr": {
+    "title": "Migrer un système legacy sans interruption",
+    "description": "Guide pas à pas pour migrer un système legacy sans interruption ni perte de données : Strangler Fig, erreurs fréquentes, décommissionnement et FAQ.",
+    "afterIntro": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Qu'est-ce qu'un système legacy, et quand cesse-t-il d'être un atout ?"
+      },
+      {
+        "type": "paragraph",
+        "text": "Un système legacy (ou système hérité) est un logiciel toujours critique pour l'activité, mais construit avec des technologies, des architectures ou des pratiques qui ne permettent plus de le faire évoluer sereinement : un ERP développé sur mesure il y a quinze ans, une application client lourd en Visual Basic, une base Access partagée sur le réseau ou un ensemble de fichiers Excel devenu, de fait, l'outil de facturation. L'ancienneté n'est pas le problème en soi ; c'est le coût de chaque évolution."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Chaque petite évolution prend des semaines, et personne n'ose toucher à certains modules.",
+          "Une seule personne (parfois un prestataire externe) comprend le fonctionnement du code.",
+          "L'éditeur ou le langage n'est plus supporté, ou l'on ne trouve plus de développeurs qui le maîtrisent.",
+          "Impossible de l'interfacer avec des outils modernes (paiement en ligne, CRM, API tierces) sans bricolages fragiles.",
+          "Il ne répond plus aux exigences actuelles de sécurité et de protection des données."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Si vous reconnaissez plusieurs de ces signaux, vous payez probablement déjà les intérêts d'une [dette technique accumulée](/fr/blog/deuda-tecnica-como-detectarla). La question n'est plus de savoir s'il faut migrer, mais comment le faire sans mettre l'activité en danger — c'est précisément ce que permet un [service de migration de systèmes legacy](/fr/servicios/migracion-datos-legacy) bien mené, et ce que détaille ce guide."
+      }
+    ],
+    "beforeStrangler": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Migrer, conserver ou remplacer : que faire de chaque module ?"
+      },
+      {
+        "type": "paragraph",
+        "text": "Avant de choisir une technique de migration, il faut prendre une décision plus fondamentale — module par module, et non pour le système entier. Voici les options réelles ; la plupart des projets en combinent plusieurs :"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Conserver (retain) : le module est stable, personne n'a besoin de le modifier et il ne bloque aucune intégration. On le laisse en l'état, idéalement encapsulé derrière une API.",
+          "Réhéberger (rehost ou lift-and-shift) : on le déplace tel quel vers une infrastructure moderne ou le cloud. Cela réduit les coûts matériels, sans rendre le code plus facile à faire évoluer.",
+          "Re-plateformer (replatform) : on le déplace avec des ajustements ciblés — autre base de données, autre serveur d'applications — sans réécrire la logique métier.",
+          "Refactoriser ou refondre (refactor/rearchitect) : on le réécrit sur une architecture moderne. C'est l'option la plus coûteuse, et la plus rentable quand le module évolue souvent.",
+          "Remplacer (replace) : on le substitue par une solution SaaS lorsque le processus n'est pas différenciant, comme la paie ou une comptabilité standard.",
+          "Décommissionner (retire) : on l'arrête parce que plus personne ne l'utilise ou qu'un autre module a repris sa fonction."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Règle pratique : refondez ce qui évolue souvent et différencie l'entreprise, remplacez ce qui est standard, conservez ce qui est stable et décommissionnez ce qui ne sert plus. Garder un système legacy n'est pas un échec tant que son maintien coûte moins cher que sa modernisation ; cela devient une erreur quand cette comparaison n'est jamais faite explicitement."
+      }
+    ],
+    "beforeStrategy": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Méthode pas à pas pour migrer un système legacy"
+      },
+      {
+        "type": "paragraph",
+        "text": "Les patterns précédents s'inscrivent dans un processus concret. Voici la méthode en six phases que nous appliquons à chaque migration — et l'ordre compte : sauter l'audit ou le rapprochement des données est la cause la plus fréquente des migrations qui s'éternisent ou font marche arrière."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "1. Audit de l'existant et des données"
+      },
+      {
+        "type": "paragraph",
+        "text": "Cartographier les modules, les interfaces, les traitements batch, les états et surtout les règles métier implicites : contrôles dans des procédures stockées, calculs dans des macros, exceptions ajoutées il y a des années pour un client précis. En parallèle, profiler les données — volumes, doublons, champs vides, formats incohérents. Un délai annoncé avant cette phase est une supposition, pas un plan."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "2. Décision par module et priorisation"
+      },
+      {
+        "type": "paragraph",
+        "text": "Classer chaque module selon les critères de la section précédente, puis ordonner ceux à migrer selon le rapport entre faible risque et valeur démontrable. Le premier module doit être assez petit pour livrer vite et assez visible pour que l'organisation constate l'avancement."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "3. Architecture cible et couche de routage"
+      },
+      {
+        "type": "paragraph",
+        "text": "Définir la plateforme cible et la couche intermédiaire qui répartira le trafic entre l'ancien et le nouveau système. En pratique, cette couche est une API bien conçue placée devant l'existant — c'est pourquoi les [bonnes pratiques d'API REST](/fr/blog/buenas-practicas-apis-rest) (versionnement, validation en bordure, idempotence) sont le socle technique de toute migration progressive."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "4. Reprise de données par lots"
+      },
+      {
+        "type": "paragraph",
+        "text": "Extraire, nettoyer, dédoublonner et transformer les données avec des scripts versionnés et rejouables — jamais avec des exports manuels impossibles à relancer. Pendant la cohabitation, les données restent synchronisées (avec une source de vérité claire pour chaque entité), si bien qu'elles ne sont jamais « à moitié migrées ». C'est le cœur d'une [reprise de données progressive, sans interruption de service](/fr/servicios/migracion-datos-legacy)."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "5. Recette et rapprochement des données"
+      },
+      {
+        "type": "paragraph",
+        "text": "Avant chaque bascule, comparer automatiquement les volumes, les totaux comptables et un échantillon d'enregistrements critiques entre l'ancien et le nouveau système, et rejouer les tests de non-régression sur les processus métier. La règle est simple et non négociable : si les chiffres ne concordent pas, la bascule n'a pas lieu."
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "text": "6. Bascule progressive, supervision et décommissionnement"
+      },
+      {
+        "type": "paragraph",
+        "text": "Basculer le trafic progressivement (par module, par site ou par pourcentage d'utilisateurs), avec la possibilité de revenir en arrière en quelques minutes. Surveiller erreurs et temps de réponse pendant la cohabitation et n'arrêter formellement l'ancien système qu'une fois qu'il ne reçoit plus aucun trafic."
+      }
+    ],
+    "afterStrategy": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Les erreurs fréquentes d'une migration legacy"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Reprendre les données telles quelles, doublons et enregistrements corrompus compris : le nouveau système hérite des défauts de l'ancien et perd sa crédibilité dès le premier jour.",
+          "Sous-estimer les règles métier cachées : ce que le système faisait sans que personne ne l'ait documenté réapparaît comme un « bug » du nouveau système des semaines après la bascule.",
+          "Geler les évolutions métier pendant des mois le temps de tout réécrire, au lieu de livrer de la valeur par lots.",
+          "Ne pas définir de critères de recette mesurables (volumes, totaux, temps de réponse) avant chaque bascule.",
+          "Arrêter l'ancien système le jour même de la dernière bascule, sans période de sécurité ni archive consultable.",
+          "Traiter la migration comme un projet purement technique : sans les utilisateurs qui vivent avec le système au quotidien, l'adoption échoue même si le code fonctionne."
+        ]
+      }
+    ],
+    "afterGrace": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Décommissionner un système legacy sans reprendre toutes ses données"
+      },
+      {
+        "type": "paragraph",
+        "text": "Toutes les données d'un système legacy n'ont pas vocation à rejoindre le nouveau. Reprendre quinze ans de transactions clôturées allonge et renchérit le projet, alors que ces données ne sont souvent consultées qu'en cas d'audit. L'alternative consiste à les répartir en trois groupes et à les traiter différemment :"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Données actives (clients en cours, soldes ouverts, stocks, contrats en vigueur) : nettoyées et reprises avec contrôle d'intégrité.",
+          "Données historiques (transactions clôturées, exercices antérieurs) : exportées vers une archive en lecture seule — base de consultation, fichiers dans un format ouvert ou stockage à bas coût — avec une recherche simple pour les audits.",
+          "Données sans usage ni obligation de conservation : supprimées de façon documentée, ce qui réduit aussi l'exposition au regard du RGPD."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Avant d'éteindre le serveur, vérifiez trois points : que les durées légales de conservation (comptables, fiscales, sociales) sont couvertes par l'archive ; qu'une personne extérieure à l'équipe projet a réussi à y retrouver un enregistrement historique ; et qu'aucun processus, interface ou traitement planifié ne lit encore l'ancien système. Le décommissionnement devient alors une formalité, et non un risque."
+      }
+    ],
+    "beforeClosing": [
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Exemple illustratif : des fichiers Excel à un système de dispatch, par étapes"
+      },
+      {
+        "type": "paragraph",
+        "text": "Pour rendre la méthode concrète, voici un scénario composite et anonymisé, fondé sur des situations fréquentes dans la logistique et le transport : l'activité est pilotée par des tableurs partagés et un logiciel client lourd pour le calcul des rémunérations des chauffeurs. Personne ne veut arrêter l'exploitation pour changer d'outil, et l'historique des années précédentes est indispensable pour les audits."
+      },
+      {
+        "type": "paragraph",
+        "text": "En appliquant la méthode, le premier module migré n'est pas le calcul des rémunérations (critique et truffé d'exceptions) mais le registre quotidien des courses : isolé, visible et facile à valider en comparant les volumes avec le tableur. Une fois la couche de routage et la synchronisation en place, viennent le suivi des tournées puis les rémunérations, validées contre les calculs de l'ancien système sur plusieurs cycles de paie. L'historique clôturé n'est pas repris : il reste dans une archive consultable. Un système de dispatch avec calcul automatisé et traçabilité pour les audits figure d'ailleurs parmi les [projets de notre portfolio](/portafolio)."
+      }
+    ],
+    "afterClosing": [
+      {
+        "type": "paragraph",
+        "text": "Si vous envisagez de moderniser un système que votre activité ne peut pas se permettre d'arrêter, notre [équipe de migration de systèmes legacy](/fr/servicios/migracion-datos-legacy) peut étudier votre cas et vous proposer un plan par étapes — réponse en moins de 24 heures."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Questions fréquentes sur la migration de systèmes legacy"
+      },
+      {
+        "type": "faq",
+        "items": [
+          {
+            "question": "Qu'est-ce que la migration d'un système legacy ?",
+            "answer": "C'est le transfert de la logique, des données et des interfaces d'un système ancien mais critique vers une plateforme moderne — idéalement par étapes, pour que l'activité ne s'arrête jamais pendant le changement."
+          },
+          {
+            "question": "Combien coûte la migration d'un système legacy ?",
+            "answer": "Cela dépend surtout de trois facteurs : le nombre de modules à réellement réécrire (pas tous), la qualité des données et les interfaces avec d'autres systèmes. C'est pourquoi l'audit initial est le premier livrable : sans lui, tout chiffrage est une supposition. Une approche par lots étale aussi l'investissement et permet de s'arrêter si un module ne vaut pas la peine."
+          },
+          {
+            "question": "Combien de temps dure une migration legacy ?",
+            "answer": "Un module bien délimité peut passer en production en quelques semaines ; un système complet comme un ERP se planifie par lots sur plusieurs mois. Avec une approche progressive, chaque lot apporte déjà de la valeur."
+          },
+          {
+            "question": "Peut-on migrer un système legacy sans interruption de service ?",
+            "answer": "Oui. Avec le pattern Strangler Fig, l'ancien et le nouveau système cohabitent derrière une couche de routage, avec des données synchronisées. Chaque module bascule de façon progressive et réversible : l'activité ne s'arrête pas."
+          },
+          {
+            "question": "Comment décommissionner un système legacy sans reprise de données complète ?",
+            "answer": "On ne reprend que les données actives et l'on archive l'historique dans un référentiel en lecture seule qui couvre les durées légales de conservation. Avant l'arrêt, on vérifie qu'aucun processus ne lit encore le système et que l'archive permet de retrouver les enregistrements historiques."
+          },
+          {
+            "question": "Quelle différence entre réhéberger, re-plateformer et refactoriser ?",
+            "answer": "Réhéberger déplace le système tel quel vers une autre infrastructure ; re-plateformer le déplace avec des ajustements ciblés (par exemple une autre base de données) sans toucher à la logique ; refactoriser réécrit la logique sur une architecture moderne. Plus le changement est profond, plus le coût et le bénéfice à long terme sont élevés."
+          }
+        ]
+      }
+    ],
+    "others": {
+      "deuda-tecnica-como-detectarla": {
+        "afterIndex": 21,
+        "block": {
+          "type": "paragraph",
+          "text": "Si votre système en est déjà là, notre [guide pour migrer un système legacy sans interruption](/fr/blog/migracion-sistemas-legados-sin-interrupcion) détaille la méthode pas à pas — la même approche que nous appliquons dans nos projets de [modernisation de systèmes legacy](/fr/servicios/migracion-datos-legacy)."
+        }
+      },
+      "buenas-practicas-apis-rest": {
+        "afterIndex": 25,
+        "block": {
+          "type": "paragraph",
+          "text": "Lorsque l'API fait partie d'un système hérité, ces pratiques sont aussi le socle d'une migration progressive : la couche de routage du pattern Strangler Fig n'est rien d'autre qu'une API bien versionnée placée devant l'ancien système. C'est l'approche que nous suivons pour la [migration d'applications legacy sans arrêter l'activité](/fr/servicios/migracion-datos-legacy)."
+        }
+      }
+    }
+  }
+}

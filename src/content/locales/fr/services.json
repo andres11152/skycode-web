@@ -89,7 +89,88 @@
         "Nettoyage, déduplication et alignement des données historiques",
         "Migration par étapes sans arrêt de service",
         "Contrôle strict d'intégrité et de cohérence"
-      ]
+      ],
+      "seo": {
+        "title": "Services de migration de systèmes legacy",
+        "description": "Nous migrons votre système legacy par étapes vers une plateforme moderne : sans interruption, sans perte de données, intégrité vérifiée. Réponse en 24 h."
+      },
+      "details": {
+        "intro": [
+          "Un système legacy n'est pas seulement un vieux logiciel : c'est celui qui fait encore tourner la facturation, les stocks ou l'activité quotidienne, mais que plus personne n'ose modifier. Notre service de migration de systèmes legacy le remplace module par module, l'ancien système restant en service en parallèle jusqu'à ce que le nouveau prouve qu'il traite les mêmes opérations avec les mêmes résultats.",
+          "Pas de bascule « big bang » le week-end. Nous appliquons le pattern Strangler Fig, la synchronisation des données entre les deux systèmes et un rapprochement automatisé avant chaque bascule — détaillés dans notre [guide de migration d'un système legacy sans coupure](/fr/blog/migracion-sistemas-legados-sin-interrupcion)."
+        ],
+        "stepsHeading": "Notre méthode de migration legacy sans interruption de service",
+        "steps": [
+          {
+            "title": "Audit de l'existant et des données",
+            "text": "Nous cartographions modules, interfaces, traitements batch et règles métier enfouies dans le code ou les procédures stockées, et mesurons volume, qualité et doublons des données avant de nous engager sur un calendrier."
+          },
+          {
+            "title": "Décision par module : migrer, conserver ou décommissionner",
+            "text": "Tout ne mérite pas une refonte. Chaque module est classé : réhébergé, refactorisé, remplacé par un SaaS, encapsulé derrière une API ou décommissionné — le budget va là où l'existant freine vraiment l'activité."
+          },
+          {
+            "title": "Architecture cible et couche de routage",
+            "text": "Nous concevons la nouvelle plateforme et une couche intermédiaire qui décide quelles requêtes sont servies par l'ancien système et lesquelles par le nouveau. C'est ce qui rend une migration progressive possible sans changer d'outil chaque semaine."
+          },
+          {
+            "title": "Reprise de données par lots",
+            "text": "Extraction, nettoyage, dédoublonnage et mapping des schémas avec des scripts versionnés et rejouables. Les deux systèmes restent synchronisés pendant leur cohabitation : il n'y a jamais de jour où les données sont « à moitié migrées »."
+          },
+          {
+            "title": "Recette et rapprochement des données",
+            "text": "Avant chaque bascule, nous comparons volumes, totaux et enregistrements critiques entre l'ancien et le nouveau système, et rejouons des tests de non-régression sur les processus métier. Si les chiffres ne concordent pas, la bascule n'a pas lieu."
+          },
+          {
+            "title": "Bascule, supervision et décommissionnement",
+            "text": "Le trafic bascule de façon progressive et réversible, nous surveillons erreurs et performances, et ce n'est qu'à la fin que l'ancien système est décommissionné — avec une archive en lecture seule des données que la loi impose de conserver."
+          }
+        ],
+        "useCasesHeading": "Projets de modernisation legacy typiques",
+        "useCases": [
+          "Un ERP ou logiciel de gestion développé sur mesure il y a 10-15 ans, sans documentation, maîtrisé par une seule personne.",
+          "Une activité qui repose sur des fichiers Excel, XML ou Access dispersés et a besoin d'une base unique, avec droits d'accès et traçabilité.",
+          "Des applications client lourd (Visual Basic, Delphi, ancien PHP) à porter vers le web ou le cloud sans arrêter la facturation.",
+          "Des bases de données non conformes au RGPD qui ont besoin de chiffrement, de contrôle d'accès et de journalisation — voir notre service [sécurité et conformité](/fr/servicios/seguridad-cumplimiento).",
+          "Des systèmes à décommissionner sans reprendre tout l'historique : seules les données actives migrent, le reste est archivé en consultation."
+        ],
+        "faqHeading": "Questions fréquentes sur la migration de systèmes legacy",
+        "faqs": [
+          {
+            "question": "Combien de temps dure la migration d'un système legacy ?",
+            "answer": "Tout dépend du nombre de modules et de la qualité des données. Un module bien délimité avec des données propres peut passer en production en quelques semaines ; un ERP complet se planifie par lots sur plusieurs mois. Chaque lot apporte de la valeur et reste réversible."
+          },
+          {
+            "question": "Peut-on migrer sans interruption de service ?",
+            "answer": "Oui, c'est tout l'intérêt d'une migration progressive. L'ancien système continue de tourner pendant que le nouveau reprend les modules un par un, avec des données synchronisées. Chaque bascule est progressive et peut être annulée en cas de problème."
+          },
+          {
+            "question": "Que deviennent les données historiques ?",
+            "answer": "Elles sont auditées avant tout déplacement. Les données utilisées au quotidien sont nettoyées et reprises avec contrôle d'intégrité ; celles conservées uniquement pour des raisons légales ou comptables peuvent rester dans une archive en lecture seule."
+          },
+          {
+            "question": "Faut-il migrer ou continuer à maintenir l'existant ?",
+            "answer": "Il faut migrer quand le coût de maintien (heures par évolution, pannes, fin de support éditeur, failles de sécurité) dépasse celui de la modernisation, ou quand l'existant bloque des intégrations nécessaires. Si le système est stable et ne gêne personne, l'encapsuler derrière une API suffit parfois."
+          },
+          {
+            "question": "À qui appartiennent le code et la documentation ?",
+            "answer": "À vous. Le code vous appartient à 100 % dès le premier jour, et nous livrons la documentation d'architecture et les scripts de reprise pour que votre équipe puisse maintenir le nouveau système sans dépendre de nous."
+          }
+        ],
+        "relatedHeading": "Pour aller plus loin",
+        "related": [
+          {
+            "label": "Guide : migrer un système legacy sans coupure",
+            "href": "/fr/blog/migracion-sistemas-legados-sin-interrupcion",
+            "description": "Méthode étape par étape, erreurs fréquentes et comment décommissionner un système sans reprendre toutes ses données."
+          },
+          {
+            "label": "Dette technique : la détecter à temps",
+            "href": "/fr/blog/deuda-tecnica-como-detectarla",
+            "description": "Les signes que votre système actuel est déjà en train de devenir un système legacy."
+          }
+        ]
+      }
     },
     {
       "slug": "inteligencia-artificial-aplicada",

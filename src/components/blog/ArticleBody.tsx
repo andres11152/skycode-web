@@ -1,5 +1,6 @@
 import type { BlogBlock } from "@/content/blogShared";
 import { slugify } from "@/lib/utils";
+import { InlineText } from "./InlineText";
 
 export function ArticleBody({ blocks }: { blocks: BlogBlock[] }) {
   return (
@@ -12,7 +13,7 @@ export function ArticleBody({ blocks }: { blocks: BlogBlock[] }) {
                 key={index}
                 className="text-base leading-relaxed text-foreground/80"
               >
-                {block.text}
+                <InlineText text={block.text} />
               </p>
             );
           case "heading":
@@ -42,7 +43,9 @@ export function ArticleBody({ blocks }: { blocks: BlogBlock[] }) {
                     className="flex gap-3 text-base leading-relaxed text-foreground/80"
                   >
                     <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                    {item}
+                    <span>
+                      <InlineText text={item} />
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -55,6 +58,19 @@ export function ArticleBody({ blocks }: { blocks: BlogBlock[] }) {
               >
                 <code>{block.code}</code>
               </pre>
+            );
+          case "faq":
+            return (
+              <div key={index} className="flex flex-col divide-y divide-foreground/10 border-y border-foreground/10">
+                {block.items.map((item) => (
+                  <div key={item.question} className="flex flex-col gap-2 py-5">
+                    <h3 className="text-lg font-semibold tracking-tight text-foreground">{item.question}</h3>
+                    <p className="text-base leading-relaxed text-foreground/80">
+                      <InlineText text={item.answer} />
+                    </p>
+                  </div>
+                ))}
+              </div>
             );
         }
       })}
