@@ -49,26 +49,6 @@ const iconMap: Record<string, Icon> = {
 
 const servicesByLocale = { es: servicesDataEs, en: servicesDataEn, fr: servicesDataFr };
 
-/**
- * Contenido editorial extendido de la página de detalle de un servicio —
- * opcional, hoy solo lo trae `migracion-datos-legacy` (la página que más
- * impresiones de búsqueda recibe con una posición pobre: con solo
- * descripción + 3 features, era demasiado delgada para competir). Los
- * textos admiten enlaces internos `[texto](/ruta)`, ver lib/inlineLinks.ts.
- * El carrusel de la home (Services.tsx) no lo usa.
- */
-export interface ServiceDetails {
-  intro: string[];
-  stepsHeading: string;
-  steps: { title: string; text: string }[];
-  useCasesHeading: string;
-  useCases: string[];
-  faqHeading: string;
-  faqs: { question: string; answer: string }[];
-  relatedHeading: string;
-  related: { label: string; href: string; description: string }[];
-}
-
 export interface Service {
   slug: string;
   title: string;
@@ -83,7 +63,33 @@ export interface Service {
    * para que el `<title>` final no pase de 60.
    */
   seo?: { title: string; description: string };
-  details?: ServiceDetails;
+}
+
+/**
+ * Casos del portafolio (slugs de `portfolio_projects`) donde se aplicó
+ * cada servicio — no se traduce, por eso vive en código y no en el JSON.
+ * Solo se listan relaciones verificables a partir del stack/capacidades
+ * reales de cada caso; un servicio sin caso publicado que lo respalde se
+ * queda vacío en vez de inventar uno (la sección "Casos" simplemente no
+ * se renderiza). Los slugs que no estén publicados se filtran en runtime.
+ */
+export const SERVICE_PROJECT_SLUGS: Record<string, string[]> = {
+  "desarrollo-software-medida": ["sentry-crm", "servifuturo"],
+  "desarrollo-aplicaciones-moviles": [],
+  "apis-integraciones": ["sentry-crm", "cda-revifull"],
+  "frontend-alto-rendimiento": ["equilibrio-arquitectonico", "cda-revifull"],
+  "ecommerce-tienda-online": ["moncyre"],
+  "seguridad-cumplimiento": [],
+  "arquitectura-documentacion": [],
+  "migracion-datos-legacy": [],
+  "inteligencia-artificial-aplicada": ["sentry-crm"],
+};
+
+/** Servicios aplicados en un caso — el inverso de `SERVICE_PROJECT_SLUGS`, en el orden del catálogo. */
+export function getServiceSlugsForProject(projectSlug: string): string[] {
+  return Object.entries(SERVICE_PROJECT_SLUGS)
+    .filter(([, projects]) => projects.includes(projectSlug))
+    .map(([serviceSlug]) => serviceSlug);
 }
 
 export function getServicesContent(locale: Locale) {
@@ -102,7 +108,6 @@ export function getServicesContent(locale: Locale) {
       coverIcon: iconMap[item.iconName] ?? Blueprint,
       features: item.features,
       seo: item.seo,
-      details: item.details,
     })) satisfies Service[],
   };
 }

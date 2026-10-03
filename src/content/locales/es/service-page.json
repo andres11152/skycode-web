@@ -7,6 +7,58 @@
   "nextServiceLabel": "Siguiente servicio",
   "backToServices": "Volver a servicios",
   "enterpriseSolutionBadge": "Desarrollo a la medida SkyCode",
-  "interactiveDemoHeading": "Prueba interactiva del entorno"
+  "interactiveDemoHeading": "Prueba interactiva del entorno",
+  "index": {
+    "primaryCta": "Cuéntanos tu proyecto",
+    "secondaryCta": "Calcular presupuesto",
+    "listAria": "Catálogo de servicios",
+    "previewLabel": "Vista previa interactiva",
+    "openService": "Ver el servicio completo",
+    "countLabel": "servicios",
+    "casesBadge": "Casos reales",
+    "casesTitle": "En producción, no en una presentación",
+    "casesDescription": "Proyectos que hoy operan empresas reales y los servicios que combinamos para construirlos.",
+    "casesServicesLabel": "Servicios aplicados en {title}",
+    "casesViewAll": "Ver todo el portafolio",
+    "faqBadge": "Antes de empezar",
+    "faqTitle": "Lo que suelen preguntarnos",
+    "faqs": [
+      {
+        "question": "¿Puedo contratar varios servicios en un mismo proyecto?",
+        "answer": "Sí, y es lo más común. Una plataforma a la medida casi siempre incluye integraciones, seguridad y documentación de transferencia. Los servicios no se cotizan como paquetes sueltos: armamos un solo plan con un solo equipo."
+      },
+      {
+        "question": "¿Cuánto cuesta un proyecto?",
+        "answer": "Depende del alcance, por eso no publicamos precios fijos. Puedes obtener un rango estimado en minutos con nuestro [cotizador](/cotizador), y después de una llamada de diagnóstico te entregamos un presupuesto cerrado con fechas."
+      },
+      {
+        "question": "¿Pueden retomar un sistema que construyó otro proveedor?",
+        "answer": "Sí. Empezamos con una auditoría del código y de los datos para decidir qué se conserva, qué se refactoriza y qué conviene reemplazar. Si el sistema ya es un legado difícil de mantener, lo migramos por fases sin detener la operación, ver [migración de sistemas legacy](/servicios/migracion-datos-legacy)."
+      },
+      {
+        "question": "¿Trabajan junto a nuestro equipo técnico interno?",
+        "answer": "Sí. Repositorios a tu nombre desde el primer día, revisiones de código compartidas y documentación pensada para que tu equipo pueda seguir solo cuando terminemos."
+      },
+      {
+        "question": "¿Qué pasa después del lanzamiento?",
+        "answer": "Tienes 90 días de garantía ante cualquier falla técnica, sin costo. Después puedes seguir con nosotros en un plan de mantenimiento o continuar con tu propio equipo: el código y la documentación ya son tuyos."
+      }
+    ],
+    "ctaTitle": "¿Tienes un proceso que ya no escala?",
+    "ctaDescription": "Cuéntanos qué necesitas resolver. Te respondemos en menos de 24 horas con una evaluación técnica honesta, sin compromiso."
+  },
+  "detail": {
+    "positionLabel": "Servicio {current} de {total}",
+    "tocLabel": "En esta página",
+    "tocOverview": "Resumen",
+    "tocIncludes": "Qué incluye",
+    "tocProcess": "Proceso",
+    "tocCases": "Casos",
+    "tocFaq": "Preguntas",
+    "challengeLabel": "El problema",
+    "deliverablesHeading": "Lo que recibes al terminar",
+    "casesHeading": "Dónde lo hemos aplicado",
+    "casesViewCase": "Ver caso",
+    "secondaryCta": "Ver cómo trabajamos"
+  }
 }
-

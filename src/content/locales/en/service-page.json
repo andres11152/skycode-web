@@ -7,5 +7,58 @@
   "nextServiceLabel": "Next service",
   "backToServices": "Back to services",
   "enterpriseSolutionBadge": "SkyCode Enterprise Solution",
-  "interactiveDemoHeading": "Interactive Demo & Environment Simulation"
+  "interactiveDemoHeading": "Interactive Demo & Environment Simulation",
+  "index": {
+    "primaryCta": "Tell us about your project",
+    "secondaryCta": "Estimate your budget",
+    "listAria": "Service catalog",
+    "previewLabel": "Interactive preview",
+    "openService": "See the full service",
+    "countLabel": "services",
+    "casesBadge": "Real cases",
+    "casesTitle": "In production, not in a pitch deck",
+    "casesDescription": "Projects that real companies run on today, and the services we combined to build them.",
+    "casesServicesLabel": "Services applied in {title}",
+    "casesViewAll": "See the full portfolio",
+    "faqBadge": "Before we start",
+    "faqTitle": "What clients usually ask",
+    "faqs": [
+      {
+        "question": "Can I hire several services in a single project?",
+        "answer": "Yes, and it's the most common case. A custom platform almost always includes integrations, security and handover documentation. Services aren't quoted as separate packages: we build one plan with one team."
+      },
+      {
+        "question": "How much does a project cost?",
+        "answer": "It depends on scope, which is why we don't publish fixed prices. You can get an estimated range in minutes with our [estimator](/en/cotizador), and after a discovery call we deliver a fixed quote with dates."
+      },
+      {
+        "question": "Can you take over a system built by another vendor?",
+        "answer": "Yes. We start with a code and data audit to decide what to keep, what to refactor and what's worth replacing. If the system has become hard-to-maintain legacy, we migrate it in phases without stopping operations — see [legacy system migration](/en/servicios/migracion-datos-legacy)."
+      },
+      {
+        "question": "Do you work alongside our in-house engineering team?",
+        "answer": "Yes. Repositories in your name from day one, shared code reviews and documentation written so your team can continue on its own once we're done."
+      },
+      {
+        "question": "What happens after launch?",
+        "answer": "You get a 90-day warranty against any technical failure, at no cost. After that you can stay with us on a maintenance plan or continue with your own team: the code and documentation are already yours."
+      }
+    ],
+    "ctaTitle": "Running a process that no longer scales?",
+    "ctaDescription": "Tell us what you need to solve. We reply within 24 hours with an honest technical assessment, no strings attached."
+  },
+  "detail": {
+    "positionLabel": "Service {current} of {total}",
+    "tocLabel": "On this page",
+    "tocOverview": "Overview",
+    "tocIncludes": "What's included",
+    "tocProcess": "Process",
+    "tocCases": "Cases",
+    "tocFaq": "FAQ",
+    "challengeLabel": "The problem",
+    "deliverablesHeading": "What you get at the end",
+    "casesHeading": "Where we've applied it",
+    "casesViewCase": "View case",
+    "secondaryCta": "See how we work"
+  }
 }

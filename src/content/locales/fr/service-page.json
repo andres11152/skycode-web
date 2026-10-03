@@ -7,5 +7,58 @@
   "nextServiceLabel": "Service suivant",
   "backToServices": "Retour aux services",
   "enterpriseSolutionBadge": "Solution Enterprise SkyCode",
-  "interactiveDemoHeading": "Démo interactive et simulation d'environnement"
+  "interactiveDemoHeading": "Démo interactive et simulation d'environnement",
+  "index": {
+    "primaryCta": "Parlez-nous de votre projet",
+    "secondaryCta": "Estimer votre budget",
+    "listAria": "Catalogue de services",
+    "previewLabel": "Aperçu interactif",
+    "openService": "Voir le service complet",
+    "countLabel": "services",
+    "casesBadge": "Cas réels",
+    "casesTitle": "En production, pas dans une présentation",
+    "casesDescription": "Des projets sur lesquels de vraies entreprises fonctionnent aujourd'hui, et les services que nous avons combinés pour les construire.",
+    "casesServicesLabel": "Services appliqués dans {title}",
+    "casesViewAll": "Voir tout le portfolio",
+    "faqBadge": "Avant de commencer",
+    "faqTitle": "Ce qu'on nous demande souvent",
+    "faqs": [
+      {
+        "question": "Puis-je combiner plusieurs services dans un même projet ?",
+        "answer": "Oui, c'est le cas le plus fréquent. Une plateforme sur mesure inclut presque toujours des intégrations, de la sécurité et une documentation de transfert. Les services ne sont pas chiffrés comme des forfaits séparés : nous construisons un seul plan avec une seule équipe."
+      },
+      {
+        "question": "Combien coûte un projet ?",
+        "answer": "Cela dépend du périmètre, c'est pourquoi nous ne publions pas de prix fixes. Vous pouvez obtenir une fourchette estimée en quelques minutes avec notre [simulateur](/fr/cotizador), puis, après un appel de diagnostic, nous vous remettons un devis ferme avec des dates."
+      },
+      {
+        "question": "Pouvez-vous reprendre un système développé par un autre prestataire ?",
+        "answer": "Oui. Nous commençons par un audit du code et des données pour décider ce qui se conserve, ce qui se refactorise et ce qu'il vaut mieux remplacer. Si le système est devenu un héritage difficile à maintenir, nous le migrons par phases sans arrêter l'activité — voir [migration de systèmes legacy](/fr/servicios/migracion-datos-legacy)."
+      },
+      {
+        "question": "Travaillez-vous avec notre équipe technique interne ?",
+        "answer": "Oui. Dépôts à votre nom dès le premier jour, revues de code partagées et documentation pensée pour que votre équipe puisse continuer seule une fois notre mission terminée."
+      },
+      {
+        "question": "Que se passe-t-il après le lancement ?",
+        "answer": "Vous bénéficiez d'une garantie de 90 jours contre toute défaillance technique, sans frais. Ensuite, vous pouvez rester avec nous via un plan de maintenance ou poursuivre avec votre propre équipe : le code et la documentation vous appartiennent déjà."
+      }
+    ],
+    "ctaTitle": "Un processus qui ne suit plus la croissance ?",
+    "ctaDescription": "Dites-nous ce que vous devez résoudre. Nous répondons en moins de 24 heures avec une évaluation technique honnête, sans engagement."
+  },
+  "detail": {
+    "positionLabel": "Service {current} sur {total}",
+    "tocLabel": "Sur cette page",
+    "tocOverview": "Résumé",
+    "tocIncludes": "Ce qui est inclus",
+    "tocProcess": "Processus",
+    "tocCases": "Cas",
+    "tocFaq": "Questions",
+    "challengeLabel": "Le problème",
+    "deliverablesHeading": "Ce que vous recevez à la fin",
+    "casesHeading": "Où nous l'avons appliqué",
+    "casesViewCase": "Voir le cas",
+    "secondaryCta": "Voir notre méthode"
+  }
 }

@@ -1,8 +1,9 @@
 import { getNavContent } from "@/content/nav";
 import type { Service } from "@/content/services";
+import { getServiceDetails } from "@/content/serviceDetails";
 import { siteName, siteUrl } from "@/lib/site";
 import { localeHomePath, type Locale } from "@/lib/i18n";
-import { servicePath } from "@/lib/serviceMetadata";
+import { servicePath, servicesIndexPath } from "@/lib/serviceMetadata";
 import { stripInlineLinks } from "@/lib/inlineLinks";
 
 export function ServiceJsonLd({ service, locale }: { service: Service; locale: Locale }) {
@@ -26,17 +27,18 @@ export function ServiceJsonLd({ service, locale }: { service: Service; locale: L
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: navData.inicio, item: homeUrl },
-      { "@type": "ListItem", position: 2, name: navData.servicios, item: `${homeUrl}/#servicios` },
+      { "@type": "ListItem", position: 2, name: navData.servicios, item: `${siteUrl}${servicesIndexPath(locale)}` },
       { "@type": "ListItem", position: 3, name: service.title, item: url },
     ],
   };
 
-  const faqJsonLd = service.details?.faqs.length
+  const details = getServiceDetails(service.slug, locale);
+  const faqJsonLd = details?.faqs.length
     ? {
         "@context": "https://schema.org",
         "@type": "FAQPage",
         inLanguage: locale,
-        mainEntity: service.details.faqs.map((item) => ({
+        mainEntity: details.faqs.map((item) => ({
           "@type": "Question",
           name: item.question,
           acceptedAnswer: { "@type": "Answer", text: stripInlineLinks(item.answer) },

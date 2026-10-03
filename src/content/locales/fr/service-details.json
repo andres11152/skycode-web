@@ -1,0 +1,631 @@
+{
+  "desarrollo-software-medida": {
+    "intro": [
+      "Quand une entreprise grandit, les outils génériques finissent par dicter la façon dont l'équipe travaille : des champs qui n'existent pas, des validations qui passent par e-mail, des rapports montés à la main dans Excel. Nous construisons des plateformes internes, des portails clients et des systèmes de gestion qui suivent le flux réel de votre activité, et non l'inverse.",
+      "Le logiciel est à votre nom dès le premier commit : dépôts, base de données et infrastructure sur vos comptes, sans licences par utilisateur qui augmentent avec votre équipe."
+    ],
+    "challenge": {
+      "heading": "Quand le logiciel générique commence à freiner l'activité",
+      "points": [
+        "L'équipe gère des processus critiques dans des tableurs partagés, sans droits d'accès ni historique des modifications.",
+        "Vous payez des licences par utilisateur pour un outil dont vous n'utilisez qu'une fraction, et il manque malgré tout les fonctions dont vous avez besoin.",
+        "L'information est répartie entre plusieurs systèmes qui ne communiquent pas, et quelqu'un la recopie à la main de l'un à l'autre.",
+        "Chaque petite évolution dépend de la feuille de route d'un éditeur externe."
+      ]
+    },
+    "deliverables": [
+      "Code source complet dans des dépôts à votre nom",
+      "Base de données modélisée sur vos processus, avec migrations versionnées",
+      "Rôles et droits par type d'utilisateur, avec journal d'audit",
+      "Déploiement automatisé (CI/CD) sur votre propre infrastructure",
+      "Documentation technique et utilisateur pour votre équipe"
+    ],
+    "stepsHeading": "Comment nous construisons votre plateforme",
+    "steps": [
+      {
+        "title": "Cartographie du processus réel",
+        "text": "Avant de concevoir des écrans, nous comprenons comment le travail circule aujourd'hui : qui fait quoi, ce qui est validé, où le temps se perd et quelles données sont ressaisies. C'est de là que naît le modèle de données, pas d'un modèle préfabriqué."
+      },
+      {
+        "title": "Périmètre par phases",
+        "text": "Nous priorisons le module qui libère le plus d'heures opérationnelles et le mettons en production en premier. Le reste est planifié en phases aux dates et au budget fermes, et non en un projet d'un an sans livraisons intermédiaires."
+      },
+      {
+        "title": "Développement avec points d'avancement hebdomadaires",
+        "text": "Chaque semaine, vous disposez d'un environnement privé pour tester ce qui a été construit et faire vos retours directement aux ingénieurs qui développent, sans intermédiaires."
+      },
+      {
+        "title": "Mise en production et passation",
+        "text": "Nous reprenons les données existantes, formons l'équipe et livrons la documentation. Pendant les 90 jours de garantie, nous corrigeons toute anomalie sans frais."
+      }
+    ],
+    "useCasesHeading": "Plateformes que nous construisons souvent",
+    "useCases": [
+      "CRM et portails clients reprenant exactement le processus commercial de votre entreprise, suivi, propositions et facturation compris.",
+      "Systèmes d'exploitation et de logistique : expédition, tournées, stocks ou gestion de flotte en temps réel.",
+      "Outils internes qui remplacent les tableurs partagés par une base de données unique, avec droits d'accès et traçabilité.",
+      "Plateformes SaaS multi-entreprises, quand le logiciel que vous construisez pour vous peut aussi être vendu à d'autres."
+    ],
+    "faqHeading": "Questions fréquentes sur le logiciel sur mesure",
+    "faqs": [
+      {
+        "question": "Est-ce plus cher que de payer un outil existant ?",
+        "answer": "L'investissement initial est plus élevé, mais il n'y a pas de licences par utilisateur qui augmentent chaque année ni de fonctions payées sans être utilisées. C'est pertinent quand votre processus est un facteur de différenciation ou quand adapter un outil générique coûte déjà plus d'heures que de construire le vôtre."
+      },
+      {
+        "question": "Combien de temps avant la mise en production ?",
+        "answer": "Le premier module utile sort généralement en quelques semaines, pas en plusieurs mois, car nous travaillons par phases. Le délai exact est défini après la cartographie du processus, avec des dates fermes dans le contrat."
+      },
+      {
+        "question": "Que se passe-t-il si je veux ajouter des fonctions par la suite ?",
+        "answer": "Le code et la documentation vous appartiennent : vous pouvez continuer avec nous ou avec une autre équipe. L'architecture est pensée dès le départ pour évoluer par modules sans réécrire ce qui fonctionne déjà."
+      }
+    ],
+    "relatedHeading": "Pour aller plus loin",
+    "related": [
+      {
+        "label": "Choisir un prestataire sans perdre le contrôle de votre code",
+        "href": "/fr/blog/outsourcing-software-latam-propiedad-codigo",
+        "description": "Ce qu'il faut exiger dans le contrat et dans les dépôts pour que le logiciel vous appartienne vraiment."
+      }
+    ]
+  },
+  "desarrollo-aplicaciones-moviles": {
+    "intro": [
+      "Une application mobile métier ne se juge pas à son allure en démo, mais à son comportement sur le terrain : avec un mauvais réseau, sur le téléphone d'un technicien en intervention ou ouverte par des milliers de clients en même temps. Nous développons des applications iOS et Android avec React Native, à partir d'une base de code unique et avec un véritable mode hors ligne.",
+      "Nous prenons aussi en charge la publication sur l'App Store et Google Play, y compris les revues de chaque store, et l'application est publiée sur vos comptes développeur."
+    ],
+    "challenge": {
+      "heading": "Ce qui coince souvent dans une application métier",
+      "points": [
+        "Le personnel terrain perd des informations dès qu'il n'a plus de réseau et doit les ressaisir.",
+        "Maintenir deux applications natives séparées double le coût de chaque évolution.",
+        "L'application est publiée sur le compte du prestataire et vous n'avez aucun contrôle sur les mises à jour.",
+        "L'application n'est pas connectée au système interne, si bien que les données sont retranscrites à la main."
+      ]
+    },
+    "deliverables": [
+      "Application iOS et Android à partir d'une base de code unique en React Native",
+      "Publication sur l'App Store et Google Play sur vos comptes",
+      "Backend ou intégration avec vos systèmes existants",
+      "Synchronisation hors ligne avec résolution des conflits",
+      "Code source et guide pour publier de nouvelles versions"
+    ],
+    "stepsHeading": "Comment nous développons votre application",
+    "steps": [
+      {
+        "title": "Parcours et contexte d'usage",
+        "text": "Nous définissons qui utilise l'application, dans quelles conditions (au bureau, en déplacement, sans réseau) et ce qu'il doit accomplir sur chaque écran. C'est ce qui détermine ce qui fonctionne hors ligne ou non."
+      },
+      {
+        "title": "Prototype navigable",
+        "text": "Avant de coder, vous validez un prototype des parcours principaux sur votre propre téléphone. Corriger à ce stade coûte bien moins cher que sur une version déjà publiée."
+      },
+      {
+        "title": "Développement avec builds de test",
+        "text": "Chaque semaine, vous recevez des versions de test installables sur iOS et Android, pour que votre équipe les utilise en conditions réelles avant le lancement."
+      },
+      {
+        "title": "Publication et suivi",
+        "text": "Nous préparons les fiches, les captures d'écran et la conformité aux règles de chaque store, publions l'application et vous accompagnons les premières semaines avec la garantie de 90 jours."
+      }
+    ],
+    "useCasesHeading": "Applications que nous construisons souvent",
+    "useCases": [
+      "Applications terrain pour techniciens, commerciaux ou chauffeurs, avec prise de photos, signature, GPS et mode hors ligne.",
+      "Applications pour clients finaux : prise de rendez-vous, commandes, suivi de prestations ou programmes de fidélité.",
+      "Applications connectées au matériel de l'appareil, comme l'appareil photo, le lecteur de codes ou le Bluetooth."
+    ],
+    "faqHeading": "Questions fréquentes sur le développement d'applications",
+    "faqs": [
+      {
+        "question": "Pourquoi React Native plutôt que des applications natives séparées ?",
+        "answer": "Avec une base de code unique pour iOS et Android, chaque nouvelle fonction est développée et testée une fois, et non deux. Pour la grande majorité des applications métier, les performances sont indiscernables de celles d'une application native, et lorsqu'un module natif spécifique est nécessaire, il s'intègre sans difficulté."
+      },
+      {
+        "question": "L'application fonctionne-t-elle sans internet ?",
+        "answer": "Oui, si le cas d'usage l'exige. L'application enregistre les données localement et les synchronise en arrière-plan au retour du réseau, en résolvant les conflits si deux personnes ont modifié la même chose."
+      },
+      {
+        "question": "Qui est propriétaire de l'application sur les stores ?",
+        "answer": "Vous. Nous publions sur vos comptes développeur Apple et Google, et nous vous remettons le code ainsi que le guide pour publier de nouvelles versions."
+      }
+    ]
+  },
+  "apis-integraciones": {
+    "intro": [
+      "La plupart des entreprises n'ont pas besoin d'un système de plus : elles ont besoin que ceux qu'elles ont déjà communiquent entre eux. Nous connectons votre logiciel aux passerelles de paiement, logiciels comptables, ERP et à WhatsApp pour que l'information circule d'elle-même, sans que quelqu'un la recopie d'un écran à l'autre.",
+      "Nous concevons chaque intégration pour échouer en toute sécurité : nouvelles tentatives, journalisation de chaque événement et alertes quand un fournisseur externe ne répond pas. Nous détaillons les pratiques que nous appliquons dans notre [guide d'architecture des API REST](/fr/blog/buenas-practicas-apis-rest)."
+    ],
+    "challenge": {
+      "heading": "Les signes qu'il vous manque des intégrations",
+      "points": [
+        "Quelqu'un de l'équipe passe des heures à recopier commandes, paiements ou factures d'un système à l'autre.",
+        "Les paiements en ligne ne sont pas rapprochés automatiquement avec la comptabilité.",
+        "Quand une intégration tombe en panne, personne ne s'en aperçoit avant la réclamation d'un client.",
+        "Chaque nouveau fournisseur implique un développement à partir de zéro, faute d'API propre."
+      ]
+    },
+    "deliverables": [
+      "Intégrations en production avec nouvelles tentatives et journalisation des événements",
+      "Webhooks signés et validés, jamais ouverts sans authentification",
+      "Documentation de l'API et de chaque flux de données",
+      "Alertes lorsqu'un service externe tombe en panne ou renvoie des erreurs",
+      "Identifiants et accès sur vos comptes"
+    ],
+    "stepsHeading": "Comment nous intégrons vos systèmes",
+    "steps": [
+      {
+        "title": "Cartographie des flux de données",
+        "text": "Nous identifions quelles informations circulent entre les systèmes, quelle est la source de vérité de chaque donnée et ce qui se passe aujourd'hui quand quelque chose échoue."
+      },
+      {
+        "title": "Conception du contrat",
+        "text": "Nous définissons endpoints, formats et événements avant d'écrire la moindre ligne de code, pour que chaque système sache exactement ce qu'il reçoit et ce qu'il renvoie."
+      },
+      {
+        "title": "Implémentation résiliente",
+        "text": "Chaque intégration inclut l'idempotence (un événement reçu deux fois ne duplique pas un paiement), des nouvelles tentatives avec délai progressif et la validation des signatures des webhooks."
+      },
+      {
+        "title": "Supervision et documentation",
+        "text": "Nous journalisons chaque événement, mettons en place des alertes en cas de panne et livrons la documentation pour que votre équipe comprenne et maintienne chaque flux."
+      }
+    ],
+    "useCasesHeading": "Intégrations que nous réalisons souvent",
+    "useCases": [
+      "Passerelles de paiement (Wompi, Stripe, PayU, Mercado Pago) rapprochées automatiquement avec vos factures.",
+      "Logiciels comptables et ERP (Siigo, Alegra, SAP) synchronisés avec votre plateforme de vente ou d'exploitation.",
+      "WhatsApp Cloud API pour les notifications, la prise de rendez-vous ou un service client automatisé.",
+      "Une API propre pour que partenaires, clients ou applications mobiles consomment vos données en toute sécurité."
+    ],
+    "faqHeading": "Questions fréquentes sur les intégrations",
+    "faqs": [
+      {
+        "question": "Pouvez-vous intégrer un système qui n'a pas d'API ?",
+        "answer": "Souvent, oui : via des exports planifiés, un accès contrôlé à sa base de données ou, en dernier recours, l'automatisation de son interface. Nous l'évaluons au cas par cas et vous disons honnêtement à quel point chaque option peut être robuste."
+      },
+      {
+        "question": "Que se passe-t-il si le service externe tombe en panne ?",
+        "answer": "Les événements sont mis en file d'attente et réessayés automatiquement au retour du service. Si la panne persiste, le système alerte l'équipe au lieu de perdre des informations en silence."
+      },
+      {
+        "question": "Est-il sûr de connecter paiements et données comptables ?",
+        "answer": "Oui, avec les bonnes pratiques : identifiants chiffrés, webhooks à signature vérifiée, droits minimaux par intégration et journalisation de chaque opération. Cela fait partie de la conception, pas d'un ajout de dernière minute."
+      }
+    ],
+    "relatedHeading": "Pour aller plus loin",
+    "related": [
+      {
+        "label": "Architecture d'API REST : 7 pratiques pour la production",
+        "href": "/fr/blog/buenas-practicas-apis-rest",
+        "description": "Versionnage, idempotence, gestion des erreurs et autres choix qui évitent les pannes."
+      }
+    ]
+  },
+  "frontend-alto-rendimiento": {
+    "intro": [
+      "La vitesse d'un site n'est pas un détail technique : elle influe sur le nombre de visiteurs qui restent, sur ceux qui convertissent et sur votre positionnement dans Google. Nous développons des sites et applications web avec Next.js et React, pensés dès l'architecture pour se charger vite, être accessibles et bien s'indexer.",
+      "Nous mesurons avec de vrais outils (Lighthouse et les métriques Core Web Vitals) sur la version de production, et non sur un environnement de développement qui donne des chiffres trompeurs."
+    ],
+    "challenge": {
+      "heading": "Quand votre site actuel vous coûte des clients",
+      "points": [
+        "Le site met du temps à se charger sur mobile et les visiteurs partent avant de voir l'offre.",
+        "Les métriques Core Web Vitals sont au rouge et le référencement naturel ne progresse pas.",
+        "Chaque modification de contenu exige un développeur ou casse la mise en page.",
+        "Le site ne respecte pas les règles d'accessibilité de base et exclut une partie de vos utilisateurs."
+      ]
+    },
+    "deliverables": [
+      "Site ou application web en Next.js, déployé sur votre infrastructure",
+      "Core Web Vitals au vert, mesurés en production",
+      "SEO technique : métadonnées, données structurées, sitemap et versions par langue",
+      "Accessibilité conforme aux règles WCAG",
+      "Code source et guide pour modifier le contenu"
+    ],
+    "stepsHeading": "Comment nous construisons un site rapide",
+    "steps": [
+      {
+        "title": "Audit et objectifs",
+        "text": "Nous mesurons le site actuel (s'il existe) et définissons ce qu'il doit accomplir : vitesse, conversion, référencement ou tout à la fois. C'est ce qui fixe le budget de performance du projet."
+      },
+      {
+        "title": "Architecture de rendu",
+        "text": "Nous décidons ce qui est généré en statique, ce qui est rendu côté serveur et ce qui a besoin de JavaScript dans le navigateur. Envoyer moins de JavaScript reste le plus grand gain de vitesse."
+      },
+      {
+        "title": "Design et développement",
+        "text": "Nous développons avec des images optimisées, le chargement différé de ce qui n'est pas visible et des animations qui n'entrent pas en concurrence avec les interactions de l'utilisateur."
+      },
+      {
+        "title": "Mesure en production",
+        "text": "Nous auditons avec Lighthouse la version réellement publiée et corrigeons jusqu'à atteindre les objectifs convenus avant de considérer le projet comme terminé."
+      }
+    ],
+    "useCasesHeading": "Projets sur lesquels nous intervenons souvent",
+    "useCases": [
+      "Sites corporate et catalogues numériques qui doivent se positionner dans les moteurs de recherche.",
+      "Refontes de sites lents sans perdre le référencement ni les URL existantes.",
+      "Applications web avec tableaux de bord et formulaires complexes qui doivent paraître instantanées.",
+      "Sites multilingues avec des versions par langue bien indexées."
+    ],
+    "faqHeading": "Questions fréquentes sur le développement web haute performance",
+    "faqs": [
+      {
+        "question": "Vais-je perdre mon référencement si je refonds mon site ?",
+        "answer": "Non, si la migration est bien planifiée. Nous conservons les URL déjà positionnées ou configurons des redirections permanentes, et nous gardons les métadonnées et le contenu que Google a déjà indexés."
+      },
+      {
+        "question": "Pourquoi Next.js ?",
+        "answer": "Il permet de décider page par page ce qui est généré en statique et ce qui est rendu côté serveur, ce qui donne des sites très rapides et bien indexés sans sacrifier les fonctionnalités dynamiques."
+      },
+      {
+        "question": "Pourrai-je modifier le contenu sans développeur ?",
+        "answer": "Oui. Lorsque le projet le nécessite, nous intégrons un back-office de contenu pour que votre équipe publie et modifie sans toucher au code."
+      }
+    ]
+  },
+  "ecommerce-tienda-online": {
+    "intro": [
+      "Les plateformes e-commerce génériques sont un bon moyen de démarrer, mais à mesure que les ventes augmentent, les commissions par transaction, les plugins de paiement et les limites du catalogue commencent à peser. Nous construisons des boutiques sur mesure, sans commission sur les ventes, connectées directement à vos stocks, à votre facturation et à vos transporteurs."
+    ],
+    "challenge": {
+      "heading": "Quand la plateforme de votre boutique commence à vous limiter",
+      "points": [
+        "Vous payez une commission sur chaque vente en plus de l'abonnement et des plugins.",
+        "Le catalogue ne gère pas vos variantes, attributs ou règles de prix réels.",
+        "Le stock de la boutique ne correspond pas à celui de l'entrepôt et vous vendez des produits en rupture.",
+        "Le tunnel de commande compte trop d'étapes et ne propose pas les moyens de paiement qu'utilisent vos clients."
+      ]
+    },
+    "deliverables": [
+      "Boutique en ligne sur mesure, sans commission sur les ventes",
+      "Catalogue avec variantes, attributs et stock synchronisé",
+      "Tunnel de commande avec passerelles de paiement locales et internationales",
+      "Intégration avec les transporteurs et la facturation",
+      "Back-office de gestion des commandes, produits et stocks"
+    ],
+    "stepsHeading": "Comment nous construisons votre boutique",
+    "steps": [
+      {
+        "title": "Catalogue et règles métier",
+        "text": "Nous modélisons vos produits, variantes, prix, remises et taxes tels qu'ils fonctionnent dans votre activité, et non tels qu'un modèle préfabriqué les impose."
+      },
+      {
+        "title": "Tunnel de commande et paiements",
+        "text": "Nous concevons un tunnel de commande court et connectons les passerelles qu'utilisent vos clients, avec une confirmation de paiement vérifiée côté serveur, jamais uniquement dans le navigateur."
+      },
+      {
+        "title": "Stocks et logistique",
+        "text": "Nous synchronisons le stock avec votre système ou votre entrepôt et connectons les transporteurs pour générer automatiquement bordereaux et suivi."
+      },
+      {
+        "title": "Lancement et optimisation",
+        "text": "Nous mettons en ligne avec une analytique de conversion et vous accompagnons les premières semaines pour ajuster le tunnel à partir de données réelles."
+      }
+    ],
+    "useCasesHeading": "Boutiques que nous construisons souvent",
+    "useCases": [
+      "Marques de mode et de chaussures avec de nombreuses variantes de taille et de couleur par produit.",
+      "Boutiques qui quittent une plateforme générique pour supprimer les commissions et reprendre le contrôle.",
+      "Commerces B2B avec grilles tarifaires par client, minimums de commande ou devis en ligne."
+    ],
+    "faqHeading": "Questions fréquentes sur l'e-commerce sur mesure",
+    "faqs": [
+      {
+        "question": "Faut-il une boutique sur mesure ou une plateforme comme Shopify ?",
+        "answer": "Pour commencer à vendre rapidement, une plateforme générique suffit généralement. Une boutique sur mesure devient pertinente quand les commissions, les plugins ou les limites du catalogue coûtent déjà plus que ce que coûterait la construction de la vôtre."
+      },
+      {
+        "question": "Quels moyens de paiement puis-je proposer ?",
+        "answer": "Nous intégrons des passerelles locales et internationales comme Wompi, PayU, Mercado Pago et Stripe, avec cartes, virements et autres moyens que chaque passerelle prend en charge dans votre pays."
+      },
+      {
+        "question": "Puis-je migrer mes produits et mes clients depuis ma boutique actuelle ?",
+        "answer": "Oui. Nous reprenons le catalogue, les clients et l'historique des commandes, et configurons des redirections pour ne pas perdre le référencement des fiches produit."
+      }
+    ]
+  },
+  "seguridad-cumplimiento": {
+    "intro": [
+      "La sécurité ne s'ajoute pas à la fin d'un projet : elle se décide dans l'architecture. Nous mettons en place le contrôle d'accès par rôle, le chiffrement des informations sensibles et la journalisation d'audit dès la conception, et nous alignons le logiciel sur les réglementations de protection des données comme la loi 1581 en Colombie et le RGPD en Europe.",
+      "Nous l'expliquons en détail dans notre [guide technique de la loi 1581 colombienne](/fr/blog/ley-1581-guia-tecnica-software) : ce que la loi exige et comment cela se traduit en décisions logicielles concrètes."
+    ],
+    "challenge": {
+      "heading": "Les risques que nous rencontrons souvent lors d'un audit",
+      "points": [
+        "Tous les utilisateurs internes voient toutes les données, sans droits par rôle.",
+        "Mots de passe ou données personnelles stockés en clair ou dans les journaux de l'application.",
+        "Impossible de savoir qui a modifié une donnée ni quand.",
+        "Aucun processus pour répondre lorsqu'une personne concernée demande l'accès à ses données ou leur effacement."
+      ]
+    },
+    "deliverables": [
+      "Rapport d'audit avec des risques priorisés selon l'OWASP",
+      "Contrôle d'accès par rôle et journal d'audit",
+      "Chiffrement des données sensibles au repos et en transit",
+      "Parcours pour exercer les droits d'accès, de portabilité et d'effacement",
+      "Documentation technique des mesures mises en place"
+    ],
+    "stepsHeading": "Comment nous traitons la sécurité de votre logiciel",
+    "steps": [
+      {
+        "title": "Audit initial",
+        "text": "Nous examinons le code, la configuration et l'infrastructure au regard des vulnérabilités les plus courantes (OWASP Top 10) et cartographions les données personnelles que vous traitez et où elles se trouvent."
+      },
+      {
+        "title": "Plan de remédiation priorisé",
+        "text": "Nous classons chaque constat par impact et par effort, pour corriger d'abord ce qui représente un risque réel et ne pas dépenser le budget sur le cosmétique."
+      },
+      {
+        "title": "Mise en place des contrôles",
+        "text": "Nous appliquons droits par rôle, chiffrement, authentification robuste (double facteur compris), journal d'audit et limites contre les attaques par force brute."
+      },
+      {
+        "title": "Conformité documentée",
+        "text": "Nous documentons les mesures techniques et les processus de traitement des demandes des personnes concernées, comme preuve en cas d'audit ou de demande d'une autorité."
+      }
+    ],
+    "useCasesHeading": "Quand nous intervenons habituellement",
+    "useCases": [
+      "Entreprises qui traitent des données personnelles de clients et doivent se mettre en conformité avec la loi 1581 colombienne ou le RGPD.",
+      "Plateformes qui vont faire l'objet d'un audit ou d'une due diligence de la part d'un client ou d'un investisseur.",
+      "Systèmes hérités à moderniser sans exposer d'informations sensibles — voir [migration de systèmes legacy](/fr/servicios/migracion-datos-legacy)."
+    ],
+    "faqHeading": "Questions fréquentes sur la sécurité et la protection des données",
+    "faqs": [
+      {
+        "question": "Délivrez-vous des certifications de conformité ?",
+        "answer": "Nous ne sommes pas un organisme de certification. Nous mettons en place les mesures techniques exigées par les réglementations et les documentons, pour que votre entreprise dispose de preuves solides lors d'un audit ou face à l'autorité de protection des données."
+      },
+      {
+        "question": "Pouvez-vous auditer un système que vous n'avez pas construit ?",
+        "answer": "Oui. L'audit porte sur le code et l'infrastructure existants, quel que soit leur auteur, et le rapport inclut un plan de remédiation priorisé."
+      },
+      {
+        "question": "Quelles réglementations couvrez-vous ?",
+        "answer": "Nous travaillons sur les exigences techniques de la loi 1581 colombienne et du RGPD européen, qui partagent des principes comme le consentement, la minimisation et les droits des personnes concernées, et nous utilisons l'OWASP comme référence en matière de sécurité applicative."
+      }
+    ],
+    "relatedHeading": "Pour aller plus loin",
+    "related": [
+      {
+        "label": "La loi 1581 en pratique : ce que doit faire votre logiciel",
+        "href": "/fr/blog/ley-1581-guia-tecnica-software",
+        "description": "Les exigences de la loi traduites en décisions de développement concrètes."
+      }
+    ]
+  },
+  "arquitectura-documentacion": {
+    "intro": [
+      "Un logiciel que seul son auteur comprend est un risque pour votre entreprise. Nous documentons l'architecture, l'infrastructure et les processus de déploiement pour que votre équipe, ou tout autre prestataire, puisse poursuivre le développement en toute autonomie.",
+      "Ce service s'applique aussi bien à la fin d'un projet mené avec nous qu'à un système existant qui dépend aujourd'hui d'une seule personne ou d'un prestataire dont vous voulez vous affranchir."
+    ],
+    "challenge": {
+      "heading": "Les signes que votre logiciel dépend d'une seule personne",
+      "points": [
+        "Personne dans l'entreprise n'a d'accès administrateur aux dépôts, serveurs ou noms de domaine.",
+        "Déployer une modification exige qu'une personne précise le fasse à la main.",
+        "Il n'existe aucun schéma montrant comment les systèmes sont connectés ni où se trouvent les identifiants.",
+        "Changer de prestataire semble impossible, car personne d'autre ne comprend le code."
+      ]
+    },
+    "deliverables": [
+      "Dépôts, noms de domaine et infrastructure transférés sur vos comptes",
+      "Schémas d'architecture et de flux de données",
+      "Pipelines de déploiement automatisé (CI/CD)",
+      "Inventaire des services, variables d'environnement et accès",
+      "Guides de configuration, d'exploitation et de maintenance"
+    ],
+    "stepsHeading": "Comment nous réalisons la passation technique",
+    "steps": [
+      {
+        "title": "Inventaire des actifs",
+        "text": "Nous recensons dépôts, serveurs, bases de données, noms de domaine, services externes et identifiants, et vérifions au nom de qui chacun est enregistré."
+      },
+      {
+        "title": "Transfert des accès",
+        "text": "Nous déplaçons chaque actif vers des comptes contrôlés par votre entreprise, avec des droits par rôle, sans interrompre le service en production."
+      },
+      {
+        "title": "Documentation de l'architecture",
+        "text": "Nous documentons la façon dont le système est construit, les raisons des décisions clés et la circulation des données entre les composants."
+      },
+      {
+        "title": "Automatisation et passation",
+        "text": "Nous configurons des déploiements automatiques et organisons des sessions de passation avec votre équipe technique jusqu'à ce qu'elle puisse exploiter le système sans nous."
+      }
+    ],
+    "useCasesHeading": "Quand c'est nécessaire",
+    "useCases": [
+      "À la fin d'un projet, pour que votre équipe interne reprenne la maintenance.",
+      "Quand un précédent prestataire a laissé le système sans documentation ou avec des accès à son nom.",
+      "Avant une due diligence ou une cession, pour démontrer que le logiciel est un actif transférable."
+    ],
+    "faqHeading": "Questions fréquentes sur la documentation et la passation",
+    "faqs": [
+      {
+        "question": "La documentation est-elle incluse dans vos projets ?",
+        "answer": "Oui. Dans chaque projet, les dépôts sont à votre nom dès le premier jour et nous livrons une documentation technique à la fin. Ce service sert à approfondir cette passation ou à l'appliquer à des systèmes que nous n'avons pas construits."
+      },
+      {
+        "question": "Pouvez-vous documenter un système réalisé par un autre prestataire ?",
+        "answer": "Oui. Nous analysons le code et l'infrastructure existants, reconstituons l'architecture et la documentons, même en l'absence de toute documentation préalable."
+      },
+      {
+        "question": "Sous quel format se présente la documentation ?",
+        "answer": "Des documents placés dans le dépôt lui-même, à côté du code, pour être mis à jour avec lui : schémas, guides de configuration et procédures de déploiement et de reprise."
+      }
+    ],
+    "relatedHeading": "Pour aller plus loin",
+    "related": [
+      {
+        "label": "Choisir un prestataire sans perdre le contrôle de votre code",
+        "href": "/fr/blog/outsourcing-software-latam-propiedad-codigo",
+        "description": "Les clauses et pratiques qui garantissent que le logiciel vous appartient."
+      },
+      {
+        "label": "Dette technique : la détecter à temps",
+        "href": "/fr/blog/deuda-tecnica-como-detectarla",
+        "description": "Pourquoi un système sans documentation accumule plus vite de la dette technique."
+      }
+    ]
+  },
+  "migracion-datos-legacy": {
+    "intro": [
+      "Un système legacy n'est pas seulement un vieux logiciel : c'est celui qui fait encore tourner la facturation, les stocks ou l'activité quotidienne, mais que plus personne n'ose modifier. Notre service de migration de systèmes legacy le remplace module par module, l'ancien système restant en service en parallèle jusqu'à ce que le nouveau prouve qu'il traite les mêmes opérations avec les mêmes résultats.",
+      "Pas de bascule « big bang » le week-end. Nous appliquons le pattern Strangler Fig, la synchronisation des données entre les deux systèmes et un rapprochement automatisé avant chaque bascule — détaillés dans notre [guide de migration d'un système legacy sans coupure](/fr/blog/migracion-sistemas-legados-sin-interrupcion)."
+    ],
+    "challenge": {
+      "heading": "Les signes que votre système est déjà devenu un système legacy",
+      "points": [
+        "Chaque petite évolution prend des semaines, parce que personne n'ose toucher au code.",
+        "Une seule personne comprend son fonctionnement, et son absence paralyse l'activité.",
+        "L'éditeur ou la technologie ne bénéficie plus d'aucun support ni de mises à jour de sécurité.",
+        "Le système ne peut pas s'intégrer aux outils dont l'activité a besoin aujourd'hui."
+      ]
+    },
+    "deliverables": [
+      "Nouvelle plateforme en production, module par module",
+      "Scripts de reprise de données versionnés et rejouables",
+      "Rapport de rapprochement entre l'ancien système et le nouveau",
+      "Archive de consultation des données historiques à conserver",
+      "Documentation de la nouvelle architecture et des procédures de bascule"
+    ],
+    "stepsHeading": "Notre méthode de migration legacy sans interruption de service",
+    "steps": [
+      {
+        "title": "Audit de l'existant et des données",
+        "text": "Nous cartographions modules, interfaces, traitements batch et règles métier enfouies dans le code ou les procédures stockées, et mesurons volume, qualité et doublons des données avant de nous engager sur un calendrier."
+      },
+      {
+        "title": "Décision par module : migrer, conserver ou décommissionner",
+        "text": "Tout ne mérite pas une refonte. Chaque module est classé : réhébergé, refactorisé, remplacé par un SaaS, encapsulé derrière une API ou décommissionné — le budget va là où l'existant freine vraiment l'activité."
+      },
+      {
+        "title": "Architecture cible et couche de routage",
+        "text": "Nous concevons la nouvelle plateforme et une couche intermédiaire qui décide quelles requêtes sont servies par l'ancien système et lesquelles par le nouveau. C'est ce qui rend une migration progressive possible sans changer d'outil chaque semaine."
+      },
+      {
+        "title": "Reprise de données par lots",
+        "text": "Extraction, nettoyage, dédoublonnage et mapping des schémas avec des scripts versionnés et rejouables. Les deux systèmes restent synchronisés pendant leur cohabitation : il n'y a jamais de jour où les données sont « à moitié migrées »."
+      },
+      {
+        "title": "Recette et rapprochement des données",
+        "text": "Avant chaque bascule, nous comparons volumes, totaux et enregistrements critiques entre l'ancien et le nouveau système, et rejouons des tests de non-régression sur les processus métier. Si les chiffres ne concordent pas, la bascule n'a pas lieu."
+      },
+      {
+        "title": "Bascule, supervision et décommissionnement",
+        "text": "Le trafic bascule de façon progressive et réversible, nous surveillons erreurs et performances, et ce n'est qu'à la fin que l'ancien système est décommissionné — avec une archive en lecture seule des données que la loi impose de conserver."
+      }
+    ],
+    "useCasesHeading": "Projets de modernisation legacy typiques",
+    "useCases": [
+      "Un ERP ou logiciel de gestion développé sur mesure il y a 10-15 ans, sans documentation, maîtrisé par une seule personne.",
+      "Une activité qui repose sur des fichiers Excel, XML ou Access dispersés et a besoin d'une base unique, avec droits d'accès et traçabilité.",
+      "Des applications client lourd (Visual Basic, Delphi, ancien PHP) à porter vers le web ou le cloud sans arrêter la facturation.",
+      "Des bases de données non conformes au RGPD qui ont besoin de chiffrement, de contrôle d'accès et de journalisation — voir notre service [sécurité et conformité](/fr/servicios/seguridad-cumplimiento).",
+      "Des systèmes à décommissionner sans reprendre tout l'historique : seules les données actives migrent, le reste est archivé en consultation."
+    ],
+    "faqHeading": "Questions fréquentes sur la migration de systèmes legacy",
+    "faqs": [
+      {
+        "question": "Combien de temps dure la migration d'un système legacy ?",
+        "answer": "Tout dépend du nombre de modules et de la qualité des données. Un module bien délimité avec des données propres peut passer en production en quelques semaines ; un ERP complet se planifie par lots sur plusieurs mois. Chaque lot apporte de la valeur et reste réversible."
+      },
+      {
+        "question": "Peut-on migrer sans interruption de service ?",
+        "answer": "Oui, c'est tout l'intérêt d'une migration progressive. L'ancien système continue de tourner pendant que le nouveau reprend les modules un par un, avec des données synchronisées. Chaque bascule est progressive et peut être annulée en cas de problème."
+      },
+      {
+        "question": "Que deviennent les données historiques ?",
+        "answer": "Elles sont auditées avant tout déplacement. Les données utilisées au quotidien sont nettoyées et reprises avec contrôle d'intégrité ; celles conservées uniquement pour des raisons légales ou comptables peuvent rester dans une archive en lecture seule."
+      },
+      {
+        "question": "Faut-il migrer ou continuer à maintenir l'existant ?",
+        "answer": "Il faut migrer quand le coût de maintien (heures par évolution, pannes, fin de support éditeur, failles de sécurité) dépasse celui de la modernisation, ou quand l'existant bloque des intégrations nécessaires. Si le système est stable et ne gêne personne, l'encapsuler derrière une API suffit parfois."
+      },
+      {
+        "question": "À qui appartiennent le code et la documentation ?",
+        "answer": "À vous. Le code vous appartient à 100 % dès le premier jour, et nous livrons la documentation d'architecture et les scripts de reprise pour que votre équipe puisse maintenir le nouveau système sans dépendre de nous."
+      }
+    ],
+    "relatedHeading": "Pour aller plus loin",
+    "related": [
+      {
+        "label": "Guide : migrer un système legacy sans coupure",
+        "href": "/fr/blog/migracion-sistemas-legados-sin-interrupcion",
+        "description": "Méthode étape par étape, erreurs fréquentes et comment décommissionner un système sans reprendre toutes ses données."
+      },
+      {
+        "label": "Dette technique : la détecter à temps",
+        "href": "/fr/blog/deuda-tecnica-como-detectarla",
+        "description": "Les signes que votre système actuel est déjà en train de devenir un système legacy."
+      }
+    ]
+  },
+  "inteligencia-artificial-aplicada": {
+    "intro": [
+      "L'intelligence artificielle utile à une entreprise n'est pas un chatbot générique : c'est un modèle connecté à vos documents, à vos systèmes et à vos processus, qui accomplit une tâche précise et mesurable. Nous mettons en place des assistants, l'extraction automatique de données et la recherche sémantique sur les informations de votre entreprise.",
+      "Nous commençons toujours par un cas d'usage circonscrit, avec un indicateur clair d'heures économisées ou d'erreurs évitées, avant de passer à d'autres processus."
+    ],
+    "challenge": {
+      "heading": "Les tâches qui consomment souvent des heures à l'équipe",
+      "points": [
+        "Saisir à la main les données de factures, de bons de commande ou de documents numérisés.",
+        "Répondre encore et encore aux mêmes questions de clients sur WhatsApp ou par e-mail.",
+        "Chercher des informations éparpillées dans des documents, des manuels et d'anciennes conversations.",
+        "Trier et orienter les demandes entrantes avant que quelqu'un puisse les traiter."
+      ]
+    },
+    "deliverables": [
+      "Cas d'usage mis en œuvre et connecté à vos systèmes",
+      "Assistant ou automatisation dont les réponses reposent sur vos propres données",
+      "Contrôles de confidentialité sur les informations envoyées au modèle",
+      "Tableau de bord ou journal pour vérifier et corriger ce que fait l'IA",
+      "Mesure de l'impact par rapport à la situation de référence convenue"
+    ],
+    "stepsHeading": "Comment nous intégrons l'IA à votre activité",
+    "steps": [
+      {
+        "title": "Choix du cas d'usage",
+        "text": "Nous identifions une tâche répétitive, au volume suffisant et au résultat vérifiable. Si l'IA n'est pas le meilleur outil pour ce problème, nous vous le disons."
+      },
+      {
+        "title": "Test sur vos données",
+        "text": "Nous réalisons une preuve de concept avec des documents et des cas réels de votre entreprise pour mesurer la précision avant d'investir dans la version complète."
+      },
+      {
+        "title": "Intégration et contrôles",
+        "text": "Nous connectons la solution à vos systèmes et canaux, avec une validation humaine aux points critiques et des règles claires sur les données qui quittent votre infrastructure."
+      },
+      {
+        "title": "Mesure et amélioration",
+        "text": "Nous mesurons le résultat par rapport à la situation de référence et ajustons à partir des cas où le modèle s'est trompé."
+      }
+    ],
+    "useCasesHeading": "Applications que nous mettons souvent en place",
+    "useCases": [
+      "Assistants sur WhatsApp ou sur des canaux internes qui répondent avec les informations réelles de votre entreprise.",
+      "Extraction automatique de données à partir de factures, de bons de commande et de documents numérisés.",
+      "Recherche sémantique dans les manuels, les politiques et la base de connaissances interne.",
+      "Tri et orientation automatiques des demandes de support ou commerciales."
+    ],
+    "faqHeading": "Questions fréquentes sur l'IA appliquée",
+    "faqs": [
+      {
+        "question": "Mes données servent-elles à entraîner des modèles tiers ?",
+        "answer": "Nous utilisons des fournisseurs et des configurations qui n'entraînent pas leurs modèles avec les données envoyées par API, limitons les informations transmises au modèle au strict nécessaire et documentons les données qui quittent votre infrastructure."
+      },
+      {
+        "question": "Que se passe-t-il quand l'IA se trompe ?",
+        "answer": "C'est pourquoi nous prévoyons une validation humaine aux points critiques et un journal de chaque réponse. Les erreurs servent à ajuster le système, et pour les tâches sensibles, l'IA propose et une personne valide."
+      },
+      {
+        "question": "Mes données doivent-elles être organisées avant de commencer ?",
+        "answer": "Pas forcément. Préparer et structurer l'information fait partie du travail. La preuve de concept révèle rapidement si la qualité des données est suffisante ou s'il faut d'abord les retravailler."
+      }
+    ]
+  }
+}

@@ -1,0 +1,631 @@
+{
+  "desarrollo-software-medida": {
+    "intro": [
+      "As a company grows, generic tools start dictating how the team works: fields that don't exist, approvals handled over email, reports assembled by hand in Excel. We build internal platforms, customer portals and management systems that follow the real flow of your operation, not the other way around.",
+      "The software is in your name from the first commit: repositories, database and infrastructure under your accounts, with no per-seat licenses that grow with your team."
+    ],
+    "challenge": {
+      "heading": "When generic software starts slowing operations down",
+      "points": [
+        "The team runs critical processes in shared spreadsheets, with no permissions or change history.",
+        "You pay per-seat licenses for a tool you only use a fraction of, and it still lacks the features you need.",
+        "Information lives in several systems that don't talk to each other, and someone copies it by hand from one to the next.",
+        "Every small change depends on an outside vendor's roadmap."
+      ]
+    },
+    "deliverables": [
+      "Complete source code in repositories under your name",
+      "A database modeled on your processes, with versioned migrations",
+      "Roles and permissions by user type, with an audit log",
+      "Automated deployment (CI/CD) on your own infrastructure",
+      "Technical and user documentation for your team"
+    ],
+    "stepsHeading": "How we build your platform",
+    "steps": [
+      {
+        "title": "Mapping the real process",
+        "text": "Before designing screens, we learn how work flows today: who does what, what gets approved, where time is lost and which data gets entered twice. That's where the data model comes from, not from a template."
+      },
+      {
+        "title": "Phased scope",
+        "text": "We prioritize the module that frees up the most operational hours and ship it to production first. The rest is planned in phases with fixed dates and budgets, not a year-long project with no interim deliveries."
+      },
+      {
+        "title": "Development with weekly progress",
+        "text": "Every week you get a private environment to test what's been built and give feedback directly to the engineers writing the code, with no middlemen."
+      },
+      {
+        "title": "Launch and handover",
+        "text": "We migrate your existing data, train the team and hand over the documentation. During the 90-day warranty we fix any defect at no cost."
+      }
+    ],
+    "useCasesHeading": "Platforms we often build",
+    "useCases": [
+      "CRMs and customer portals built around your company's exact sales process, including follow-ups, proposals and invoicing.",
+      "Operations and logistics systems: dispatch, routing, inventory or real-time fleet tracking.",
+      "Internal tools that replace shared spreadsheets with a single database with permissions and traceability.",
+      "Multi-tenant SaaS platforms, when the software you build for yourself can also be sold to others."
+    ],
+    "faqHeading": "Custom software FAQ",
+    "faqs": [
+      {
+        "question": "Is it more expensive than paying for an existing tool?",
+        "answer": "The upfront investment is higher, but there are no per-seat licenses growing every year and no features you pay for without using. It makes sense when your process is a differentiator, or when adapting a generic tool already costs more hours than building your own."
+      },
+      {
+        "question": "How long until it's in production?",
+        "answer": "The first useful module usually ships in weeks, not months, because we work in phases. We set the exact timeline after mapping the process, with fixed dates in the contract."
+      },
+      {
+        "question": "What if I want to add features later?",
+        "answer": "The code and documentation are yours, so you can keep working with us or with another team. The architecture is designed from the start to grow module by module without rewriting what already works."
+      }
+    ],
+    "relatedHeading": "Keep reading",
+    "related": [
+      {
+        "label": "How to choose a vendor without losing control of your code",
+        "href": "/en/blog/outsourcing-software-latam-propiedad-codigo",
+        "description": "What to require in the contract and in the repositories so the software is truly yours."
+      }
+    ]
+  },
+  "desarrollo-aplicaciones-moviles": {
+    "intro": [
+      "A business mobile app isn't judged by how it looks in a demo, but by how it works out in the field: with poor signal, on a field technician's phone, or with thousands of customers opening it at once. We build iOS and Android apps with React Native, from a single codebase and with real offline mode.",
+      "We also handle publishing to the App Store and Google Play, including each store's review process, and the app is published under your developer accounts."
+    ],
+    "challenge": {
+      "heading": "What usually goes wrong in a business app",
+      "points": [
+        "Field staff lose information when they drop signal and have to enter it again.",
+        "Maintaining two separate native apps doubles the cost of every change.",
+        "The app is published under the vendor's account and you have no control over updates.",
+        "The app doesn't connect to the internal system, so data gets transcribed by hand."
+      ]
+    },
+    "deliverables": [
+      "An iOS and Android app from a single React Native codebase",
+      "Publishing on the App Store and Google Play under your accounts",
+      "A backend or integration with your existing systems",
+      "Offline sync with conflict resolution",
+      "Source code and a guide for publishing new versions"
+    ],
+    "stepsHeading": "How we build your app",
+    "steps": [
+      {
+        "title": "Flows and context of use",
+        "text": "We define who uses the app, under what conditions (in the office, on the road, with no signal) and what they need to get done on each screen. That decides what works offline and what doesn't."
+      },
+      {
+        "title": "Clickable prototype",
+        "text": "Before writing code, you validate a prototype of the main flows on your own phone. Fixing things there is far cheaper than in a version that's already published."
+      },
+      {
+        "title": "Development with test builds",
+        "text": "You get installable test builds for iOS and Android every week, so your team can use them in real conditions before launch."
+      },
+      {
+        "title": "Publishing and follow-up",
+        "text": "We prepare store listings, screenshots and compliance with each store's policies, publish the app and support you through the first weeks under the 90-day warranty."
+      }
+    ],
+    "useCasesHeading": "Apps we often build",
+    "useCases": [
+      "Field apps for technicians, sales reps or drivers, with photo capture, signatures, GPS and offline mode.",
+      "Apps for end customers: scheduling, orders, service tracking or loyalty programs.",
+      "Apps that connect to device hardware, such as the camera, barcode scanner or Bluetooth."
+    ],
+    "faqHeading": "App development FAQ",
+    "faqs": [
+      {
+        "question": "Why React Native instead of separate native apps?",
+        "answer": "With a single codebase for iOS and Android, each new feature is built and tested once, not twice. For the vast majority of business apps, performance is indistinguishable from a native app, and when a specific native module is needed, it integrates without issue."
+      },
+      {
+        "question": "Does the app work without internet?",
+        "answer": "Yes, if the use case requires it. The app stores data locally and syncs it in the background when the signal returns, resolving conflicts if two people edited the same thing."
+      },
+      {
+        "question": "Who owns the app in the stores?",
+        "answer": "You do. We publish under your Apple and Google developer accounts, and we hand over the code and the guide for publishing new versions."
+      }
+    ]
+  },
+  "apis-integraciones": {
+    "intro": [
+      "Most companies don't need another system: they need the ones they already have to talk to each other. We connect your software with payment gateways, accounting systems, ERPs and WhatsApp so information flows on its own, without anyone copying it from one screen to another.",
+      "We design every integration to fail safely: retries, a log of every event and alerts when an external provider doesn't respond. We explain the practices we apply in our [REST API architecture guide](/en/blog/buenas-practicas-apis-rest)."
+    ],
+    "challenge": {
+      "heading": "Signs you're missing integrations",
+      "points": [
+        "Someone on the team spends hours copying orders, payments or invoices from one system to another.",
+        "Online payments aren't automatically reconciled with accounting.",
+        "When an integration fails, nobody finds out until a customer complains.",
+        "Every new partner means building from scratch because there's no API of your own."
+      ]
+    },
+    "deliverables": [
+      "Production integrations with retries and event logging",
+      "Signed and validated webhooks, never left open without authentication",
+      "Documentation of the API and of every data flow",
+      "Alerts when an external service fails or returns errors",
+      "Credentials and access under your accounts"
+    ],
+    "stepsHeading": "How we integrate your systems",
+    "steps": [
+      {
+        "title": "Data flow map",
+        "text": "We identify what information moves between systems, which system is the source of truth for each piece of data and what happens today when something fails."
+      },
+      {
+        "title": "Contract design",
+        "text": "We define endpoints, formats and events before writing code, so each system knows exactly what it receives and what it returns."
+      },
+      {
+        "title": "Resilient implementation",
+        "text": "Every integration includes idempotency (a repeated event doesn't duplicate a payment), retries with exponential backoff and signature validation on webhooks."
+      },
+      {
+        "title": "Monitoring and documentation",
+        "text": "We leave a log of every event, alerts on failures and the documentation your team needs to understand and maintain each flow."
+      }
+    ],
+    "useCasesHeading": "Integrations we often build",
+    "useCases": [
+      "Payment gateways (Wompi, Stripe, PayU, Mercado Pago) automatically reconciled with your invoices.",
+      "Accounting systems and ERPs (Siigo, Alegra, SAP) synced with your sales or operations platform.",
+      "WhatsApp Cloud API for notifications, scheduling or automated customer service.",
+      "An API of your own so partners, customers or mobile apps can consume your data securely."
+    ],
+    "faqHeading": "Integrations FAQ",
+    "faqs": [
+      {
+        "question": "Can you integrate a system that has no API?",
+        "answer": "Often, yes: through scheduled exports, controlled access to its database or, as a last resort, automating its user interface. We evaluate each case and tell you honestly how robust each option can be."
+      },
+      {
+        "question": "What happens if the external service goes down?",
+        "answer": "Events are queued and retried automatically when the service comes back. If the failure persists, the system alerts the team instead of silently losing information."
+      },
+      {
+        "question": "Is it safe to connect payments and accounting data?",
+        "answer": "Yes, with the right practices: encrypted credentials, webhooks with verified signatures, least-privilege permissions per integration and a log of every operation. It's part of the design, not an add-on at the end."
+      }
+    ],
+    "relatedHeading": "Keep reading",
+    "related": [
+      {
+        "label": "REST API architecture: 7 practices for production",
+        "href": "/en/blog/buenas-practicas-apis-rest",
+        "description": "Versioning, idempotency, error handling and other decisions that prevent outages."
+      }
+    ]
+  },
+  "frontend-alto-rendimiento": {
+    "intro": [
+      "Site speed isn't a technical detail: it affects how many visitors stay, how many convert and how Google ranks you. We build websites and web applications with Next.js and React, designed at the architecture level to load fast, be accessible and get indexed well.",
+      "We measure with real tools (Lighthouse and Core Web Vitals) against the production build, not a development environment that produces misleading numbers."
+    ],
+    "challenge": {
+      "heading": "When your current site is costing you customers",
+      "points": [
+        "The site loads slowly on mobile and visitors leave before they see the offer.",
+        "Core Web Vitals are in the red and organic rankings aren't improving.",
+        "Every content change requires a developer or breaks the design.",
+        "The site doesn't meet basic accessibility guidelines and excludes some of your users."
+      ]
+    },
+    "deliverables": [
+      "A Next.js website or web application, deployed on your infrastructure",
+      "Green Core Web Vitals measured in production",
+      "Technical SEO: metadata, structured data, sitemap and per-language versions",
+      "Accessibility following WCAG guidelines",
+      "Source code and a guide for editing content"
+    ],
+    "stepsHeading": "How we build a fast site",
+    "steps": [
+      {
+        "title": "Audit and goals",
+        "text": "We measure the current site (if there is one) and define what it needs to achieve: speed, conversion, rankings or all of the above. That sets the project's performance budget."
+      },
+      {
+        "title": "Rendering architecture",
+        "text": "We decide what gets generated statically, what gets rendered on the server and what needs JavaScript in the browser. Shipping less JavaScript is the single biggest speed gain."
+      },
+      {
+        "title": "Design and development",
+        "text": "We build with optimized images, lazy loading for whatever isn't in view and animations that don't compete with user interaction."
+      },
+      {
+        "title": "Measurement in production",
+        "text": "We audit the real published version with Lighthouse and keep fixing until it meets the agreed targets before we call the project done."
+      }
+    ],
+    "useCasesHeading": "Projects we often work on",
+    "useCases": [
+      "Corporate websites and digital catalogs that need to rank in search engines.",
+      "Redesigns of slow sites without losing rankings or existing URLs.",
+      "Web applications with complex dashboards and forms that need to feel instant.",
+      "Multilingual sites with well-indexed per-language versions."
+    ],
+    "faqHeading": "High-performance web development FAQ",
+    "faqs": [
+      {
+        "question": "Will I lose my rankings if I redesign the site?",
+        "answer": "Not if the migration is planned well. We keep the URLs that already rank or set up permanent redirects, and we preserve the metadata and content Google has already indexed."
+      },
+      {
+        "question": "Why Next.js?",
+        "answer": "It lets you decide page by page what gets generated statically and what gets rendered on the server, which produces very fast, well-indexed sites without sacrificing dynamic functionality."
+      },
+      {
+        "question": "Will I be able to edit content without a developer?",
+        "answer": "Yes. When the project calls for it, we integrate a content panel so your team can publish and edit without touching code."
+      }
+    ]
+  },
+  "ecommerce-tienda-online": {
+    "intro": [
+      "Generic e-commerce platforms are a good way to start, but as sales grow, transaction fees, payment plugins and catalog limitations start to weigh on you. We build custom stores with no per-sale fees, connected directly to your inventory, your invoicing and your shipping carriers."
+    ],
+    "challenge": {
+      "heading": "When your store's platform starts holding you back",
+      "points": [
+        "You pay fees on every sale on top of the monthly subscription and plugins.",
+        "The catalog doesn't support your actual variants, attributes or pricing rules.",
+        "The store's inventory doesn't match the warehouse, and you sell products that are out of stock.",
+        "Checkout has too many steps and doesn't offer the payment methods your customers use."
+      ]
+    },
+    "deliverables": [
+      "A custom online store with no per-sale fees",
+      "A catalog with variants, attributes and synced stock",
+      "Checkout with local and international payment gateways",
+      "Integration with shipping carriers and invoicing",
+      "An admin panel for orders, products and inventory"
+    ],
+    "stepsHeading": "How we build your store",
+    "steps": [
+      {
+        "title": "Catalog and business rules",
+        "text": "We model your products, variants, prices, discounts and taxes the way they actually work in your business, not the way a template imposes them."
+      },
+      {
+        "title": "Checkout and payments",
+        "text": "We design a short checkout and connect the gateways your customers use, with payment confirmation verified on the server, never only in the browser."
+      },
+      {
+        "title": "Inventory and logistics",
+        "text": "We sync stock with your system or warehouse and connect shipping carriers to generate shipping labels and tracking automatically."
+      },
+      {
+        "title": "Launch and optimization",
+        "text": "We launch with conversion analytics and support you through the first weeks to tune the funnel with real data."
+      }
+    ],
+    "useCasesHeading": "Stores we often build",
+    "useCases": [
+      "Fashion and footwear brands with many size and color variants per product.",
+      "Stores migrating from a generic platform to eliminate fees and gain control.",
+      "B2B businesses with customer-specific price lists, minimum orders or online quoting."
+    ],
+    "faqHeading": "Custom e-commerce FAQ",
+    "faqs": [
+      {
+        "question": "Should I go with a custom store or a platform like Shopify?",
+        "answer": "To start selling quickly, a generic platform is usually enough. A custom store makes sense when fees, plugins or catalog limitations already cost more than building your own would."
+      },
+      {
+        "question": "What payment methods can I offer?",
+        "answer": "We integrate local and international gateways such as Wompi, PayU, Mercado Pago and Stripe, with cards, bank transfers and other methods each gateway supports in your country."
+      },
+      {
+        "question": "Can I migrate my products and customers from my current store?",
+        "answer": "Yes. We migrate your catalog, customers and order history, and set up redirects so your product pages don't lose their rankings."
+      }
+    ]
+  },
+  "seguridad-cumplimiento": {
+    "intro": [
+      "Security isn't added at the end of a project: it's decided in the architecture. We implement role-based access control, encryption of sensitive information and audit logging from the design stage, and we align the software with data protection regulations such as Colombia's Law 1581 and the GDPR in Europe.",
+      "We explain it in detail in our [technical guide to Law 1581](/en/blog/ley-1581-guia-tecnica-software): what the law requires and how it translates into concrete software decisions."
+    ],
+    "challenge": {
+      "heading": "Risks we often find in an audit",
+      "points": [
+        "Every internal user sees all the data, with no role-based permissions.",
+        "Passwords or personal data stored unencrypted or in application logs.",
+        "There's no way to know who changed a record or when.",
+        "There's no process for responding when a data subject requests their data or asks for it to be deleted."
+      ]
+    },
+    "deliverables": [
+      "An audit report with risks prioritized according to OWASP",
+      "Role-based access control and audit logging",
+      "Encryption of sensitive data at rest and in transit",
+      "Workflows for exercising the rights of access, portability and erasure",
+      "Technical documentation of the measures implemented"
+    ],
+    "stepsHeading": "How we approach your software's security",
+    "steps": [
+      {
+        "title": "Initial audit",
+        "text": "We review code, configuration and infrastructure against the most common vulnerabilities (OWASP Top 10) and map what personal data you handle and where it lives."
+      },
+      {
+        "title": "Prioritized remediation plan",
+        "text": "We rank each finding by impact and effort, so you fix what poses a real risk first and don't spend budget on cosmetic issues."
+      },
+      {
+        "title": "Implementing controls",
+        "text": "We apply role-based permissions, encryption, strong authentication (including two-factor), audit logging and limits against brute-force attacks."
+      },
+      {
+        "title": "Documented compliance",
+        "text": "We document the technical measures and the processes for handling data subject requests, as evidence for an audit or a regulatory inquiry."
+      }
+    ],
+    "useCasesHeading": "When we typically step in",
+    "useCases": [
+      "Companies that handle customers' personal data and need to align with Law 1581 or the GDPR.",
+      "Platforms about to go through an audit or due diligence by a client or investor.",
+      "Legacy systems that need to be modernized without exposing sensitive information — see [legacy system migration](/en/servicios/migracion-datos-legacy)."
+    ],
+    "faqHeading": "Security and data protection FAQ",
+    "faqs": [
+      {
+        "question": "Do you issue compliance certifications?",
+        "answer": "We're not a certification body. We implement the technical measures the regulations require and document them, so your company has solid evidence for an audit or for the data protection authority."
+      },
+      {
+        "question": "Can you audit a system you didn't build?",
+        "answer": "Yes. The audit covers the existing code and infrastructure regardless of who built them, and the report includes a prioritized remediation plan."
+      },
+      {
+        "question": "Which regulations do you cover?",
+        "answer": "We work from the technical requirements of Colombia's Law 1581 and the European GDPR, which share principles such as consent, data minimization and data subject rights, and we use OWASP as our application security reference."
+      }
+    ],
+    "relatedHeading": "Keep reading",
+    "related": [
+      {
+        "label": "Law 1581 in practice: what your software needs to do",
+        "href": "/en/blog/ley-1581-guia-tecnica-software",
+        "description": "The law's requirements translated into concrete development decisions."
+      }
+    ]
+  },
+  "arquitectura-documentacion": {
+    "intro": [
+      "Software that only its author understands is a risk to your company. We document the architecture, infrastructure and deployment processes so your team, or any other vendor, can continue development independently.",
+      "This service applies both at the end of a project with us and to an existing system that currently depends on a single person or on a vendor you want to become independent from."
+    ],
+    "challenge": {
+      "heading": "Signs your software depends on a single person",
+      "points": [
+        "Nobody at the company has admin access to the repositories, servers or domains.",
+        "Deploying a change requires one specific person to do it by hand.",
+        "There's no diagram of how the systems connect or where the credentials are.",
+        "Switching vendors seems impossible because nobody else understands the code."
+      ]
+    },
+    "deliverables": [
+      "Repositories, domains and infrastructure transferred to your accounts",
+      "Architecture and data flow diagrams",
+      "Automated deployment pipelines (CI/CD)",
+      "An inventory of services, environment variables and access",
+      "Setup, operations and maintenance guides"
+    ],
+    "stepsHeading": "How we handle the technical handover",
+    "steps": [
+      {
+        "title": "Asset inventory",
+        "text": "We list repositories, servers, databases, domains, external services and credentials, and verify whose name each one is under."
+      },
+      {
+        "title": "Access transfer",
+        "text": "We move each asset to accounts controlled by your company, with role-based permissions, without interrupting the production service."
+      },
+      {
+        "title": "Architecture documentation",
+        "text": "We document how the system is built, why the key decisions were made and how data flows between components."
+      },
+      {
+        "title": "Automation and handoff",
+        "text": "We set up automated deployments and run handoff sessions with your technical team until they can operate the system without us."
+      }
+    ],
+    "useCasesHeading": "When it's needed",
+    "useCases": [
+      "At the end of a project, so your internal team can take over maintenance.",
+      "When a previous vendor left the system undocumented or with access under their name.",
+      "Before due diligence or a sale, to show that the software is a transferable asset."
+    ],
+    "faqHeading": "Documentation and handover FAQ",
+    "faqs": [
+      {
+        "question": "Is documentation included in your projects?",
+        "answer": "Yes. In every project the repositories are in your name from day one, and we deliver technical documentation at the end. This service is for going deeper into that handover or applying it to systems we didn't build."
+      },
+      {
+        "question": "Can you document a system another vendor built?",
+        "answer": "Yes. We analyze the existing code and infrastructure, reconstruct the architecture and document it, even if no prior documentation exists."
+      },
+      {
+        "question": "What format does the documentation take?",
+        "answer": "Documents in the repository itself, next to the code, so they get updated along with it: diagrams, setup guides and deployment and recovery procedures."
+      }
+    ],
+    "relatedHeading": "Keep reading",
+    "related": [
+      {
+        "label": "How to choose a vendor without losing control of your code",
+        "href": "/en/blog/outsourcing-software-latam-propiedad-codigo",
+        "description": "The clauses and practices that guarantee the software is yours."
+      },
+      {
+        "label": "Technical debt: how to spot it early",
+        "href": "/en/blog/deuda-tecnica-como-detectarla",
+        "description": "Why an undocumented system accumulates technical debt faster."
+      }
+    ]
+  },
+  "migracion-datos-legacy": {
+    "intro": [
+      "A legacy system isn't just old software: it's the one still running your billing, inventory or daily operations, yet nobody dares to change it. Our legacy software migration service replaces it module by module, with the old system running in parallel until the new one proves it processes the same transactions with the same results.",
+      "We don't do weekend \"big bang\" cutovers. We use the Strangler Fig pattern, data synchronization between both systems and automated reconciliation before every cutover — all explained in our [guide to legacy system migration without downtime](/en/blog/migracion-sistemas-legados-sin-interrupcion)."
+    ],
+    "challenge": {
+      "heading": "Signs your system has already become legacy",
+      "points": [
+        "Every small change takes weeks because nobody dares to touch the code.",
+        "Only one person understands how it works, and their absence brings operations to a halt.",
+        "The vendor or the technology no longer has support or security updates.",
+        "The system can't be integrated with the tools the business needs today."
+      ]
+    },
+    "deliverables": [
+      "A new platform in production, module by module",
+      "Versioned, repeatable data migration scripts",
+      "A reconciliation report between the legacy system and the new one",
+      "A read-only archive of the historical data that must be retained",
+      "Documentation of the new architecture and the cutover processes"
+    ],
+    "stepsHeading": "How we migrate a legacy system with zero downtime",
+    "steps": [
+      {
+        "title": "System and data assessment",
+        "text": "We inventory modules, integrations, scheduled jobs and business rules buried in code or stored procedures, and we measure data volume, quality and duplicates before committing to a timeline."
+      },
+      {
+        "title": "Per-module decision: migrate, retain or retire",
+        "text": "Not everything deserves a rewrite. Each module is classified as rehost, refactor, replace with SaaS, wrap behind an API or retire — so the budget goes where the legacy system actually slows the business down."
+      },
+      {
+        "title": "Target architecture and routing layer",
+        "text": "We design the new platform plus an intermediate layer that decides which requests the old system serves and which the new one does. That's what makes an incremental migration possible without users switching tools every week."
+      },
+      {
+        "title": "Phased data migration",
+        "text": "Extraction, cleansing, deduplication and schema mapping with versioned, repeatable scripts. Both systems stay in sync while they coexist, so there's never a day when the data is \"half migrated\"."
+      },
+      {
+        "title": "Validation and reconciliation",
+        "text": "Before every cutover we compare record counts, totals and critical records between the legacy and the new system, and run regression tests on business workflows. If the numbers don't match, the cutover doesn't happen."
+      },
+      {
+        "title": "Cutover, monitoring and decommissioning",
+        "text": "Traffic moves gradually and reversibly, we monitor errors and performance, and only at the end do we decommission the old system — keeping a read-only archive of the historical data you're legally required to retain."
+      }
+    ],
+    "useCasesHeading": "Typical legacy modernization projects",
+    "useCases": [
+      "A custom ERP or line-of-business app built 10-15 years ago, undocumented, with a single person who understands the code.",
+      "Operations running on scattered Excel spreadsheets, XML files or Access databases that need a single database with permissions and audit trails.",
+      "Desktop applications (Visual Basic, Delphi, legacy PHP) that must move to the web or the cloud without stopping invoicing.",
+      "Databases that don't meet today's data protection requirements (GDPR, CCPA) and need encryption, access control and auditing — see our [security and compliance](/en/servicios/seguridad-cumplimiento) service.",
+      "Systems that must be retired without migrating the full history: only active data moves, the rest stays in a read-only archive."
+    ],
+    "faqHeading": "Legacy system migration FAQ",
+    "faqs": [
+      {
+        "question": "How long does a legacy system migration take?",
+        "answer": "It depends on the number of modules and the state of the data. A well-scoped module with clean data can reach production in weeks; a full ERP is planned in phases over several months. Each phase ships value and is reversible, so you don't wait until the end to use the new system."
+      },
+      {
+        "question": "Can we migrate without downtime?",
+        "answer": "Yes — that's the whole point of a phased migration. The legacy system keeps running while the new one takes over module by module, with data synchronized between them. Each cutover is gradual and can be rolled back if something fails."
+      },
+      {
+        "question": "What happens to our historical data?",
+        "answer": "It's audited before anything moves. Data used in daily operations is cleansed and migrated with integrity checks; data kept only for legal or accounting reasons can live in a read-only archive instead of being loaded into the new system."
+      },
+      {
+        "question": "Should we migrate or keep maintaining the current system?",
+        "answer": "Migrate when the cost of keeping it (hours per change, outages, no vendor support, security exposure) exceeds the cost of modernizing it, or when it blocks integrations the business needs. If the system is stable and blocks no one, wrapping it behind an API and leaving it alone is sometimes the right call."
+      },
+      {
+        "question": "Who owns the code and documentation?",
+        "answer": "You do. The code is 100% yours from day one, and we hand over the architecture documentation and the migration scripts so your team can maintain the new system without depending on us."
+      }
+    ],
+    "relatedHeading": "Keep reading",
+    "related": [
+      {
+        "label": "Guide: legacy system migration without downtime",
+        "href": "/en/blog/migracion-sistemas-legados-sin-interrupcion",
+        "description": "Step-by-step framework, common mistakes and how to decommission a system without migrating all its data."
+      },
+      {
+        "label": "Technical debt: how to spot it early",
+        "href": "/en/blog/deuda-tecnica-como-detectarla",
+        "description": "The signs that your current system is already turning into a legacy system."
+      }
+    ]
+  },
+  "inteligencia-artificial-aplicada": {
+    "intro": [
+      "Useful AI for a business isn't a generic chatbot: it's a model connected to your documents, your systems and your processes that solves a specific, measurable task. We implement assistants, automated data extraction and semantic search over your company's information.",
+      "We always start with a narrowly scoped use case, with a clear metric for hours saved or errors avoided, before scaling to more processes."
+    ],
+    "challenge": {
+      "heading": "Tasks that typically eat up the team's hours",
+      "points": [
+        "Manually keying in data from invoices, orders or scanned documents.",
+        "Answering the same customer questions over and over on WhatsApp or email.",
+        "Hunting for information scattered across documents, manuals and old conversations.",
+        "Sorting and routing incoming requests before anyone can handle them."
+      ]
+    },
+    "deliverables": [
+      "A use case implemented and connected to your systems",
+      "An assistant or automation with answers grounded in your own data",
+      "Privacy controls over what information is sent to the model",
+      "A dashboard or log to review and correct what the AI does",
+      "Impact measurement against the agreed baseline"
+    ],
+    "stepsHeading": "How we implement AI in your operation",
+    "steps": [
+      {
+        "title": "Choosing the use case",
+        "text": "We identify a repetitive task with enough volume and a verifiable outcome. If AI isn't the best tool for that problem, we tell you."
+      },
+      {
+        "title": "Testing with your data",
+        "text": "We build a proof of concept with real documents and cases from your company to measure accuracy before investing in the full version."
+      },
+      {
+        "title": "Integration and controls",
+        "text": "We connect the solution to your systems and channels, with human review at critical points and clear rules about what data leaves your infrastructure."
+      },
+      {
+        "title": "Measurement and improvement",
+        "text": "We measure the results against the baseline and fine-tune using the cases where the model got it wrong."
+      }
+    ],
+    "useCasesHeading": "Applications we often implement",
+    "useCases": [
+      "Assistants on WhatsApp or internal channels that answer with your company's actual information.",
+      "Automated data extraction from invoices, purchase orders and scanned documents.",
+      "Semantic search across manuals, policies and the internal knowledge base.",
+      "Automatic classification and routing of support or sales requests."
+    ],
+    "faqHeading": "Applied AI FAQ",
+    "faqs": [
+      {
+        "question": "Is my data used to train third-party models?",
+        "answer": "We use providers and configurations that don't train on data sent through the API, we limit the information that reaches the model to what's strictly necessary, and we document what data leaves your infrastructure."
+      },
+      {
+        "question": "What happens when the AI gets it wrong?",
+        "answer": "That's why we design human review at critical points and a log of every response. Errors are used to fine-tune the system, and for sensitive tasks the AI proposes and a person approves."
+      },
+      {
+        "question": "Do I need my data organized before we start?",
+        "answer": "Not necessarily. Part of the work is preparing and structuring the information. The proof of concept quickly reveals whether the data quality is good enough or needs work first."
+      }
+    ]
+  }
+}

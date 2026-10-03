@@ -233,6 +233,67 @@
   }
 }
 
+/*
+ * Animaciones ligadas al scroll en CSS puro (páginas de servicios): cero JS,
+ * corren en el hilo del compositor y no compiten con el INP. Sin soporte de
+ * `animation-timeline` o con reduced motion, el estado por defecto es el
+ * final (visible / línea completa) — nunca queda contenido escondido.
+ * No usar sobre texto que pueda ser el LCP (empieza en opacity 0).
+ */
+@keyframes scroll-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.scroll-progress-x {
+  transform-origin: left;
+}
+.scroll-progress-y {
+  transform-origin: top;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-reveal {
+      animation: scroll-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+    .scroll-progress-x {
+      animation: grow-x linear both;
+      animation-timeline: view();
+      animation-range: entry 60% cover 60%;
+    }
+    .scroll-progress-y {
+      animation: grow-y linear both;
+      animation-timeline: view();
+      animation-range: cover 15% cover 65%;
+    }
+  }
+}
+
 @keyframes codeline-type {
   0% {
     width: 0;

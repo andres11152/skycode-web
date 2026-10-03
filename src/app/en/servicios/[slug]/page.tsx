@@ -4,6 +4,9 @@ import { getServicesContent, getServiceBySlug } from "@/content/services";
 import { ServiceView } from "@/components/services/ServiceView";
 import { ServiceJsonLd } from "@/components/services/ServiceJsonLd";
 import { buildServiceMetadata } from "@/lib/serviceMetadata";
+import { getServiceCaseProjects } from "@/lib/serviceCases";
+
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return getServicesContent("en").services.map((service) => ({ slug: service.slug }));
@@ -26,10 +29,12 @@ export default async function ServicePageEn({ params }: PageProps) {
     notFound();
   }
 
+  const projects = await getServiceCaseProjects(slug, "en");
+
   return (
     <>
       <ServiceJsonLd service={service} locale="en" />
-      <ServiceView slug={slug} locale="en" />
+      <ServiceView slug={slug} locale="en" projects={projects} />
     </>
   );
 }
