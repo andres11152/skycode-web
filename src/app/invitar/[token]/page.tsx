@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Dinámica a propósito: ver src/lib/csp.ts (el nonce exige render por request).
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ token: string }>;
 }

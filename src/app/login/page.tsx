@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   },
 };
 
+// Dinámica a propósito: el nonce de la CSP estricta (ver src/lib/csp.ts) solo
+// se puede aplicar al renderizar POR REQUEST; una página generada en el build
+// no tendría nonce y sus scripts quedarían bloqueados.
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
   return <LoginView />;
 }

@@ -21,6 +21,7 @@ cada módulo; esto es el mapa.
 | 8 | Hash scrypt (32 MiB, ~180 ms) | `lib/passwordHash.ts` | Cracking offline; corre en el pool de hilos, no bloquea el event loop |
 | 9 | 2FA TOTP con límites propios | `lib/authService.ts` | Contraseña robada |
 | 10 | Avisos al dueño | `lib/securityAlerts.ts` | Dispositivo nuevo, ráfaga de fallos |
+| 11 | CSP estricta con nonce | `proxy.ts` + `lib/csp.ts` | XSS en las superficies de sesión: un script inyectado sin el nonce de la respuesta no ejecuta |
 
 ### Por qué el proof-of-work es adaptativo y la cuenta nunca se bloquea
 La dificultad (16 → 24 bits) sube con los fallos recientes de la **IP** o del
@@ -87,6 +88,14 @@ node scripts/auth-attack-sim.mjs http://localhost:4199
 4. **Infraestructura**: usuario de Postgres con mínimo privilegio, rotación
    periódica de `JWT_SECRET` (cierra todas las sesiones) y monitoreo externo
    (Sentry/Render) son configuración fuera del código.
-5. **CSP con `'unsafe-inline'` en `script-src`** (hoy necesario para la
-   hidratación de Next.js y el script de idioma): migrar a nonces reduciría el
-   impacto de un XSS, pero es un cambio transversal fuera de este alcance.
+5. **El sitio de marketing sigue con `'unsafe-inline'` en `script-src`**, a
+   propósito. Un CSP con nonce exige renderizado **dinámico** de cada página
+   (Next.js solo puede ponerle el nonce al renderizar por request: sin ISR ni
+   caché de CDN). Aplicarlo a home/blog/servicios/portafolio sacrificaría la
+   generación estática y el TTFB para proteger contenido público sin sesión.
+   Por eso hay **dos políticas** (`src/lib/csp.ts`): la estricta (nonce +
+   `'strict-dynamic'`, sin `'unsafe-inline'`) solo en login, recuperación,
+   invitaciones, `/dashboard` y `/portal` —donde un XSS robaría una sesión—, y
+   la laxa en el resto. Salida alternativa si algún día hiciera falta endurecer
+   también el marketing sin volverlo dinámico: SRI experimental de Next.js
+   (`experimental.sri`, CSP por hash).

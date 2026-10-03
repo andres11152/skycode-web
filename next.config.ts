@@ -1,120 +1,19 @@
 import type { NextConfig } from "next";
 
-// El sitio no tenía ninguna cabecera de seguridad HTTP: /dashboard y
-// /portal (autenticados) eran embebibles en un <iframe> de cualquier
-// dominio (clickjacking sobre acciones destructivas — borrar leads,
-// cambiar roles de equipo), y el UUID de /propuesta/[id] (que ES la
-// credencial de acceso a esa propuesta, ver lib/queries/proposals.ts) podía
-// filtrarse en el header `Referer` hacia cualquier enlace externo.
-// `next dev` usa eval() para Fast Refresh y para reconstruir stack traces de
-// React en consola — sin 'unsafe-eval' ahí, la app entera falla con "eval()
-// is not supported" apenas arranca. React nunca usa eval() en producción
-// (`next build` + `next start`), así que ahí sí se puede — y se debe — dejar
-// afuera del CSP; agregarlo solo en dev mantiene la protección real donde
-// importa (el sitio servido a usuarios reales).
-// gtag.js (Google Ads, ver app/layout.tsx) se sirve desde googletagmanager.com
-// y necesita poder hacer sus propias requests de conversión/beacon hacia el
-// resto de dominios de Google Ads — sin estos, el script se bloquea por CSP
-// antes de ejecutar (bug real: la conversión "Envío de formulario para
-// clientes potenciales" medía 0 en Google Ads con el formulario funcionando
-// normal, porque script-src bloqueaba la carga de gtag.js por completo, no
-// por un problema de tracking en sí). Se agregan explícitamente en vez de
-// abrir script-src/connect-src a 'self' + '*' para no perder la protección
-// real que da el CSP.
-// gtag config dispara además un <script src> propio hacia
-// googleads.g.doubleclick.net/pagead/viewthroughconversion/... (el pixel de
-// remarketing/view-through, distinto del script de conversión normal) —
-// solo tener googletagmanager.com en script-src lo bloqueaba en silencio
-// (bug real, visto en consola: "violates ... script-src-elem").
-const GOOGLE_ADS_SCRIPT_SRC = [
-  "https://www.googletagmanager.com",
-  "https://googleads.g.doubleclick.net",
-];
-const GOOGLE_ADS_CONNECT_SRC = [
-  "https://www.googletagmanager.com",
-  "https://www.google-analytics.com",
-  "https://www.google.com",
-  "https://googleads.g.doubleclick.net",
-  "https://www.googleadservices.com",
-  "https://ad.doubleclick.net",
-];
-// Google Ads sirve sus píxeles de imagen (1p-user-list, remarketing) desde
-// el dominio de Google del país detectado del visitante, no siempre
-// www.google.com — visto en consola bloqueando www.google.com.co para un
-// visitante colombiano. Se agrega explícitamente en vez de abrir a
-// `https://*.google.*` (patrón inválido en CSP, un solo comodín no cubre
-// "www.google.com.co" de todos modos porque no es un subdominio de
-// google.com, es un TLD compuesto distinto).
-const GOOGLE_ADS_IMG_SRC = [
-  "https://www.googletagmanager.com",
-  "https://www.google.com",
-  "https://www.google.com.co",
-  "https://googleads.g.doubleclick.net",
-  "https://ad.doubleclick.net",
-];
+import { LAX_CSP_SOURCE, buildLaxCsp } from "./src/lib/csp";
 
-// Checkout de Bold (pagos en línea desde /portal, ver lib/bold.ts y
-// BoldPayButton.tsx): la librería (`boldPaymentButton.js`) se inyecta como
-// <script src> desde el navegador — sin `checkout.bold.co` en script-src
-// el script queda bloqueado en silencio (no hay error visible más allá de
-// la consola) y el botón "Pagar ahora" nunca llega a abrir nada. El
-// checkout en sí se abre en `renderMode: "embedded"` (un iframe modal
-// dentro de la misma página, no una navegación) — por eso también hace
-// falta `frame-src`, que sin esta entrada cae al `default-src 'self'` y
-// bloquearía ese iframe igual de silenciosamente.
-const BOLD_CHECKOUT_ORIGIN = "https://checkout.bold.co";
-
-const SCRIPT_SRC = [
-  "'self'",
-  "'unsafe-inline'",
-  ...GOOGLE_ADS_SCRIPT_SRC,
-  BOLD_CHECKOUT_ORIGIN,
-  ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : []),
-];
+// La política CSP vive en src/lib/csp.ts (fuente única de sus dos variantes:
+// laxa para el sitio estático, estricta con nonce para login/dashboard/portal —
+// esta última la emite proxy.ts por request, ver el porqué de las dos ahí).
+// Acá solo se aplica la LAXA, y solo a las rutas que NO son estrictas.
+//
+// El sitio no tenía ninguna cabecera de seguridad HTTP: /dashboard y /portal
+// (autenticados) eran embebibles en un <iframe> de cualquier dominio
+// (clickjacking sobre acciones destructivas) y el UUID de /propuesta/[id]
+// (que ES la credencial de acceso a esa propuesta) podía filtrarse en el
+// header `Referer` hacia cualquier enlace externo.
 
 const SECURITY_HEADERS = [
-  {
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      // Next.js inyecta scripts inline para hidratar/streamear RSC, y el
-      // script de detección de idioma del layout raíz también es inline
-      // (ver BROWSER_LOCALE_REDIRECT_SCRIPT en app/layout.tsx) — sin
-      // 'unsafe-inline' el sitio entero queda en blanco. No hay un sistema
-      // de nonces implementado todavía para poder retirar esto.
-      `script-src ${SCRIPT_SRC.join(" ")}`,
-      // Framer Motion anima vía el atributo `style` inline (opacity/transform,
-      // ver lib/animations.ts) — 'unsafe-inline' es necesario para eso, no
-      // hay hojas de estilo de terceros que lo requieran.
-      "style-src 'self' 'unsafe-inline'",
-      // *.r2.dev: bucket público de imágenes del portafolio (ver
-      // lib/portfolioStorage.ts) — sin esto, cualquier <img>/<Image
-      // unoptimized> que apunte directo al host de R2 (bypaseando el proxy
-      // same-origin /_next/image) se bloquea en silencio por CSP, sin error
-      // de red visible más allá de la consola (bug real, visto en el editor
-      // del dashboard de portafolio).
-      `img-src 'self' data: https://*.r2.dev ${GOOGLE_ADS_IMG_SRC.join(" ")}`,
-      "font-src 'self' data:",
-      // La única llamada de red que sale del navegador hacia un tercero es
-      // la del propio gtag.js (conversión de Google Ads, ver arriba) — el
-      // resto de APIs externas (open.er-api.com, tasa de cambio) se
-      // consultan solo desde el servidor (lib/exchangeRate.ts).
-      `connect-src 'self' ${GOOGLE_ADS_CONNECT_SRC.join(" ")}`,
-      // El iframe modal del checkout embebido de Bold (ver arriba) — sin
-      // esto cae al default-src 'self' y el iframe no carga.
-      `frame-src 'self' ${BOLD_CHECKOUT_ORIGIN}`,
-      // Reemplaza y refuerza X-Frame-Options en navegadores modernos.
-      "frame-ancestors 'none'",
-      // El worker del proof-of-work del login (public/pow-worker.js) es de
-      // este mismo origen; sin esta directiva `worker-src` caería a
-      // `script-src`, que ya lo permitiría, pero declararlo explícito evita
-      // que un cambio futuro en `script-src` rompa el login en silencio.
-      "worker-src 'self'",
-      "object-src 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-    ].join("; "),
-  },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   // El UUID de /propuesta/[id] es la única credencial de acceso a esa
@@ -168,6 +67,9 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/(.*)", headers: SECURITY_HEADERS },
+      // CSP laxa SOLO fuera de las rutas estrictas (esas reciben la suya,
+      // con nonce, desde proxy.ts — ver src/lib/csp.ts).
+      { source: LAX_CSP_SOURCE, headers: [{ key: "Content-Security-Policy", value: buildLaxCsp() }] },
       ...AUTH_NO_STORE_SOURCES.map((source) => ({
         source,
         headers: [{ key: "Cache-Control", value: "private, no-store, max-age=0" }],

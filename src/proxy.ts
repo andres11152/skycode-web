@@ -5,6 +5,7 @@ import { SESSION_COOKIE_NAME } from "@/lib/sessionCookie";
 import { getClientIp } from "@/lib/clientIp";
 import { shouldShed } from "@/lib/loadShed";
 import { originMatchesHost } from "@/lib/requestOrigin";
+import { buildStrictCsp, generateNonce, isStrictCspPath } from "@/lib/csp";
 
 const HOME_PATHS = new Set(["/", "/en", "/fr"]);
 
@@ -74,6 +75,25 @@ const CREDENTIAL_PATHS = new Set([
 ]);
 const CREDENTIAL_SHED = { capacity: 40, refillPerSecond: 0.7 };
 
+/**
+ * `NextResponse.next()` con CSP ESTRICTA (nonce) para las rutas de sesión y
+ * credenciales. El nonce va en la cabecera de la PETICIÓN
+ * (`Content-Security-Policy` + `x-nonce`) para que Next.js lo lea al
+ * renderizar y se lo ponga a sus scripts, y en la de la RESPUESTA para que el
+ * navegador lo aplique. Ver src/lib/csp.ts (por qué solo estas rutas).
+ */
+function nextWithStrictCsp(request: NextRequest): NextResponse {
+  const nonce = generateNonce();
+  const csp = buildStrictCsp(nonce);
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("Content-Security-Policy", csp);
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  response.headers.set("Content-Security-Policy", csp);
+  return response;
+}
+
 export async function proxy(request: NextRequest) {
   if (CREDENTIAL_PATHS.has(request.nextUrl.pathname)) {
     const ip = getClientIp(request);
@@ -106,7 +126,13 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    return NextResponse.next();
+    return nextWithStrictCsp(request);
+  }
+
+  // Login, recuperación de contraseña e invitaciones: mismas razones que
+  // dashboard/portal (credenciales y sesión), sin chequeo de sesión.
+  if (isStrictCspPath(request.nextUrl.pathname)) {
+    return nextWithStrictCsp(request);
   }
 
   // Home (donde viven el cotizador y el teléfono de contacto): país por IP
@@ -143,5 +169,16 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/portal/:path*", "/", "/en", "/fr", "/api/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/portal/:path*",
+    "/login",
+    "/olvide-password",
+    "/resetear-password/:path*",
+    "/invitar/:path*",
+    "/",
+    "/en",
+    "/fr",
+    "/api/:path*",
+  ],
 };
