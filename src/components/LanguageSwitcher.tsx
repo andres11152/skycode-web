@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
+import { CheckIcon } from "@/components/icons/UiIcons";
+import { DURATION, EASE_OUT } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 import { locales, localeHomePath, localeNames, type Locale } from "@/lib/i18n";
 
@@ -17,6 +20,9 @@ export function LanguageSwitcher({
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  // Origen arriba-derecha: el menú "nace" del botón. Con reduced motion solo fundido.
+  const hidden = reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: -4 };
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -24,8 +30,15 @@ export function LanguageSwitcher({
         setOpen(false);
       }
     }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
     document.addEventListener("mousedown", handlePointerDown);
-    return () => document.removeEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   return (
@@ -42,9 +55,14 @@ export function LanguageSwitcher({
         <span>{LOCALE_CODE[locale]}</span>
       </button>
 
-      {open && (
-        <ul
-          className="absolute right-0 top-12 z-50 min-w-[165px] overflow-hidden rounded-xl border border-foreground/15 bg-background/95 p-1.5 shadow-2xl backdrop-blur-2xl shadow-black/20 animate-enter-pop origin-top-right"
+      <AnimatePresence>
+        {open && (
+        <motion.ul
+          initial={hidden}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={hidden}
+          transition={{ duration: DURATION.fast, ease: EASE_OUT }}
+          className="absolute right-0 top-12 z-50 min-w-[165px] origin-top-right overflow-hidden rounded-xl border border-foreground/15 bg-background/95 p-1.5 shadow-2xl backdrop-blur-2xl shadow-black/20"
         >
           {locales.map((loc) => (
             <li key={loc}>
@@ -56,8 +74,9 @@ export function LanguageSwitcher({
                     localStorage.setItem("skycode-locale", loc);
                   } catch {}
                 }}
+                aria-current={loc === locale ? "true" : undefined}
                 className={cn(
-                  "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors",
+                  "flex min-h-11 items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent",
                   loc === locale
                     ? "bg-accent/15 text-accent-strong font-bold"
                     : "text-foreground/90 hover:bg-foreground/10 hover:text-foreground",
@@ -65,11 +84,13 @@ export function LanguageSwitcher({
               >
                 <span className="text-base">{LOCALE_FLAG[loc]}</span>
                 <span>{localeNames[loc]}</span>
+                {loc === locale && <CheckIcon size={14} className="ml-auto" />}
               </Link>
             </li>
           ))}
-        </ul>
-      )}
+        </motion.ul>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

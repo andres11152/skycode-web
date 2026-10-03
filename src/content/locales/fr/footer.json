@@ -10,5 +10,7 @@
   "getInTouchDescription": "Un projet en tête ? Écrivez-nous ou planifiez un appel direct avec l'équipe technique.",
   "getInTouchCtaPrimary": "Écrivez-nous",
   "getInTouchCtaSecondary": "Planifier un appel",
-  "followHeading": "Suivez-nous"
+  "followHeading": "Suivez-nous",
+  "copyLabel": "Copier {value}",
+  "copiedLabel": "Copié"
 }

@@ -4,16 +4,18 @@ import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Phone } from "@phosphor-icons/react";
+import { MailIcon } from "@/components/icons/UiIcons";
+import { CopyButton } from "@/components/ui/CopyButton";
 import { Button } from "@/components/ui/Button";
 import { getServicesContent } from "@/content/services";
 import { useRecentArticles } from "@/lib/useRecentArticles";
 import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
-import { contactPhone, siteName, socials, whatsappHref } from "@/lib/site";
+import { contactEmail, contactPhone, siteName, socials, whatsappHref } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { getFooterContent } from "@/content/footer";
 import { getNavContent } from "@/content/nav";
 import { useLocale } from "@/components/LocaleProvider";
-import { localeHomePath } from "@/lib/i18n";
+import { localeHomePath, t } from "@/lib/i18n";
 import { EsBadge } from "@/components/ui/EsBadge";
 
 const FOUNDED_YEAR = 2023;
@@ -230,13 +232,30 @@ export function Footer() {
             </Button>
           </div>
 
-          <a
-            href={`tel:${contactPhone}`}
-            className="mt-5 inline-flex items-center gap-2 rounded text-sm font-medium text-foreground outline-none transition-colors hover:text-accent-strong focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            <Phone size={16} />
-            {contactPhone}
-          </a>
+          {/* Dato + botón de copiar: copiar un correo/teléfono para pegarlo en
+              otra app es más común que tocarlo (en escritorio, `mailto:`/`tel:`
+              abre una app que muchas veces no está configurada). */}
+          <ul className="mt-4 flex flex-col">
+            {[
+              { Icon: MailIcon, href: `mailto:${contactEmail}`, value: contactEmail },
+              { Icon: Phone, href: `tel:${contactPhone}`, value: contactPhone },
+            ].map(({ Icon, href, value }) => (
+              <li key={value} className="flex items-center gap-1">
+                <a
+                  href={href}
+                  className="inline-flex min-h-11 items-center gap-2 rounded text-sm font-medium text-foreground outline-none transition-colors hover:text-accent-strong focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <Icon size={16} aria-hidden="true" />
+                  {value}
+                </a>
+                <CopyButton
+                  value={value}
+                  label={t(footerData.copyLabel, { value })}
+                  copiedLabel={footerData.copiedLabel}
+                />
+              </li>
+            ))}
+          </ul>
 
           <h3 className="mt-10 text-sm font-semibold text-foreground">
             {footerData.followHeading}

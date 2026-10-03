@@ -10,6 +10,7 @@
   "getInTouchDescription": "¿Tienes una idea o proyecto en mente? Escríbenos o conversemos directamente por WhatsApp.",
   "getInTouchCtaPrimary": "Escríbenos",
   "getInTouchCtaSecondary": "Hablar por WhatsApp",
-  "followHeading": "Síguenos"
+  "followHeading": "Síguenos",
+  "copyLabel": "Copiar {value}",
+  "copiedLabel": "Copiado"
 }
-

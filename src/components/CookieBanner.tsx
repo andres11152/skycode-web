@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
+import { DURATION, EASE_OUT } from "@/lib/animations";
 import { Cookie } from "@phosphor-icons/react";
 import { useLocale } from "@/components/LocaleProvider";
 import { getCookieBannerContent } from "@/content/cookieBanner";
@@ -13,6 +15,8 @@ export function CookieBanner() {
   const locale = useLocale();
   const cookieData = getCookieBannerContent(locale);
   const [visible, setVisible] = useState(false);
+  const reduced = useReducedMotion();
+  const hidden = reduced ? { opacity: 0 } : { opacity: 0, y: 16 };
 
   useEffect(() => {
     // La lectura de localStorage vive en un microtask (no directo en el cuerpo del
@@ -32,13 +36,18 @@ export function CookieBanner() {
     setVisible(false);
   }
 
-  if (!visible) return null;
-
   return (
-    <div
+    <AnimatePresence>
+      {visible && (
+    <motion.div
       role="region"
       aria-label={cookieData.ariaLabel}
-      className="fixed inset-x-0 bottom-0 z-[65] border-t border-foreground/10 bg-background/95 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl animate-enter-from-bottom"
+      initial={hidden}
+      animate={{ opacity: 1, y: 0 }}
+      // Sale en ~70% de lo que tarda en entrar (regla de CLAUDE.md).
+      exit={{ ...hidden, transition: { duration: DURATION.fast, ease: EASE_OUT } }}
+      transition={{ duration: DURATION.base, ease: EASE_OUT }}
+      className="fixed inset-x-0 bottom-0 z-[65] border-t border-foreground/10 bg-background/95 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl"
     >
       {/* Compacto en mobile a propósito: la versión anterior (icono +
           párrafo + botón, los tres apilados en `flex-col`) ocupaba ~22% del
@@ -79,6 +88,8 @@ export function CookieBanner() {
           {cookieData.accept}
         </button>
       </div>
-    </div>
+    </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
