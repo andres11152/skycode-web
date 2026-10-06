@@ -7,11 +7,21 @@ beforeEach(async () => {
   await resetTestDb();
 });
 
-function subscriptionPayload(endpoint = "https://push.example.com/a") {
+function subscriptionPayload(endpoint = "https://fcm.googleapis.com/fcm/send/a") {
   return { endpoint, keys: { p256dh: "p256dh-value", auth: "auth-value" } };
 }
 
 describe("Suscripción a notificaciones push — autogestión, cualquier sesión", () => {
+  it("rechaza endpoints que no son de un servicio push conocido (SSRF)", async () => {
+    const user = await createTestUser({ role: "traffiker", password: "SuperSecret123456" });
+    const browser = await loginAs(user.email, "SuperSecret123456");
+
+    const res = await browser.post("/api/push/subscribe", subscriptionPayload("https://169.254.169.254/latest/meta-data"));
+    expect(res.status).toBe(400);
+    const row = await query("SELECT id FROM push_subscriptions;");
+    expect(row.rows).toHaveLength(0);
+  });
+
   it("cualquier rol interno puede suscribirse (sin permiso RBAC)", async () => {
     const traffiker = await createTestUser({ role: "traffiker", password: "SuperSecret123456" });
     const browser = await loginAs(traffiker.email, "SuperSecret123456");
@@ -20,7 +30,7 @@ describe("Suscripción a notificaciones push — autogestión, cualquier sesión
     expect(res.status).toBe(200);
 
     const row = await query("SELECT user_id, p256dh, auth FROM push_subscriptions WHERE endpoint = $1;", [
-      "https://push.example.com/a",
+      "https://fcm.googleapis.com/fcm/send/a",
     ]);
     expect(row.rows).toHaveLength(1);
     expect(row.rows[0].p256dh).toBe("p256dh-value");
@@ -55,7 +65,7 @@ describe("Suscripción a notificaciones push — autogestión, cualquier sesión
     await browser.post("/api/push/subscribe", subscriptionPayload());
     await browser.post("/api/push/subscribe", { ...subscriptionPayload(), keys: { p256dh: "nuevo", auth: "nuevo" } });
 
-    const row = await query("SELECT p256dh FROM push_subscriptions WHERE endpoint = $1;", ["https://push.example.com/a"]);
+    const row = await query("SELECT p256dh FROM push_subscriptions WHERE endpoint = $1;", ["https://fcm.googleapis.com/fcm/send/a"]);
     expect(row.rows).toHaveLength(1);
     expect(row.rows[0].p256dh).toBe("nuevo");
   });
@@ -68,11 +78,11 @@ describe("Suscripción a notificaciones push — autogestión, cualquier sesión
     const res = await browser.fetch("/api/push/subscribe", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ endpoint: "https://push.example.com/a" }),
+      body: JSON.stringify({ endpoint: "https://fcm.googleapis.com/fcm/send/a" }),
     });
     expect(res.status).toBe(200);
 
-    const row = await query("SELECT id FROM push_subscriptions WHERE endpoint = $1;", ["https://push.example.com/a"]);
+    const row = await query("SELECT id FROM push_subscriptions WHERE endpoint = $1;", ["https://fcm.googleapis.com/fcm/send/a"]);
     expect(row.rows).toEqual([]);
   });
 
@@ -86,10 +96,10 @@ describe("Suscripción a notificaciones push — autogestión, cualquier sesión
     await attackerBrowser.fetch("/api/push/subscribe", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ endpoint: "https://push.example.com/a" }),
+      body: JSON.stringify({ endpoint: "https://fcm.googleapis.com/fcm/send/a" }),
     });
 
-    const row = await query("SELECT id FROM push_subscriptions WHERE endpoint = $1;", ["https://push.example.com/a"]);
+    const row = await query("SELECT id FROM push_subscriptions WHERE endpoint = $1;", ["https://fcm.googleapis.com/fcm/send/a"]);
     expect(row.rows).toHaveLength(1);
   });
 });
