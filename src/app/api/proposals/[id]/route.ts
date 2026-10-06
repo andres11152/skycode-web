@@ -42,7 +42,16 @@ export async function GET(request: Request, { params }: RouteContext) {
       proposal = await getProposalById(id);
     }
 
-    return NextResponse.json({ success: true, proposal });
+    // Vista pública: la IP y el user-agent de la firma y el id del proyecto
+    // creado son datos internos que cualquiera con el enlace no debe ver.
+    if (!proposal) {
+      return NextResponse.json({ error: "Propuesta no encontrada." }, { status: 404 });
+    }
+    const publicProposal: Partial<typeof proposal> = { ...proposal };
+    delete publicProposal.signature_ip;
+    delete publicProposal.signature_user_agent;
+    delete publicProposal.accepted_project_id;
+    return NextResponse.json({ success: true, proposal: publicProposal });
   } catch (error) {
     logError("❌ [API GET Public Proposal Error]", error);
     return NextResponse.json({ error: "Error al obtener la propuesta." }, { status: 500 });

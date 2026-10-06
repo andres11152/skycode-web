@@ -5,6 +5,7 @@ import { hasPermission } from "@/lib/rbac";
 import { anonymizeClient } from "@/lib/queries/dataPrivacy";
 import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
+import { deleteAvatarFilesQuietly } from "@/lib/avatarStorage";
 import { logError } from "@/lib/logger";
 
 interface RouteContext {
@@ -57,6 +58,11 @@ export async function POST(request: Request, { params }: RouteContext) {
 
     switch (result.outcome) {
       case "ok":
+        // Después del commit: un objeto huérfano en el bucket es preferible a
+        // una fila que apunte a un archivo ya borrado si la transacción fallara.
+        for (const key of result.avatarKeys) {
+          await deleteAvatarFilesQuietly(key, (error) => logError("❌ [Anonymize] No se pudo borrar un avatar", error));
+        }
         return NextResponse.json({ success: true });
       case "not_found":
         return NextResponse.json({ error: "Cliente no encontrado." }, { status: 404 });

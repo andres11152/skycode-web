@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { getTeamMemberDetail, getTeamMembers, updateTeamMember } from "./team";
+import { getTeamMemberDetail, getTeamMembers, updateTeamMember, LastAdminError } from "./team";
 import { getUserActivity } from "./audit";
 import { getActiveUserSessions } from "./sessions";
 import { query, withTransaction } from "../db";
@@ -139,5 +139,25 @@ describe("getUserActivity", () => {
     const activity = await getUserActivity(user.id);
     expect(activity.map((a) => a.action).sort()).toEqual(["lead.update", "team.update"]);
     expect(activity.every((a) => a.diff === null)).toBe(true);
+  });
+});
+
+
+describe("updateTeamMember — protecciones", () => {
+  it("no deja el sistema sin admin activo (degradar ni desactivar al último)", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    await expect(withTransaction((c) => updateTeamMember({ id: admin.id, role: "traffiker" }, c))).rejects.toBeInstanceOf(LastAdminError);
+    await expect(withTransaction((c) => updateTeamMember({ id: admin.id, status: "disabled" }, c))).rejects.toBeInstanceOf(LastAdminError);
+
+    const other = await createTestUser({ role: "admin" });
+    const ok = await withTransaction((c) => updateTeamMember({ id: admin.id, role: "traffiker" }, c));
+    expect(ok?.after.role).toBe("traffiker");
+    // El otro es ahora el último.
+    await expect(withTransaction((c) => updateTeamMember({ id: other.id, role: "traffiker" }, c))).rejects.toBeInstanceOf(LastAdminError);
+  });
+
+  it("no actúa sobre cuentas de portal (client)", async () => {
+    const portalUser = await createTestUser({ role: "client" });
+    expect(await withTransaction((c) => updateTeamMember({ id: portalUser.id, role: "admin" }, c))).toBeNull();
   });
 });

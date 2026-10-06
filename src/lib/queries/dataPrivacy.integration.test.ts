@@ -73,7 +73,7 @@ describe("anonymizeClient", () => {
     ]);
 
     const result = await withTransaction((c) => anonymizeClient(client.id, c));
-    expect(result).toEqual({ outcome: "ok" });
+    expect(result).toEqual({ outcome: "ok", avatarKeys: [] });
 
     const row = await query(`SELECT name, email, phone, company, notes, anonymized_at FROM clients WHERE id = $1;`, [client.id]);
     expect(row.rows[0].name).toBe(`Cliente Eliminado #${client.id}`);
@@ -90,7 +90,7 @@ describe("anonymizeClient", () => {
     const session = await createTestSession(portalUser.id);
 
     const result = await withTransaction((c) => anonymizeClient(client.id, c));
-    expect(result).toEqual({ outcome: "ok" });
+    expect(result).toEqual({ outcome: "ok", avatarKeys: [] });
 
     const userRow = await query(`SELECT name, email, status FROM users WHERE id = $1;`, [portalUser.id]);
     expect(userRow.rows[0].status).toBe("disabled");
@@ -134,7 +134,7 @@ describe("anonymizeClient", () => {
   it("es idempotente: devuelve already_anonymized en el segundo intento", async () => {
     const client = await createTestClient();
     const first = await withTransaction((c) => anonymizeClient(client.id, c));
-    expect(first).toEqual({ outcome: "ok" });
+    expect(first).toEqual({ outcome: "ok", avatarKeys: [] });
 
     const second = await withTransaction((c) => anonymizeClient(client.id, c));
     expect(second).toEqual({ outcome: "already_anonymized" });

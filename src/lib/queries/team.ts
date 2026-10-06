@@ -85,6 +85,14 @@ export interface UpdateTeamMemberParams {
  * Si el correo nuevo ya existe, Postgres lanza el `UNIQUE` de la columna
  * (código 23505) y la ruta lo traduce a un 409 legible en vez de un 500.
  */
+/** La operación dejaría al sistema sin ningún admin activo. */
+export class LastAdminError extends Error {
+  constructor() {
+    super("Debe quedar al menos un administrador activo.");
+    this.name = "LastAdminError";
+  }
+}
+
 export async function updateTeamMember(
   {
     id,
@@ -104,10 +112,23 @@ export async function updateTeamMember(
   const before = await dbRunner.query(
     `SELECT id, name, email, role, status, hourly_cost, hourly_cost_currency, weekly_hours_capacity,
             phone, job_title, hire_date::text AS hire_date
-     FROM users WHERE id = $1;`,
+     FROM users WHERE id = $1 AND role <> 'client';`,
     [id]
   );
   if (before.rows.length === 0) return null;
+
+  // Nunca dejar el sistema sin un admin activo. El `FOR UPDATE` serializa a
+  // dos admins que se degraden mutuamente a la vez (cada uno vería al otro
+  // todavía como admin y ambos pasarían la comprobación).
+  const losesAdmin =
+    before.rows[0].role === "admin" && ((role !== undefined && role !== "admin") || status === "disabled");
+  if (losesAdmin) {
+    const others = await dbRunner.query(
+      `SELECT id FROM users WHERE role = 'admin' AND status = 'active' AND id <> $1 FOR UPDATE;`,
+      [id]
+    );
+    if (others.rows.length === 0) throw new LastAdminError();
+  }
 
   const res = await dbRunner.query(
     `UPDATE users SET

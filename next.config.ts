@@ -63,6 +63,10 @@ const nextConfig: NextConfig = {
     // (/dashboard, ver CLAUDE.md) no se migró a Phosphor: ahí los iconos
     // son chrome funcional denso, no identidad de marca.
     optimizePackageImports: ["framer-motion", "@phosphor-icons/react", "lucide-react"],
+    // `proxy.ts` cubre /api: Next recorta el cuerpo a 10 MB por defecto, pero
+    // los documentos admiten 20 MB y las imágenes de portafolio/perfil 15 MB
+    // (los límites reales los aplica cada ruta).
+    proxyClientMaxBodySize: "25mb",
   },
   async headers() {
     return [

@@ -5,7 +5,7 @@ import { withAuth } from "@/lib/withAuth";
 import { isValidRole } from "@/lib/rbac";
 import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
-import { getTeamMembers, updateTeamMember } from "@/lib/queries/team";
+import { getTeamMembers, updateTeamMember, LastAdminError } from "@/lib/queries/team";
 import { CURRENCIES } from "@/lib/currency";
 import { profileFields } from "@/lib/profileValidation";
 import { logError } from "@/lib/logger";
@@ -81,7 +81,8 @@ export const PATCH = withAuth("team:write", async (request, { session }) => {
     if (UPDATABLE_KEYS.every((key) => parsed.data[key] === undefined)) {
       return NextResponse.json({ error: "Sin campos para actualizar." }, { status: 400 });
     }
-    if (role !== undefined && !isValidRole(role)) {
+    // `client` es una cuenta de portal: se gestiona desde Clientes, no desde Equipo.
+    if (role !== undefined && (!isValidRole(role) || role === "client")) {
       return NextResponse.json({ error: "Rol inválido." }, { status: 400 });
     }
     if (
@@ -128,6 +129,9 @@ export const PATCH = withAuth("team:write", async (request, { session }) => {
       },
     });
   } catch (error) {
+    if (error instanceof LastAdminError) {
+      return NextResponse.json({ error: error.message }, { status: 409 });
+    }
     // `users.email` es UNIQUE: otra cuenta ya usa ese correo.
     if (error instanceof Error && "code" in error && (error as { code?: string }).code === "23505") {
       return NextResponse.json({ error: "Ya existe otra cuenta con ese correo." }, { status: 409 });

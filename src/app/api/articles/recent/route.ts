@@ -19,7 +19,11 @@ export async function GET(request: Request) {
   try {
     const posts = await getBlogPosts(locale);
     const recent = posts.slice(0, limit).map((post) => ({ slug: post.slug, title: post.title }));
-    return NextResponse.json({ posts: recent });
+    // Lo pide el Footer en cada página pública: que el CDN lo absorba.
+    return NextResponse.json(
+      { posts: recent },
+      { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600" } }
+    );
   } catch (error) {
     logError("❌ [API GET Recent Articles Error]", error);
     return NextResponse.json({ posts: [] }, { status: 200 });

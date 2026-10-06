@@ -110,7 +110,8 @@ export async function exportClientData(clientId: number): Promise<Record<string,
   };
 }
 
-export type AnonymizeClientResult = { outcome: "ok" } | { outcome: "not_found" } | { outcome: "already_anonymized" };
+/** `avatarKeys`: objetos del bucket público que el llamador debe borrar DESPUÉS del commit. */
+export type AnonymizeClientResult = { outcome: "ok"; avatarKeys: string[] } | { outcome: "not_found" } | { outcome: "already_anonymized" };
 
 /**
  * Anonimiza un cliente: reemplaza los campos identificables por valores
@@ -156,27 +157,48 @@ export async function anonymizeClient(clientId: number, dbRunner: QueryRunner): 
     [anonName, anonEmail, clientId]
   );
 
-  const usersRes = await dbRunner.query(`SELECT id FROM users WHERE client_id = $1 AND role = 'client';`, [clientId]);
+  const avatarKeys: string[] = [];
+  const usersRes = await dbRunner.query(
+    `SELECT id, avatar_storage_key FROM users WHERE client_id = $1 AND role = 'client';`,
+    [clientId]
+  );
   for (const userRow of usersRes.rows) {
     const userId = userRow.id;
+    if (userRow.avatar_storage_key) avatarKeys.push(String(userRow.avatar_storage_key));
+    // Además del nombre/correo: teléfono, bio, cargo y foto (el avatar vive en
+    // un bucket PÚBLICO, su URL seguiría sirviendo la cara de la persona).
     await dbRunner.query(
-      `UPDATE users SET name = $1, email = $2, status = 'disabled' WHERE id = $3;`,
+      `UPDATE users SET name = $1, email = $2, status = 'disabled', phone = NULL, bio = NULL, job_title = NULL,
+              avatar_storage_key = NULL, avatar_variants = NULL
+       WHERE id = $3;`,
       [anonName, `usuario-eliminado-${userId}@anonimizado.local`, userId]
     );
     await dbRunner.query(`UPDATE sessions SET revoked_at = now() WHERE user_id = $1 AND revoked_at IS NULL;`, [userId]);
   }
 
+  // Bitácora comercial: el texto libre puede nombrar a la persona.
+  await dbRunner.query(`UPDATE client_activities SET body = '[eliminado]' WHERE client_id = $1;`, [clientId]);
+
+  // También la firma electrónica (nombre, IP y navegador) y las notas.
   await dbRunner.query(
-    `UPDATE proposals SET client_name = $1, client_email = $2 WHERE lower(client_email) = lower($3);`,
+    `UPDATE proposals SET client_name = $1, client_email = $2, signer_name = NULL, signature_ip = NULL,
+            signature_user_agent = NULL, notes = ''
+     WHERE lower(client_email) = lower($3);`,
     [anonName, anonEmail, originalEmail]
   );
 
   // Sin `notes` (ver el mismo comentario en anonymizeLead, lib/queries/leads.ts).
   await dbRunner.query(
     `UPDATE leads SET name = $1, email = $2, phone = NULL, message = '', anonymized_at = COALESCE(anonymized_at, now())
-     WHERE lower(email) = lower($3) AND deleted_at IS NULL;`,
+     WHERE lower(email) = lower($3);`,
     [anonName, anonEmail, originalEmail]
   );
+  // Notas y actividades de los leads de esa persona (incluidos los borrados
+  // lógicamente: `deleted_at` no es borrado de datos personales).
+  await dbRunner.query(
+    `UPDATE lead_activities SET body = '' WHERE lead_id IN (SELECT id FROM leads WHERE anonymized_at IS NOT NULL AND email = $1);`,
+    [anonEmail]
+  );
 
-  return { outcome: "ok" };
+  return { outcome: "ok", avatarKeys };
 }

@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireSession } from "@/lib/withAuth";
 import { saveSubscription, deleteSubscription } from "@/lib/queries/pushSubscriptions";
+import { isAllowedPushEndpoint } from "@/lib/pushEndpoint";
 import { logError } from "@/lib/logger";
 
 const SubscribeSchema = z.object({
-  endpoint: z.string().url(),
+  endpoint: z.string().url().max(2048).refine(isAllowedPushEndpoint, "Endpoint de push no permitido."),
   keys: z.object({
     p256dh: z.string().min(1),
     auth: z.string().min(1),

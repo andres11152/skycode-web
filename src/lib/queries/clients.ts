@@ -263,7 +263,9 @@ interface QueryRunner {
  * — cambiarlo rompería ese enlace para proyectos/propuestas futuros.
  */
 export async function updateClient(id: number, data: UpdateClientData, dbRunner: QueryRunner) {
-  const before = await dbRunner.query("SELECT * FROM clients WHERE id = $1;", [id]);
+  // Un cliente anonimizado es irreversible: no se le vuelven a escribir datos
+  // personales (daba 404, igual que `addClientActivity`).
+  const before = await dbRunner.query("SELECT * FROM clients WHERE id = $1 AND anonymized_at IS NULL;", [id]);
   if (before.rows.length === 0) return null;
 
   const res = await dbRunner.query(
