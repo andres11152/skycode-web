@@ -21,6 +21,7 @@
 // `node scripts/migrate.mjs`. Este script solo repone los DATOS.
 
 import { Pool } from "pg";
+import { restoreTables } from "./lib/restoreTables.mjs";
 import { S3Client, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { gunzipSync } from "node:zlib";
 import readline from "node:readline/promises";
@@ -107,31 +108,8 @@ const client = await pool.connect();
 try {
   await client.query("BEGIN");
 
-  const quotedNames = tableNames.map((name) => `"${name}"`).join(", ");
-  console.log("\nVaciando tablas...");
-  await client.query(`TRUNCATE TABLE ${quotedNames} RESTART IDENTITY CASCADE;`);
+  await restoreTables(client, tables, (msg) => console.log(msg));
 
-  // Desactiva la validación de FK durante la carga — los datos se insertan
-  // en el mismo orden en que vienen en el dump, no en orden de dependencia,
-  // así que sin esto una fila hija insertada antes que su padre fallaría.
-  await client.query("SET session_replication_role = replica;");
-
-  for (const tableName of tableNames) {
-    const rows = tables[tableName];
-    if (rows.length === 0) continue;
-
-    console.log(`Restaurando ${tableName} (${rows.length} filas)...`);
-    const columns = Object.keys(rows[0]);
-    const columnList = columns.map((c) => `"${c}"`).join(", ");
-
-    for (const row of rows) {
-      const values = columns.map((c) => row[c]);
-      const placeholders = columns.map((_, i) => `$${i + 1}`).join(", ");
-      await client.query(`INSERT INTO "${tableName}" (${columnList}) VALUES (${placeholders});`, values);
-    }
-  }
-
-  await client.query("SET session_replication_role = DEFAULT;");
   await client.query("COMMIT");
   console.log("\n✅ Restauración completa.");
 } catch (error) {
