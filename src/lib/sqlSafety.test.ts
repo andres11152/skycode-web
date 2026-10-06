@@ -17,6 +17,7 @@ import { describe, expect, it } from "vitest";
 // justificación. No sustituye una revisión, pero convierte "se coló una
 // interpolación" de un hallazgo silencioso en un fallo de CI.
 const ALLOWED_INTERPOLATIONS = new Set([
+  "guard", // retainers.ts: fragmento fijo (" AND status <> 'cancelled'") elegido por código, nunca por el usuario
   "tableName", // databaseBackup.ts: nombres de tabla leídos de information_schema, entre comillas
   "columns",
   "publishedAtExpr",

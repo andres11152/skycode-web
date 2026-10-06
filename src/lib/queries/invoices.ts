@@ -233,8 +233,19 @@ export interface RecordPaymentData {
   method?: string;
 }
 
+/** El abono excede el saldo pendiente de la factura. */
+export class OverpaymentError extends Error {
+  constructor(public readonly balance: number) {
+    super("El pago excede el saldo pendiente de la factura.");
+    this.name = "OverpaymentError";
+  }
+}
+
 /**
- * Registra un pago/abono contra una factura.
+ * Registra un pago/abono contra una factura. Bloquea la fila de la factura
+ * (`FOR UPDATE`) y rechaza el abono si excede el saldo: sin esto, un pago
+ * manual y uno de Bold llegando a la vez dejaban la factura sobrepagada y un
+ * saldo negativo que restaba deuda de otras facturas del cliente.
  */
 export async function recordInvoicePayment(
   invoiceId: number,
@@ -242,10 +253,18 @@ export async function recordInvoicePayment(
   userId: number | string,
   dbRunner: QueryRunner
 ) {
-  const invoiceExists = await dbRunner.query("SELECT id FROM invoices WHERE id = $1 AND deleted_at IS NULL;", [
-    invoiceId,
-  ]);
-  if (invoiceExists.rows.length === 0) return null;
+  const invoiceRes = await dbRunner.query(
+    `SELECT i.amount,
+            COALESCE((SELECT SUM(amount) FROM payments WHERE invoice_id = i.id), 0) AS paid_amount
+     FROM invoices i
+     WHERE i.id = $1 AND i.deleted_at IS NULL
+     FOR UPDATE OF i;`,
+    [invoiceId]
+  );
+  if (invoiceRes.rows.length === 0) return null;
+
+  const balance = Number(invoiceRes.rows[0].amount) - Number(invoiceRes.rows[0].paid_amount);
+  if (data.amount - balance > 0.005) throw new OverpaymentError(Math.max(balance, 0));
 
   const res = await dbRunner.query(
     `INSERT INTO payments (invoice_id, amount, paid_at, method, created_by)

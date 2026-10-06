@@ -3,7 +3,7 @@ import { z } from "zod";
 import { requireSession } from "@/lib/withAuth";
 import { regenerateBackupCodes } from "@/lib/queries/totp";
 import { logAudit } from "@/lib/audit";
-import { getClientIp } from "@/lib/rateLimit";
+import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { query } from "@/lib/db";
 import { logError } from "@/lib/logger";
 
@@ -19,6 +19,12 @@ export async function POST(request: Request) {
   const auth = await requireSession();
   if ("error" in auth) return auth.error;
   const { session } = auth;
+
+  // Un código TOTP de 6 dígitos se puede forzar desde una sesión robada si
+  // estos endpoints no tienen tope de intentos.
+  if (await isRateLimited(`2fa-manage:user:${session.id}`, 5, 15 * 60 * 1000)) {
+    return NextResponse.json({ error: "Demasiados intentos. Intenta de nuevo en unos minutos." }, { status: 429 });
+  }
 
   try {
     const parsed = RegenerateSchema.safeParse(await request.json());

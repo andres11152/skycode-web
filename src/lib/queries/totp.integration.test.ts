@@ -4,6 +4,12 @@ import { generateTotpCode } from "../totp";
 import { query } from "../db";
 import { createTestUser, resetTestDb } from "../testHelpers/db";
 
+async function mustStartTotpSetup(userId: number | string) {
+  const setup = await startTotpSetup(userId);
+  if (!setup) throw new Error("startTotpSetup devolvió null: la cuenta ya tenía 2FA activo");
+  return setup;
+}
+
 beforeEach(async () => {
   await resetTestDb();
 });
@@ -23,7 +29,7 @@ describe("getTotpStatus", () => {
 describe("startTotpSetup + confirmTotpSetup", () => {
   it("no activa 2FA hasta que se confirma con un código real", async () => {
     const user = await createTestUser();
-    await startTotpSetup(user.id);
+    await mustStartTotpSetup(user.id);
 
     const status = await getTotpStatus(user.id);
     expect(status.enabled).toBe(false);
@@ -31,7 +37,7 @@ describe("startTotpSetup + confirmTotpSetup", () => {
 
   it("confirmar con el código correcto activa 2FA y entrega 8 códigos de respaldo", async () => {
     const user = await createTestUser();
-    const { secret } = await startTotpSetup(user.id);
+    const { secret } = await mustStartTotpSetup(user.id);
     const code = generateTotpCode(secret);
 
     const result = await confirmTotpSetup(user.id, code);
@@ -46,7 +52,7 @@ describe("startTotpSetup + confirmTotpSetup", () => {
 
   it("rechaza confirmar con un código incorrecto, sin activar 2FA", async () => {
     const user = await createTestUser();
-    await startTotpSetup(user.id);
+    await mustStartTotpSetup(user.id);
 
     const result = await confirmTotpSetup(user.id, "000000");
     expect(result.success).toBe(false);
@@ -56,10 +62,20 @@ describe("startTotpSetup + confirmTotpSetup", () => {
     expect(status.enabled).toBe(false);
   });
 
+  it("no permite reiniciar la configuración si el 2FA ya está activo", async () => {
+    const user = await createTestUser();
+    const { secret } = await mustStartTotpSetup(user.id);
+    await confirmTotpSetup(user.id, generateTotpCode(secret));
+
+    // Con el 2FA activo, `setup` NO debe apagarlo ni reemplazar el secreto.
+    expect(await startTotpSetup(user.id)).toBeNull();
+    expect((await getTotpStatus(user.id)).enabled).toBe(true);
+  });
+
   it("volver a iniciar la configuración reemplaza el secreto pendiente anterior", async () => {
     const user = await createTestUser();
-    const first = await startTotpSetup(user.id);
-    const second = await startTotpSetup(user.id);
+    const first = await mustStartTotpSetup(user.id);
+    const second = await mustStartTotpSetup(user.id);
 
     expect(second.secret).not.toBe(first.secret);
     // El código del secreto viejo ya no calza contra lo guardado.
@@ -72,7 +88,7 @@ describe("startTotpSetup + confirmTotpSetup", () => {
 describe("verifyTotpOrBackupCode", () => {
   async function setUp2fa() {
     const user = await createTestUser();
-    const { secret } = await startTotpSetup(user.id);
+    const { secret } = await mustStartTotpSetup(user.id);
     const { backupCodes } = await confirmTotpSetup(user.id, generateTotpCode(secret));
     return { user, secret, backupCodes: backupCodes! };
   }
@@ -107,7 +123,7 @@ describe("verifyTotpOrBackupCode", () => {
 describe("disableTotp", () => {
   it("desactiva 2FA y borra el secreto y los códigos de respaldo con un código válido", async () => {
     const user = await createTestUser();
-    const { secret } = await startTotpSetup(user.id);
+    const { secret } = await mustStartTotpSetup(user.id);
     await confirmTotpSetup(user.id, generateTotpCode(secret));
 
     const disabled = await disableTotp(user.id, generateTotpCode(secret));
@@ -123,7 +139,7 @@ describe("disableTotp", () => {
 
   it("no desactiva nada si el código es incorrecto", async () => {
     const user = await createTestUser();
-    const { secret } = await startTotpSetup(user.id);
+    const { secret } = await mustStartTotpSetup(user.id);
     await confirmTotpSetup(user.id, generateTotpCode(secret));
 
     expect(await disableTotp(user.id, "000000")).toBe(false);
@@ -134,7 +150,7 @@ describe("disableTotp", () => {
 describe("regenerateBackupCodes", () => {
   it("los códigos viejos dejan de servir después de regenerar", async () => {
     const user = await createTestUser();
-    const { secret } = await startTotpSetup(user.id);
+    const { secret } = await mustStartTotpSetup(user.id);
     const { backupCodes: oldCodes } = await confirmTotpSetup(user.id, generateTotpCode(secret));
 
     const newCodes = await regenerateBackupCodes(user.id, generateTotpCode(secret));
@@ -147,7 +163,7 @@ describe("regenerateBackupCodes", () => {
 
   it("null si el código de autorización es incorrecto", async () => {
     const user = await createTestUser();
-    const { secret } = await startTotpSetup(user.id);
+    const { secret } = await mustStartTotpSetup(user.id);
     await confirmTotpSetup(user.id, generateTotpCode(secret));
 
     expect(await regenerateBackupCodes(user.id, "000000")).toBeNull();

@@ -7,6 +7,7 @@ import {
   getProposalById,
   rejectProposal,
   acceptProposalAndCreateProject,
+  ProposalAlreadyRespondedError,
 } from "@/lib/queries/proposals";
 import { logError } from "@/lib/logger";
 
@@ -45,6 +46,9 @@ export async function POST(request: Request, { params }: RouteContext) {
     }
 
     const { id } = await params;
+    if (!z.uuid().safeParse(id).success) {
+      return NextResponse.json({ error: "Propuesta no encontrada." }, { status: 404 });
+    }
     const parsed = RespondSchema.safeParse(await request.json());
     if (!parsed.success) {
       return NextResponse.json({ error: "Solicitud inválida." }, { status: 400 });
@@ -100,6 +104,9 @@ export async function POST(request: Request, { params }: RouteContext) {
 
     return NextResponse.json({ success: true, status: "accepted", projectId: project.id });
   } catch (error) {
+    if (error instanceof ProposalAlreadyRespondedError) {
+      return NextResponse.json({ error: "Esta propuesta ya fue respondida." }, { status: 409 });
+    }
     logError("❌ [API POST Proposal Respond Error]", error);
     return NextResponse.json({ error: "Error al procesar la respuesta." }, { status: 500 });
   }

@@ -71,6 +71,12 @@ export function verifyBoldWebhookSignature(rawBody: string, signatureHeader: str
   if (!signatureHeader) return false;
 
   const secretKey = process.env.BOLD_SECRET_KEY ?? "";
+  // Con llave vacía cualquiera calcula HMAC("", base64(body)) y falsifica un
+  // SALE_APPROVED. La llave vacía solo es legítima en el sandbox de Bold: en
+  // producción se rechaza salvo opt-in explícito (`BOLD_ALLOW_EMPTY_SECRET`).
+  if (secretKey === "" && process.env.NODE_ENV === "production" && process.env.BOLD_ALLOW_EMPTY_SECRET !== "true") {
+    return false;
+  }
   const encodedBody = Buffer.from(rawBody, "utf8").toString("base64");
   const expected = createHmac("sha256", secretKey).update(encodedBody).digest("hex");
 

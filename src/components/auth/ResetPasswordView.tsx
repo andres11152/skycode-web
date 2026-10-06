@@ -51,7 +51,7 @@ export function ResetPasswordView({ token }: { token: string }) {
       }
 
       setSuccess(true);
-      const destination = data.user?.role === "client" ? "/portal" : "/dashboard";
+      const destination = data.requiresLogin ? "/login" : data.user?.role === "client" ? "/portal" : "/dashboard";
       setTimeout(() => {
         router.push(destination);
         router.refresh();
@@ -90,7 +90,7 @@ export function ResetPasswordView({ token }: { token: string }) {
                   <CheckCircle size={32} />
                 </div>
                 <h3 className="text-lg font-bold text-background">¡Contraseña actualizada!</h3>
-                <p className="text-xs text-background/70">Redirigiendo...</p>
+                <p className="text-xs text-background/70">Redirigiendo…</p>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="relative space-y-4">

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import sharp from "sharp";
+import { SHARP_INPUT_OPTIONS, hasAllowedImageSignature } from "./imageGuard";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import type { AvatarVariants } from "@/components/dashboard/types";
 
@@ -87,7 +88,11 @@ export async function processAndUploadAvatar(buffer: Buffer): Promise<ProcessedA
     throw new Error("La imagen supera el tamaño máximo permitido (8 MB).");
   }
 
-  const metadata = await sharp(buffer)
+  if (!hasAllowedImageSignature(buffer)) {
+    throw new Error("Formato de imagen no soportado. Use JPEG, PNG o WebP.");
+  }
+
+  const metadata = await sharp(buffer, SHARP_INPUT_OPTIONS)
     .metadata()
     .catch(() => {
       throw new Error("Formato de imagen no soportado. Use JPEG, PNG o WebP.");
@@ -101,7 +106,7 @@ export async function processAndUploadAvatar(buffer: Buffer): Promise<ProcessedA
   const variants = {} as Record<AvatarSize, string>;
 
   for (const [size, px] of Object.entries(AVATAR_SIZES) as [AvatarSize, number][]) {
-    const data = await sharp(buffer)
+    const data = await sharp(buffer, SHARP_INPUT_OPTIONS)
       // `rotate()` sin argumentos aplica la orientación EXIF y la descarta —
       // sin esto, una foto vertical tomada con el celular puede quedar
       // acostada, porque al recodificar a WebP se pierde el metadato que le

@@ -1,4 +1,5 @@
 import { query } from "../db";
+import { logError } from "../logger";
 
 /**
  * Mismo criterio de dueño que `isDocumentOwnedByClient`/
@@ -55,7 +56,10 @@ export interface RecordBoldPaymentInput {
   invoiceId: number;
   amount: number;
   paidAt: string;
-  /** `payment_id` de Bold — clave de idempotencia, ver migración 0021. */
+  /** `order-id` de Bold (`metadata.reference`) — clave de idempotencia, ver
+   * migración 0021. Tanto el webhook como `bold-status` DEBEN usar este mismo
+   * valor: con claves distintas (payment_id vs transaction_id) el mismo cobro
+   * se registraba dos veces. */
   providerReference: string;
 }
 
@@ -93,5 +97,19 @@ export async function recordBoldPaymentIfNew({
   );
 
   if (res.rows.length === 0) return { inserted: false, paymentId: null };
+
+  // El dinero ya entró (Bold no se puede "rechazar" a posteriori), así que el
+  // pago se registra igual; si deja la factura sobrepagada se alerta para que
+  // alguien lo concilie en vez de pasar desapercibido.
+  const balanceRes = await query(
+    `SELECT i.amount - COALESCE((SELECT SUM(amount) FROM payments WHERE invoice_id = i.id), 0) AS balance
+     FROM invoices i WHERE i.id = $1;`,
+    [invoiceId]
+  );
+  const balance = Number(balanceRes.rows[0]?.balance ?? 0);
+  if (balance < -0.005) {
+    logError("⚠️ [Bold] Factura sobrepagada — conciliar y reembolsar el excedente", null, { invoiceId, balance, providerReference });
+  }
+
   return { inserted: true, paymentId: Number(res.rows[0].id) };
 }

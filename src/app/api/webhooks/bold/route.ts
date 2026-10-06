@@ -62,7 +62,7 @@ export async function POST(request: Request) {
   const amount = event.data?.amount?.total;
 
   const invoiceId = reference ? parseInvoiceIdFromBoldOrderId(reference) : null;
-  if (!invoiceId || !paymentId || amount === undefined) {
+  if (!invoiceId || !reference || !paymentId || typeof amount !== "number" || !Number.isFinite(amount) || amount <= 0) {
     logError("⚠️ [Bold Webhook] Evento SALE_APPROVED sin los campos esperados", null, { reference, paymentId, amount });
     return NextResponse.json({ received: true });
   }
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
   try {
     const paidAt = event.data?.created_at ? event.data.created_at.slice(0, 10) : new Date().toISOString().slice(0, 10);
 
-    const result = await recordBoldPaymentIfNew({ invoiceId, amount, paidAt, providerReference: paymentId });
+    const result = await recordBoldPaymentIfNew({ invoiceId, amount, paidAt, providerReference: reference });
 
     if (result.inserted) {
       await logAudit(query, {

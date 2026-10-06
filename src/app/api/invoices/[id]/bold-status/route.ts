@@ -60,11 +60,18 @@ export async function GET(request: Request, { params }: RouteContext) {
       return NextResponse.json({ success: true, status: voucher?.payment_status ?? "NO_TRANSACTION_FOUND" });
     }
 
+    // Sin un total válido no se registra nada: un pago de 0 con esta clave
+    // de idempotencia haría que el webhook posterior (misma clave) se
+    // descartara y la factura quedara pendiente aunque el cliente pagó.
+    if (typeof voucher.total !== "number" || !Number.isFinite(voucher.total) || voucher.total <= 0) {
+      return NextResponse.json({ success: true, status: "PENDING_CONFIRMATION" });
+    }
+
     const result = await recordBoldPaymentIfNew({
       invoiceId,
-      amount: voucher.total ?? 0,
+      amount: voucher.total,
       paidAt: new Date().toISOString().slice(0, 10),
-      providerReference: voucher.transaction_id ?? orderId,
+      providerReference: orderId,
     });
 
     if (result.inserted) {

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import sharp from "sharp";
+import { SHARP_INPUT_OPTIONS, hasAllowedImageSignature } from "./imageGuard";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 /**
@@ -94,7 +95,11 @@ export async function processAndUploadPortfolioImage(buffer: Buffer): Promise<Pr
   // para que cualquier archivo no-imagen (con extensión falsa o no) dé el
   // mismo mensaje amigable, en vez de filtrar el error interno de la
   // librería de procesamiento hacia quien suba el archivo.
-  const metadata = await sharp(buffer)
+  if (!hasAllowedImageSignature(buffer)) {
+    throw new Error("Formato de imagen no soportado. Use JPEG, PNG o WebP.");
+  }
+
+  const metadata = await sharp(buffer, SHARP_INPUT_OPTIONS)
     .metadata()
     .catch(() => {
       throw new Error("Formato de imagen no soportado. Use JPEG, PNG o WebP.");
@@ -110,7 +115,7 @@ export async function processAndUploadPortfolioImage(buffer: Buffer): Promise<Pr
   let height = 0;
 
   for (const [size, targetWidth] of Object.entries(VARIANT_WIDTHS) as [VariantSize, number][]) {
-    const { data, info } = await sharp(buffer)
+    const { data, info } = await sharp(buffer, SHARP_INPUT_OPTIONS)
       .resize({ width: targetWidth, withoutEnlargement: true })
       .webp({ quality: 82 })
       .toBuffer({ resolveWithObject: true });

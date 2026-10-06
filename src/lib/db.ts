@@ -63,9 +63,22 @@ function getPool(): Pool {
   pool = new Pool({
     connectionString: sanitizedConnectionString,
     ssl: sslConfig,
-    max: 10,
+    // Durante `next build` hay ~9 workers, cada uno con su propio pool: con 10
+    // conexiones por worker se saturaba el Postgres de Render (timeouts que
+    // publicaban páginas 404/vacías). En build alcanzan 2 por worker.
+    max: process.env.NEXT_PHASE === "phase-production-build" ? 2 : 10,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 5000,
+    // Una consulta colgada retenía una de las 10 conexiones sin límite.
+    statement_timeout: 30000,
+    query_timeout: 35000,
+  });
+
+  // Sin este listener, una conexión inactiva que se cae (mantenimiento o
+  // failover de Render, corte de red) emite un `error` no manejado y tumba
+  // el proceso de Node con todas sus peticiones en curso.
+  pool.on("error", (error) => {
+    logError("pg: error en una conexión inactiva del pool", error);
   });
 
   return pool;

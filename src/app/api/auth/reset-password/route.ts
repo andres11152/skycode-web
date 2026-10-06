@@ -67,7 +67,7 @@ export async function POST(request: Request) {
       await consumeResetToken({ token, userId: reset.userId, passwordHash }, client);
 
       const userRes = await client.query(
-        `SELECT id, name, email, role FROM users WHERE id = $1;`,
+        `SELECT id, name, email, role, totp_enabled FROM users WHERE id = $1;`,
         [reset.userId]
       );
       const userRow = userRes.rows[0];
@@ -83,6 +83,14 @@ export async function POST(request: Request) {
 
       return userRow;
     });
+
+    // Con 2FA activo el reseteo NO abre sesión: quien controle el correo de la
+    // víctima (buzón comprometido, reenvío) entraría sin segundo factor, y
+    // el 2FA existe justo para ese caso. Se rota la contraseña y se manda a
+    // /login, donde el flujo normal pide el código.
+    if (user.totp_enabled) {
+      return NextResponse.json({ success: true, requiresLogin: true });
+    }
 
     const sessionId = randomUUID();
     const expiresAt = new Date(Date.now() + SESSION_LIFETIME_MS);

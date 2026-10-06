@@ -1,4 +1,5 @@
 import { query, withTransaction } from "../db";
+import { logError } from "../logger";
 import { consumeNextInvoiceNumber } from "./settings";
 import type { Currency } from "../currency";
 import type { Retainer, RetainerStatus } from "@/components/dashboard/types";
@@ -95,9 +96,15 @@ export async function updateRetainer(id: number, data: UpdateRetainerData, dbRun
   const params: unknown[] = [];
   let idx = 1;
 
+  let guard = "";
   if (data.status !== undefined) {
     fields.push(`status = $${idx++}`);
     params.push(data.status);
+    // `cancelled` significa que el contrato terminó de verdad: no se reabre.
+    if (data.status !== "cancelled") guard = " AND status <> 'cancelled'";
+    // Al reactivar, la próxima factura no puede quedar en el pasado: el cron
+    // facturaría uno a uno todos los meses de pausa en días seguidos.
+    if (data.status === "active") fields.push("next_invoice_date = GREATEST(next_invoice_date, CURRENT_DATE)");
   }
   if (data.amount !== undefined) {
     fields.push(`amount = $${idx++}`);
@@ -111,7 +118,7 @@ export async function updateRetainer(id: number, data: UpdateRetainerData, dbRun
 
   params.push(id);
   const res = await dbRunner.query(
-    `UPDATE retainers SET ${fields.join(", ")} WHERE id = $${idx} AND deleted_at IS NULL RETURNING id;`,
+    `UPDATE retainers SET ${fields.join(", ")} WHERE id = $${idx} AND deleted_at IS NULL${guard} RETURNING id;`,
     params
   );
   return res.rows.length > 0;
@@ -147,32 +154,53 @@ export async function generateDueRetainerInvoices(): Promise<number> {
   const dueRes = await query(
     `SELECT id, project_id, description, amount, currency, next_invoice_date::text AS next_invoice_date, created_by
      FROM retainers
-     WHERE deleted_at IS NULL AND status = 'active' AND next_invoice_date <= CURRENT_DATE;`
+     WHERE deleted_at IS NULL AND status = 'active' AND next_invoice_date <= CURRENT_DATE
+     ORDER BY id;`
   );
 
   let generated = 0;
   for (const retainer of dueRes.rows) {
-    await withTransaction(async (client) => {
-      const invoiceNumber = await consumeNextInvoiceNumber(client);
-      await client.query(
-        `INSERT INTO invoices (project_id, invoice_number, description, amount, currency, due_date, created_by)
-         VALUES ($1, $2, $3, $4, $5, $6, $7);`,
-        [
-          retainer.project_id,
-          invoiceNumber,
-          `Retainer mensual — ${retainer.description}`,
-          retainer.amount,
-          retainer.currency,
-          retainer.next_invoice_date,
-          retainer.created_by,
-        ]
-      );
-      await client.query(
-        `UPDATE retainers SET next_invoice_date = (next_invoice_date + interval '1 month')::date WHERE id = $1;`,
-        [retainer.id]
-      );
-    });
-    generated++;
+    // Mejor esfuerzo por fila: un retainer con datos que rompen el INSERT
+    // (ej. descripción demasiado larga) no debe cortar la facturación de
+    // todos los demás — antes la primera excepción abortaba el bucle y el
+    // cron devolvía 500 cada día.
+    try {
+      const done = await withTransaction(async (client) => {
+        // Avance de fecha PRIMERO y condicionado al valor leído: si otra
+        // ejecución del cron (reintento de Render, disparo manual) ya
+        // procesó este ciclo, o el retainer se pausó/borró entre el SELECT y
+        // acá, no devuelve fila y no se factura — sin esto se emitían dos
+        // facturas del mismo periodo y se saltaba un mes.
+        const advanced = await client.query(
+          `UPDATE retainers SET next_invoice_date = (next_invoice_date + interval '1 month')::date
+           WHERE id = $1 AND next_invoice_date = $2::date AND status = 'active' AND deleted_at IS NULL
+           RETURNING id;`,
+          [retainer.id, retainer.next_invoice_date]
+        );
+        if (advanced.rows.length === 0) return false;
+
+        const invoiceNumber = await consumeNextInvoiceNumber(client);
+        // `invoices.description` es VARCHAR(500) y el prefijo suma 19.
+        const description = `Retainer mensual — ${retainer.description}`.slice(0, 500);
+        await client.query(
+          `INSERT INTO invoices (project_id, invoice_number, description, amount, currency, due_date, created_by)
+           VALUES ($1, $2, $3, $4, $5, $6, $7);`,
+          [
+            retainer.project_id,
+            invoiceNumber,
+            description,
+            retainer.amount,
+            retainer.currency,
+            retainer.next_invoice_date,
+            retainer.created_by,
+          ]
+        );
+        return true;
+      });
+      if (done) generated++;
+    } catch (error) {
+      logError("❌ [Retainers] Falló la factura recurrente", error, { retainerId: retainer.id });
+    }
   }
   return generated;
 }

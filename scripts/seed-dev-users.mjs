@@ -22,6 +22,17 @@ if (!connectionString) {
   process.exit(1);
 }
 
+// Este script crea cuentas (incluido un admin) con una contraseña que está en
+// el repositorio: contra una base remota sería una puerta abierta.
+const isLocalDb = /@(localhost|127\.0\.0\.1)(:|\/)/.test(connectionString);
+if (!isLocalDb && process.env.ALLOW_REMOTE_SEED !== "true") {
+  console.error(
+    "Abortado: DATABASE_URL no apunta a localhost. Este script crea un admin con contraseña pública.\n" +
+      "Si de verdad es una base de desarrollo remota, corre con ALLOW_REMOTE_SEED=true.",
+  );
+  process.exit(1);
+}
+
 const pool = new Pool({
   connectionString,
   ssl: connectionString.includes("render.com") ? { rejectUnauthorized: false } : false,

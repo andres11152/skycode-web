@@ -4,6 +4,12 @@ import { createTestUser, resetTestDb } from "../src/lib/testHelpers/db";
 import { confirmTotpSetup, startTotpSetup } from "../src/lib/queries/totp";
 import { generateTotpCode } from "../src/lib/totp";
 
+async function mustStartTotpSetup(userId: number | string) {
+  const setup = await startTotpSetup(userId);
+  if (!setup) throw new Error("startTotpSetup devolvió null: la cuenta ya tenía 2FA activo");
+  return setup;
+}
+
 beforeEach(async () => {
   await resetTestDb();
 });
@@ -13,7 +19,7 @@ beforeEach(async () => {
  * de login en dos pasos, no cómo se configura 2FA. */
 async function createUserWithTotp() {
   const user = await createTestUser({ password: "SuperSecret123456" });
-  const { secret } = await startTotpSetup(user.id);
+  const { secret } = await mustStartTotpSetup(user.id);
   const { backupCodes } = await confirmTotpSetup(user.id, generateTotpCode(secret));
   return { user, secret, backupCodes: backupCodes! };
 }

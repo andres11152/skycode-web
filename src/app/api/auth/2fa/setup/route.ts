@@ -19,7 +19,14 @@ export async function POST() {
   const { session } = auth;
 
   try {
-    const { secret } = await startTotpSetup(session.id);
+    const setup = await startTotpSetup(session.id);
+    if (!setup) {
+      return NextResponse.json(
+        { error: "El 2FA ya está activo. Desactívalo con un código válido antes de configurarlo de nuevo." },
+        { status: 409 }
+      );
+    }
+    const { secret } = setup;
     const otpauthUri = buildOtpauthUri({ secret, accountLabel: session.email });
     const qrCodeDataUrl = await QRCode.toDataURL(otpauthUri, { margin: 1, width: 240 });
 

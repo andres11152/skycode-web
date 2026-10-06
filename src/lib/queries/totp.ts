@@ -25,16 +25,24 @@ export interface TotpSetupData {
 }
 
 /**
- * Genera y guarda un secreto NUEVO (reemplaza cualquiera anterior sin
- * confirmar) — `totp_enabled` se queda en `false` hasta que
+ * Genera y guarda un secreto NUEVO (reemplaza cualquier secreto PENDIENTE
+ * sin confirmar) — `totp_enabled` se queda en `false` hasta que
  * `confirmTotpSetup()` reciba un código válido contra este mismo secreto.
- * Empezar de nuevo la configuración (ej. el usuario cerró la pantalla del
- * QR sin confirmar) simplemente sobreescribe el secreto pendiente, sin
- * dejar residuos.
+ *
+ * Devuelve `null` si la cuenta YA tiene 2FA activo: reconfigurarlo sin
+ * pedir un código habría permitido a quien tenga solo la sesión (laptop
+ * desbloqueada, cookie robada) apagar el segundo factor y enrolar su propia
+ * app, saltándose la exigencia de código de `disableTotp()`. Para cambiar
+ * de dispositivo hay que desactivar primero (con un código válido).
+ * El `WHERE totp_enabled = false` hace la comprobación atómica.
  */
-export async function startTotpSetup(userId: number | string): Promise<TotpSetupData> {
+export async function startTotpSetup(userId: number | string): Promise<TotpSetupData | null> {
   const secret = generateTotpSecret();
-  await query("UPDATE users SET totp_secret = $1, totp_enabled = false WHERE id = $2;", [secret, userId]);
+  const res = await query(
+    "UPDATE users SET totp_secret = $1 WHERE id = $2 AND totp_enabled = false RETURNING id;",
+    [secret, userId]
+  );
+  if (res.rows.length === 0) return null;
   return { secret };
 }
 
@@ -51,7 +59,7 @@ export interface ConfirmTotpResult {
  * es su hash bcrypt.
  */
 export async function confirmTotpSetup(userId: number | string, code: string): Promise<ConfirmTotpResult> {
-  const res = await query("SELECT totp_secret FROM users WHERE id = $1;", [userId]);
+  const res = await query("SELECT totp_secret FROM users WHERE id = $1 AND totp_enabled = false;", [userId]);
   const secret = res.rows[0]?.totp_secret;
   if (!secret || !verifyTotpCode(secret, code)) {
     return { success: false };
@@ -60,7 +68,11 @@ export async function confirmTotpSetup(userId: number | string, code: string): P
   const backupCodes = generateBackupCodes();
   const hashedCodes = await Promise.all(backupCodes.map((c) => hashBackupCode(c)));
 
-  await query("UPDATE users SET totp_enabled = true, totp_backup_codes = $1 WHERE id = $2;", [hashedCodes, userId]);
+  const updated = await query(
+    "UPDATE users SET totp_enabled = true, totp_backup_codes = $1 WHERE id = $2 AND totp_enabled = false RETURNING id;",
+    [hashedCodes, userId]
+  );
+  if (updated.rows.length === 0) return { success: false };
 
   return { success: true, backupCodes };
 }
@@ -116,9 +128,14 @@ export async function verifyTotpOrBackupCode(userId: number | string, code: stri
   // bcrypt.compare() para los demás.
   for (const hash of backupHashes) {
     if (await compareBackupCode(cleanCode, hash)) {
-      const remaining = backupHashes.filter((h) => h !== hash);
-      await query("UPDATE users SET totp_backup_codes = $1 WHERE id = $2;", [remaining, userId]);
-      return true;
+      // Consumo atómico: `array_remove` solo actúa si el hash sigue en el
+      // array. Dos peticiones concurrentes con el mismo código ya no pueden
+      // ganar las dos — la segunda no encuentra la fila y se rechaza.
+      const consumed = await query(
+        "UPDATE users SET totp_backup_codes = array_remove(totp_backup_codes, $1::text) WHERE id = $2 AND $1::text = ANY(totp_backup_codes) RETURNING id;",
+        [hash, userId]
+      );
+      return consumed.rows.length > 0;
     }
   }
 

@@ -171,11 +171,26 @@ export async function createProposal(data: CreateProposalData, userId: number | 
   }
 }
 
+/** La propuesta ya fue aceptada o rechazada (carrera entre dos respuestas). */
+export class ProposalAlreadyRespondedError extends Error {
+  constructor() {
+    super("La propuesta ya fue respondida.");
+    this.name = "ProposalAlreadyRespondedError";
+  }
+}
+
 /**
- * Marca una propuesta como rechazada.
+ * Marca una propuesta como rechazada. El `WHERE` condicionado hace la
+ * transición atómica: un aceptar y un rechazar simultáneos ya no pueden
+ * dejar ambas marcas puestas.
  */
 export async function rejectProposal(id: string, dbRunner: QueryRunner) {
-  await dbRunner.query(`UPDATE proposals SET rejected_at = now() WHERE id = $1;`, [id]);
+  const res = await dbRunner.query(
+    `UPDATE proposals SET rejected_at = now()
+     WHERE id = $1 AND accepted_at IS NULL AND rejected_at IS NULL RETURNING id;`,
+    [id]
+  );
+  if (res.rows.length === 0) throw new ProposalAlreadyRespondedError();
 }
 
 export interface SignatureData {
@@ -191,6 +206,16 @@ export interface SignatureData {
  * un nombre de firmante no vacío antes de llegar acá, ver migración 0030.
  */
 export async function acceptProposalAndCreateProject(proposal: Proposal, dbRunner: QueryRunner, signature: SignatureData) {
+  // Reclamo atómico ANTES de crear nada: con `FOR UPDATE` un doble clic (dos
+  // POST simultáneos) hace que el segundo espere y luego vea la propuesta ya
+  // aceptada. Antes ambos pasaban la comprobación de la ruta y se creaban
+  // dos proyectos, con el primero huérfano.
+  const claim = await dbRunner.query(
+    `SELECT id FROM proposals WHERE id = $1 AND accepted_at IS NULL AND rejected_at IS NULL FOR UPDATE;`,
+    [proposal.id]
+  );
+  if (claim.rows.length === 0) throw new ProposalAlreadyRespondedError();
+
   const clientEmailNormalized = proposal.client_email.toLowerCase();
   const insertClientRes = await dbRunner.query(
     `INSERT INTO clients (name, email) VALUES ($1, $2) ON CONFLICT (email) DO NOTHING RETURNING id;`,
@@ -213,7 +238,7 @@ export async function acceptProposalAndCreateProject(proposal: Proposal, dbRunne
   for (const item of proposal.items) {
     await dbRunner.query(
       `INSERT INTO sprints (project_id, title, status, progress) VALUES ($1, $2, 'Pendiente', 0);`,
-      [newProject.id, `${item.description} (x${item.quantity})`]
+      [newProject.id, `${item.description} (x${item.quantity})`.slice(0, 255)]
     );
   }
 
