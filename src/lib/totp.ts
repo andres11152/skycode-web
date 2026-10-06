@@ -89,17 +89,27 @@ export function generateTotpCode(base32Secret: string, timeMs: number = Date.now
  * implementaciones (incluida la guía de Google Authenticator).
  */
 export function verifyTotpCode(base32Secret: string, code: string, window = 1, timeMs: number = Date.now()): boolean {
+  return verifyTotpCodeStep(base32Secret, code, window, timeMs) !== null;
+}
+
+/**
+ * Igual que `verifyTotpCode`, pero devuelve el contador (paso de 30 s) que
+ * coincidió, o `null`. Quien lo llama guarda el último paso aceptado para que
+ * el mismo código no sirva dos veces (RFC 6238 §5.2): sin eso, un código
+ * visto por encima del hombro o interceptado valía ~90 s.
+ */
+export function verifyTotpCodeStep(base32Secret: string, code: string, window = 1, timeMs: number = Date.now()): number | null {
   const cleanCode = code.trim().replace(/\s+/g, "");
-  if (!/^\d{6}$/.test(cleanCode)) return false;
+  if (!/^\d{6}$/.test(cleanCode)) return null;
 
   const counter = Math.floor(Math.floor(timeMs / 1000) / TOTP_PERIOD_SECONDS);
   const secretBytes = base32Decode(base32Secret);
 
   for (let errorWindow = -window; errorWindow <= window; errorWindow++) {
     const candidate = hotp(secretBytes, counter + errorWindow);
-    if (timingSafeEqualStrings(candidate, cleanCode)) return true;
+    if (timingSafeEqualStrings(candidate, cleanCode)) return counter + errorWindow;
   }
-  return false;
+  return null;
 }
 
 /**

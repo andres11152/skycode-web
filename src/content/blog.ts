@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { getPublishedArticleBySlug, getPublishedArticles } from "@/lib/queries/articles";
 import type { Locale } from "@/lib/i18n";
 
@@ -19,6 +20,14 @@ export async function getBlogPosts(locale: Locale) {
   return getPublishedArticles(locale);
 }
 
-export async function getPostBySlug(slug: string, locale: Locale) {
+/**
+ * Un post por slug+locale. Va envuelto en `cache()` de React a propósito:
+ * `generateMetadata` y la página lo piden en la misma renderización, y con
+ * dos consultas independientes podían divergir (metadata sin dato, página
+ * con dato) — el síntoma real fue una página con el H1 correcto pero con el
+ * `<title>` y el canonical de la home. Con `cache()` ambas leen el MISMO
+ * resultado de la renderización.
+ */
+export const getPostBySlug = cache(async (slug: string, locale: Locale) => {
   return getPublishedArticleBySlug(slug, locale);
-}
+});

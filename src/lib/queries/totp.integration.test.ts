@@ -169,3 +169,19 @@ describe("regenerateBackupCodes", () => {
     expect(await regenerateBackupCodes(user.id, "000000")).toBeNull();
   });
 });
+
+describe("anti-replay de TOTP", () => {
+  it("el mismo código no vale dos veces, pero uno de un paso posterior sí", async () => {
+    const user = await createTestUser();
+    const { secret } = await mustStartTotpSetup(user.id);
+    await confirmTotpSetup(user.id, generateTotpCode(secret));
+
+    const now = Date.now();
+    const code = generateTotpCode(secret, now);
+    expect(await verifyTotpOrBackupCode(user.id, code)).toBe(true);
+    expect(await verifyTotpOrBackupCode(user.id, code)).toBe(false);
+
+    // Un código del paso siguiente (aún dentro de la ventana ±1) sí se acepta.
+    expect(await verifyTotpOrBackupCode(user.id, generateTotpCode(secret, now + 30_000))).toBe(true);
+  });
+});

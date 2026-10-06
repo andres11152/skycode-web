@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { query, withTransaction } from "@/lib/db";
 import { requireSession } from "@/lib/withAuth";
-import { logAudit } from "@/lib/audit";
+import { logAudit, logAuditBestEffort } from "@/lib/audit";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { comparePassword, hashPassword } from "@/lib/auth";
 import { PWNED_PASSWORD_MESSAGE, isPasswordPwned } from "@/lib/pwnedPasswords";
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     if (!isCurrentValid) {
       // Se audita el intento fallido (sin la contraseña probada, obviamente)
       // — varios seguidos desde una sesión son una señal de sesión robada.
-      await logAudit(query, {
+      await logAuditBestEffort(query, {
         actorId: session.id,
         actorEmail: session.email,
         action: "user.password_change_failed",

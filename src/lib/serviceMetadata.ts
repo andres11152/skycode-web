@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getServiceBySlug, getServicesContent } from "@/content/services";
 import { ogImageUrl, siteUrl } from "@/lib/site";
 import { localeHomePath, type Locale } from "@/lib/i18n";
@@ -49,7 +50,8 @@ export function buildServicesIndexMetadata(locale: Locale): Metadata {
 
 export function buildServiceMetadata(locale: Locale, slug: string): Metadata {
   const service = getServiceBySlug(slug, locale);
-  if (!service) return {};
+  // Nunca `{}`: heredaría título y canonical de la home.
+  if (!service) notFound();
   const title = service.seo?.title ?? service.title;
   const description = service.seo?.description ?? service.description;
 

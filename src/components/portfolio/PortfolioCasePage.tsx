@@ -3,7 +3,8 @@ import { ProjectView } from "@/components/portfolio/ProjectView";
 import { getPortfolioSectionContent } from "@/content/projects";
 import { getProjectHostname, type PortfolioProject } from "@/content/portfolioShared";
 import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
-import { getPublishedPortfolioProjectBySlug, getPublishedPortfolioSlugs } from "@/lib/queries/portfolio";
+import { getPortfolioProjectCached } from "@/lib/portfolioRequestData";
+import { getPublishedPortfolioSlugs } from "@/lib/queries/portfolio";
 import { localeHomePath, type Locale } from "@/lib/i18n";
 import { ogImageUrl, siteName, siteUrl } from "@/lib/site";
 
@@ -52,14 +53,14 @@ function CaseJsonLd({ project, locale }: { project: PortfolioProject; locale: Lo
 
 /** Server Component compartido por `/portafolio/[slug]`, `/en/portfolio/[slug]` y `/fr/portfolio/[slug]`. */
 export async function PortfolioCasePage({ locale, slug }: { locale: Locale; slug: string }) {
-  const project = await getPublishedPortfolioProjectBySlug(slug, locale);
+  const project = await getPortfolioProjectCached(slug, locale);
   if (!project) notFound();
 
   const allSlugs = await getPublishedPortfolioSlugs();
   const currentIndex = allSlugs.indexOf(slug);
   const nextSlug = allSlugs.length > 0 ? allSlugs[(currentIndex + 1) % allSlugs.length] : null;
   const nextProject =
-    nextSlug && nextSlug !== slug ? await getPublishedPortfolioProjectBySlug(nextSlug, locale) : null;
+    nextSlug && nextSlug !== slug ? await getPortfolioProjectCached(nextSlug, locale) : null;
 
   return (
     <>

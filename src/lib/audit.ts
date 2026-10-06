@@ -1,3 +1,5 @@
+import { logError } from "./logger";
+
 export interface AuditEntry {
   /** `null` para acciones sin usuario del sistema detrás (ej. un cliente
    * externo aceptando una propuesta por enlace público, sin cuenta) —
@@ -34,4 +36,26 @@ export async function logAudit(runQuery: QueryFn, entry: AuditEntry): Promise<vo
       entry.ip ?? null,
     ]
   );
+}
+
+/**
+ * Auditoría "mejor esfuerzo", para rutas donde el cambio YA se aplicó antes de
+ * auditar (sin transacción común). Si el INSERT de auditoría fallara, `logAudit`
+ * propagaba el error y el cliente recibía un 500 aunque el cambio estaba hecho:
+ * al reintentar chocaba con el estado nuevo (p. ej. publicar → "no está en
+ * revisión"). Aquí el fallo se reporta a Sentry y la petición sigue.
+ *
+ * Dentro de una transacción (`client.query.bind(client)`) usa `logAudit`, que
+ * sí debe revertir el cambio si la auditoría falla.
+ */
+export async function logAuditBestEffort(runQuery: QueryFn, entry: AuditEntry): Promise<void> {
+  try {
+    await logAudit(runQuery, entry);
+  } catch (error) {
+    logError("❌ [Audit] No se pudo escribir la auditoría de un cambio ya aplicado", error, {
+      action: entry.action,
+      entityType: entry.entityType,
+      entityId: String(entry.entityId),
+    });
+  }
 }

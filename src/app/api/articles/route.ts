@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { withAuth } from "@/lib/withAuth";
-import { logAudit } from "@/lib/audit";
+import { logAuditBestEffort } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { query } from "@/lib/db";
 import { createArticleDraft } from "@/lib/queries/articles";
@@ -35,7 +35,7 @@ export const POST = withAuth("content:write", async (request, { session }) => {
     // No va en la misma transacción que el INSERT de arriba (a diferencia
     // del patrón de expenses/route.ts) — aceptable acá: crear un borrador
     // vacío no tiene ningún efecto que revertir si el log fallara.
-    await logAudit(query, {
+    await logAuditBestEffort(query, {
       actorId: session.id,
       actorEmail: session.email,
       action: "article.create",

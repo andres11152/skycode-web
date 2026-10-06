@@ -3,7 +3,7 @@ import { z } from "zod";
 import { withTransaction, query } from "@/lib/db";
 import { requireSession } from "@/lib/withAuth";
 import { hasPermission } from "@/lib/rbac";
-import { logAudit } from "@/lib/audit";
+import { logAudit, logAuditBestEffort } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { getTaskById, updateTask, updateOwnTaskStatus, softDeleteTask } from "@/lib/queries/tasks";
 import { logError } from "@/lib/logger";
@@ -106,7 +106,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       return NextResponse.json({ error: "Tarea no encontrada o no asignada a usted." }, { status: 404 });
     }
 
-    await logAudit(query, {
+    await logAuditBestEffort(query, {
       actorId: session.id,
       actorEmail: session.email,
       action: "task.update_own_status",

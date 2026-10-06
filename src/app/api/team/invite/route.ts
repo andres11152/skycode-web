@@ -4,7 +4,7 @@ import { z } from "zod";
 import { randomUUID } from "node:crypto";
 import { query } from "@/lib/db";
 import { withAuth } from "@/lib/withAuth";
-import { logAudit } from "@/lib/audit";
+import { logAuditBestEffort } from "@/lib/audit";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { findUserByEmail } from "@/lib/queries/auth";
 import { createTeamInvite } from "@/lib/queries/team";
@@ -54,7 +54,7 @@ export const POST = withAuth("team:write", async (request, { session }) => {
       expiresAt,
     });
 
-    await logAudit(query, {
+    await logAuditBestEffort(query, {
       actorId: session.id,
       actorEmail: session.email,
       action: "team.invite",

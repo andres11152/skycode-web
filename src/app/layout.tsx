@@ -50,15 +50,10 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: siteName, url: siteUrl }],
   creator: siteName,
-  alternates: {
-    canonical: "/",
-    languages: {
-      es: `${siteUrl}/`,
-      en: `${siteUrl}/en`,
-      fr: `${siteUrl}/fr`,
-      "x-default": `${siteUrl}/`,
-    },
-  },
+  // Sin `alternates` a propósito: el canonical y el hreflang los define CADA
+  // página. Un `canonical: "/"` aquí se heredaba en cualquier página cuya
+  // `generateMetadata` devolviera `{}` o fallara, y Google lo leía como
+  // "esta URL es un duplicado de la home" (bug real en producción).
   // Códigos de verificación de propiedad de Search Console/Bing Webmaster
   // Tools, vía meta tag en vez de subir el archivo HTML que ofrecen como
   // alternativa — así no hay que tocar `public/` cada vez que se rota o se

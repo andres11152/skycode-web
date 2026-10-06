@@ -1,6 +1,6 @@
 import { query } from "../db";
 import { compareBackupCode, hashBackupCode } from "../auth";
-import { generateBackupCodes, generateTotpSecret, verifyTotpCode } from "../totp";
+import { generateBackupCodes, generateTotpSecret, verifyTotpCode, verifyTotpCodeStep } from "../totp";
 
 export interface TotpStatus {
   enabled: boolean;
@@ -86,7 +86,7 @@ export async function disableTotp(userId: number | string, code: string): Promis
   const isValid = await verifyTotpOrBackupCode(userId, code);
   if (!isValid) return false;
 
-  await query("UPDATE users SET totp_enabled = false, totp_secret = NULL, totp_backup_codes = NULL WHERE id = $1;", [userId]);
+  await query("UPDATE users SET totp_enabled = false, totp_secret = NULL, totp_backup_codes = NULL, totp_last_step = NULL WHERE id = $1;", [userId]);
   return true;
 }
 
@@ -118,7 +118,16 @@ export async function verifyTotpOrBackupCode(userId: number | string, code: stri
   const row = res.rows[0];
   if (!row || !row.totp_enabled || !row.totp_secret) return false;
 
-  if (verifyTotpCode(row.totp_secret, code)) return true;
+  const step = verifyTotpCodeStep(row.totp_secret, code);
+  if (step !== null) {
+    // Un código TOTP solo vale una vez: se reclama su paso de forma atómica y
+    // un paso igual o anterior al último aceptado se rechaza (replay).
+    const claimed = await query(
+      "UPDATE users SET totp_last_step = $1 WHERE id = $2 AND (totp_last_step IS NULL OR totp_last_step < $1) RETURNING id;",
+      [step, userId]
+    );
+    return claimed.rows.length > 0;
+  }
 
   const backupHashes: string[] = Array.isArray(row.totp_backup_codes) ? row.totp_backup_codes : [];
   const cleanCode = code.trim().toUpperCase();

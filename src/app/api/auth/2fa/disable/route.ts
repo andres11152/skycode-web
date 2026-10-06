@@ -6,7 +6,7 @@ import { requireSession } from "@/lib/withAuth";
 import { verifySessionToken } from "@/lib/session";
 import { disableTotp } from "@/lib/queries/totp";
 import { revokeOtherSessions } from "@/lib/queries/sessions";
-import { logAudit } from "@/lib/audit";
+import { logAuditBestEffort } from "@/lib/audit";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { query } from "@/lib/db";
 import { logError } from "@/lib/logger";
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Código incorrecto." }, { status: 400 });
     }
 
-    await logAudit(query, {
+    await logAuditBestEffort(query, {
       actorId: session.id,
       actorEmail: session.email,
       action: "user.2fa_disabled",

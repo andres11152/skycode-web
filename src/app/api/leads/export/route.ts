@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { withAuth } from "@/lib/withAuth";
-import { logAudit } from "@/lib/audit";
+import { logAuditBestEffort } from "@/lib/audit";
 import { query } from "@/lib/db";
 import { getClientIp } from "@/lib/rateLimit";
 import { getAllMatchingLeads } from "@/lib/queries/leads";
@@ -44,7 +44,7 @@ export const GET = withAuth("leads:read", async (request, { session }) => {
     ]);
     const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
 
-    await logAudit(query, {
+    await logAuditBestEffort(query, {
       actorId: session.id,
       actorEmail: session.email,
       action: "leads.export",

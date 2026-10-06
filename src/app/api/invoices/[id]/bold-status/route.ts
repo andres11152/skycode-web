@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { requireSession } from "@/lib/withAuth";
 import { isInvoiceOwnedByClient, recordBoldPaymentIfNew } from "@/lib/queries/boldPayments";
 import { fetchBoldPaymentVoucher, parseInvoiceIdFromBoldOrderId } from "@/lib/bold";
-import { logAudit } from "@/lib/audit";
+import { logAuditBestEffort } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { query } from "@/lib/db";
 import { logError } from "@/lib/logger";
@@ -75,7 +75,7 @@ export async function GET(request: Request, { params }: RouteContext) {
     });
 
     if (result.inserted) {
-      await logAudit(query, {
+      await logAuditBestEffort(query, {
         actorId: session.id,
         actorEmail: session.email,
         action: "invoice.payment",

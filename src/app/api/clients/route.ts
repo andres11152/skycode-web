@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { withAuth } from "@/lib/withAuth";
-import { logAudit } from "@/lib/audit";
+import { logAuditBestEffort } from "@/lib/audit";
 import { query } from "@/lib/db";
 import { getClientIp } from "@/lib/rateLimit";
 import { getClientsPage, updateClient } from "@/lib/queries/clients";
@@ -59,7 +59,7 @@ export const PATCH = withAuth("clients:write", async (request, { session }) => {
       return NextResponse.json({ error: "Cliente no encontrado." }, { status: 404 });
     }
 
-    await logAudit(query, {
+    await logAuditBestEffort(query, {
       actorId: session.id,
       actorEmail: session.email,
       action: "client.update",

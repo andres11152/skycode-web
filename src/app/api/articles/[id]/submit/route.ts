@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireSession } from "@/lib/withAuth";
 import { hasPermission } from "@/lib/rbac";
-import { logAudit } from "@/lib/audit";
+import { logAuditBestEffort } from "@/lib/audit";
 import { getClientIp } from "@/lib/rateLimit";
 import { query } from "@/lib/db";
 import { submitForReview } from "@/lib/queries/articles";
@@ -33,7 +33,7 @@ export async function POST(request: Request, { params }: RouteContext) {
     }
 
     const ip = getClientIp(request);
-    await logAudit(query, {
+    await logAuditBestEffort(query, {
       actorId: session.id,
       actorEmail: session.email,
       action: "article.submit_for_review",

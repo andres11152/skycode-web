@@ -7,7 +7,7 @@ import { isRateLimited } from "@/lib/rateLimit";
 import { guardAuthRequest, verifyHumanChallenge } from "@/lib/authShield";
 import { findUserByEmail } from "@/lib/queries/auth";
 import { createPasswordResetToken } from "@/lib/queries/passwordReset";
-import { logAudit } from "@/lib/audit";
+import { logAuditBestEffort } from "@/lib/audit";
 import { logError } from "@/lib/logger";
 
 const RequestSchema = z.object({ email: z.string().email().trim().max(254) });
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
     const expiresAt = new Date(Date.now() + RESET_LIFETIME_MS);
     await createPasswordResetToken({ id: token, userId: user.id, expiresAt });
 
-    await logAudit(query, {
+    await logAuditBestEffort(query, {
       actorId: user.id,
       actorEmail: user.email,
       action: "user.request_password_reset",

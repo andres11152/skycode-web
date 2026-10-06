@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getPortfolioSectionContent } from "@/content/projects";
 import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
-import { getPublishedPortfolioLocaleMap, getPublishedPortfolioProjectBySlug } from "@/lib/queries/portfolio";
+import { getPortfolioLocaleMapCached, getPortfolioProjectCached } from "@/lib/portfolioRequestData";
 import { localeOgLocale, locales, type Locale } from "@/lib/i18n";
 import { ogImageUrl, siteName, siteUrl } from "@/lib/site";
 
@@ -54,10 +55,11 @@ export function buildPortfolioIndexMetadata(locale: Locale): Metadata {
 
 export async function buildPortfolioCaseMetadata(locale: Locale, slug: string): Promise<Metadata> {
   const [project, localeMap] = await Promise.all([
-    getPublishedPortfolioProjectBySlug(slug, locale),
-    getPublishedPortfolioLocaleMap(),
+    getPortfolioProjectCached(slug, locale),
+    getPortfolioLocaleMapCached(),
   ]);
-  if (!project) return {};
+  // Nunca `{}`: heredaría título y canonical de la home (ver blogMetadata).
+  if (!project) notFound();
 
   const available = localeMap.find((entry) => entry.slug === slug)?.locales ?? ["es"];
   const coverUrl = project.coverImage?.variants.lg ?? ogImageUrl;

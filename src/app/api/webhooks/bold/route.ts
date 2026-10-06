@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyBoldWebhookSignature, parseInvoiceIdFromBoldOrderId } from "@/lib/bold";
 import { recordBoldPaymentIfNew } from "@/lib/queries/boldPayments";
-import { logAudit } from "@/lib/audit";
+import { logAuditBestEffort } from "@/lib/audit";
 import { query } from "@/lib/db";
 import { logError } from "@/lib/logger";
 
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     const result = await recordBoldPaymentIfNew({ invoiceId, amount, paidAt, providerReference: reference });
 
     if (result.inserted) {
-      await logAudit(query, {
+      await logAuditBestEffort(query, {
         actorId: null,
         actorEmail: "webhook:bold",
         action: "invoice.payment",

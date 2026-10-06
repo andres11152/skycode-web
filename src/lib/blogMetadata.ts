@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getBlogMeta, getPostBySlug } from "@/content/blog";
 import { rssFeedPath } from "@/lib/rss";
 import { ogImageUrl, siteUrl } from "@/lib/site";
@@ -52,7 +53,9 @@ export function buildBlogIndexMetadata(locale: Locale): Metadata {
 
 export async function buildBlogPostMetadata(locale: Locale, slug: string): Promise<Metadata> {
   const post = await getPostBySlug(slug, locale);
-  if (!post) return {};
+  // Nunca `{}`: la metadata vacía hereda la del layout raíz (título de la
+  // home) y quedaba cacheada por ISR como si fuera válida. Sin dato → 404.
+  if (!post) notFound();
 
   // A diferencia de servicios/equipo, no asumimos que las tres versiones
   // existen siempre — un slug que todavía no se tradujo/publicó en un

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { requireSession } from "@/lib/withAuth";
 import { revokeOwnSession } from "@/lib/queries/sessions";
 import { invalidateSessionCache } from "@/lib/authSession";
-import { logAudit } from "@/lib/audit";
+import { logAuditBestEffort } from "@/lib/audit";
 import { query } from "@/lib/db";
 import { getClientIp } from "@/lib/rateLimit";
 import { logError } from "@/lib/logger";
@@ -39,7 +39,7 @@ export async function DELETE(request: Request, { params }: RouteContext) {
 
     invalidateSessionCache(id);
 
-    await logAudit(query, {
+    await logAuditBestEffort(query, {
       actorId: auth.session.id,
       actorEmail: auth.session.email,
       action: "session.revoke",

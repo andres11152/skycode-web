@@ -23,7 +23,8 @@
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "pretest:e2e": "node --env-file=.env.test scripts/ensure-test-bucket.mjs",
     "test:e2e": "vitest run --config vitest.e2e.config.mts",
-    "test:all": "npm run test:db:up && npm run test:db:migrate && npm run test && npm run test:integration && npm run test:e2e"
+    "test:all": "npm run test:db:up && npm run test:db:migrate && npm run test && npm run test:integration && npm run test:e2e",
+    "seo:check": "node scripts/seo-check.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1140.0",
