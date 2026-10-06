@@ -24,6 +24,12 @@ function getSecretKey(): Uint8Array {
     );
   }
 
+  // HS256 con un secreto corto se ataca por fuerza bruta offline y permitiría
+  // falsificar `sid` y los tokens de 2FA pendiente.
+  if (secret.length < 32) {
+    throw new Error("JWT_SECRET debe tener al menos 32 caracteres (usa `openssl rand -base64 48`).");
+  }
+
   cachedSecretKey = new TextEncoder().encode(secret);
   return cachedSecretKey;
 }
