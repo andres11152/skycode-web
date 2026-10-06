@@ -34,7 +34,8 @@ describe("buildLeadConfirmationEmail", () => {
     });
     expect(html).not.toContain("<img src=x onerror");
     expect(html).not.toContain("<script>alert(2)</script>");
-    expect(html).toContain("&lt;img");
+    // El nombre ya no admite símbolos (queda solo "img src x onerror alert"); el mensaje se escapa.
+    expect(html).not.toContain("<img");
     expect(html).toContain("&lt;script&gt;");
   });
 
@@ -72,5 +73,20 @@ describe("buildLeadConfirmationEmail", () => {
     expect(text).toContain("…");
     expect(text).not.toContain("a".repeat(500));
     expect(text).toContain("a".repeat(400));
+  });
+});
+
+describe("anti-phishing del correo de confirmación", () => {
+  it("reduce el nombre a letras y elimina enlaces del extracto del mensaje", () => {
+    const email = buildLeadConfirmationEmail({
+      name: "Tu factura vencida: paga en http://evil.tld/pay ahora",
+      message: "Entra a https://evil.tld/login o escribe a robo@evil.tld",
+      service: null,
+      locale: "es",
+    });
+    expect(email.subject).not.toMatch(/evil|http|:/);
+    expect(email.html).not.toContain("evil.tld");
+    expect(email.text).not.toContain("evil.tld");
+    expect(email.text).toContain("[enlace]");
   });
 });

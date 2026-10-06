@@ -40,7 +40,24 @@ function truncate(value: string, limit: number): string {
  * o un nombre con `<img onerror=...>` se ejecutaría como HTML real en el
  * cliente de correo de quien lo reciba.
  */
-export function buildLeadConfirmationEmail({ name, message, service, locale }: LeadConfirmationEmailInput): BuiltEmail {
+/**
+ * El formulario público envía un correo desde NUESTRO dominio a la dirección
+ * que escribe el visitante: cualquiera podía usarlo para mandar phishing a un
+ * tercero ("Juan, tu factura vencida: paga en evil.tld"). El nombre se reduce
+ * a letras (máx. 2 palabras) y el extracto del mensaje pierde enlaces.
+ */
+export function sanitizeEmailName(name: string): string {
+  const words = name.match(/[\p{L}][\p{L}'’-]*/gu) ?? [];
+  return words.slice(0, 2).join(" ").slice(0, 40);
+}
+
+export function stripLinks(text: string): string {
+  return text.replace(/(?:https?:\/\/|www\.)\S+/gi, "[enlace]").replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, "[correo]");
+}
+
+export function buildLeadConfirmationEmail({ name: rawName, message: rawMessage, service, locale }: LeadConfirmationEmailInput): BuiltEmail {
+  const name = sanitizeEmailName(rawName);
+  const message = stripLinks(rawMessage);
   const content = getContactContent(locale);
   const { successModal, confirmationEmail, habeasData } = content;
 
