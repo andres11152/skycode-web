@@ -51,6 +51,24 @@ async function queryInvoices(clientId?: number | string): Promise<Invoice[]> {
     params
   );
 
+  // Todos los pagos en UNA consulta (antes una por factura, en serie).
+  const invoiceIds = res.rows.map((row) => Number(row.id));
+  const paymentsRes =
+    invoiceIds.length === 0
+      ? { rows: [] as Record<string, unknown>[] }
+      : await query(
+          `SELECT id, invoice_id, amount, paid_at, method FROM payments
+           WHERE invoice_id = ANY($1::int[]) ORDER BY paid_at DESC, id DESC;`,
+          [invoiceIds]
+        );
+  const paymentsByInvoice = new Map<number, Record<string, unknown>[]>();
+  for (const p of paymentsRes.rows) {
+    const key = Number(p.invoice_id);
+    const list = paymentsByInvoice.get(key) ?? [];
+    list.push(p);
+    paymentsByInvoice.set(key, list);
+  }
+
   const invoices: Invoice[] = [];
   for (const row of res.rows) {
     const amount = Number(row.amount);
@@ -69,11 +87,6 @@ async function queryInvoices(clientId?: number | string): Promise<Invoice[]> {
       }
     }
 
-    const paymentsRes = await query(
-      `SELECT id, amount, paid_at, method FROM payments WHERE invoice_id = $1 ORDER BY paid_at DESC;`,
-      [row.id]
-    );
-
     invoices.push({
       id: row.id,
       invoice_number: row.invoice_number,
@@ -90,11 +103,11 @@ async function queryInvoices(clientId?: number | string): Promise<Invoice[]> {
       balance,
       status,
       daysOverdue,
-      payments: paymentsRes.rows.map((p) => ({
-        id: p.id,
+      payments: (paymentsByInvoice.get(Number(row.id)) ?? []).map((p) => ({
+        id: p.id as number,
         amount: Number(p.amount),
-        paid_at: p.paid_at,
-        method: p.method,
+        paid_at: p.paid_at as string,
+        method: p.method as string | null,
       })),
     });
   }

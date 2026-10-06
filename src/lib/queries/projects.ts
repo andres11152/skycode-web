@@ -31,14 +31,23 @@ function shapeProjectRow(row: Record<string, unknown>): Omit<Project, "sprints">
 }
 
 async function withSprints(rows: Record<string, unknown>[]): Promise<Project[]> {
-  const projects: Project[] = [];
-  for (const row of rows) {
-    const sprintsRes = await query(
-      `SELECT id, title, status, progress, approval_status, approval_comment, approved_at
-       FROM sprints WHERE project_id = $1 ORDER BY id ASC;`,
-      [row.id]
-    );
-    const sprints = sprintsRes.rows.map((s) => ({
+  // Una sola consulta para TODOS los proyectos (antes una por proyecto, en
+  // serie: la latencia del inicio del dashboard crecía con el historial).
+  const ids = rows.map((row) => Number(row.id));
+  const sprintsRes =
+    ids.length === 0
+      ? { rows: [] as Record<string, unknown>[] }
+      : await query(
+          `SELECT id, project_id, title, status, progress, approval_status, approval_comment, approved_at
+           FROM sprints WHERE project_id = ANY($1::int[]) ORDER BY id ASC;`,
+          [ids]
+        );
+
+  const byProject = new Map<number, Project["sprints"]>();
+  for (const s of sprintsRes.rows) {
+    const projectId = Number(s.project_id);
+    const list = byProject.get(projectId) ?? [];
+    list.push({
       id: Number(s.id),
       title: String(s.title ?? ""),
       status: s.status as Project["sprints"][number]["status"],
@@ -46,11 +55,11 @@ async function withSprints(rows: Record<string, unknown>[]): Promise<Project[]> 
       approval_status: (s.approval_status as Project["sprints"][number]["approval_status"]) ?? null,
       approval_comment: s.approval_comment ? String(s.approval_comment) : null,
       approved_at: s.approved_at ? String(s.approved_at) : null,
-    }));
-
-    projects.push({ ...shapeProjectRow(row), sprints });
+    });
+    byProject.set(projectId, list);
   }
-  return projects;
+
+  return rows.map((row) => ({ ...shapeProjectRow(row), sprints: byProject.get(Number(row.id)) ?? [] }));
 }
 
 /**
