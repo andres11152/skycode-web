@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { getAllProposals, getProposalById } from "./proposals";
+import { getAllProposals, getProposalById, acceptProposalAndCreateProject, rejectProposal, ProposalAlreadyRespondedError } from "./proposals";
+import { query, withTransaction } from "../db";
 import { createTestProposal, resetTestDb } from "../testHelpers/db";
 
 beforeEach(async () => {
@@ -122,5 +123,39 @@ describe("getAllProposals", () => {
     const b = proposals.find((p) => p.title === "B");
     expect(a?.items.map((i) => i.description)).toEqual(["Solo de A"]);
     expect(b?.items.map((i) => i.description)).toEqual(["Solo de B"]);
+  });
+});
+
+
+describe("responder una propuesta — atómico", () => {
+  const signature = { signerName: "Cliente Test", ip: null, userAgent: null };
+
+  it("dos aceptaciones simultáneas crean un solo proyecto", async () => {
+    const created = await createTestProposal();
+    const proposal = await getProposalById(created.id);
+    if (!proposal) throw new Error("propuesta de prueba no encontrada");
+
+    const attempts = await Promise.allSettled([
+      withTransaction((c) => acceptProposalAndCreateProject(proposal, c, signature)),
+      withTransaction((c) => acceptProposalAndCreateProject(proposal, c, signature)),
+    ]);
+
+    expect(attempts.filter((a) => a.status === "fulfilled")).toHaveLength(1);
+    const rejected = attempts.find((a) => a.status === "rejected");
+    expect(rejected && rejected.status === "rejected" && rejected.reason).toBeInstanceOf(ProposalAlreadyRespondedError);
+
+    const projects = await query("SELECT id FROM projects;");
+    expect(projects.rows).toHaveLength(1);
+  });
+
+  it("no se puede rechazar una propuesta ya aceptada", async () => {
+    const created = await createTestProposal();
+    const proposal = await getProposalById(created.id);
+    if (!proposal) throw new Error("propuesta de prueba no encontrada");
+    await withTransaction((c) => acceptProposalAndCreateProject(proposal, c, signature));
+
+    await expect(withTransaction((c) => rejectProposal(created.id, c))).rejects.toBeInstanceOf(ProposalAlreadyRespondedError);
+    const row = await query("SELECT rejected_at FROM proposals WHERE id = $1;", [created.id]);
+    expect(row.rows[0].rejected_at).toBeNull();
   });
 });

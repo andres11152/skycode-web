@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { getAllInvoices, getClientInvoices, createInvoice, getInvoiceForPdf } from "./invoices";
+import { getAllInvoices, getClientInvoices, createInvoice, getInvoiceForPdf, recordInvoicePayment, OverpaymentError } from "./invoices";
 import { withTransaction, query } from "../db";
 import {
   createTestClient,
@@ -239,5 +239,24 @@ describe("getClientInvoices — portal, solo lectura de lo propio", () => {
     expect(result.status).toBe("overdue");
     expect(result.balance).toBe(600);
     expect(result.paidAmount).toBe(400);
+  });
+});
+
+
+describe("recordInvoicePayment — tope de sobrepago", () => {
+  it("acepta el saldo exacto y rechaza cualquier excedente", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const user = await createTestUser();
+    const invoice = await createTestInvoice(project.id, { amount: 1000 });
+
+    await withTransaction((c) => recordInvoicePayment(invoice.id, { amount: 600, paid_at: "2026-01-10" }, user.id, c));
+
+    await expect(
+      withTransaction((c) => recordInvoicePayment(invoice.id, { amount: 500, paid_at: "2026-01-11" }, user.id, c))
+    ).rejects.toBeInstanceOf(OverpaymentError);
+
+    const ok = await withTransaction((c) => recordInvoicePayment(invoice.id, { amount: 400, paid_at: "2026-01-11" }, user.id, c));
+    expect(ok).not.toBeNull();
   });
 });

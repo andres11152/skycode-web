@@ -161,3 +161,64 @@ describe("generateDueRetainerInvoices", () => {
     expect(invoiceRes.rows).toHaveLength(1);
   });
 });
+
+
+describe("generateDueRetainerInvoices — concurrencia y ciclo de vida", () => {
+  async function seedDueRetainer() {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const user = await createTestUser();
+    const id = await withTransaction((c) =>
+      createRetainer(
+        { project_id: project.id, description: "Mantenimiento", amount: 500, billing_day: 1, next_invoice_date: "2020-01-01" },
+        user.id,
+        c
+      )
+    );
+    if (id === null) throw new Error("no se creó el retainer");
+    return id;
+  }
+
+  it("dos corridas simultáneas generan UNA sola factura y avanzan un solo mes", async () => {
+    // Vence HOY (un solo ciclo pendiente): tras avanzar un mes ya no es
+    // elegible, así que cualquier segunda factura sería un duplicado.
+    const id = await seedDueRetainer();
+    await query("UPDATE retainers SET next_invoice_date = CURRENT_DATE WHERE id = $1;", [id]);
+
+    await Promise.all([generateDueRetainerInvoices(), generateDueRetainerInvoices()]);
+
+    const invoices = await query("SELECT id FROM invoices;");
+    expect(invoices.rows).toHaveLength(1);
+    const next = await query("SELECT next_invoice_date = (CURRENT_DATE + interval '1 month')::date AS ok FROM retainers WHERE id = $1;", [id]);
+    expect(next.rows[0].ok).toBe(true);
+  });
+
+  it("una descripción larga no se pierde ni corta el resto del lote", async () => {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const user = await createTestUser();
+    await withTransaction((c) =>
+      createRetainer(
+        { project_id: project.id, description: "x".repeat(495), amount: 100, billing_day: 1, next_invoice_date: "2020-01-01" },
+        user.id,
+        c
+      )
+    );
+    await seedDueRetainer();
+
+    expect(await generateDueRetainerInvoices()).toBe(2);
+  });
+
+  it("reactivar un retainer pausado no factura los meses de pausa; cancelled no se reabre", async () => {
+    const id = await seedDueRetainer();
+    await withTransaction((c) => updateRetainer(id, { status: "paused" }, c));
+    await withTransaction((c) => updateRetainer(id, { status: "active" }, c));
+
+    const next = await query("SELECT next_invoice_date >= CURRENT_DATE AS future FROM retainers WHERE id = $1;", [id]);
+    expect(next.rows[0].future).toBe(true);
+
+    await withTransaction((c) => updateRetainer(id, { status: "cancelled" }, c));
+    const reopened = await withTransaction((c) => updateRetainer(id, { status: "active" }, c));
+    expect(reopened).toBe(false);
+  });
+});

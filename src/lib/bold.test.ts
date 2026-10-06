@@ -69,6 +69,18 @@ describe("verifyBoldWebhookSignature", () => {
     expect(verifyBoldWebhookSignature("{}", undefined)).toBe(false);
   });
 
+  it("rechaza la llave vacía en producción (el webhook sería falsificable)", () => {
+    process.env.BOLD_SECRET_KEY = "";
+    vi.stubEnv("NODE_ENV", "production");
+    const body = '{"type":"SALE_APPROVED"}';
+    // Cualquiera puede calcular esta firma sin conocer ningún secreto.
+    expect(verifyBoldWebhookSignature(body, signLikeBold(body, ""))).toBe(false);
+
+    vi.stubEnv("BOLD_ALLOW_EMPTY_SECRET", "true");
+    expect(verifyBoldWebhookSignature(body, signLikeBold(body, ""))).toBe(true);
+    vi.unstubAllEnvs();
+  });
+
   it("funciona con llave vacía (modo pruebas de Bold), documentado explícitamente por ellos", () => {
     process.env.BOLD_SECRET_KEY = "";
     const body = '{"type":"SALE_APPROVED"}';
