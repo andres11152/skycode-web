@@ -12,7 +12,7 @@ import type { TeamCapacity } from "@/components/dashboard/types";
  * cada entrada de horas × cada ticket de la misma persona), inflando las
  * sumas. Agregar primero, unir después.
  *
- * `date_trunc('week', CURRENT_DATE)` en Postgres arranca en lunes (ISO) —
+ * `date_trunc('week', (now() AT TIME ZONE 'America/Bogota')::date)` en Postgres arranca en lunes (ISO) —
  * "esta semana" es lunes a hoy, no una ventana de 7 días corrida.
  */
 export async function getTeamCapacity(): Promise<TeamCapacity[]> {
@@ -35,7 +35,7 @@ export async function getTeamCapacity(): Promise<TeamCapacity[]> {
     hours_agg AS (
       SELECT user_id, COALESCE(SUM(hours), 0) AS hours_this_week
       FROM time_entries
-      WHERE entry_date >= date_trunc('week', CURRENT_DATE)
+      WHERE entry_date >= date_trunc('week', (now() AT TIME ZONE 'America/Bogota')::date)
       GROUP BY user_id
     )
     SELECT u.id, u.name, u.email, u.role, u.weekly_hours_capacity,

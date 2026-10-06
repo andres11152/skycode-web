@@ -1,3 +1,4 @@
+import { isBeforeToday } from "../dateOnly";
 import { query } from "../db";
 import type { Currency } from "../currency";
 import { createOnboardingChecklist } from "./onboarding";
@@ -25,7 +26,7 @@ interface ProposalRow {
 function computeStatus(row: ProposalRow): Proposal["status"] {
   if (row.accepted_at) return "accepted";
   if (row.rejected_at) return "rejected";
-  if (row.valid_until && new Date(row.valid_until) < new Date(new Date().toDateString())) return "expired";
+  if (row.valid_until && isBeforeToday(String(row.valid_until))) return "expired";
   if (row.viewed_at) return "viewed";
   return "sent";
 }

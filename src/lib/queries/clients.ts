@@ -1,3 +1,4 @@
+import { daysBetweenDates, todayBogota, isBeforeToday } from "../dateOnly";
 import { query } from "../db";
 import { convertCurrency, type Currency } from "../currency";
 import { getClientProjects } from "./projects";
@@ -158,7 +159,7 @@ export async function getClientDetail(id: number, usdToCopRate: number): Promise
     let status: Proposal["status"] = "sent";
     if (p.accepted_at) status = "accepted";
     else if (p.rejected_at) status = "rejected";
-    else if (p.valid_until && new Date(p.valid_until) < new Date(new Date().toDateString())) status = "expired";
+    else if (p.valid_until && isBeforeToday(String(p.valid_until))) status = "expired";
     else if (p.viewed_at) status = "viewed";
 
     return {
@@ -194,7 +195,7 @@ export async function getClientDetail(id: number, usdToCopRate: number): Promise
     if (balance <= 0) {
       status = "paid";
     } else {
-      const diffDays = Math.floor((Date.now() - new Date(i.due_date).getTime()) / (1000 * 60 * 60 * 24));
+      const diffDays = daysBetweenDates(String(i.due_date), todayBogota());
       if (diffDays > 0) {
         status = "overdue";
         daysOverdue = diffDays;

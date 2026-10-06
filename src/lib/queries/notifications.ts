@@ -90,7 +90,7 @@ export async function notifyOverdueInvoices(): Promise<number> {
              (i.amount - COALESCE(SUM(pay.amount), 0)) AS balance
       FROM invoices i
       LEFT JOIN payments pay ON pay.invoice_id = i.id
-      WHERE i.deleted_at IS NULL AND i.overdue_notified_at IS NULL AND i.due_date < CURRENT_DATE
+      WHERE i.deleted_at IS NULL AND i.overdue_notified_at IS NULL AND i.due_date < (now() AT TIME ZONE 'America/Bogota')::date
       GROUP BY i.id
     ),
     candidates AS (
@@ -201,7 +201,7 @@ export async function notifyLeadFollowUps(): Promise<number> {
       WHERE l.deleted_at IS NULL
         AND l.follow_up_notified_at IS NULL
         AND l.next_follow_up_at IS NOT NULL
-        AND l.next_follow_up_at <= CURRENT_DATE
+        AND l.next_follow_up_at <= (now() AT TIME ZONE 'America/Bogota')::date
         AND l.status NOT IN ('Ganado', 'Perdido')
     )
     UPDATE leads l

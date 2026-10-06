@@ -62,10 +62,10 @@ export async function getCashProjection(prefetchedRate?: number): Promise<CashPr
     )
     SELECT
       CASE
-        WHEN due_date < CURRENT_DATE THEN 'overdue'
-        WHEN date_trunc('month', due_date) = date_trunc('month', CURRENT_DATE) THEN 'current'
-        WHEN date_trunc('month', due_date) = date_trunc('month', CURRENT_DATE) + interval '1 month' THEN 'next1'
-        WHEN date_trunc('month', due_date) = date_trunc('month', CURRENT_DATE) + interval '2 month' THEN 'next2'
+        WHEN due_date < (now() AT TIME ZONE 'America/Bogota')::date THEN 'overdue'
+        WHEN date_trunc('month', due_date) = date_trunc('month', (now() AT TIME ZONE 'America/Bogota')::date) THEN 'current'
+        WHEN date_trunc('month', due_date) = date_trunc('month', (now() AT TIME ZONE 'America/Bogota')::date) + interval '1 month' THEN 'next1'
+        WHEN date_trunc('month', due_date) = date_trunc('month', (now() AT TIME ZONE 'America/Bogota')::date) + interval '2 month' THEN 'next2'
         ELSE 'later'
       END AS bucket,
       currency,
@@ -105,7 +105,7 @@ export async function getCashProjection(prefetchedRate?: number): Promise<CashPr
     FROM proposals p
     LEFT JOIN proposal_items pi ON pi.proposal_id = p.id
     WHERE p.accepted_at IS NULL AND p.rejected_at IS NULL
-      AND (p.valid_until IS NULL OR p.valid_until >= CURRENT_DATE)
+      AND (p.valid_until IS NULL OR p.valid_until >= (now() AT TIME ZONE 'America/Bogota')::date)
     GROUP BY p.id;
   `);
 

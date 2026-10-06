@@ -5,6 +5,10 @@ import { buildHomeMetadata } from "@/lib/localeMetadata";
 
 export const metadata: Metadata = buildHomeMetadata("fr", "/fr");
 
+// La home lee blog y portafolio de Postgres: sin esto quedaba estática
+// hasta el siguiente deploy.
+export const revalidate = 3600;
+
 export default function HomeFr() {
   return (
     <>

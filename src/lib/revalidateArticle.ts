@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
 import { rssFeedPath } from "@/lib/rss";
 import { pingIndexNow } from "@/lib/indexNow";
+import { localeHomePath } from "@/lib/i18n";
 import { siteUrl } from "@/lib/site";
 import type { PublishResult } from "@/lib/queries/articles";
 
@@ -20,6 +21,8 @@ import type { PublishResult } from "@/lib/queries/articles";
 export function revalidateArticlePaths(result: PublishResult, notifySearchEngines = false): void {
   revalidatePath(blogPostPath(result.locale, result.slug));
   revalidatePath(blogIndexPath(result.locale));
+  // El BlogTeaser de la home lista los últimos artículos.
+  revalidatePath(localeHomePath(result.locale));
   revalidatePath("/sitemap.xml");
   revalidatePath(rssFeedPath(result.locale));
 

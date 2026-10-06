@@ -30,14 +30,14 @@ export async function getWeeklyDigestStats(): Promise<WeeklyDigestStats> {
     query(
       `SELECT COUNT(*) AS count FROM proposals
        WHERE accepted_at IS NULL AND rejected_at IS NULL
-         AND (valid_until IS NULL OR valid_until >= CURRENT_DATE);`
+         AND (valid_until IS NULL OR valid_until >= (now() AT TIME ZONE 'America/Bogota')::date);`
     ),
     query(
       `WITH balances AS (
          SELECT i.id, (i.amount - COALESCE(SUM(p.amount), 0)) AS balance
          FROM invoices i
          LEFT JOIN payments p ON p.invoice_id = i.id
-         WHERE i.deleted_at IS NULL AND i.due_date < CURRENT_DATE
+         WHERE i.deleted_at IS NULL AND i.due_date < (now() AT TIME ZONE 'America/Bogota')::date
          GROUP BY i.id
        )
        SELECT COUNT(*) AS count FROM balances WHERE balance > 0;`

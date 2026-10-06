@@ -1,5 +1,11 @@
-import { Pool, type PoolClient } from "pg";
+import { Pool, types, type PoolClient } from "pg";
 import { logError } from "./logger";
+
+// DATE (OID 1082) como texto `YYYY-MM-DD`. Por defecto `pg` lo convierte a un
+// `Date` a medianoche LOCAL del servidor (UTC en Render): al serializarlo y
+// mostrarlo en Bogotá salía el día anterior (vencimientos, PDF de facturas).
+// Una fecha de calendario no tiene zona horaria: se queda como texto.
+types.setTypeParser(1082, (value: string) => value);
 
 let pool: Pool | null = null;
 // Sin `export default pool` a propósito: esa exportación capturaría el valor

@@ -1,3 +1,4 @@
+import { daysBetweenDates, todayBogota } from "../dateOnly";
 import { query } from "../db";
 import { consumeNextInvoiceNumber } from "./settings";
 import type { Invoice } from "@/components/dashboard/types";
@@ -61,7 +62,7 @@ async function queryInvoices(clientId?: number | string): Promise<Invoice[]> {
     if (balance <= 0) {
       status = "paid";
     } else {
-      const diffDays = Math.floor((Date.now() - new Date(row.due_date).getTime()) / (1000 * 60 * 60 * 24));
+      const diffDays = daysBetweenDates(String(row.due_date), todayBogota());
       if (diffDays > 0) {
         status = "overdue";
         daysOverdue = diffDays;
@@ -154,7 +155,7 @@ export async function getInvoiceForPdf(id: number): Promise<InvoicePdfData | nul
   if (balance <= 0) {
     status = "paid";
   } else {
-    const diffDays = Math.floor((Date.now() - new Date(row.due_date).getTime()) / (1000 * 60 * 60 * 24));
+    const diffDays = daysBetweenDates(String(row.due_date), todayBogota());
     if (diffDays > 0) {
       status = "overdue";
       daysOverdue = diffDays;

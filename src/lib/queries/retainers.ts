@@ -104,7 +104,7 @@ export async function updateRetainer(id: number, data: UpdateRetainerData, dbRun
     if (data.status !== "cancelled") guard = " AND status <> 'cancelled'";
     // Al reactivar, la próxima factura no puede quedar en el pasado: el cron
     // facturaría uno a uno todos los meses de pausa en días seguidos.
-    if (data.status === "active") fields.push("next_invoice_date = GREATEST(next_invoice_date, CURRENT_DATE)");
+    if (data.status === "active") fields.push("next_invoice_date = GREATEST(next_invoice_date, (now() AT TIME ZONE 'America/Bogota')::date)");
   }
   if (data.amount !== undefined) {
     fields.push(`amount = $${idx++}`);
@@ -145,7 +145,7 @@ export async function softDeleteRetainer(id: number, dbRunner: QueryRunner): Pro
  * ciclo respete el día del mes real — mismo día cada vez, sin ir
  * desplazándose. Si el cron se atrasa (no corrió un día puntual),
  * `next_invoice_date` queda en el pasado y la próxima corrida lo detecta
- * igual (`<= CURRENT_DATE`), generando esa factura atrasada — no se
+ * igual (`<= (now() AT TIME ZONE 'America/Bogota')::date`), generando esa factura atrasada — no se
  * pierde ningún ciclo, pero tampoco se generan dos facturas de golpe por
  * el mismo período: cada corrida solo mira si YA llegó la fecha, avanza
  * un mes, y listo.
@@ -154,7 +154,7 @@ export async function generateDueRetainerInvoices(): Promise<number> {
   const dueRes = await query(
     `SELECT id, project_id, description, amount, currency, next_invoice_date::text AS next_invoice_date, created_by
      FROM retainers
-     WHERE deleted_at IS NULL AND status = 'active' AND next_invoice_date <= CURRENT_DATE
+     WHERE deleted_at IS NULL AND status = 'active' AND next_invoice_date <= (now() AT TIME ZONE 'America/Bogota')::date
      ORDER BY id;`
   );
 

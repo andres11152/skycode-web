@@ -85,7 +85,7 @@ export async function getExpensesPage({ q, category, page, pageSize }: ExpensesP
     query(`SELECT COUNT(*) AS total FROM expenses e LEFT JOIN projects p ON p.id = e.project_id ${where};`, countParams),
     query(
       `SELECT amount, currency FROM expenses
-       WHERE deleted_at IS NULL AND date_trunc('month', expense_date) = date_trunc('month', CURRENT_DATE);`
+       WHERE deleted_at IS NULL AND date_trunc('month', expense_date) = date_trunc('month', (now() AT TIME ZONE 'America/Bogota')::date);`
     ),
   ]);
 
