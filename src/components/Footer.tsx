@@ -122,12 +122,16 @@ export function Footer() {
     { label: footerData.getInTouchHeading, href: `${prefix}/#contacto`, esOnly: false },
   ];
 
+  // Todos los enlaces del pie van con `prefetch={false}`: el pie está en cada
+  // página y ~25 enlaces al entrar en pantalla disparaban decenas de peticiones
+  // RSC (cada una con la página completa). Al pasar el cursor sí se precarga.
   return (
     <footer ref={footerRef} className="border-t border-foreground/10">
       <div className="grid lg:grid-cols-[1fr_380px]">
         <div className="px-6 py-16 sm:px-10">
           <div className="mx-auto grid max-w-5xl gap-12 sm:grid-cols-[auto_1fr_1fr_1fr] sm:gap-8">
             <Link
+              prefetch={false}
               href={homePath}
               aria-label={footerData.logoAria}
               className="flex h-14 items-start outline-none transition-transform duration-300 ease-out hover:scale-105 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
@@ -146,7 +150,7 @@ export function Footer() {
               <ul className="mt-4 flex flex-col gap-3">
                 {exploreLinks.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className={cn(linkClasses, "inline-flex items-center gap-1.5")}>
+                    <Link prefetch={false} href={link.href} className={cn(linkClasses, "inline-flex items-center gap-1.5")}>
                       {link.label}
                       {link.esOnly && <EsBadge />}
                     </Link>
@@ -161,6 +165,7 @@ export function Footer() {
                 {services.map((service) => (
                   <li key={service.slug}>
                     <Link
+                      prefetch={false}
                       href={`${prefix}/servicios/${service.slug}`}
                       className={linkClasses}
                     >
@@ -175,13 +180,14 @@ export function Footer() {
               <ColumnHeading>{footerData.resourcesHeading}</ColumnHeading>
               <ul className="mt-4 flex flex-col gap-3">
                 <li>
-                  <Link href={blogIndexPath(locale)} className={linkClasses}>
+                  <Link prefetch={false} href={blogIndexPath(locale)} className={linkClasses}>
                     {footerData.allArticles}
                   </Link>
                 </li>
                 {recentPosts.map((post) => (
                   <li key={post.slug}>
                     <Link
+                      prefetch={false}
                       href={blogPostPath(locale, post.slug)}
                       className={cn(linkClasses, "line-clamp-1")}
                       title={post.title}
@@ -201,7 +207,7 @@ export function Footer() {
             <ul className="flex flex-wrap items-center gap-x-4 gap-y-2">
               {legalLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className={cn(linkClasses, "inline-flex items-center gap-1.5")}>
+                  <Link prefetch={false} href={link.href} className={cn(linkClasses, "inline-flex items-center gap-1.5")}>
                     {link.label}
                     {esOnly && <EsBadge />}
                   </Link>
@@ -219,6 +225,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
+                  prefetch={false}
                   href="/login"
                   className={cn(linkClasses, "text-foreground/60 hover:text-accent transition-colors")}
                 >
