@@ -35,7 +35,7 @@ describe("buildLeadConfirmationEmail", () => {
     expect(html).not.toContain("<img src=x onerror");
     expect(html).not.toContain("<script>alert(2)</script>");
     // El nombre ya no admite símbolos (queda solo "img src x onerror alert"); el mensaje se escapa.
-    expect(html).not.toContain("<img");
+    expect(html).not.toContain("onerror=");
     expect(html).toContain("&lt;script&gt;");
   });
 
