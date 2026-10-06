@@ -21,7 +21,8 @@ import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import { formatMoney } from "@/lib/utils";
 import type { Currency } from "@/lib/currency";
-import type { Campaign, CampaignChannel, CampaignStatus } from "./types";
+import type { Campaign, CampaignChannel } from "./types";
+import { CAMPAIGN_STATUS } from "./statusMeta";
 
 const CHANNEL_LABELS: Record<CampaignChannel, string> = {
   google_ads: "Google Ads",
@@ -30,12 +31,6 @@ const CHANNEL_LABELS: Record<CampaignChannel, string> = {
   organico: "Orgánico",
   referido: "Referido",
   otro: "Otro",
-};
-
-const STATUS_LABELS: Record<CampaignStatus, string> = {
-  active: "Activa",
-  paused: "Pausada",
-  ended: "Finalizada",
 };
 
 export function CampaignsBoard({ initialCampaigns, canWrite }: { initialCampaigns: Campaign[]; canWrite: boolean }) {
@@ -94,20 +89,20 @@ export function CampaignsBoard({ initialCampaigns, canWrite }: { initialCampaign
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h3 className="text-sm font-bold text-foreground">{c.name}</h3>
-                    <span className="text-[10px] font-mono uppercase tracking-wide text-foreground/50">
+                    <span className="text-[11px] font-mono uppercase tracking-wide text-foreground/70">
                       {CHANNEL_LABELS[c.channel]}
                     </span>
                   </div>
                   <Badge
-                    tone={c.status === "active" ? "success" : c.status === "paused" ? "warning" : "neutral"}
+                    tone={CAMPAIGN_STATUS[c.status].tone}
                     className="shrink-0"
                   >
-                    {STATUS_LABELS[c.status]}
+                    {CAMPAIGN_STATUS[c.status].label}
                   </Badge>
                 </div>
 
                 {(c.overBudget || c.cplSpike) && (
-                  <div className="flex items-center gap-1.5 rounded-lg border border-red-500/30 bg-red-500/10 px-2.5 py-1.5 text-[11px] font-semibold text-red-700">
+                  <div className="flex items-center gap-1.5 rounded-lg border border-danger/30 bg-danger/10 px-2.5 py-1.5 text-[11px] font-semibold text-danger">
                     <AlertTriangle size={12} className="shrink-0" />
                     <span>{c.overBudget ? "Superó el presupuesto" : "CPL muy por encima del promedio"}</span>
                   </div>
@@ -115,13 +110,13 @@ export function CampaignsBoard({ initialCampaigns, canWrite }: { initialCampaign
 
                 {c.budget !== null && (
                   <div className="space-y-1">
-                    <div className="flex items-center justify-between text-[11px] font-mono text-foreground/60">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-foreground/70">
                       <span>{formatMoney(c.totalSpend, c.currency)}</span>
                       <span>{formatMoney(c.budget, c.currency)}</span>
                     </div>
                     <div className="h-1.5 w-full bg-foreground/10 rounded-full overflow-hidden">
                       <div
-                        className={`h-full transition-all ${c.overBudget ? "bg-red-400" : "bg-accent"}`}
+                        className={`h-full transition-all ${c.overBudget ? "bg-danger" : "bg-accent"}`}
                         style={{ width: `${spendPct}%` }}
                       />
                     </div>
@@ -132,24 +127,24 @@ export function CampaignsBoard({ initialCampaigns, canWrite }: { initialCampaign
                   <div className="rounded-lg border border-foreground/10 bg-foreground/5 p-2">
                     <Users size={12} className="mx-auto text-accent mb-1" />
                     <div className="text-sm font-bold font-mono text-foreground">{c.leadCount}</div>
-                    <div className="text-[9px] text-foreground/50">Leads</div>
+                    <div className="text-[11px] text-foreground/70">Leads</div>
                   </div>
                   <div className="rounded-lg border border-foreground/10 bg-foreground/5 p-2">
-                    <CheckCircle2 size={12} className="mx-auto text-green-700 mb-1" />
-                    <div className="text-sm font-bold font-mono text-green-700">{c.wonCount}</div>
-                    <div className="text-[9px] text-foreground/50">Ganados</div>
+                    <CheckCircle2 size={12} className="mx-auto text-success mb-1" />
+                    <div className="text-sm font-bold font-mono text-success">{c.wonCount}</div>
+                    <div className="text-[11px] text-foreground/70">Ganados</div>
                   </div>
                   <div className="rounded-lg border border-foreground/10 bg-foreground/5 p-2">
-                    <DollarSign size={12} className="mx-auto text-sky-700 mb-1" />
-                    <div className="text-sm font-bold font-mono text-sky-700">
+                    <DollarSign size={12} className="mx-auto text-info mb-1" />
+                    <div className="text-sm font-bold font-mono text-info">
                       {c.cpl !== null ? formatMoney(c.cpl, c.currency) : "—"}
                     </div>
-                    <div className="text-[9px] text-foreground/50">CPL</div>
+                    <div className="text-[11px] text-foreground/70">CPL</div>
                   </div>
                 </div>
 
                 {c.conversionRate !== null && (
-                  <div className="flex items-center gap-1.5 text-[11px] text-foreground/60">
+                  <div className="flex items-center gap-1.5 text-[11px] text-foreground/70">
                     <TrendingUp size={12} className="text-accent" />
                     <span>{(c.conversionRate * 100).toFixed(0)}% de conversión a ganado</span>
                   </div>
@@ -229,7 +224,7 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ej. Lanzamiento Q3 2026"
-            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
           />
         </div>
         <div className="space-y-1.5">
@@ -246,17 +241,17 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
         </div>
         <div className="space-y-1.5">
           <label className="block text-xs font-semibold text-foreground/80">
-            UTM de campaña <span className="text-foreground/50 font-normal">(opcional, para atribución automática)</span>
+            UTM de campaña <span className="text-foreground/70 font-normal">(opcional, para atribución automática)</span>
           </label>
           <input
             type="text"
             value={utmCampaign}
             onChange={(e) => setUtmCampaign(e.target.value)}
             placeholder="lanzamiento-2026"
-            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent font-mono"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent font-mono"
           />
-          <p className="text-[10px] text-foreground/50">
-            Un lead cuyo enlace traiga <code className="text-accent">utm_campaign={utmCampaign || "..."}</code> se
+          <p className="text-[11px] text-foreground/70">
+            Un lead cuyo enlace traiga <code className="text-accent-strong">utm_campaign={utmCampaign || "..."}</code> se
             enlaza acá solo, sin tener que asignarlo a mano.
           </p>
         </div>
@@ -269,7 +264,7 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
               placeholder="1000000"
-              className="flex-1 min-w-0 rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent font-mono"
+              className="flex-1 min-w-0 rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent font-mono"
             />
             <CurrencySelect value={currency} onChange={setCurrency} />
           </div>
@@ -329,7 +324,7 @@ function SpendModal({ campaign, onClose }: { campaign: Campaign; onClose: () => 
             max={new Date().toISOString().slice(0, 10)}
             className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent font-mono"
           />
-          <p className="text-[10px] text-foreground/50">
+          <p className="text-[11px] text-foreground/70">
             Si ya hay un monto cargado para esta fecha, se reemplaza — no se duplica.
           </p>
         </div>
@@ -344,11 +339,11 @@ function SpendModal({ campaign, onClose }: { campaign: Campaign; onClose: () => 
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="150000"
-              className="flex-1 min-w-0 rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent font-mono"
+              className="flex-1 min-w-0 rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent font-mono"
             />
             <CurrencySelect value={currency} onChange={setCurrency} />
           </div>
-          <p className="text-[10px] text-foreground/50">
+          <p className="text-[11px] text-foreground/70">
             Útil si la plataforma de anuncios factura en una moneda distinta a la campaña.
           </p>
         </div>

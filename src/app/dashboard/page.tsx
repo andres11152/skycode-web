@@ -1,6 +1,4 @@
-import { redirect } from "next/navigation";
 import { requireSessionOrRedirect } from "@/lib/withAuth";
-import { hasPermission } from "@/lib/rbac";
 import { getLeadStats } from "@/lib/queries/leads";
 import { getAllActiveProjects } from "@/lib/queries/projects";
 import { getCampaignsWithMetrics } from "@/lib/queries/campaigns";
@@ -13,6 +11,8 @@ import { getClientsPage } from "@/lib/queries/clients";
 import { getTeamMembers } from "@/lib/queries/team";
 import { getUsdToCopRate } from "@/lib/exchangeRate";
 import { convertCurrency } from "@/lib/currency";
+import { TodayShell } from "@/components/dashboard/TodayShell";
+import { getAttentionGroups } from "@/lib/queries/attention";
 import { ExecutiveSummary } from "@/components/dashboard/ExecutiveSummary";
 import type { SupportTicket } from "@/components/dashboard/types";
 
@@ -24,9 +24,12 @@ function countOverdueTickets(openTickets: SupportTicket[]): number {
 export default async function DashboardIndexPage() {
   const session = await requireSessionOrRedirect();
 
-  // Solo el admin tiene permiso para todos los módulos a la vez, así que
-  // solo el admin ve el resumen ejecutivo — el resto va directo a la
-  // primera sección a la que sí tiene acceso.
+  // "Requiere tu atención" lo ven todos los roles (cada categoría respeta el
+  // permiso del rol). Solo el admin tiene permiso para todos los módulos a la
+  // vez, así que solo él ve además el resumen ejecutivo; el resto ve accesos
+  // a sus módulos (ver TodayShell).
+  const groups = await getAttentionGroups(session.id, session.role);
+
   if (session.role === "admin") {
     const usdToCopRate = await getUsdToCopRate();
     const [leadStats, projects, campaigns, proposals, invoices, profitability, tickets, expensesPage, clientsPage, team] =
@@ -61,6 +64,7 @@ export default async function DashboardIndexPage() {
     const overdueTicketsCount = countOverdueTickets(openTickets);
 
     return (
+      <TodayShell name={session.name} role={session.role} groups={groups}>
       <ExecutiveSummary
         leadStats={{ total: leadStats.total, newCount: leadStats.newCount }}
         activeProjectsCount={projects.length}
@@ -77,22 +81,9 @@ export default async function DashboardIndexPage() {
         activeTeamCount={team.filter((m) => m.status === "active").length}
         usdToCopRate={usdToCopRate}
       />
+      </TodayShell>
     );
   }
 
-  if (hasPermission(session.role, "leads:read")) redirect("/dashboard/leads");
-  if (hasPermission(session.role, "projects:read")) redirect("/dashboard/proyectos");
-  if (hasPermission(session.role, "campaigns:read")) redirect("/dashboard/campanas");
-  if (hasPermission(session.role, "proposals:read")) redirect("/dashboard/propuestas");
-  if (hasPermission(session.role, "invoices:read")) redirect("/dashboard/facturacion");
-  if (hasPermission(session.role, "team:read")) redirect("/dashboard/equipo");
-
-  return (
-    <div className="py-20 text-center space-y-2">
-      <h1 className="text-lg font-bold text-foreground">Sin módulos disponibles todavía</h1>
-      <p className="text-xs text-foreground/60">
-        Tu rol ({session.role}) no tiene acceso a ninguna sección del panel por ahora.
-      </p>
-    </div>
-  );
+  return <TodayShell name={session.name} role={session.role} groups={groups} />;
 }

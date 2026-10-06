@@ -69,7 +69,7 @@ export function ChangePasswordCard() {
     <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-foreground/5 text-foreground/60">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-foreground/5 text-foreground/70">
             <KeyRound size={18} />
           </div>
           <div>
@@ -84,7 +84,7 @@ export function ChangePasswordCard() {
           onClick={() => setShowPasswords((v) => !v)}
           aria-pressed={showPasswords}
           aria-label={showPasswords ? "Ocultar contraseñas" : "Mostrar contraseñas"}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-foreground/60 transition-colors hover:bg-foreground/5 hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-foreground/70 transition-colors hover:bg-foreground/5 hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           {showPasswords ? <EyeOff size={16} /> : <Eye size={16} />}
         </button>
@@ -128,8 +128,7 @@ export function ChangePasswordCard() {
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             autoComplete="new-password"
-            aria-invalid={mismatch || undefined}
-            hint={mismatch ? "No coincide con la contraseña nueva." : undefined}
+            error={mismatch ? "No coincide con la contraseña nueva." : undefined}
             required
           />
         </div>

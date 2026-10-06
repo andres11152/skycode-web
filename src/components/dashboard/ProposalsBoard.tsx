@@ -7,29 +7,15 @@ import { FileText, Plus, RefreshCw, Copy, Check, Trash2, LayoutTemplate } from "
 import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
 import { CurrencySelect } from "./CurrencySelect";
-import { Badge, type BadgeTone } from "./ui/Badge";
+import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import { logError } from "@/lib/logger";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, formatCalendarDate } from "@/lib/utils";
 import type { Currency } from "@/lib/currency";
-import type { Proposal, ProposalStatus, ProposalTemplate } from "./types";
-
-const STATUS_LABELS: Record<ProposalStatus, string> = {
-  sent: "Enviada",
-  viewed: "Vista",
-  accepted: "Aceptada",
-  rejected: "Rechazada",
-  expired: "Expirada",
-};
-
-const STATUS_TONES: Record<ProposalStatus, BadgeTone> = {
-  sent: "info",
-  viewed: "warning",
-  accepted: "success",
-  rejected: "danger",
-  expired: "neutral",
-};
+import type { Proposal,  ProposalTemplate } from "./types";
+import { PROPOSAL_STATUS } from "./statusMeta";
+import { useFeedback } from "./ui/Feedback";
 
 interface DraftItem {
   description: string;
@@ -105,7 +91,7 @@ export function ProposalsBoard({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th className="px-5 py-3.5">Propuesta / Cliente</th>
                   <th className="px-5 py-3.5">Total</th>
@@ -119,26 +105,26 @@ export function ProposalsBoard({
                   <tr key={p.id}>
                     <td className="px-5 py-4">
                       <div className="font-bold text-foreground">{p.title}</div>
-                      <div className="text-[11px] text-foreground/60 font-mono">{p.client_name} · {p.client_email}</div>
+                      <div className="text-[11px] text-foreground/70 font-mono">{p.client_name} · {p.client_email}</div>
                     </td>
-                    <td className="px-5 py-4 font-mono font-bold text-green-700">
+                    <td className="px-5 py-4 font-mono font-bold text-success">
                       {formatMoney(p.total, p.currency)}
                     </td>
                     <td className="px-5 py-4">
-                      <Badge tone={STATUS_TONES[p.status]}>{STATUS_LABELS[p.status]}</Badge>
+                      <Badge tone={PROPOSAL_STATUS[p.status].tone}>{PROPOSAL_STATUS[p.status].label}</Badge>
                       {p.status === "accepted" && p.signer_name && (
-                        <div className="mt-1 text-[10px] text-foreground/50">Firmado por {p.signer_name}</div>
+                        <div className="mt-1 text-[11px] text-foreground/70">Firmado por {p.signer_name}</div>
                       )}
                     </td>
-                    <td className="px-5 py-4 font-mono text-[10px] text-foreground/60">
-                      {p.valid_until ? new Date(p.valid_until).toLocaleDateString("es-CO") : "Sin vencimiento"}
+                    <td className="px-5 py-4 font-mono text-[11px] text-foreground/70">
+                      {p.valid_until ? formatCalendarDate(p.valid_until) : "Sin vencimiento"}
                     </td>
                     <td className="px-5 py-4 text-right">
                       <button
                         onClick={() => handleCopy(p.id)}
-                        className="inline-flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        className="inline-flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent-strong hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
-                        {copiedId === p.id ? <Check size={12} className="text-green-700" /> : <Copy size={12} />}
+                        {copiedId === p.id ? <Check size={12} className="text-success" /> : <Copy size={12} />}
                         <span>{copiedId === p.id ? "Copiado" : "Copiar enlace"}</span>
                       </button>
                     </td>
@@ -181,7 +167,16 @@ function ManageTemplatesModal({ onClose }: { onClose: () => void }) {
       });
   }, []);
 
+  const feedback = useFeedback();
   const handleDelete = async (id: number) => {
+    const name = templates?.find((t) => t.id === id)?.name ?? "esta plantilla";
+    const ok = await feedback.confirm({
+      title: `¿Eliminar la plantilla «${name}»?`,
+      description: "Las propuestas ya creadas con ella no cambian.",
+      confirmLabel: "Eliminar",
+      tone: "danger",
+    });
+    if (!ok) return;
     setDeletingId(id);
     setError(null);
     try {
@@ -204,9 +199,9 @@ function ManageTemplatesModal({ onClose }: { onClose: () => void }) {
       <div className="space-y-3">
         {error && <Alert tone="error">{error}</Alert>}
         {templates === null ? (
-          <p className="py-6 text-center text-xs text-foreground/50">Cargando…</p>
+          <p className="py-6 text-center text-xs text-foreground/70">Cargando…</p>
         ) : templates.length === 0 ? (
-          <p className="py-6 text-center text-xs text-foreground/50">
+          <p className="py-6 text-center text-xs text-foreground/70">
             Sin plantillas todavía — guarda una desde el formulario de &quot;Nueva propuesta&quot;.
           </p>
         ) : (
@@ -218,7 +213,7 @@ function ManageTemplatesModal({ onClose }: { onClose: () => void }) {
                 <li key={t.id} className="flex items-center justify-between gap-3 py-3">
                   <div className="min-w-0">
                     <p className="truncate text-xs font-bold text-foreground">{t.name}</p>
-                    <p className="text-[11px] text-foreground/60">
+                    <p className="text-[11px] text-foreground/70">
                       {t.items.length} {t.items.length === 1 ? "partida" : "partidas"} · {formatMoney(total, t.currency)}
                     </p>
                   </div>
@@ -226,7 +221,7 @@ function ManageTemplatesModal({ onClose }: { onClose: () => void }) {
                     onClick={() => handleDelete(t.id)}
                     disabled={deletingId === t.id}
                     aria-label={`Eliminar plantilla ${t.name}`}
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-red-700 hover:bg-red-500/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-danger hover:bg-danger/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -389,9 +384,9 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
             <span className="flex-1 truncate text-xs font-mono text-foreground/90">{proposalUrl}</span>
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent-strong hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              {copied ? <Check size={12} className="text-green-700" /> : <Copy size={12} />}
+              {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
               <span>{copied ? "Copiado" : "Copiar"}</span>
             </button>
           </div>
@@ -436,7 +431,7 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ej. Plataforma de gestión de inventario"
-                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
               />
             </div>
             <div className="space-y-1.5">
@@ -476,7 +471,7 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
                   value={item.description}
                   onChange={(e) => updateItem(i, { description: e.target.value })}
                   placeholder="Descripción"
-                  className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+                  className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
                 />
                 <input
                   type="number"
@@ -493,14 +488,14 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
                   value={item.unit_price}
                   onChange={(e) => updateItem(i, { unit_price: e.target.value })}
                   placeholder="Precio"
-                  className="w-28 rounded-lg border border-foreground/15 bg-foreground/10 py-2 px-2 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent font-mono"
+                  className="w-28 rounded-lg border border-foreground/15 bg-foreground/10 py-2 px-2 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent font-mono"
                 />
                 {items.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeItem(i)}
                     aria-label="Quitar partida"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg text-red-700 hover:bg-red-500/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background shrink-0"
+                    className="flex h-11 w-11 items-center justify-center rounded-lg text-danger hover:bg-danger/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background shrink-0"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -511,7 +506,7 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
               <button
                 type="button"
                 onClick={addItem}
-                className="text-[11px] font-semibold text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+                className="text-[11px] font-semibold text-accent-strong hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
               >
                 + Agregar partida
               </button>
@@ -520,7 +515,7 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
                   type="button"
                   onClick={() => setSavingTemplate(true)}
                   disabled={!items.some((it) => it.description.trim())}
-                  className="flex items-center gap-1 text-[11px] font-semibold text-foreground/60 hover:text-foreground hover:underline disabled:opacity-40 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+                  className="flex items-center gap-1 text-[11px] font-semibold text-foreground/70 hover:text-foreground hover:underline disabled:opacity-40 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
                 >
                   <LayoutTemplate size={12} />
                   Guardar como plantilla
@@ -536,7 +531,7 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
                   value={templateName}
                   onChange={(e) => setTemplateName(e.target.value)}
                   placeholder="Nombre de la plantilla (ej. Sitio institucional)"
-                  className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-background py-2 px-3 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+                  className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-background py-2 px-3 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
                 />
                 <button
                   type="button"
@@ -554,14 +549,14 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
                     setTemplateSaveError(null);
                   }}
                   aria-label="Cancelar"
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-foreground/50 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   ×
                 </button>
               </div>
             )}
-            {templateSaveError && <p className="text-[11px] text-red-700">{templateSaveError}</p>}
-            {templateSaved && <p className="text-[11px] text-green-700">Plantilla guardada.</p>}
+            {templateSaveError && <p className="text-[11px] text-danger">{templateSaveError}</p>}
+            {templateSaved && <p className="text-[11px] text-success">Plantilla guardada.</p>}
           </div>
 
           <div className="grid sm:grid-cols-2 gap-3">
@@ -588,8 +583,8 @@ function CreateProposalModal({ onClose, defaultTaxRatePct }: { onClose: () => vo
           </div>
 
           <div className="flex items-center justify-between rounded-xl border border-foreground/15 bg-foreground/10 p-3 text-xs font-mono">
-            <span className="text-foreground/60">Total estimado</span>
-            <span className="font-bold text-green-700">{formatMoney(total, currency)}</span>
+            <span className="text-foreground/70">Total estimado</span>
+            <span className="font-bold text-success">{formatMoney(total, currency)}</span>
           </div>
 
           <Button type="submit" variant="accent" disabled={isSubmitting} className="w-full py-3">

@@ -11,6 +11,7 @@ import { UserAvatar } from "./UserAvatar";
 import { roleLabel } from "./roleLabels";
 import { PROFILE_LIMITS } from "@/lib/profileValidation";
 import type { AvatarVariants, UserProfile } from "./types";
+import { formatShortDate } from "@/lib/utils";
 
 const LOCALE_OPTIONS = [
   { value: "es", label: "Español" },
@@ -196,7 +197,7 @@ export function ProfileCard({
       className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5"
     >
       <div className="flex items-start gap-3 border-b border-foreground/10 p-5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-foreground/5 text-foreground/60">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-foreground/5 text-foreground/70">
           <UserRound size={18} />
         </div>
         <div>
@@ -217,7 +218,7 @@ export function ProfileCard({
             <div className="flex flex-wrap items-center gap-2 pt-0.5">
               <Badge tone="info">{roleLabel(profile.role)}</Badge>
               <span suppressHydrationWarning className="text-[11px] text-foreground/70">
-                Miembro desde {new Date(profile.createdAt).toLocaleDateString("es-CO", { year: "numeric", month: "long" })}
+                Miembro desde {formatShortDate(profile.createdAt, "monthYear")}
               </span>
             </div>
           </div>

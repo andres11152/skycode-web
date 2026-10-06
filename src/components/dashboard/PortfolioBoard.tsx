@@ -7,24 +7,13 @@ import { useRouter } from "next/navigation";
 import { Briefcase, Plus, Star, ArrowUp, ArrowDown, Trash2, Wrench } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
-import { Badge, type BadgeTone } from "./ui/Badge";
+import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import { PORTFOLIO_ICON_NAMES } from "@/content/portfolioShared";
 import type { AdminPortfolioListItem } from "@/lib/queries/portfolio";
-import type { PortfolioStatus } from "@/content/portfolioShared";
-
-const STATUS_LABELS: Record<PortfolioStatus, string> = {
-  draft: "Borrador",
-  published: "Publicado",
-  archived: "Archivado",
-};
-
-const STATUS_TONES: Record<PortfolioStatus, BadgeTone> = {
-  draft: "neutral",
-  published: "success",
-  archived: "warning",
-};
+import { PORTFOLIO_STATUS } from "./statusMeta";
+import { useFeedback } from "./ui/Feedback";
 
 export function PortfolioBoard({
   initialProjects,
@@ -89,14 +78,20 @@ export function PortfolioBoard({
     }
   };
 
+  const feedback = useFeedback();
   const handleDelete = async (project: AdminPortfolioListItem) => {
-    if (!window.confirm(`¿Eliminar "${project.titleEs}"? Se puede restaurar desde la base de datos, pero desaparece de todos los listados.`)) return;
+    if (!(await feedback.confirm({ title: `¿Eliminar "${project.titleEs}"? Se puede restaurar desde la base de datos, pero desaparece de todos los listados.`, tone: "danger" }))) return;
     setBusyId(project.id);
     try {
       const res = await fetch(`/api/portfolio/projects/${project.id}`, { method: "DELETE" });
       if (res.ok) {
         setProjects((prev) => prev.filter((p) => p.id !== project.id));
+        feedback.toast({ message: "Caso eliminado." });
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo eliminar el caso." });
       }
+    } catch {
+      feedback.toast({ tone: "error", message: "No se pudo eliminar el caso. Revisa tu conexión." });
     } finally {
       setBusyId(null);
     }
@@ -140,7 +135,7 @@ export function PortfolioBoard({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th className="px-5 py-3.5">Caso</th>
                   <th className="px-5 py-3.5">Estado</th>
@@ -176,12 +171,12 @@ export function PortfolioBoard({
                           </div>
                           <div className="min-w-0">
                             <div className="font-bold text-foreground truncate">{project.titleEs}</div>
-                            <div className="text-[10px] text-foreground/50 font-mono truncate">/{project.slug}</div>
+                            <div className="text-[11px] text-foreground/70 font-mono truncate">/{project.slug}</div>
                           </div>
                         </Link>
                       </td>
                       <td className="px-5 py-3">
-                        <Badge tone={STATUS_TONES[project.status]}>{STATUS_LABELS[project.status]}</Badge>
+                        <Badge tone={PORTFOLIO_STATUS[project.status].tone}>{PORTFOLIO_STATUS[project.status].label}</Badge>
                       </td>
                       <td className="px-5 py-3 text-center">
                         <button
@@ -189,9 +184,9 @@ export function PortfolioBoard({
                           disabled={!canWrite || isBusy}
                           aria-label={project.isFeatured ? "Quitar destacado" : "Marcar como destacado"}
                           aria-pressed={project.isFeatured}
-                          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground/40 hover:bg-foreground/10 hover:text-foreground transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 hover:text-foreground transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
-                          <Star size={16} className={project.isFeatured ? "fill-amber-400 text-amber-400" : ""} />
+                          <Star size={16} className={project.isFeatured ? "fill-warning text-warning" : ""} />
                         </button>
                       </td>
                       <td className="px-5 py-3">
@@ -200,7 +195,7 @@ export function PortfolioBoard({
                             onClick={() => handleMove(index, -1)}
                             disabled={!canWrite || isBusy || index === 0}
                             aria-label="Subir"
-                            className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/50 hover:bg-foreground/10 transition-colors disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 transition-colors disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <ArrowUp size={14} />
                           </button>
@@ -208,7 +203,7 @@ export function PortfolioBoard({
                             onClick={() => handleMove(index, 1)}
                             disabled={!canWrite || isBusy || index === projects.length - 1}
                             aria-label="Bajar"
-                            className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/50 hover:bg-foreground/10 transition-colors disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 transition-colors disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <ArrowDown size={14} />
                           </button>
@@ -220,7 +215,7 @@ export function PortfolioBoard({
                             onClick={() => handleDelete(project)}
                             disabled={isBusy}
                             aria-label={`Eliminar ${project.titleEs}`}
-                            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground/50 hover:bg-red-500/10 hover:text-red-700 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-danger/10 hover:text-danger transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <Trash2 size={14} />
                           </button>

@@ -7,6 +7,8 @@ import type { Settings } from "@/lib/queries/settings";
 import { Field, FieldGroup } from "./ui/Field";
 import { Alert } from "./ui/Alert";
 import { Button } from "./ui/Button";
+import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
+import { UnsavedNotice } from "./ui/UnsavedNotice";
 
 export function SettingsForm({ initialSettings }: { initialSettings: Settings }) {
   const router = useRouter();
@@ -20,6 +22,7 @@ export function SettingsForm({ initialSettings }: { initialSettings: Settings })
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const { dirty, markSaved } = useUnsavedChanges({ defaultTaxRatePct, invoiceNumberPrefix, slaHoursUrgente, slaHoursAlta, slaHoursMedia, slaHoursBaja, manualRate });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +48,7 @@ export function SettingsForm({ initialSettings }: { initialSettings: Settings })
         setError(data.error || "No se pudo guardar la configuración.");
         return;
       }
+      markSaved();
       setSuccess(true);
       router.refresh();
     } catch {
@@ -90,7 +94,7 @@ export function SettingsForm({ initialSettings }: { initialSettings: Settings })
               placeholder="FAC-"
             />
           </div>
-          <p className="text-[10px] text-foreground/50">
+          <p className="text-[11px] text-foreground/70">
             La siguiente factura se numerará <span className="font-mono text-foreground/70">{invoiceNumberPrefix}{String(initialSettings.invoiceNextNumber).padStart(4, "0")}</span>. El número consecutivo no es editable acá — avanza solo con cada factura emitida.
           </p>
         </FieldGroup>
@@ -123,6 +127,7 @@ export function SettingsForm({ initialSettings }: { initialSettings: Settings })
           <Save size={14} />
           <span>{isSaving ? "Guardando..." : "Guardar cambios"}</span>
         </Button>
+        <span className="ml-3 align-middle"><UnsavedNotice dirty={dirty} /></span>
       </form>
     </div>
   );

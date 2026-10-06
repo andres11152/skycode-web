@@ -2,9 +2,8 @@
 
 import { useId, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, ArrowLeft, Camera, ExternalLink, Trash2 } from "lucide-react";
+import { AlertTriangle,  Camera, ExternalLink, Trash2 } from "lucide-react";
 import { Alert } from "./ui/Alert";
 import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
@@ -13,6 +12,8 @@ import { initials } from "./UserAvatar";
 import { TEAM_PROFILE_LIMITS } from "@/lib/profileValidation";
 import type { AdminTeamProfile, AdminTeamProfileTranslation } from "@/lib/queries/teamProfiles";
 import type { Locale } from "@/lib/i18n";
+import { useFeedback } from "./ui/Feedback";
+import { PageBack } from "./ui/PageHeader";
 
 const LOCALES: { code: Locale; label: string }[] = [
   { code: "es", label: "Español" },
@@ -112,15 +113,14 @@ export function TeamProfileEditor({
     }
   };
 
+  const feedback = useFeedback();
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
       slugChanged &&
       profile.isPublished &&
       authoredArticles > 0 &&
-      !window.confirm(
-        `${authoredArticles} artículo${authoredArticles === 1 ? "" : "s"} del blog enlaza${authoredArticles === 1 ? "" : "n"} a /equipo#${profile.slug} como autor. Cambiar el identificador rompe esos enlaces. ¿Continuar?`
-      )
+      !(await feedback.confirm({ title: `${authoredArticles} artículo${authoredArticles === 1 ? "" : "s"} del blog enlaza${authoredArticles === 1 ? "" : "n"} a /equipo#${profile.slug} como autor. Cambiar el identificador rompe esos enlaces. ¿Continuar?`, tone: "danger" }))
     ) {
       return;
     }
@@ -179,7 +179,7 @@ export function TeamProfileEditor({
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(`¿Eliminar el perfil de ${displayName}? Desaparece de /equipo de inmediato.`)) return;
+    if (!(await feedback.confirm({ title: `¿Eliminar el perfil de ${displayName}? Desaparece de /equipo de inmediato.`, tone: "danger" }))) return;
     setBusy("delete");
     try {
       const res = await fetch(`/api/team-profiles/${profile.id}`, { method: "DELETE" });
@@ -239,13 +239,7 @@ export function TeamProfileEditor({
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <Link
-        href="/dashboard/perfiles-publicos"
-        className="inline-flex min-h-11 items-center gap-1.5 rounded-lg text-xs font-medium text-foreground/70 transition-colors hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-      >
-        <ArrowLeft size={14} />
-        Volver a perfiles públicos
-      </Link>
+      <PageBack href="/dashboard/perfiles-publicos" label="Volver a perfiles públicos" />
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
@@ -269,7 +263,7 @@ export function TeamProfileEditor({
           )}
           {canWrite && (
             <>
-              <Button type="button" variant="ghost" onClick={handleDelete} disabled={busy !== null} className="text-red-700 hover:bg-red-500/10 hover:text-red-700">
+              <Button type="button" variant="ghost" onClick={handleDelete} disabled={busy !== null} className="text-danger hover:bg-danger/10 hover:text-danger">
                 <Trash2 size={14} />
                 Eliminar
               </Button>
@@ -355,7 +349,7 @@ export function TeamProfileEditor({
                       {l.code.toUpperCase()}
                       {missing && (
                         <>
-                          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-warning" />
                           <span className="sr-only">(sin traducir)</span>
                         </>
                       )}
@@ -427,7 +421,7 @@ export function TeamProfileEditor({
                 hint={`/equipo#${settings.slug || "…"}`}
               />
               {slugChanged && authoredArticles > 0 && (
-                <div className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+                <div className="flex items-start gap-2 rounded-xl border border-warning/25 bg-warning/10 p-3 text-xs text-warning">
                   <AlertTriangle size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
                   <span>
                     {authoredArticles} artículo{authoredArticles === 1 ? "" : "s"} del blog enlaza{authoredArticles === 1 ? "" : "n"} a{" "}

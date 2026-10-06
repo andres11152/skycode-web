@@ -133,21 +133,21 @@ export function PushNotificationSetup() {
         <BellRing size={16} className="text-accent" />
         Notificaciones push del navegador
       </h2>
-      <p className="text-xs text-foreground/60">
+      <p className="text-xs text-foreground/70">
         Recibe un aviso del navegador para propuestas vistas, facturas vencidas, SLA por vencer y seguimientos de
         leads — sin necesidad de tener el dashboard abierto. Complementa la campanita y el correo, no los reemplaza.
       </p>
 
       {error && <Alert tone="error">{error}</Alert>}
 
-      {status === "checking" && <p className="text-xs text-foreground/50">Comprobando soporte del navegador…</p>}
+      {status === "checking" && <p className="text-xs text-foreground/70">Comprobando soporte del navegador…</p>}
 
       {status === "unsupported" && (
-        <p className="text-xs text-foreground/50">Tu navegador no soporta notificaciones push.</p>
+        <p className="text-xs text-foreground/70">Tu navegador no soporta notificaciones push.</p>
       )}
 
       {status === "denied" && (
-        <p className="text-xs text-amber-700">
+        <p className="text-xs text-warning">
           Bloqueaste los permisos de notificación para este sitio — actívalos desde la configuración del navegador
           para usar esta función.
         </p>
@@ -162,7 +162,7 @@ export function PushNotificationSetup() {
 
       {status === "subscribed" && (
         <div className="flex items-center gap-3">
-          <span className="text-xs font-medium text-green-700">Activas en este navegador.</span>
+          <span className="text-xs font-medium text-success">Activas en este navegador.</span>
           <Button variant="secondary" onClick={handleDisable} disabled={isSubmitting} className="gap-1.5">
             <BellOff size={14} />
             {isSubmitting ? "Desactivando…" : "Desactivar"}

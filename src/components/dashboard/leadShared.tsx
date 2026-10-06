@@ -1,6 +1,7 @@
 import { CheckCircle2, Clock, AlertCircle, CalendarClock } from "lucide-react";
 import { Badge } from "./ui/Badge";
 import type { Lead } from "./types";
+import { formatCalendarDate } from "@/lib/utils";
 
 /**
  * Compartido entre `LeadsTable` (vista de tabla) y `LeadsKanban` (vista de
@@ -13,10 +14,10 @@ import type { Lead } from "./types";
 export const LEAD_STATUS_OPTIONS: Lead["status"][] = ["Nuevo", "En Cotización", "Ganado", "Perdido"];
 
 export const LEAD_STATUS_STYLES: Record<Lead["status"], { select: string; accent: string; dot: string }> = {
-  Nuevo: { select: "border-amber-200 bg-amber-50 text-amber-700", accent: "border-amber-200", dot: "bg-amber-500" },
-  "En Cotización": { select: "border-sky-200 bg-sky-50 text-sky-700", accent: "border-sky-200", dot: "bg-sky-500" },
-  Ganado: { select: "border-green-200 bg-green-50 text-green-700", accent: "border-green-200", dot: "bg-green-500" },
-  Perdido: { select: "border-red-200 bg-red-50 text-red-700", accent: "border-red-200", dot: "bg-red-500" },
+  Nuevo: { select: "border-warning/25 bg-warning/10 text-warning", accent: "border-warning/25", dot: "bg-warning" },
+  "En Cotización": { select: "border-info/25 bg-info/10 text-info", accent: "border-info/25", dot: "bg-info" },
+  Ganado: { select: "border-success/25 bg-success/10 text-success", accent: "border-success/25", dot: "bg-success" },
+  Perdido: { select: "border-danger/25 bg-danger/10 text-danger", accent: "border-danger/25", dot: "bg-danger" },
 };
 
 export function getSlaBadge(createdAt: string, leadStatus: string, now: number | null) {
@@ -69,7 +70,7 @@ export function getFollowUpBadge(lead: Lead, todayIso: string) {
   return (
     <Badge tone="info" className="gap-1">
       <CalendarClock size={11} />
-      {new Date(`${dueDate}T00:00:00`).toLocaleDateString("es-CO", { day: "numeric", month: "short" })}
+      {formatCalendarDate(dueDate, "dayMonth")}
     </Badge>
   );
 }

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Monitor, MapPin, ShieldCheck, LogOut } from "lucide-react";
 import { Alert } from "./ui/Alert";
 import type { UserSessionRow } from "./types";
+import { formatDateTime } from "@/lib/utils";
+import { useFeedback } from "./ui/Feedback";
 
 /**
  * Heurística simple sobre el User-Agent crudo, no una librería de
@@ -55,7 +57,18 @@ export function SessionsView({
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const feedback = useFeedback();
   const handleRevoke = async (sessionId: string) => {
+    const isCurrent = sessionId === currentSessionId;
+    const ok = await feedback.confirm({
+      title: isCurrent ? "¿Cerrar esta sesión?" : "¿Cerrar esa sesión?",
+      description: isCurrent
+        ? "Es la sesión que estás usando: tendrás que volver a iniciar sesión."
+        : "El dispositivo quedará desconectado de inmediato.",
+      confirmLabel: "Cerrar sesión",
+      tone: "danger",
+    });
+    if (!ok) return;
     setError(null);
     setRevokingId(sessionId);
     try {
@@ -103,7 +116,7 @@ export function SessionsView({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-foreground/90">
             <caption className="sr-only">Sesiones activas de la cuenta, con dispositivo, IP y vigencia</caption>
-            <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+            <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
               <tr>
                 <th scope="col" className="px-5 py-3.5">Dispositivo</th>
                 <th scope="col" className="px-5 py-3.5">IP</th>
@@ -119,33 +132,33 @@ export function SessionsView({
                   <tr key={s.id} className={isCurrent ? "bg-accent/5" : ""}>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-2">
-                        <Monitor size={14} className="text-foreground/40 shrink-0" />
+                        <Monitor size={14} className="text-foreground/70 shrink-0" />
                         <span>{describeUserAgent(s.user_agent)}</span>
                         {isCurrent && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-accent/20 px-2 py-0.5 text-[10px] font-bold text-accent">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-accent/20 px-2 py-0.5 text-[11px] font-bold text-accent-strong">
                             <ShieldCheck size={10} />
                             Esta sesión
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-5 py-3.5 font-mono text-foreground/60">
+                    <td className="px-5 py-3.5 font-mono text-foreground/70">
                       <span className="flex items-center gap-1">
-                        <MapPin size={12} className="text-foreground/40" />
+                        <MapPin size={12} className="text-foreground/70" />
                         {s.ip || "—"}
                       </span>
                     </td>
-                    <td suppressHydrationWarning className="px-5 py-3.5 font-mono text-foreground/60 whitespace-nowrap">
-                      {new Date(s.created_at).toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" })}
+                    <td suppressHydrationWarning className="px-5 py-3.5 font-mono text-foreground/70 whitespace-nowrap">
+                      {formatDateTime(s.created_at)}
                     </td>
-                    <td suppressHydrationWarning className="px-5 py-3.5 font-mono text-foreground/60 whitespace-nowrap">
-                      {new Date(s.expires_at).toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" })}
+                    <td suppressHydrationWarning className="px-5 py-3.5 font-mono text-foreground/70 whitespace-nowrap">
+                      {formatDateTime(s.expires_at)}
                     </td>
                     <td className="px-5 py-3.5 text-right">
                       <button
                         onClick={() => handleRevoke(s.id)}
                         disabled={revokingId === s.id}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-[11px] font-semibold text-red-700 hover:bg-red-500/20 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-danger/20 bg-danger/10 px-3 py-2 text-xs font-semibold text-danger hover:bg-danger/20 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
                         <LogOut size={12} />
                         {isCurrent ? "Cerrar sesión" : "Revocar"}

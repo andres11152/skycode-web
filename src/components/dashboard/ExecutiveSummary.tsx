@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   Users,
   Layers,
@@ -13,6 +12,7 @@ import {
 } from "lucide-react";
 import { ExchangeRateNote } from "./ExchangeRateNote";
 import { formatMoney } from "@/lib/utils";
+import { StatCard } from "./ui/StatCard";
 
 export interface ExecutiveSummaryProps {
   leadStats: { total: number; newCount: number };
@@ -170,40 +170,29 @@ export function ExecutiveSummary({
   ];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Resumen Ejecutivo</h1>
+        <h2 className="text-sm font-bold text-foreground">Resumen del negocio</h2>
         <p className="mt-1 text-xs text-foreground/70 font-sans">Estado actual de todos los módulos del sistema.</p>
       </div>
       <ExchangeRateNote usdToCopRate={usdToCopRate} />
 
       {groups.map((group) => (
         <div key={group.label} className="space-y-3">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-foreground/40">
+          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-foreground/70">
             {group.label}
           </span>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {group.cards.map((card) => (
-              <Link
+              <StatCard
                 key={card.href}
                 href={card.href}
-                className="block rounded-xl border border-foreground/10 bg-background p-5 space-y-3 shadow-sm shadow-black/5 transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/10 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-foreground/60">{card.label}</span>
-                  <div
-                    className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                      card.alert ? "bg-red-50 text-red-700" : "bg-accent/10 text-accent"
-                    }`}
-                  >
-                    <card.icon size={16} />
-                  </div>
-                </div>
-                <div className={`text-2xl font-bold font-mono ${card.alert ? "text-red-700" : "text-foreground"}`}>
-                  {card.value}
-                </div>
-                <div className="text-[10px] text-foreground/50">{card.sub}</div>
-              </Link>
+                label={card.label}
+                value={card.value}
+                hint={card.sub}
+                tone={card.alert ? "danger" : "neutral"}
+                icon={<card.icon size={16} className={card.alert ? "text-danger" : "text-accent-strong"} />}
+              />
             ))}
           </div>
         </div>

@@ -3,30 +3,19 @@
 import { useId, useRef, useState, useTransition } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
-import { Wallet, Plus, Search, ChevronLeft, ChevronRight, Trash2, Receipt } from "lucide-react";
+import { Wallet, Plus, Search,   Trash2, Receipt } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
 import { CurrencySelect } from "./CurrencySelect";
-import { Badge, type BadgeTone } from "./ui/Badge";
+import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, formatCalendarDate } from "@/lib/utils";
 import type { Currency } from "@/lib/currency";
 import type { Expense, ExpenseCategory, Project } from "./types";
-
-const CATEGORY_LABELS: Record<ExpenseCategory, string> = {
-  licencias: "Licencias",
-  infraestructura: "Infraestructura",
-  subcontratos: "Subcontratos",
-  otro: "Otro",
-};
-
-const CATEGORY_TONES: Record<ExpenseCategory, BadgeTone> = {
-  licencias: "info",
-  infraestructura: "warning",
-  subcontratos: "danger",
-  otro: "neutral",
-};
+import { EXPENSE_CATEGORY } from "./statusMeta";
+import { Pagination } from "./ui/Pagination";
+import { useFeedback } from "./ui/Feedback";
 
 interface ExpensesBoardProps {
   expenses: Expense[];
@@ -75,18 +64,25 @@ export function ExpensesBoard({ expenses, total, page, pageSize, q, category, to
     searchTimeoutRef.current = setTimeout(() => pushQuery({ q: value }), 400);
   };
 
+  const feedback = useFeedback();
   const handleDelete = async (expense: Expense) => {
-    if (!window.confirm(`¿Eliminar el gasto "${expense.description}"? Esta acción no se puede deshacer.`)) return;
+    if (!(await feedback.confirm({ title: `¿Eliminar el gasto "${expense.description}"? Esta acción no se puede deshacer.`, tone: "danger" }))) return;
     setDeletingId(expense.id);
     try {
       const res = await fetch(`/api/expenses/${expense.id}`, { method: "DELETE" });
-      if (res.ok) router.refresh();
+      if (res.ok) {
+        router.refresh();
+        feedback.toast({ message: "Gasto eliminado." });
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo eliminar el gasto." });
+      }
+    } catch {
+      feedback.toast({ tone: "error", message: "No se pudo eliminar el gasto. Revisa tu conexión." });
     } finally {
       setDeletingId(null);
     }
   };
 
-  const totalPages = Math.ceil(total / pageSize) || 1;
 
   return (
     <div className="space-y-8">
@@ -106,16 +102,16 @@ export function ExpensesBoard({ expenses, total, page, pageSize, q, category, to
       </div>
 
       <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-2 max-w-xs">
-        <div className="flex items-center justify-between text-xs text-foreground/60">
+        <div className="flex items-center justify-between text-xs text-foreground/70">
           <span>Gastado Este Mes</span>
-          <Wallet size={16} className="text-amber-700" />
+          <Wallet size={16} className="text-warning" />
         </div>
-        <div className="text-xl font-bold font-mono text-amber-700">{formatMoney(totalThisMonthCop, "COP")}</div>
+        <div className="text-xl font-bold font-mono text-warning">{formatMoney(totalThisMonthCop, "COP")}</div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/70" />
           <input
             type="text"
             value={searchInput}
@@ -125,15 +121,15 @@ export function ExpensesBoard({ expenses, total, page, pageSize, q, category, to
           />
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs text-foreground/60 font-mono">Categoría:</span>
+          <span className="text-xs text-foreground/70 font-mono">Categoría:</span>
           <select
             value={category}
             onChange={(e) => pushQuery({ category: e.target.value })}
             className="rounded-xl border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
           >
             <option value="ALL" className="bg-background text-foreground">Todas las categorías</option>
-            {(Object.keys(CATEGORY_LABELS) as ExpenseCategory[]).map((c) => (
-              <option key={c} value={c} className="bg-background text-foreground">{CATEGORY_LABELS[c]}</option>
+            {(Object.keys(EXPENSE_CATEGORY) as ExpenseCategory[]).map((c) => (
+              <option key={c} value={c} className="bg-background text-foreground">{EXPENSE_CATEGORY[c].label}</option>
             ))}
           </select>
         </div>
@@ -152,27 +148,27 @@ export function ExpensesBoard({ expenses, total, page, pageSize, q, category, to
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-foreground/90">
                 <caption className="sr-only">Gastos operativos de la agencia, con proyecto, categoría y monto</caption>
-                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                   <tr>
                     <th scope="col" className="px-5 py-3.5">Descripción</th>
                     <th scope="col" className="px-5 py-3.5">Proyecto</th>
                     <th scope="col" className="px-5 py-3.5">Categoría</th>
                     <th scope="col" className="px-5 py-3.5">Monto</th>
                     <th scope="col" className="px-5 py-3.5">Fecha</th>
-                    {canWrite && <th scope="col" className="px-5 py-3.5 sr-only">Acción</th>}
+                    {canWrite && <th scope="col" className="relative px-5 py-3.5"><span className="sr-only">Acción</span></th>}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-foreground/10">
                   {expenses.map((expense) => (
                     <tr key={expense.id}>
                       <td className="px-5 py-3.5 font-medium text-foreground">{expense.description}</td>
-                      <td className="px-5 py-3.5 text-foreground/70">{expense.project_title ?? <span className="text-foreground/40">General</span>}</td>
+                      <td className="px-5 py-3.5 text-foreground/70">{expense.project_title ?? <span className="text-foreground/70">General</span>}</td>
                       <td className="px-5 py-3.5">
-                        <Badge tone={CATEGORY_TONES[expense.category]}>{CATEGORY_LABELS[expense.category]}</Badge>
+                        <Badge tone={EXPENSE_CATEGORY[expense.category].tone}>{EXPENSE_CATEGORY[expense.category].label}</Badge>
                       </td>
                       <td className="px-5 py-3.5 font-mono font-bold text-foreground">{formatMoney(expense.amount, expense.currency)}</td>
-                      <td className="px-5 py-3.5 font-mono text-[10px] text-foreground/60 whitespace-nowrap">
-                        {new Date(expense.expense_date).toLocaleDateString("es-CO", { timeZone: "UTC" })}
+                      <td className="px-5 py-3.5 font-mono text-[11px] text-foreground/70 whitespace-nowrap">
+                        {formatCalendarDate(expense.expense_date)}
                       </td>
                       {canWrite && (
                         <td className="px-5 py-3.5 text-right">
@@ -180,7 +176,7 @@ export function ExpensesBoard({ expenses, total, page, pageSize, q, category, to
                             onClick={() => handleDelete(expense)}
                             disabled={deletingId === expense.id}
                             aria-label={`Eliminar ${expense.description}`}
-                            className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 text-foreground/60 hover:border-red-500/30 hover:text-red-700 hover:bg-red-500/10 transition-all disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 text-foreground/70 hover:border-danger/30 hover:text-danger hover:bg-danger/10 transition-all disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <Trash2 size={14} />
                           </button>
@@ -192,30 +188,7 @@ export function ExpensesBoard({ expenses, total, page, pageSize, q, category, to
               </table>
             </div>
 
-            <div className="flex items-center justify-between border-t border-foreground/10 px-5 py-3.5 text-xs text-foreground/60 font-mono">
-              <div>
-                Mostrando {((page - 1) * pageSize) + 1} a {Math.min(page * pageSize, total)} de {total} gastos
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => pushQuery({ page: page - 1 })}
-                  disabled={page === 1 || isNavigating}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label="Página anterior"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <span>Página {page} de {totalPages}</span>
-                <button
-                  onClick={() => pushQuery({ page: page + 1 })}
-                  disabled={page === totalPages || isNavigating}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label="Página siguiente"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
+            <Pagination page={page} pageSize={pageSize} total={total} noun="gastos" onPageChange={(next) => pushQuery({ page: next })} disabled={isNavigating} />
           </>
         )}
       </div>
@@ -302,8 +275,8 @@ function CreateExpenseModal({
             onChange={(e) => setCategory(e.target.value as ExpenseCategory)}
             className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
           >
-            {(Object.keys(CATEGORY_LABELS) as ExpenseCategory[]).map((c) => (
-              <option key={c} value={c} className="bg-background text-foreground">{CATEGORY_LABELS[c]}</option>
+            {(Object.keys(EXPENSE_CATEGORY) as ExpenseCategory[]).map((c) => (
+              <option key={c} value={c} className="bg-background text-foreground">{EXPENSE_CATEGORY[c].label}</option>
             ))}
           </select>
         </div>
@@ -315,7 +288,7 @@ function CreateExpenseModal({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Ej. Licencia anual de Figma"
-            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
           />
         </div>
         <div className="grid sm:grid-cols-2 gap-3">

@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 export type AlertTone = "error" | "success";
 
 const TONE_STYLES: Record<AlertTone, string> = {
-  error: "border-red-200 bg-red-50 text-red-700",
-  success: "border-green-200 bg-green-50 text-green-700",
+  error: "border-danger/25 bg-danger/10 text-danger",
+  success: "border-success/25 bg-success/10 text-success",
 };
 
 /**

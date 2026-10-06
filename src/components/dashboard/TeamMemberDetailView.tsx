@@ -4,7 +4,6 @@ import { useId, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Ban,
   Camera,
   Clock,
@@ -27,6 +26,9 @@ import { roleLabel } from "./roleLabels";
 import { PROFILE_LIMITS } from "@/lib/profileValidation";
 import { CURRENCIES, type Currency } from "@/lib/currency";
 import type { AuditLogEntry, AvatarVariants, TeamMemberDetail, UserSessionRow } from "./types";
+import { formatDate, formatDateTime } from "@/lib/utils";
+import { useFeedback } from "./ui/Feedback";
+import { PageBack } from "./ui/PageHeader";
 
 const ASSIGNABLE_ROLES = ["admin", "sales_manager", "traffiker"] as const;
 
@@ -116,10 +118,6 @@ function toFormState(member: TeamMemberDetail): FormState {
   };
 }
 
-function formatDateTime(value: string): string {
-  return new Date(value).toLocaleString("es-CO", { dateStyle: "medium", timeStyle: "short" });
-}
-
 /** "Chrome en macOS" a partir del user-agent — misma heurística corta que `SessionsView`. */
 function describeDevice(userAgent: string | null): string {
   if (!userAgent) return "Dispositivo desconocido";
@@ -198,14 +196,13 @@ export function TeamMemberDetailView({
     if (!res.ok) throw new Error(data.error || "No se pudieron guardar los cambios.");
   };
 
+  const feedback = useFeedback();
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isDirty) return;
     if (
       emailChanged &&
-      !window.confirm(
-        `Cambiar el correo cierra todas las sesiones de ${member.name}: tendrá que volver a entrar con ${form.email.trim()}. ¿Continuar?`
-      )
+      !(await feedback.confirm({ title: `Cambiar el correo cierra todas las sesiones de ${member.name}: tendrá que volver a entrar con ${form.email.trim()}. ¿Continuar?`, tone: "danger" }))
     ) {
       return;
     }
@@ -253,7 +250,7 @@ export function TeamMemberDetailView({
     const next = isActive ? "disabled" : "active";
     if (
       next === "disabled" &&
-      !window.confirm(`¿Desactivar la cuenta de ${member.name}? Se cerrarán todas sus sesiones y no podrá entrar hasta que la reactives.`)
+      !(await feedback.confirm({ title: `¿Desactivar la cuenta de ${member.name}? Se cerrarán todas sus sesiones y no podrá entrar hasta que la reactives.`, tone: "danger" }))
     ) {
       return;
     }
@@ -272,7 +269,7 @@ export function TeamMemberDetailView({
   };
 
   const handleRevokeSessions = async () => {
-    if (!window.confirm(`¿Cerrar las ${sessions.length} sesiones activas de ${member.name}? Podrá volver a entrar con su contraseña.`)) {
+    if (!(await feedback.confirm({ title: `¿Cerrar las ${sessions.length} sesiones activas de ${member.name}? Podrá volver a entrar con su contraseña.`, tone: "danger" }))) {
       return;
     }
     setBusy("sessions");
@@ -339,13 +336,7 @@ export function TeamMemberDetailView({
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <Link
-        href="/dashboard/equipo"
-        className="inline-flex min-h-11 items-center gap-1.5 rounded-lg text-xs font-medium text-foreground/70 transition-colors hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-      >
-        <ArrowLeft size={14} />
-        Volver al equipo
-      </Link>
+      <PageBack href="/dashboard/equipo" label="Volver al equipo" />
 
       {/* Encabezado: identidad */}
       <div className="rounded-xl border border-foreground/10 bg-background p-6 shadow-sm shadow-black/5">
@@ -359,20 +350,20 @@ export function TeamMemberDetailView({
             {member.jobTitle && <p className="text-sm text-foreground/80">{member.jobTitle}</p>}
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-foreground/70">
               <span className="flex items-center gap-1.5 font-mono">
-                <Mail size={13} className="text-foreground/50" aria-hidden="true" />
+                <Mail size={13} className="text-foreground/70" aria-hidden="true" />
                 {member.email}
               </span>
               {member.phone && (
                 <span className="flex items-center gap-1.5 font-mono">
-                  <Phone size={13} className="text-foreground/50" aria-hidden="true" />
+                  <Phone size={13} className="text-foreground/70" aria-hidden="true" />
                   {member.phone}
                 </span>
               )}
               <span suppressHydrationWarning className="flex items-center gap-1.5">
-                <Clock size={13} className="text-foreground/50" aria-hidden="true" />
+                <Clock size={13} className="text-foreground/70" aria-hidden="true" />
                 {member.hireDate
-                  ? `Ingresó el ${new Date(`${member.hireDate}T00:00:00`).toLocaleDateString("es-CO", { dateStyle: "long" })}`
-                  : `Cuenta creada el ${new Date(member.createdAt).toLocaleDateString("es-CO", { dateStyle: "long" })}`}
+                  ? `Ingresó el ${formatDate(member.hireDate)}`
+                  : `Cuenta creada el ${formatDate(member.createdAt)}`}
               </span>
             </div>
             <div className="flex flex-wrap gap-2 pt-1">
@@ -553,7 +544,7 @@ export function TeamMemberDetailView({
             </h2>
             <div className="flex items-start gap-3">
               <div
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${member.totpEnabled ? "bg-emerald-500/10 text-emerald-700" : "bg-amber-500/10 text-amber-700"}`}
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${member.totpEnabled ? "bg-success/10 text-success" : "bg-warning/10 text-warning"}`}
               >
                 {member.totpEnabled ? <ShieldCheck size={18} /> : <ShieldAlert size={18} />}
               </div>
@@ -581,7 +572,7 @@ export function TeamMemberDetailView({
                   variant="ghost"
                   onClick={handleToggleStatus}
                   disabled={busy !== null}
-                  className={`w-full ${isActive ? "text-red-700 hover:bg-red-500/10 hover:text-red-700" : ""}`}
+                  className={`w-full ${isActive ? "text-danger hover:bg-danger/10 hover:text-danger" : ""}`}
                 >
                   {isActive ? <Ban size={14} /> : <PlayCircle size={14} />}
                   {busy === "status" ? "Guardando…" : isActive ? "Desactivar cuenta" : "Reactivar cuenta"}
@@ -603,7 +594,7 @@ export function TeamMemberDetailView({
               <ul className="divide-y divide-foreground/10">
                 {sessions.map((s) => (
                   <li key={s.id} className="flex items-start gap-3 px-5 py-3">
-                    <Monitor size={14} className="mt-0.5 shrink-0 text-foreground/50" aria-hidden="true" />
+                    <Monitor size={14} className="mt-0.5 shrink-0 text-foreground/70" aria-hidden="true" />
                     <div className="min-w-0 text-xs">
                       <p className="font-medium text-foreground">{describeDevice(s.user_agent)}</p>
                       <p suppressHydrationWarning className="font-mono text-foreground/70">
@@ -623,7 +614,7 @@ export function TeamMemberDetailView({
         <div className="flex items-center justify-between gap-3 border-b border-foreground/10 p-5">
           <div>
             <h2 id={`${formId}-activity`} className="flex items-center gap-2 text-sm font-bold text-foreground">
-              <History size={15} className="text-foreground/60" aria-hidden="true" />
+              <History size={15} className="text-foreground/70" aria-hidden="true" />
               Actividad reciente
             </h2>
             <p className="mt-0.5 text-xs text-foreground/70">Lo que hizo y lo que se le hizo a esta cuenta.</p>

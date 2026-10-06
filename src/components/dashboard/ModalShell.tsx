@@ -1,73 +1,34 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { m as motion, useReducedMotion } from "framer-motion";
-import { X } from "lucide-react";
-import { useFocusTrap } from "@/lib/useFocusTrap";
-import { scaleUp } from "@/lib/animations";
+import { Modal } from "@/components/ui/Modal";
 
 /**
- * Modal del panel interno — mismos tokens claros que src/components/ui/Modal.tsx
- * del sitio público, en un componente separado porque el dashboard no comparte
- * layout con la home. Usado por TeamTable, CampaignsBoard, ProposalsBoard e
- * InvoicesBoard — mismo patrón de foco/Escape/backdrop en los cuatro.
+ * Diálogo del panel interno. Es un envoltorio fino de `ui/Modal` (el mismo del
+ * sitio público) y no una segunda implementación: antes `ModalShell` era una
+ * copia más pobre — siempre centrada (también en móvil), sin portal, sin
+ * bloqueo del scroll de fondo, sin `inert` y con `max-h` en `vh` (que en iOS
+ * queda detrás de la barra del navegador). Ahora hereda hoja inferior en
+ * móvil, `dvh`, foco atrapado y fondo inerte.
+ *
+ * `titleId` se conserva en la firma para no tocar a los consumidores, pero
+ * `Modal` genera el suyo.
  */
 export function ModalShell({
-  titleId,
   title,
   onClose,
   children,
   maxWidthClassName = "max-w-md",
 }: {
-  titleId: string;
+  titleId?: string;
   title: string;
   onClose: () => void;
   children: React.ReactNode;
   maxWidthClassName?: string;
 }) {
-  const dialogRef = useRef<HTMLDivElement>(null);
-  useFocusTrap(true, dialogRef);
-  const reduced = useReducedMotion();
-  const variants = scaleUp(reduced ?? false);
-
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [onClose]);
-
+  const size = maxWidthClassName === "max-w-md" ? "md" : "lg";
   return (
-    <div
-      className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-      onClick={onClose}
-      role="presentation"
-    >
-      <motion.div
-        ref={dialogRef}
-        variants={variants}
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        className={`w-full ${maxWidthClassName} rounded-xl border border-foreground/15 bg-background p-6 text-foreground shadow-2xl outline-none max-h-[85vh] overflow-y-auto`}
-      >
-        <div className="flex items-center justify-between mb-5">
-          <h3 id={titleId} className="text-lg font-bold">{title}</h3>
-          <button
-            onClick={onClose}
-            aria-label="Cerrar"
-            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/60 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background shrink-0"
-          >
-            <X size={18} />
-          </button>
-        </div>
-        {children}
-      </motion.div>
-    </div>
+    <Modal open onClose={onClose} title={title} closeLabel="Cerrar" size={size}>
+      {children}
+    </Modal>
   );
 }

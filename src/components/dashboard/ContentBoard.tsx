@@ -3,23 +3,14 @@
 import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { FileText, Plus, Search, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { FileText, Plus, Search,   Sparkles } from "lucide-react";
 import { EmptyState } from "./EmptyState";
-import { Badge, type BadgeTone } from "./ui/Badge";
+import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import type { Article, ArticleStatus } from "@/lib/queries/articles";
-
-const STATUS_LABELS: Record<ArticleStatus, string> = {
-  draft: "Borrador",
-  review: "En revisión",
-  published: "Publicado",
-};
-
-const STATUS_TONES: Record<ArticleStatus, BadgeTone> = {
-  draft: "neutral",
-  review: "warning",
-  published: "success",
-};
+import { formatShortDate } from "@/lib/utils";
+import { ARTICLE_STATUS } from "./statusMeta";
+import { Pagination } from "./ui/Pagination";
 
 const LOCALE_LABELS: Record<string, string> = { es: "ES", en: "EN", fr: "FR" };
 
@@ -84,7 +75,6 @@ export function ContentBoard({ articles, total, page, pageSize, status, locale, 
     }
   };
 
-  const totalPages = Math.ceil(total / pageSize) || 1;
 
   return (
     <div className="space-y-8">
@@ -105,7 +95,7 @@ export function ContentBoard({ articles, total, page, pageSize, status, locale, 
 
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/70" />
           <input
             type="text"
             value={searchInput}
@@ -118,17 +108,17 @@ export function ContentBoard({ articles, total, page, pageSize, status, locale, 
           <select
             value={status}
             onChange={(e) => pushQuery({ status: e.target.value })}
-            className="rounded-xl border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
+            className="min-w-0 flex-1 rounded-xl border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer sm:flex-none"
           >
             <option value="ALL" className="bg-background text-foreground">Todos los estados</option>
-            {(Object.keys(STATUS_LABELS) as ArticleStatus[]).map((s) => (
-              <option key={s} value={s} className="bg-background text-foreground">{STATUS_LABELS[s]}</option>
+            {(Object.keys(ARTICLE_STATUS) as ArticleStatus[]).map((s) => (
+              <option key={s} value={s} className="bg-background text-foreground">{ARTICLE_STATUS[s].label}</option>
             ))}
           </select>
           <select
             value={locale}
             onChange={(e) => pushQuery({ locale: e.target.value })}
-            className="rounded-xl border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer"
+            className="min-w-0 flex-1 rounded-xl border border-foreground/15 bg-foreground/10 py-2 px-3 text-xs text-foreground outline-none focus:border-accent cursor-pointer sm:flex-none"
           >
             <option value="ALL" className="bg-background text-foreground">Todos los idiomas</option>
             <option value="es" className="bg-background text-foreground">Español</option>
@@ -151,7 +141,7 @@ export function ContentBoard({ articles, total, page, pageSize, status, locale, 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-foreground/90">
                 <caption className="sr-only">Artículos del blog con su estado, idioma y última actualización</caption>
-                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                   <tr>
                     <th scope="col" className="px-5 py-3.5">Título</th>
                     <th scope="col" className="px-5 py-3.5">Idioma</th>
@@ -168,14 +158,14 @@ export function ContentBoard({ articles, total, page, pageSize, status, locale, 
                           href={`/dashboard/contenido/${article.id}`}
                           className="font-medium text-foreground hover:text-accent-strong outline-none rounded focus-visible:ring-2 focus-visible:ring-accent"
                         >
-                          {article.title || <span className="text-foreground/40 italic">Sin título</span>}
+                          {article.title || <span className="text-foreground/70 italic">Sin título</span>}
                         </Link>
                       </td>
-                      <td className="px-5 py-3.5 font-mono text-foreground/60">{LOCALE_LABELS[article.locale]}</td>
+                      <td className="px-5 py-3.5 font-mono text-foreground/70">{LOCALE_LABELS[article.locale]}</td>
                       <td className="px-5 py-3.5">
-                        <Badge tone={STATUS_TONES[article.status]}>{STATUS_LABELS[article.status]}</Badge>
+                        <Badge tone={ARTICLE_STATUS[article.status].tone}>{ARTICLE_STATUS[article.status].label}</Badge>
                       </td>
-                      <td className="px-5 py-3.5 text-foreground/60">
+                      <td className="px-5 py-3.5 text-foreground/70">
                         {article.targetKeyword ? (
                           <span className="inline-flex items-center gap-1" title={`Generado desde: ${article.targetKeyword}`}>
                             <Sparkles size={12} className="text-accent" /> Cron
@@ -184,8 +174,8 @@ export function ContentBoard({ articles, total, page, pageSize, status, locale, 
                           "Manual"
                         )}
                       </td>
-                      <td className="px-5 py-3.5 font-mono text-[10px] text-foreground/60 whitespace-nowrap">
-                        {new Date(article.updatedAt).toLocaleDateString("es-CO")}
+                      <td className="px-5 py-3.5 font-mono text-[11px] text-foreground/70 whitespace-nowrap">
+                        {formatShortDate(article.updatedAt)}
                       </td>
                     </tr>
                   ))}
@@ -193,30 +183,7 @@ export function ContentBoard({ articles, total, page, pageSize, status, locale, 
               </table>
             </div>
 
-            <div className="flex items-center justify-between border-t border-foreground/10 px-5 py-3.5 text-xs text-foreground/60 font-mono">
-              <div>
-                Mostrando {(page - 1) * pageSize + 1} a {Math.min(page * pageSize, total)} de {total} artículos
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => pushQuery({ page: page - 1 })}
-                  disabled={page === 1 || isNavigating}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label="Página anterior"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <span>Página {page} de {totalPages}</span>
-                <button
-                  onClick={() => pushQuery({ page: page + 1 })}
-                  disabled={page === totalPages || isNavigating}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label="Página siguiente"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
+            <Pagination page={page} pageSize={pageSize} total={total} noun="artículos" onPageChange={(next) => pushQuery({ page: next })} disabled={isNavigating} />
           </>
         )}
       </div>

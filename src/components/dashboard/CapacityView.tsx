@@ -1,6 +1,7 @@
 import { Users2, ClipboardList, LifeBuoy, Clock } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import type { TeamCapacity } from "./types";
+import { StatCard } from "./ui/StatCard";
 
 const ROLE_LABELS: Record<string, string> = {
   admin: "Admin",
@@ -9,8 +10,8 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 function loadBarColor(pct: number): string {
-  if (pct > 100) return "bg-red-400";
-  if (pct > 80) return "bg-amber-400";
+  if (pct > 100) return "bg-danger";
+  if (pct > 80) return "bg-warning";
   return "bg-accent";
 }
 
@@ -29,27 +30,9 @@ export function CapacityView({ capacity }: { capacity: TeamCapacity[] }) {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-          <div className="flex items-center justify-between text-xs text-foreground/60">
-            <span>Tareas Abiertas (equipo)</span>
-            <ClipboardList size={18} className="text-accent" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-foreground">{totalOpenTasks}</div>
-        </div>
-        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-          <div className="flex items-center justify-between text-xs text-foreground/60">
-            <span>Tickets Abiertos (equipo)</span>
-            <LifeBuoy size={18} className="text-amber-700" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-amber-700">{totalOpenTickets}</div>
-        </div>
-        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-          <div className="flex items-center justify-between text-xs text-foreground/60">
-            <span>Horas Registradas (esta semana)</span>
-            <Clock size={18} className="text-green-700" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-green-700">{totalHoursThisWeek}h</div>
-        </div>
+        <StatCard label="Tareas Abiertas (equipo)" value={totalOpenTasks} icon={<ClipboardList size={18} className="text-accent-strong" />} />
+        <StatCard label="Tickets Abiertos (equipo)" value={totalOpenTickets} icon={<LifeBuoy size={18} className="text-accent-strong" />} />
+        <StatCard label="Horas Registradas (esta semana)" value={<>{totalHoursThisWeek}h</>} icon={<Clock size={18} className="text-accent-strong" />} />
       </div>
 
       {capacity.length === 0 ? (
@@ -59,9 +42,9 @@ export function CapacityView({ capacity }: { capacity: TeamCapacity[] }) {
       ) : (
         <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-foreground/90">
+            <table data-keep-table data-sticky-first className="w-full text-left text-xs text-foreground/90">
               <caption className="sr-only">Carga de trabajo por persona: tareas, tickets y horas de la semana</caption>
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th scope="col" className="px-5 py-3.5">Persona</th>
                   <th scope="col" className="px-5 py-3.5 text-center">Tareas Abiertas</th>
@@ -77,7 +60,7 @@ export function CapacityView({ capacity }: { capacity: TeamCapacity[] }) {
                     <tr key={person.id}>
                       <td className="px-5 py-4">
                         <div className="font-bold text-foreground">{person.name}</div>
-                        <div className="text-[10px] text-foreground/50 font-mono">
+                        <div className="text-[11px] text-foreground/70 font-mono">
                           {ROLE_LABELS[person.role] ?? person.role}
                         </div>
                       </td>
@@ -87,9 +70,9 @@ export function CapacityView({ capacity }: { capacity: TeamCapacity[] }) {
                       </td>
                       <td className="px-5 py-4 text-center font-mono">
                         {person.open_tickets_count > 0 ? (
-                          <span className="text-amber-700 font-bold">{person.open_tickets_count}</span>
+                          <span className="text-warning font-bold">{person.open_tickets_count}</span>
                         ) : (
-                          <span className="text-foreground/40">0</span>
+                          <span className="text-foreground/70">0</span>
                         )}
                       </td>
                       <td className="px-5 py-4 min-w-[160px]">
@@ -100,7 +83,7 @@ export function CapacityView({ capacity }: { capacity: TeamCapacity[] }) {
                               style={{ width: `${Math.min(100, loadPct)}%` }}
                             />
                           </div>
-                          <span className="font-mono text-[10px] text-foreground/60 shrink-0 w-16 text-right">
+                          <span className="font-mono text-[11px] text-foreground/70 shrink-0 w-16 text-right">
                             {person.hours_this_week}h / {person.weekly_hours_capacity}h
                           </span>
                         </div>

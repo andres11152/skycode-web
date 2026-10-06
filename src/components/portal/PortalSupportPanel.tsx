@@ -6,24 +6,12 @@ import { AnimatePresence } from "framer-motion";
 import { Lifebuoy, Plus } from "@phosphor-icons/react";
 import { EmptyState } from "../dashboard/EmptyState";
 import { ModalShell } from "../dashboard/ModalShell";
-import { Badge, type BadgeTone } from "../dashboard/ui/Badge";
+import { Badge } from "../dashboard/ui/Badge";
 import { Button } from "../dashboard/ui/Button";
 import { Alert } from "../dashboard/ui/Alert";
-import type { ProjectOption, SupportTicket, TicketPriority, TicketStatus } from "../dashboard/types";
-
-const PRIORITY_TONES: Record<TicketPriority, BadgeTone> = {
-  Baja: "neutral",
-  Media: "info",
-  Alta: "warning",
-  Urgente: "danger",
-};
-
-const STATUS_TONES: Record<TicketStatus, BadgeTone> = {
-  Abierto: "info",
-  "En Progreso": "warning",
-  Resuelto: "success",
-  Cerrado: "neutral",
-};
+import type { ProjectOption, SupportTicket } from "../dashboard/types";
+import { formatShortDate } from "@/lib/utils";
+import { TICKET_PRIORITY, TICKET_STATUS } from "@/components/dashboard/statusMeta";
 
 /**
  * El cliente abre incidencias pero no elige prioridad ni responsable
@@ -61,7 +49,7 @@ export function PortalSupportPanel({ tickets, projects }: { tickets: SupportTick
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
               <caption className="sr-only">Tus incidencias de soporte, con estado y prioridad</caption>
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th scope="col" className="px-5 py-3.5">Título</th>
                   <th scope="col" className="px-5 py-3.5">Proyecto</th>
@@ -76,13 +64,13 @@ export function PortalSupportPanel({ tickets, projects }: { tickets: SupportTick
                     <td className="px-5 py-4 font-medium text-foreground max-w-xs truncate">{t.title}</td>
                     <td className="px-5 py-4 text-foreground/70">{t.project_title}</td>
                     <td className="px-5 py-4">
-                      <Badge tone={PRIORITY_TONES[t.priority]}>{t.priority}</Badge>
+                      <Badge tone={TICKET_PRIORITY[t.priority].tone}>{t.priority}</Badge>
                     </td>
                     <td className="px-5 py-4">
-                      <Badge tone={STATUS_TONES[t.status]}>{t.status}</Badge>
+                      <Badge tone={TICKET_STATUS[t.status].tone}>{t.status}</Badge>
                     </td>
-                    <td className="px-5 py-4 font-mono text-[10px] text-foreground/60 whitespace-nowrap">
-                      {new Date(t.created_at).toLocaleDateString("es-CO")}
+                    <td className="px-5 py-4 font-mono text-[11px] text-foreground/70 whitespace-nowrap">
+                      {formatShortDate(t.created_at)}
                     </td>
                   </tr>
                 ))}
@@ -156,7 +144,7 @@ function CreateTicketModal({ projects, onClose }: { projects: ProjectOption[]; o
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Ej. El formulario de contacto no envía correos"
-            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
           />
         </div>
         <div className="space-y-1.5">
@@ -166,7 +154,7 @@ function CreateTicketModal({ projects, onClose }: { projects: ProjectOption[]; o
             onChange={(e) => setDescription(e.target.value)}
             rows={4}
             placeholder="Cuéntanos qué pasó, cuándo y qué esperabas que pasara."
-            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent resize-none"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent resize-none"
           />
         </div>
         <Button type="submit" variant="accent" disabled={isSubmitting} className="w-full py-3">

@@ -8,25 +8,14 @@ import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
 import { CurrencySelect } from "./CurrencySelect";
 import { ExchangeRateNote } from "./ExchangeRateNote";
-import { Badge, type BadgeTone } from "./ui/Badge";
+import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, formatCalendarDate } from "@/lib/utils";
 import { convertCurrency, type Currency } from "@/lib/currency";
 import { buildInvoiceWhatsappUrl } from "@/lib/invoiceWhatsapp";
-import type { Invoice, InvoiceStatus, Project } from "./types";
-
-const STATUS_LABELS: Record<InvoiceStatus, string> = {
-  pending: "Por cobrar",
-  overdue: "Vencida",
-  paid: "Cobrada",
-};
-
-const STATUS_TONES: Record<InvoiceStatus, BadgeTone> = {
-  pending: "info",
-  overdue: "danger",
-  paid: "success",
-};
+import type { Invoice,  Project } from "./types";
+import { INVOICE_STATUS } from "./statusMeta";
 
 export function InvoicesBoard({
   initialInvoices,
@@ -99,25 +88,25 @@ export function InvoicesBoard({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-foreground/60">
+          <div className="flex items-center justify-between text-xs text-foreground/70">
             <span>Por Cobrar</span>
-            <Clock size={16} className="text-sky-700" />
+            <Clock size={16} className="text-info" />
           </div>
-          <div className="text-xl font-bold font-mono text-sky-700">{formatMoney(summary.porCobrar, "COP")}</div>
+          <div className="text-xl font-bold font-mono text-info">{formatMoney(summary.porCobrar, "COP")}</div>
         </div>
         <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-foreground/60">
+          <div className="flex items-center justify-between text-xs text-foreground/70">
             <span>Vencido</span>
-            <AlertTriangle size={16} className="text-red-700" />
+            <AlertTriangle size={16} className="text-danger" />
           </div>
-          <div className="text-xl font-bold font-mono text-red-700">{formatMoney(summary.vencido, "COP")}</div>
+          <div className="text-xl font-bold font-mono text-danger">{formatMoney(summary.vencido, "COP")}</div>
         </div>
         <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-foreground/60">
+          <div className="flex items-center justify-between text-xs text-foreground/70">
             <span>Cobrado Este Mes</span>
-            <CheckCircle2 size={16} className="text-green-700" />
+            <CheckCircle2 size={16} className="text-success" />
           </div>
-          <div className="text-xl font-bold font-mono text-green-700">{formatMoney(summary.cobradoEsteMes, "COP")}</div>
+          <div className="text-xl font-bold font-mono text-success">{formatMoney(summary.cobradoEsteMes, "COP")}</div>
         </div>
       </div>
       <ExchangeRateNote usdToCopRate={usdToCopRate} />
@@ -133,7 +122,7 @@ export function InvoicesBoard({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th className="px-5 py-3.5">Proyecto / Cliente</th>
                   <th className="px-5 py-3.5">Descripción</th>
@@ -150,39 +139,39 @@ export function InvoicesBoard({
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-foreground">{inv.project_title}</span>
                         {inv.invoice_number && (
-                          <span className="rounded-full bg-foreground/10 px-2 py-0.5 text-[10px] font-mono text-foreground/60">
+                          <span className="rounded-full bg-foreground/10 px-2 py-0.5 text-[11px] font-mono text-foreground/70">
                             {inv.invoice_number}
                           </span>
                         )}
                       </div>
-                      <div className="text-[11px] text-foreground/60 font-mono">{inv.client_name}</div>
+                      <div className="text-[11px] text-foreground/70 font-mono">{inv.client_name}</div>
                     </td>
                     <td className="px-5 py-4 max-w-xs truncate">{inv.description}</td>
                     <td className="px-5 py-4 font-mono">
-                      <div className={`font-bold ${inv.balance > 0 ? "text-amber-700" : "text-green-700"}`}>
+                      <div className={`font-bold ${inv.balance > 0 ? "text-warning" : "text-success"}`}>
                         {formatMoney(inv.balance, inv.currency)}
                       </div>
                       {inv.paidAmount > 0 && (
-                        <div className="text-[10px] text-foreground/50">
+                        <div className="text-[11px] text-foreground/70">
                           de {formatMoney(inv.amount, inv.currency)}
                         </div>
                       )}
                     </td>
                     <td className="px-5 py-4">
-                      <Badge tone={STATUS_TONES[inv.status]}>{STATUS_LABELS[inv.status]}</Badge>
+                      <Badge tone={INVOICE_STATUS[inv.status].tone}>{INVOICE_STATUS[inv.status].label}</Badge>
                       {inv.status === "overdue" && (
-                        <div className="text-[10px] text-red-700/80 mt-1">{inv.daysOverdue}d de mora</div>
+                        <div className="text-[11px] text-danger/80 mt-1">{inv.daysOverdue}d de mora</div>
                       )}
                     </td>
-                    <td className="px-5 py-4 font-mono text-[10px] text-foreground/60">
-                      {new Date(inv.due_date).toLocaleDateString("es-CO")}
+                    <td className="px-5 py-4 font-mono text-[11px] text-foreground/70">
+                      {formatCalendarDate(inv.due_date)}
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <a
                           href={`/api/invoices/${inv.id}/pdf`}
                           aria-label={`Descargar PDF de la factura ${inv.invoice_number}`}
-                          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground/60 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <Download size={14} />
                         </a>
@@ -192,7 +181,7 @@ export function InvoicesBoard({
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`Enviar recordatorio de pago por WhatsApp a ${inv.client_name}`}
-                            className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-green-500/20 border border-green-500/30 text-green-700 hover:bg-green-500/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-success/20 border border-success/30 text-success hover:bg-success/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <MessageCircle size={14} />
                           </a>
@@ -200,7 +189,7 @@ export function InvoicesBoard({
                         {canWrite && inv.balance > 0 && (
                           <button
                             onClick={() => setPaymentInvoice(inv)}
-                            className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1.5 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1.5 text-[11px] font-bold text-accent-strong hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <Wallet size={12} />
                             <span>Registrar pago</span>
@@ -303,7 +292,7 @@ function CreateInvoiceModal({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Ej. Anticipo 50% — Fase 1"
-            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
           />
         </div>
         <div className="grid sm:grid-cols-2 gap-3">
@@ -378,8 +367,8 @@ function PaymentModal({ invoice, onClose }: { invoice: Invoice; onClose: () => v
     <ModalShell titleId={titleId} title={`Registrar pago — ${invoice.project_title}`} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <Alert tone="error">{error}</Alert>}
-        <p className="text-[11px] text-foreground/60">
-          Saldo pendiente: <span className="font-mono font-bold text-amber-700">{formatMoney(invoice.balance, invoice.currency)}</span>
+        <p className="text-[11px] text-foreground/70">
+          Saldo pendiente: <span className="font-mono font-bold text-warning">{formatMoney(invoice.balance, invoice.currency)}</span>
         </p>
         <div className="space-y-1.5">
           <label className="block text-xs font-semibold text-foreground/80">Monto abonado</label>
@@ -412,7 +401,7 @@ function PaymentModal({ invoice, onClose }: { invoice: Invoice; onClose: () => v
               value={method}
               onChange={(e) => setMethod(e.target.value)}
               placeholder="Transferencia"
-              className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+              className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
             />
           </div>
         </div>

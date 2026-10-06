@@ -2,26 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, ChevronUp, ChevronDown, Sparkles, ExternalLink } from "lucide-react";
-import { Badge, type BadgeTone } from "./ui/Badge";
+import {  Plus, Trash2, ChevronUp, ChevronDown, Sparkles, ExternalLink } from "lucide-react";
+import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
-import type { Article, ArticleStatus } from "@/lib/queries/articles";
+import type { Article } from "@/lib/queries/articles";
 import type { BlogBlock } from "@/content/blogShared";
 import { blogPostPath } from "@/lib/blogPaths";
-
-const STATUS_LABELS: Record<ArticleStatus, string> = {
-  draft: "Borrador",
-  review: "En revisión",
-  published: "Publicado",
-};
-
-const STATUS_TONES: Record<ArticleStatus, BadgeTone> = {
-  draft: "neutral",
-  review: "warning",
-  published: "success",
-};
+import { ARTICLE_STATUS } from "./statusMeta";
+import { useFeedback } from "./ui/Feedback";
+import { PageBack } from "./ui/PageHeader";
+import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
+import { UnsavedNotice } from "./ui/UnsavedNotice";
 
 const inputClasses =
   "w-full rounded-lg border border-foreground/15 bg-foreground/[0.02] px-3 py-2 text-sm text-foreground outline-none focus:border-accent";
@@ -63,7 +55,8 @@ function BlockRow({
           value={block.type}
           onChange={(e) => changeType(e.target.value as BlogBlock["type"])}
           disabled={disabled}
-          className="rounded-lg border border-foreground/15 bg-foreground/[0.02] px-2 py-1 text-xs text-foreground outline-none focus:border-accent disabled:opacity-50"
+          aria-label={`Tipo del bloque ${index + 1}`}
+          className="min-h-11 rounded-lg border border-foreground/15 bg-foreground/[0.02] px-3 py-2 text-xs text-foreground outline-none focus:border-accent disabled:opacity-50"
         >
           <option value="paragraph">Párrafo</option>
           <option value="heading">Encabezado</option>
@@ -78,7 +71,7 @@ function BlockRow({
               onClick={() => onMove(-1)}
               disabled={index === 0}
               aria-label="Mover arriba"
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-foreground/60 hover:bg-foreground/10 disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <ChevronUp size={14} />
             </button>
@@ -87,7 +80,7 @@ function BlockRow({
               onClick={() => onMove(1)}
               disabled={index === total - 1}
               aria-label="Mover abajo"
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-foreground/60 hover:bg-foreground/10 disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <ChevronDown size={14} />
             </button>
@@ -95,7 +88,7 @@ function BlockRow({
               type="button"
               onClick={onRemove}
               aria-label="Eliminar bloque"
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-foreground/60 hover:bg-red-500/10 hover:text-red-700 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-danger/10 hover:text-danger outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <Trash2 size={14} />
             </button>
@@ -109,6 +102,7 @@ function BlockRow({
           onChange={(e) => onChange({ type: "paragraph", text: e.target.value })}
           disabled={disabled}
           rows={3}
+          aria-label={`Texto del párrafo (bloque ${index + 1})`}
           className={inputClasses}
           placeholder="Texto del párrafo… (enlace interno: [texto](/ruta))"
         />
@@ -120,7 +114,8 @@ function BlockRow({
             value={block.level}
             onChange={(e) => onChange({ ...block, level: Number(e.target.value) as 2 | 3 })}
             disabled={disabled}
-            className="rounded-lg border border-foreground/15 bg-foreground/[0.02] px-2 py-2 text-sm text-foreground outline-none focus:border-accent disabled:opacity-50"
+            aria-label={`Nivel del encabezado (bloque ${index + 1})`}
+            className="min-h-11 rounded-lg border border-foreground/15 bg-foreground/[0.02] px-2 py-2 text-sm text-foreground outline-none focus:border-accent disabled:opacity-50"
           >
             <option value={2}>H2</option>
             <option value={3}>H3</option>
@@ -131,6 +126,7 @@ function BlockRow({
             onChange={(e) => onChange({ ...block, text: e.target.value })}
             disabled={disabled}
             className={inputClasses}
+            aria-label={`Texto del encabezado (bloque ${index + 1})`}
             placeholder="Texto del encabezado…"
           />
         </div>
@@ -143,7 +139,8 @@ function BlockRow({
           disabled={disabled}
           rows={4}
           className={inputClasses}
-          placeholder={"Un ítem por línea…"}
+          aria-label={`Ítems de la lista (bloque ${index + 1})`}
+            placeholder={"Un ítem por línea…"}
         />
       )}
 
@@ -169,7 +166,7 @@ function BlockRow({
                       type="button"
                       onClick={() => onChange({ type: "faq", items: block.items.filter((_, i) => i !== itemIndex) })}
                       aria-label={`Eliminar pregunta ${itemIndex + 1}`}
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-foreground/60 hover:bg-red-500/10 hover:text-red-700 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-foreground/70 hover:bg-danger/10 hover:text-danger outline-none focus-visible:ring-2 focus-visible:ring-accent"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -207,6 +204,7 @@ function BlockRow({
             onChange={(e) => onChange({ ...block, language: e.target.value })}
             disabled={disabled}
             className={inputClasses}
+            aria-label={`Lenguaje del código (bloque ${index + 1})`}
             placeholder="Lenguaje (ej. ts)"
           />
           <textarea
@@ -215,6 +213,7 @@ function BlockRow({
             disabled={disabled}
             rows={6}
             className={`${inputClasses} font-mono text-xs`}
+            aria-label={`Código (bloque ${index + 1})`}
             placeholder="Código…"
           />
         </div>
@@ -236,6 +235,7 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const { dirty, markSaved } = useUnsavedChanges({ slug, title, description, author, authorSlug, tagsInput, blocks });
 
   const editable = canWrite && (article.status === "draft" || article.status === "review");
 
@@ -278,6 +278,7 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
         setError(data.error || "No se pudo guardar.");
         return;
       }
+      markSaved();
       setSuccess("Guardado.");
       router.refresh();
     } finally {
@@ -285,9 +286,16 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
     }
   };
 
+  const feedback = useFeedback();
   const runAction = async (action: "submit" | "publish" | "reject" | "unpublish" | "delete") => {
     if (action === "reject") {
-      const reason = window.prompt("Motivo del rechazo (se lo verá el autor):");
+      const reason = await feedback.prompt({
+        title: "Rechazar artículo",
+        description: "Vuelve a borrador con este motivo. Lo verá el autor.",
+        confirmLabel: "Rechazar",
+        tone: "danger",
+        input: { label: "Motivo del rechazo", required: true, multiline: true },
+      });
       if (!reason) return;
       setActionLoading(action);
       setError(null);
@@ -307,11 +315,12 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
     }
 
     if (action === "delete") {
-      if (!window.confirm(`¿Eliminar "${article.title || "este artículo"}"? Esta acción no se puede deshacer.`)) return;
+      if (!(await feedback.confirm({ title: `¿Eliminar "${article.title || "este artículo"}"? Esta acción no se puede deshacer.`, tone: "danger" }))) return;
       setActionLoading(action);
       const res = await fetch(`/api/articles/${article.id}`, { method: "DELETE" });
       setActionLoading(null);
       if (res.ok) router.push("/dashboard/contenido");
+      else feedback.toast({ tone: "error", message: "No se pudo eliminar el artículo." });
       return;
     }
 
@@ -331,17 +340,12 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <Link
-            href="/dashboard/contenido"
-            className="inline-flex items-center gap-1.5 text-xs text-foreground/60 hover:text-foreground outline-none rounded focus-visible:ring-2 focus-visible:ring-accent"
-          >
-            <ArrowLeft size={14} /> Volver a Contenido
-          </Link>
+          <PageBack href="/dashboard/contenido" label="Volver a Contenido" />
           <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground">
             {article.title || "Artículo sin título"}
           </h1>
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            <Badge tone={STATUS_TONES[article.status]}>{STATUS_LABELS[article.status]}</Badge>
+            <Badge tone={ARTICLE_STATUS[article.status].tone}>{ARTICLE_STATUS[article.status].label}</Badge>
             <Badge tone="neutral">{article.locale.toUpperCase()}</Badge>
             {article.targetKeyword && (
               <Badge tone="info">
@@ -360,7 +364,7 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
             )}
           </div>
           {article.rejectionReason && (
-            <p className="mt-2 text-xs text-red-700">Motivo del último rechazo: {article.rejectionReason}</p>
+            <p className="mt-2 text-xs text-danger">Motivo del último rechazo: {article.rejectionReason}</p>
           )}
         </div>
 
@@ -371,6 +375,7 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
                 {saving ? "Guardando…" : "Guardar"}
               </Button>
             )}
+            {editable && <UnsavedNotice dirty={dirty} />}
             {article.status === "draft" && (
               <Button variant="accent" onClick={() => runAction("submit")} disabled={actionLoading !== null}>
                 Enviar a revisión
@@ -391,7 +396,7 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
                 Despublicar
               </Button>
             )}
-            <Button variant="ghost" onClick={() => runAction("delete")} disabled={actionLoading !== null} className="text-red-700 hover:bg-red-500/10">
+            <Button variant="ghost" onClick={() => runAction("delete")} disabled={actionLoading !== null} className="text-danger hover:bg-danger/10">
               Eliminar
             </Button>
           </div>
@@ -404,12 +409,14 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
       <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClasses}>Título</label>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} disabled={!editable} className={inputClasses} />
+            <label htmlFor="ae-field-1" className={labelClasses}>Título</label>
+            <input
+              id="ae-field-1" type="text" value={title} onChange={(e) => setTitle(e.target.value)} disabled={!editable} className={inputClasses} />
           </div>
           <div>
-            <label className={labelClasses}>Slug (URL)</label>
+            <label htmlFor="ae-field-2" className={labelClasses}>Slug (URL)</label>
             <input
+              id="ae-field-2"
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
@@ -419,21 +426,25 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
           </div>
         </div>
         <div>
-          <label className={labelClasses}>Descripción (meta SEO)</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} disabled={!editable} rows={2} className={inputClasses} />
+          <label htmlFor="ae-field-3" className={labelClasses}>Descripción (meta SEO)</label>
+          <textarea
+            id="ae-field-3" value={description} onChange={(e) => setDescription(e.target.value)} disabled={!editable} rows={2} className={inputClasses} />
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
-            <label className={labelClasses}>Autor</label>
-            <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} disabled={!editable} className={inputClasses} />
+            <label htmlFor="ae-field-4" className={labelClasses}>Autor</label>
+            <input
+              id="ae-field-4" type="text" value={author} onChange={(e) => setAuthor(e.target.value)} disabled={!editable} className={inputClasses} />
           </div>
           <div>
-            <label className={labelClasses}>Slug del autor (/equipo#slug)</label>
-            <input type="text" value={authorSlug} onChange={(e) => setAuthorSlug(e.target.value)} disabled={!editable} className={inputClasses} />
+            <label htmlFor="ae-field-5" className={labelClasses}>Slug del autor (/equipo#slug)</label>
+            <input
+              id="ae-field-5" type="text" value={authorSlug} onChange={(e) => setAuthorSlug(e.target.value)} disabled={!editable} className={inputClasses} />
           </div>
           <div>
-            <label className={labelClasses}>Tags (separados por coma)</label>
-            <input type="text" value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} disabled={!editable} className={inputClasses} />
+            <label htmlFor="ae-field-6" className={labelClasses}>Tags (separados por coma)</label>
+            <input
+              id="ae-field-6" type="text" value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} disabled={!editable} className={inputClasses} />
           </div>
         </div>
       </div>

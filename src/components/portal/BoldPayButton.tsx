@@ -57,8 +57,11 @@ function loadBoldScript(): Promise<void> {
  * volver de Bold (ver PortalView.tsx) — este componente solo abre el
  * checkout, no sabe si el pago terminó aprobado.
  */
-export function BoldPayButton({ invoiceId }: { invoiceId: number }) {
+export function BoldPayButton({ invoiceId, amountLabel }: { invoiceId: number; amountLabel?: string }) {
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  // El mensaje real del servidor ("la factura ya está pagada", etc.) se muestra al
+  // cliente: antes se descartaba y siempre decía "No se pudo abrir el pago".
+  const [errorMessage, setErrorMessage] = useState("No se pudo abrir el pago. Intenta de nuevo.");
 
   async function handlePay() {
     setStatus("loading");
@@ -92,24 +95,28 @@ export function BoldPayButton({ invoiceId }: { invoiceId: number }) {
       setStatus("idle");
     } catch (error) {
       logError("Error al abrir el checkout de Bold", error);
+      setErrorMessage(error instanceof Error && error.message ? error.message : "No se pudo abrir el pago. Intenta de nuevo.");
       setStatus("error");
     }
   }
 
   return (
-    <div className="flex flex-col items-end gap-1">
+    <div className="flex flex-col items-end gap-1 max-md:items-stretch">
       <button
         type="button"
         onClick={handlePay}
+        // Precarga el script al acercarse: el primer clic ya no espera la descarga.
+        onPointerEnter={() => void loadBoldScript().catch(() => {})}
+        onFocus={() => void loadBoldScript().catch(() => {})}
         disabled={status === "loading"}
         className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-accent-strong px-4 text-xs font-bold text-white transition-all hover:brightness-90 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         {status === "loading" ? <Spinner size={14} className="animate-spin" /> : <CreditCard size={14} />}
-        <span>Pagar ahora</span>
+        <span>{amountLabel ? `Pagar ${amountLabel}` : "Pagar ahora"}</span>
       </button>
       {status === "error" && (
-        <span className="flex items-center gap-1 text-[10px] font-medium text-red-600">
-          <WarningCircle size={11} /> No se pudo abrir el pago. Intenta de nuevo.
+        <span role="alert" className="flex items-start gap-1 text-xs font-medium text-danger">
+          <WarningCircle size={12} className="mt-0.5 shrink-0" aria-hidden="true" /> {errorMessage}
         </span>
       )}
     </div>

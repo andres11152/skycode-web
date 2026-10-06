@@ -49,7 +49,10 @@ export function LeadsKanban({
   };
 
   return (
-    <div className="grid grid-cols-1 gap-4 overflow-x-auto sm:grid-cols-2 lg:grid-cols-4" role="group" aria-label="Tablero de leads por estado">
+    <div
+      className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 lg:grid-cols-4"
+      role="group" aria-label="Tablero de leads por estado"
+    >
       {LEAD_STATUS_OPTIONS.map((status) => {
         const columnLeads = leads.filter((lead) => lead.status === status);
         const styles = LEAD_STATUS_STYLES[status];
@@ -65,7 +68,7 @@ export function LeadsKanban({
             }}
             onDragLeave={() => setDragOverStatus((prev) => (prev === status ? null : prev))}
             onDrop={canDrag ? handleDrop(status) : undefined}
-            className={`flex min-h-[200px] flex-col gap-3 rounded-xl border p-3 transition-colors ${
+            className={`flex min-h-[200px] w-[82vw] max-w-xs shrink-0 snap-center flex-col gap-3 rounded-xl border p-3 transition-colors sm:w-auto sm:max-w-none ${
               isDragOver ? "border-accent bg-accent/5" : "border-foreground/10 bg-foreground/[0.02]"
             }`}
           >
@@ -74,14 +77,14 @@ export function LeadsKanban({
                 <span className={`h-2 w-2 rounded-full ${styles.dot}`} aria-hidden="true" />
                 <h3 className="text-xs font-bold text-foreground">{status}</h3>
               </div>
-              <span className="rounded-full bg-foreground/10 px-2 py-0.5 text-[10px] font-mono font-semibold text-foreground/60">
+              <span className="rounded-full bg-foreground/10 px-2 py-0.5 text-[11px] font-mono font-semibold text-foreground/70">
                 {columnLeads.length}
               </span>
             </div>
 
             <div className="flex flex-col gap-2">
               {columnLeads.length === 0 ? (
-                <p className="rounded-lg border border-dashed border-foreground/15 px-3 py-6 text-center text-[11px] text-foreground/40">
+                <p className="rounded-lg border border-dashed border-foreground/15 px-3 py-6 text-center text-xs text-foreground/70">
                   Sin prospectos
                 </p>
               ) : (
@@ -112,13 +115,13 @@ export function LeadsKanban({
                     >
                       <div>
                         <p className="truncate text-xs font-bold text-foreground">{lead.name}</p>
-                        <p className="truncate font-mono text-[10px] text-foreground/50">{lead.email}</p>
+                        <p className="truncate font-mono text-[11px] text-foreground/70">{lead.email}</p>
                       </div>
                       <p className="truncate text-[11px] text-foreground/70">{lead.service || "Sin especificar"}</p>
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-[11px] font-bold text-green-700">{lead.budget || "A convenir"}</span>
+                        <span className="font-mono text-[11px] font-bold text-success">{lead.budget || "A convenir"}</span>
                         {lead.owner && (
-                          <span className="truncate rounded-full bg-foreground/10 px-2 py-0.5 text-[10px] font-semibold text-foreground/70">
+                          <span className="truncate rounded-full bg-foreground/10 px-2 py-0.5 text-[11px] font-semibold text-foreground/70">
                             {lead.owner.name}
                           </span>
                         )}
@@ -127,13 +130,32 @@ export function LeadsKanban({
                         {getSlaBadge(lead.created_at, lead.status, now)}
                         {getFollowUpBadge(lead, todayIso)}
                       </div>
+                      {/* Arrastrar no existe con el dedo: en pantallas táctiles cada tarjeta
+                          trae su propio selector "Mover a…" (mismo callback que el arrastre). */}
+                      {canDrag && (
+                        <label className="hidden items-center gap-2 text-[11px] font-semibold text-foreground/70 pointer-coarse:flex" onClick={(e) => e.stopPropagation()}>
+                          Mover a
+                          <select
+                            value={lead.status}
+                            onChange={(e) => onStatusChange(lead.id, e.target.value)}
+                            onKeyDown={(e) => e.stopPropagation()}
+                            className="min-h-11 flex-1 rounded-lg border border-foreground/15 bg-background px-2 text-xs text-foreground outline-none focus:border-accent"
+                          >
+                            {LEAD_STATUS_OPTIONS.map((option) => (
+                              <option key={option} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
                       {waUrl && (
                         <a
                           href={waUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-1 rounded-lg bg-green-500/20 border border-green-500/30 px-2 py-1 text-[10px] font-semibold text-green-700 hover:bg-green-500/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          className="inline-flex items-center gap-1 rounded-lg bg-success/20 border border-success/30 px-2 py-1 text-[11px] font-semibold pointer-coarse:min-h-11 pointer-coarse:px-3 text-success hover:bg-success/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <span>WhatsApp</span>
                           <ExternalLink size={10} />

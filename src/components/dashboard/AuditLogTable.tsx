@@ -2,10 +2,12 @@
 
 import { Fragment, useState, useRef, useTransition } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { History, Search, ChevronLeft, ChevronRight, ChevronDown, User } from "lucide-react";
+import { History, Search,   ChevronDown, User } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { Badge, type BadgeTone } from "./ui/Badge";
 import type { AuditLogEntry } from "./types";
+import { formatDateTime } from "@/lib/utils";
+import { Pagination } from "./ui/Pagination";
 
 interface AuditLogTableProps {
   entries: AuditLogEntry[];
@@ -58,7 +60,6 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
     searchTimeoutRef.current = setTimeout(() => pushQuery({ q: value }), 400);
   };
 
-  const totalPages = Math.ceil(total / pageSize) || 1;
 
   return (
     <div className="space-y-8">
@@ -71,7 +72,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
 
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/70" />
           <input
             type="text"
             value={searchInput}
@@ -82,7 +83,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs text-foreground/60 font-mono">Acción:</span>
+          <span className="text-xs text-foreground/70 font-mono">Acción:</span>
           <select
             value={action}
             onChange={(e) => pushQuery({ action: e.target.value })}
@@ -108,14 +109,14 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-foreground/90">
                 <caption className="sr-only">Bitácora de auditoría del sistema, con actor, acción y contenido del cambio</caption>
-                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                   <tr>
                     <th scope="col" className="px-5 py-3.5">Actor</th>
                     <th scope="col" className="px-5 py-3.5">Acción</th>
                     <th scope="col" className="px-5 py-3.5">Entidad</th>
                     <th scope="col" className="px-5 py-3.5">IP</th>
                     <th scope="col" className="px-5 py-3.5">Fecha</th>
-                    <th scope="col" className="px-5 py-3.5 sr-only">Detalle</th>
+                    <th scope="col" className="relative px-5 py-3.5"><span className="sr-only">Detalle</span></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-foreground/10">
@@ -138,7 +139,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
                         >
                           <td className="px-5 py-3.5">
                             <div className="flex items-center gap-1.5">
-                              <User size={12} className="text-foreground/40 shrink-0" />
+                              <User size={12} className="text-foreground/70 shrink-0" />
                               <span className="font-mono truncate max-w-[180px]">
                                 {entry.actor_email || "Sistema / público"}
                               </span>
@@ -151,14 +152,14 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
                             {entry.entity_type}
                             {entry.entity_id ? `#${entry.entity_id}` : ""}
                           </td>
-                          <td className="px-5 py-3.5 font-mono text-foreground/50">{entry.ip || "—"}</td>
-                          <td suppressHydrationWarning className="px-5 py-3.5 font-mono text-foreground/50 whitespace-nowrap">
-                            {new Date(entry.created_at).toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" })}
+                          <td className="px-5 py-3.5 font-mono text-foreground/70">{entry.ip || "—"}</td>
+                          <td suppressHydrationWarning className="px-5 py-3.5 font-mono text-foreground/70 whitespace-nowrap">
+                            {formatDateTime(entry.created_at)}
                           </td>
                           <td className="px-5 py-3.5 text-right">
                             <ChevronDown
                               size={14}
-                              className={`text-foreground/40 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                              className={`text-foreground/70 transition-transform ${isExpanded ? "rotate-180" : ""}`}
                               aria-hidden="true"
                             />
                           </td>
@@ -171,7 +172,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
                                   {JSON.stringify(entry.diff, null, 2)}
                                 </pre>
                               ) : (
-                                <p className="text-[11px] text-foreground/50">Sin contenido adicional para esta entrada.</p>
+                                <p className="text-[11px] text-foreground/70">Sin contenido adicional para esta entrada.</p>
                               )}
                             </td>
                           </tr>
@@ -183,30 +184,7 @@ export function AuditLogTable({ entries, total, page, pageSize, q, action, actio
               </table>
             </div>
 
-            <div className="flex items-center justify-between border-t border-foreground/10 px-5 py-3.5 text-xs text-foreground/60 font-mono">
-              <div>
-                Mostrando {((page - 1) * pageSize) + 1} a {Math.min(page * pageSize, total)} de {total} registros
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => pushQuery({ page: page - 1 })}
-                  disabled={page === 1 || isNavigating}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label="Página anterior"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <span>Página {page} de {totalPages}</span>
-                <button
-                  onClick={() => pushQuery({ page: page + 1 })}
-                  disabled={page === totalPages || isNavigating}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label="Página siguiente"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
+            <Pagination page={page} pageSize={pageSize} total={total} noun="registros" onPageChange={(next) => pushQuery({ page: next })} disabled={isNavigating} />
           </>
         )}
       </div>

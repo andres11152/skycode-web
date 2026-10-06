@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { RefreshCw, TrendingUp, Users2, Target, BarChart3 } from "lucide-react";
 import { Button } from "./ui/Button";
 import { ExchangeRateNote } from "./ExchangeRateNote";
-import { formatMoney } from "@/lib/utils";
+import { formatCompactCop, formatMoney } from "@/lib/utils";
+import { StatCard } from "./ui/StatCard";
 import type { ExecutiveReport } from "@/lib/queries/reports";
 
 const CHANNEL_LABELS: Record<string, string> = {
@@ -24,6 +25,16 @@ const STATUS_LABELS: Record<string, string> = {
   "Fase QA": "Fase QA",
   Entregado: "Entregado",
   "Garantía SLA": "Garantía SLA",
+};
+
+// Un tono por estado (antes alternaban 2 azules y 3 estados se veían igual).
+// Entregado y Garantía SLA comparten "terminado" y se distinguen por opacidad.
+const STATUS_BAR: Record<string, string> = {
+  Planificación: "bg-foreground/35",
+  "En Desarrollo": "bg-info",
+  "Fase QA": "bg-warning",
+  Entregado: "bg-success",
+  "Garantía SLA": "bg-success/55",
 };
 
 function monthLabel(monthKey: string): string {
@@ -65,38 +76,19 @@ export function ReportsView({ report, usdToCopRate }: { report: ExecutiveReport;
       <ExchangeRateNote usdToCopRate={usdToCopRate} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-foreground/60">
-            <span>Ingresos (12 meses)</span>
-            <TrendingUp size={18} className="text-green-700" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-green-700">{formatMoney(kpis.revenueLast12MonthsCop, "COP")}</div>
-        </div>
-        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-foreground/60">
-            <span>Leads (12 meses)</span>
-            <Users2 size={18} className="text-accent" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-foreground">{kpis.leadsLast12Months}</div>
-        </div>
-        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-foreground/60">
-            <span>Tasa de conversión</span>
-            <Target size={18} className="text-amber-700" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-amber-700">
-            {kpis.conversionRatePct !== null ? `${kpis.conversionRatePct.toFixed(1)}%` : "—"}
-          </div>
-        </div>
-        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-foreground/60">
-            <span>Margen promedio</span>
-            <BarChart3 size={18} className="text-accent" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-foreground">
-            {kpis.avgMarginPct !== null ? `${kpis.avgMarginPct.toFixed(1)}%` : "—"}
-          </div>
-        </div>
+        {/* Tono neutro a propósito: ni "ingresos" ni "conversión" son buenos/malos por sí mismos. */}
+        <StatCard label="Ingresos (12 meses)" value={formatMoney(kpis.revenueLast12MonthsCop, "COP")} icon={<TrendingUp size={18} className="text-accent-strong" />} />
+        <StatCard label="Leads (12 meses)" value={kpis.leadsLast12Months} icon={<Users2 size={18} className="text-accent-strong" />} />
+        <StatCard
+          label="Tasa de conversión"
+          value={kpis.conversionRatePct !== null ? `${kpis.conversionRatePct.toFixed(1)}%` : "—"}
+          icon={<Target size={18} className="text-accent-strong" />}
+        />
+        <StatCard
+          label="Margen promedio"
+          value={kpis.avgMarginPct !== null ? `${kpis.avgMarginPct.toFixed(1)}%` : "—"}
+          icon={<BarChart3 size={18} className="text-accent-strong" />}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -104,17 +96,40 @@ export function ReportsView({ report, usdToCopRate }: { report: ExecutiveReport;
           <h2 id="revenue-chart-heading" className="text-sm font-bold text-foreground mb-5">
             Ingresos mensuales
           </h2>
-          <div className="flex items-end gap-1.5 h-40">
+          {/* Móvil: filas horizontales con el monto a la vista (12 barras verticales dejaban
+              19px por barra y las etiquetas se pisaban). Desde `sm`: columnas, con el gráfico
+              oculto a lectores de pantalla y la MISMA lista como alternativa accesible. */}
+          <ol className="space-y-2 sm:sr-only">
             {monthlyRevenue.map((point) => (
-              <div key={point.month} className="flex-1 flex flex-col items-center justify-end gap-1.5 group">
-                <div
-                  className="w-full rounded-t-md bg-accent transition-colors group-hover:bg-accent-strong"
-                  style={{ height: `${Math.max(2, (point.totalCop / maxRevenue) * 100)}%` }}
-                  title={formatMoney(point.totalCop, "COP")}
-                />
-                <span className="text-[9px] font-mono uppercase text-foreground/50">{monthLabel(point.month)}</span>
-              </div>
+              <li key={point.month} className="grid grid-cols-[2.5rem_minmax(0,1fr)_4.5rem] items-center gap-2 text-xs">
+                <span className="font-mono uppercase text-foreground/70">{monthLabel(point.month)}</span>
+                <span aria-hidden="true" className="h-2.5 overflow-hidden rounded-full bg-foreground/10">
+                  <span className="block h-full rounded-full bg-accent" style={{ width: `${Math.max(1, (point.totalCop / maxRevenue) * 100)}%` }} />
+                </span>
+                <span className="text-right font-mono tabular-nums text-foreground">{formatCompactCop(point.totalCop)}</span>
+              </li>
             ))}
+          </ol>
+          <div aria-hidden="true" className="hidden sm:block">
+            <p className="mb-2 text-right font-mono text-xs text-foreground/70">Máximo: {formatCompactCop(maxRevenue)}</p>
+            <div className="flex h-40 items-end gap-1.5 border-b border-foreground/15">
+              {monthlyRevenue.map((point) => (
+                <div key={point.month} className="group flex h-full flex-1 flex-col items-center justify-end">
+                  <div
+                    className="w-full rounded-t-md bg-accent transition-colors group-hover:bg-accent-strong"
+                    style={{ height: `${Math.max(1, (point.totalCop / maxRevenue) * 100)}%` }}
+                    title={formatMoney(point.totalCop, "COP")}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-1.5 flex gap-1.5">
+              {monthlyRevenue.map((point) => (
+                <span key={point.month} className="flex-1 text-center font-mono text-[11px] uppercase text-foreground/70">
+                  {monthLabel(point.month)}
+                </span>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -123,18 +138,18 @@ export function ReportsView({ report, usdToCopRate }: { report: ExecutiveReport;
             Leads por canal
           </h2>
           {leadsByChannel.length === 0 ? (
-            <p className="text-xs text-foreground/60">Sin leads en los últimos 12 meses.</p>
+            <p className="text-xs text-foreground/70">Sin leads en los últimos 12 meses.</p>
           ) : (
             <div className="space-y-3">
               {leadsByChannel.map((c) => (
                 <div key={c.channel} className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-foreground/80">{CHANNEL_LABELS[c.channel] ?? c.channel}</span>
-                    <span className="font-mono text-foreground/60">
-                      {c.count} {c.wonCount > 0 && <span className="text-green-700">({c.wonCount} ganados)</span>}
+                    <span className="font-mono text-foreground/70">
+                      {c.count} {c.wonCount > 0 && <span className="text-success">({c.wonCount} ganados)</span>}
                     </span>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-foreground/10 overflow-hidden">
+                  <div aria-hidden="true" className="h-2 w-full rounded-full bg-foreground/10 overflow-hidden">
                     <div className="h-full rounded-full bg-accent" style={{ width: `${(c.count / maxLeads) * 100}%` }} />
                   </div>
                 </div>
@@ -149,23 +164,23 @@ export function ReportsView({ report, usdToCopRate }: { report: ExecutiveReport;
           Proyectos por estado
         </h2>
         {projectsByStatus.length === 0 ? (
-          <p className="text-xs text-foreground/60">Sin proyectos todavía.</p>
+          <p className="text-xs text-foreground/70">Sin proyectos todavía.</p>
         ) : (
           <>
-            <div className="flex h-3 w-full overflow-hidden rounded-full bg-foreground/10">
-              {projectsByStatus.map((p, i) => (
+            <div aria-hidden="true" className="flex h-3 w-full overflow-hidden rounded-full bg-foreground/10">
+              {projectsByStatus.map((p) => (
                 <div
                   key={p.status}
-                  className={i % 2 === 0 ? "h-full bg-accent" : "h-full bg-accent-strong"}
+                  className={`h-full ${STATUS_BAR[p.status] ?? "bg-foreground/35"}`}
                   style={{ width: `${(p.count / totalProjects) * 100}%` }}
                   title={`${STATUS_LABELS[p.status] ?? p.status}: ${p.count}`}
                 />
               ))}
             </div>
             <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs">
-              {projectsByStatus.map((p, i) => (
+              {projectsByStatus.map((p) => (
                 <div key={p.status} className="flex items-center gap-1.5">
-                  <span className={`h-2 w-2 rounded-full ${i % 2 === 0 ? "bg-accent" : "bg-accent-strong"}`} />
+                  <span aria-hidden="true" className={`h-2.5 w-2.5 rounded-full ${STATUS_BAR[p.status] ?? "bg-foreground/35"}`} />
                   <span className="text-foreground/70">{STATUS_LABELS[p.status] ?? p.status}</span>
                   <span className="font-mono font-bold text-foreground">{p.count}</span>
                 </div>

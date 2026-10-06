@@ -61,3 +61,28 @@ export function SkeletonCardGridView({ cards = 6 }: { cards?: number }) {
     </div>
   );
 }
+
+/** Vista genérica de módulo: encabezado + fila de KPIs + tabla. Es el `loading.tsx` de /dashboard y /portal. */
+export function SkeletonModuleView() {
+  return (
+    <div className="space-y-8" aria-busy="true" aria-label="Cargando">
+      <div className="space-y-2">
+        <Skeleton className="h-7 w-64 max-w-full" />
+        <Skeleton className="h-3 w-96 max-w-full" />
+      </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="space-y-3 rounded-xl border border-foreground/10 bg-background p-5">
+            <Skeleton className="h-3 w-1/2" />
+            <Skeleton className="h-7 w-2/3" />
+          </div>
+        ))}
+      </div>
+      <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <SkeletonRow key={i} columns={4} />
+        ))}
+      </div>
+    </div>
+  );
+}

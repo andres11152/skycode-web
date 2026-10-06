@@ -15,8 +15,6 @@ import {
   ExternalLink,
   TrendingUp,
   SlidersHorizontal,
-  ChevronLeft,
-  ChevronRight,
   FileText,
   Phone,
   Mail,
@@ -40,6 +38,9 @@ import { LEAD_STATUS_OPTIONS, LEAD_STATUS_STYLES, getSlaBadge, getFollowUpBadge,
 import { logError } from "@/lib/logger";
 import { buildLeadWhatsappUrl } from "@/lib/leadWhatsapp";
 import type { Lead, LeadActivity, LeadActivityType, LeadOwner } from "./types";
+import { formatDateTime, formatShortDate } from "@/lib/utils";
+import { Pagination } from "./ui/Pagination";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 
 const ACTIVITY_LABELS: Record<LeadActivityType, string> = {
   note: "Nota",
@@ -99,6 +100,38 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
   }
 
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+
+  const detailRef = useRef<HTMLDivElement>(null);
+
+  useFocusTrap(selectedLead !== null, detailRef);
+
+  // Panel de detalle: Esc lo cierra y el scroll del fondo queda bloqueado mientras está abierto.
+
+  useEffect(() => {
+
+    if (selectedLead === null) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+
+      if (e.key === "Escape") setSelectedLead(null);
+
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+
+    const previous = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+
+      document.removeEventListener("keydown", onKeyDown);
+
+      document.body.style.overflow = previous;
+
+    };
+
+  }, [selectedLead]);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const [activities, setActivities] = useState<LeadActivity[]>([]);
@@ -400,7 +433,6 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const totalPages = Math.ceil(total / pageSize) || 1;
   const exportParams = new URLSearchParams();
   if (q) exportParams.set("q", q);
   if (status !== "ALL") exportParams.set("status", status);
@@ -432,52 +464,52 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <SpotlightCard>
           <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-foreground/60">
+            <div className="flex items-center justify-between text-xs text-foreground/70">
               <span>Total Cotizaciones</span>
               <Users size={18} className="text-accent" />
             </div>
             <div className="text-2xl font-bold font-mono text-foreground">{stats.total}</div>
-            <div className="text-[10px] text-foreground/50">Capturados en plataforma</div>
+            <div className="text-[11px] text-foreground/70">Capturados en plataforma</div>
           </div>
         </SpotlightCard>
 
         <SpotlightCard>
           <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-foreground/60">
+            <div className="flex items-center justify-between text-xs text-foreground/70">
               <span>Leads Nuevos</span>
-              <Clock size={18} className="text-amber-700" />
+              <Clock size={18} className="text-warning" />
             </div>
-            <div className="text-2xl font-bold font-mono text-amber-700">{stats.newCount}</div>
-            <div className="text-[10px] text-amber-700/70">Requieren contacto prioritario</div>
+            <div className="text-2xl font-bold font-mono text-warning">{stats.newCount}</div>
+            <div className="text-[11px] text-warning/70">Requieren contacto prioritario</div>
           </div>
         </SpotlightCard>
 
         <SpotlightCard>
           <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-foreground/60">
+            <div className="flex items-center justify-between text-xs text-foreground/70">
               <span>Clientes Ganados</span>
-              <CheckCircle2 size={18} className="text-green-700" />
+              <CheckCircle2 size={18} className="text-success" />
             </div>
-            <div className="text-2xl font-bold font-mono text-green-700">{stats.wonCount}</div>
-            <div className="text-[10px] text-green-700/70">Proyectos en desarrollo</div>
+            <div className="text-2xl font-bold font-mono text-success">{stats.wonCount}</div>
+            <div className="text-[11px] text-success/70">Proyectos en desarrollo</div>
           </div>
         </SpotlightCard>
 
         <SpotlightCard>
           <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-foreground/60">
+            <div className="flex items-center justify-between text-xs text-foreground/70">
               <span>Base de Datos</span>
-              <TrendingUp size={18} className="text-sky-700" />
+              <TrendingUp size={18} className="text-info" />
             </div>
-            <div className="text-sm font-bold font-mono text-sky-700 truncate">PostgreSQL Render</div>
-            <div className="text-[10px] text-foreground/50">Conexión cifrada SSL</div>
+            <div className="text-sm font-bold font-mono text-info truncate">PostgreSQL Render</div>
+            <div className="text-[11px] text-foreground/70">Conexión cifrada SSL</div>
           </div>
         </SpotlightCard>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/70" />
           <input
             type="text"
             value={searchInput}
@@ -489,8 +521,8 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
         {view === "table" && (
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <SlidersHorizontal size={14} className="text-foreground/60" />
-            <span className="text-xs text-foreground/60 font-mono">Estado:</span>
+            <SlidersHorizontal size={14} className="text-foreground/70" />
+            <span className="text-xs text-foreground/70 font-mono">Estado:</span>
             <select
               value={status}
               onChange={(e) => pushQuery({ status: e.target.value })}
@@ -514,7 +546,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
             onClick={() => pushQuery({ view: "table" })}
             aria-pressed={view === "table"}
             className={`flex min-h-9 items-center gap-1.5 rounded-lg px-3 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-              view === "table" ? "bg-accent-strong text-white" : "text-foreground/60 hover:bg-foreground/10"
+              view === "table" ? "bg-accent-strong text-white" : "text-foreground/70 hover:bg-foreground/10"
             }`}
           >
             <TableProperties size={14} />
@@ -525,7 +557,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
             onClick={() => pushQuery({ view: "kanban" })}
             aria-pressed={view === "kanban"}
             className={`flex min-h-9 items-center gap-1.5 rounded-lg px-3 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-              view === "kanban" ? "bg-accent-strong text-white" : "text-foreground/60 hover:bg-foreground/10"
+              view === "kanban" ? "bg-accent-strong text-white" : "text-foreground/70 hover:bg-foreground/10"
             }`}
           >
             <LayoutGrid size={14} />
@@ -563,7 +595,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
           <>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-foreground/90">
-                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                   <tr>
                     <th className="px-5 py-3.5">Cliente / Email</th>
                     <th className="px-5 py-3.5">Servicio Solicitado</th>
@@ -593,7 +625,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                       >
                         <td className="px-5 py-4">
                           <div className="font-bold text-foreground">{lead.name}</div>
-                          <div className="text-[11px] text-foreground/60 font-mono">{lead.email}</div>
+                          <div className="text-[11px] text-foreground/70 font-mono">{lead.email}</div>
                         </td>
 
                         <td className="px-5 py-4 max-w-xs">
@@ -601,13 +633,13 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                             {lead.service || "Sin especificar"}
                           </div>
                           {lead.message && (
-                            <div className="text-[10px] text-foreground/50 line-clamp-1 mt-0.5">
+                            <div className="text-[11px] text-foreground/70 line-clamp-1 mt-0.5">
                               {lead.message}
                             </div>
                           )}
                         </td>
 
-                        <td className="px-5 py-4 font-mono font-bold text-green-700">
+                        <td className="px-5 py-4 font-mono font-bold text-success">
                           {lead.budget || "A convenir"}
                         </td>
 
@@ -647,13 +679,13 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                               href={waUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 rounded-lg bg-green-500/20 border border-green-500/30 px-3 py-1.5 text-[11px] font-semibold text-green-700 hover:bg-green-500/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                              className="inline-flex items-center gap-1 rounded-lg bg-success/20 border border-success/30 px-3 py-1.5 text-[11px] font-semibold text-success hover:bg-success/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                             >
                               <span>WhatsApp</span>
                               <ExternalLink size={12} />
                             </a>
                           ) : (
-                            <span className="text-[10px] text-foreground/40 font-mono">Ver Detalle →</span>
+                            <span className="text-[11px] text-foreground/70 font-mono">Ver Detalle →</span>
                           )}
                         </td>
                       </tr>
@@ -663,28 +695,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
               </table>
             </div>
 
-            <div className="flex items-center justify-between border-t border-foreground/10 px-5 py-3.5 text-xs text-foreground/60 font-mono">
-              <div>
-                Mostrando {((page - 1) * pageSize) + 1} a {Math.min(page * pageSize, total)} de {total} registros
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => pushQuery({ page: page - 1 })}
-                  disabled={page === 1}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <span>Página {page} de {totalPages}</span>
-                <button
-                  onClick={() => pushQuery({ page: page + 1 })}
-                  disabled={page === totalPages}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
+            <Pagination page={page} pageSize={pageSize} total={total} noun="registros" onPageChange={(next) => pushQuery({ page: next })} disabled={isNavigating} />
           </>
         )}
       </div>
@@ -693,7 +704,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
       <AnimatePresence>
         {selectedLead && (
           <div
-            className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-sm flex justify-end"
+            className="fixed inset-0 z-50 overflow-hidden bg-foreground/60 backdrop-blur-sm flex justify-end"
             onClick={() => setSelectedLead(null)}
             role="presentation"
           >
@@ -703,9 +714,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               onClick={(e) => e.stopPropagation()}
-              onKeyDown={(e) => {
-                if (e.key === "Escape") setSelectedLead(null);
-              }}
+              ref={detailRef}
               className="w-full max-w-lg bg-background border-l border-foreground/20 p-6 overflow-y-auto space-y-6 text-foreground shadow-2xl flex flex-col justify-between outline-none"
               role="dialog"
               aria-modal="true"
@@ -715,14 +724,14 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
               <div className="space-y-6">
                 <div className="flex items-start justify-between border-b border-foreground/10 pb-4">
                   <div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/50">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-foreground/70">
                       Detalle de Prospecto #{selectedLead.id}
                     </span>
                     <h2 id={`lead-detail-${selectedLead.id}`} className="text-xl font-bold text-foreground mt-0.5">{selectedLead.name}</h2>
                   </div>
                   <button
                     onClick={() => setSelectedLead(null)}
-                    className="rounded-full p-1 text-foreground/60 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    className="-mr-2 -mt-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground/70 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <X size={20} />
                   </button>
@@ -730,45 +739,45 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
                 <div className="grid grid-cols-2 gap-3 font-mono text-xs">
                   <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-3">
-                    <span className="text-[10px] text-foreground/50 block">Presupuesto</span>
-                    <span className="font-bold text-green-700">{selectedLead.budget || "A convenir"}</span>
+                    <span className="text-[11px] text-foreground/70 block">Presupuesto</span>
+                    <span className="font-bold text-success">{selectedLead.budget || "A convenir"}</span>
                   </div>
                   <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-3">
-                    <span className="text-[10px] text-foreground/50 block">Tiempo Est.</span>
-                    <span className="font-bold text-accent">{selectedLead.estimated_weeks || 4} Semanas</span>
+                    <span className="text-[11px] text-foreground/70 block">Tiempo Est.</span>
+                    <span className="font-bold text-accent-strong">{selectedLead.estimated_weeks || 4} Semanas</span>
                   </div>
                 </div>
 
                 <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-4 space-y-3 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-foreground/60">Correo Electrónico:</span>
+                    <span className="text-foreground/70">Correo Electrónico:</span>
                     <button
                       onClick={() => handleCopy(selectedLead.email, "email")}
-                      className="flex items-center gap-1 font-mono text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+                      className="flex items-center gap-1 font-mono text-accent-strong hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
                     >
                       <span>{selectedLead.email}</span>
-                      {copiedField === "email" ? <Check size={12} className="text-green-700" /> : <Copy size={12} />}
+                      {copiedField === "email" ? <Check size={12} className="text-success" /> : <Copy size={12} />}
                     </button>
                   </div>
                   {selectedLead.phone && (
                     <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
-                      <span className="text-foreground/60">Teléfono / WhatsApp:</span>
+                      <span className="text-foreground/70">Teléfono / WhatsApp:</span>
                       <button
                         onClick={() => handleCopy(selectedLead.phone || "", "phone")}
-                        className="flex items-center gap-1 font-mono text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+                        className="flex items-center gap-1 font-mono text-accent-strong hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
                       >
                         <span>{selectedLead.phone}</span>
-                        {copiedField === "phone" ? <Check size={12} className="text-green-700" /> : <Copy size={12} />}
+                        {copiedField === "phone" ? <Check size={12} className="text-success" /> : <Copy size={12} />}
                       </button>
                     </div>
                   )}
                   <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
-                    <span className="text-foreground/60">Origen de Captación:</span>
+                    <span className="text-foreground/70">Origen de Captación:</span>
                     <span className="font-mono text-foreground/90">{selectedLead.source || "Sin especificar"}</span>
                   </div>
                   {selectedLead.utm_source && (
                     <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
-                      <span className="text-foreground/60">Campaña (UTM):</span>
+                      <span className="text-foreground/70">Campaña (UTM):</span>
                       <span className="font-mono text-foreground/90 text-right">
                         {selectedLead.utm_source}
                         {selectedLead.utm_campaign ? ` / ${selectedLead.utm_campaign}` : ""}
@@ -776,9 +785,9 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                     </div>
                   )}
                   <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
-                    <span className="text-foreground/60">Fecha de Registro:</span>
+                    <span className="text-foreground/70">Fecha de Registro:</span>
                     <span className="font-mono text-foreground/70">
-                      {new Date(selectedLead.created_at).toLocaleString("es-CO")}
+                      {formatDateTime(selectedLead.created_at)}
                     </span>
                   </div>
                 </div>
@@ -829,7 +838,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                         onClick={handleClearFollowUp}
                         disabled={savingFollowUp}
                         aria-label="Borrar recordatorio"
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-foreground/50 hover:bg-red-500/10 hover:text-red-700 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-foreground/70 hover:bg-danger/10 hover:text-danger transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
                         <X size={14} />
                       </button>
@@ -841,7 +850,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                     placeholder="Nota para cuando toque recontactar (opcional)"
                     rows={2}
                     maxLength={500}
-                    className="w-full rounded-lg border border-foreground/15 bg-foreground/[0.02] px-3 py-2 text-xs text-foreground placeholder:text-foreground/40 outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background resize-none"
+                    className="w-full rounded-lg border border-foreground/15 bg-foreground/[0.02] px-3 py-2 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background resize-none"
                   />
                   <button
                     type="button"
@@ -880,12 +889,12 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                         }
                       }}
                       placeholder="Registrar llamada, correo enviado o nota..."
-                      className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-foreground/10 px-3 py-2 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+                      className="flex-1 min-w-0 rounded-lg border border-foreground/15 bg-foreground/10 px-3 py-2 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
                     />
                     <button
                       onClick={handleAddActivity}
                       disabled={isAddingActivity || !newActivityBody.trim()}
-                      className="rounded-lg bg-accent/20 border border-accent/30 px-3 py-2 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all disabled:opacity-50 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      className="rounded-lg bg-accent/20 border border-accent/30 px-3 py-2 text-[11px] font-bold text-accent-strong hover:bg-accent/30 transition-all disabled:opacity-50 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     >
                       Agregar
                     </button>
@@ -893,9 +902,9 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
 
                   <div className="space-y-2 max-h-64 overflow-y-auto">
                     {activitiesLoading ? (
-                      <p className="text-[11px] text-foreground/50 text-center py-4">Cargando historial...</p>
+                      <p className="text-[11px] text-foreground/70 text-center py-4">Cargando historial...</p>
                     ) : activities.length === 0 ? (
-                      <p className="text-[11px] text-foreground/50 text-center py-4">Sin actividad registrada todavía.</p>
+                      <p className="text-[11px] text-foreground/70 text-center py-4">Sin actividad registrada todavía.</p>
                     ) : (
                       activities.map((activity) => {
                         const Icon = ACTIVITY_ICONS[activity.type];
@@ -906,13 +915,13 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                                 <Icon size={12} className="text-accent" />
                                 {ACTIVITY_LABELS[activity.type]}
                               </span>
-                              <span className="text-[10px] text-foreground/50 font-mono">
-                                {new Date(activity.created_at).toLocaleString("es-CO")}
+                              <span className="text-[11px] text-foreground/70 font-mono">
+                                {formatDateTime(activity.created_at)}
                               </span>
                             </div>
                             <p className="text-foreground/90 whitespace-pre-wrap">{activity.body}</p>
                             {activity.actor_name && (
-                              <p className="text-[10px] text-foreground/40 mt-1">— {activity.actor_name}</p>
+                              <p className="text-[11px] text-foreground/70 mt-1">— {activity.actor_name}</p>
                             )}
                           </div>
                         );
@@ -923,10 +932,10 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
               </div>
 
               {selectedLead.anonymized_at ? (
-                <div className="flex items-center gap-2 rounded-xl border border-foreground/10 bg-foreground/[0.03] p-3 text-[11px] text-foreground/60">
-                  <ShieldCheck size={14} className="shrink-0 text-foreground/40" />
+                <div className="flex items-center gap-2 rounded-xl border border-foreground/10 bg-foreground/[0.03] p-3 text-[11px] text-foreground/70">
+                  <ShieldCheck size={14} className="shrink-0 text-foreground/70" />
                   <span>
-                    Este prospecto fue anonimizado el {new Date(selectedLead.anonymized_at).toLocaleDateString("es-CO")} — su
+                    Este prospecto fue anonimizado el {formatShortDate(selectedLead.anonymized_at)} — su
                     nombre, correo, teléfono y mensaje ya no son recuperables.
                   </span>
                 </div>
@@ -938,7 +947,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                     href={buildLeadWhatsappUrl(selectedLead)!}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-2.5 text-xs font-bold text-black hover:bg-green-400 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-success px-4 py-2.5 text-xs font-bold text-white hover:brightness-90 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <span>Abrir Chat en WhatsApp</span>
                     <ExternalLink size={14} />
@@ -948,7 +957,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
                   <button
                     onClick={() => handleDeleteLead(selectedLead)}
                     disabled={deletingId === selectedLead.id}
-                    className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-red-500/30 px-4 py-2.5 text-xs font-medium text-red-700 hover:bg-red-500/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-danger/30 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <Trash2 size={14} />
                     <span>{deletingId === selectedLead.id ? "Eliminando…" : "Eliminar"}</span>
@@ -988,7 +997,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
       >
         <div className="flex flex-col gap-4">
           <div className="flex gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-600">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-danger/10 text-danger">
               <AlertTriangle size={18} />
             </div>
             <p className="text-sm text-foreground/80 leading-relaxed">
@@ -1010,7 +1019,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
               type="button"
               onClick={confirmDeleteLead}
               disabled={deletingId === leadPendingDelete?.id}
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-danger px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:brightness-90 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <Trash2 size={14} />
               <span>{deletingId === leadPendingDelete?.id ? "Eliminando…" : "Eliminar definitivamente"}</span>
@@ -1032,7 +1041,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
       >
         <div className="flex flex-col gap-4">
           <div className="flex gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-600">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-danger/10 text-danger">
               <ShieldAlert size={18} />
             </div>
             <p className="text-sm text-foreground/80 leading-relaxed">
@@ -1044,7 +1053,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
           </div>
 
           {anonymizeError && (
-            <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-xs text-red-700 font-medium">
+            <div className="rounded-lg bg-danger/10 border border-danger/20 p-3 text-xs text-danger font-medium">
               {anonymizeError}
             </div>
           )}
@@ -1075,7 +1084,7 @@ export function LeadsTable({ leads: initialLeads, total, page, pageSize, q, stat
               type="button"
               onClick={confirmAnonymizeLead}
               disabled={anonymizeConfirmText !== leadPendingAnonymize?.name || anonymizingId === leadPendingAnonymize?.id}
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-danger px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:brightness-90 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <ShieldAlert size={14} />
               <span>{anonymizingId === leadPendingAnonymize?.id ? "Anonimizando…" : "Anonimizar definitivamente"}</span>

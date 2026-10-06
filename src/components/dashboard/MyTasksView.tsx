@@ -4,16 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { Clock, ClipboardCheck, AlertTriangle } from "lucide-react";
 import { EmptyState } from "./EmptyState";
-import { Badge } from "./ui/Badge";
+import { Badge, badgeToneClass } from "./ui/Badge";
 import type { MyTask, TaskStatus } from "./types";
+import { formatCalendarDate } from "@/lib/utils";
+import { TASK_STATUS } from "./statusMeta";
+import { useFeedback } from "./ui/Feedback";
 
 const STATUS_OPTIONS: TaskStatus[] = ["Pendiente", "En Progreso", "Completada"];
-
-const STATUS_STYLES: Record<TaskStatus, string> = {
-  Pendiente: "bg-foreground/10 text-foreground/60",
-  "En Progreso": "bg-sky-500/10 border border-sky-500/20 text-sky-700",
-  Completada: "bg-green-500/10 border border-green-500/20 text-green-700",
-};
 
 function isOverdue(task: MyTask): boolean {
   if (!task.due_date || task.status === "Completada") return false;
@@ -32,6 +29,7 @@ export function MyTasksView({ initialTasks }: { initialTasks: MyTask[] }) {
   const [tasks, setTasks] = useState<MyTask[]>(initialTasks);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
 
+  const feedback = useFeedback();
   const handleStatusChange = async (taskId: number, status: TaskStatus) => {
     setUpdatingId(taskId);
     try {
@@ -43,10 +41,11 @@ export function MyTasksView({ initialTasks }: { initialTasks: MyTask[] }) {
       if (res.ok) {
         const data = await res.json();
         setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, ...data.task } : t)));
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo cambiar el estado de la tarea." });
       }
     } catch {
-      // Silencioso a propósito: el select vuelve a su valor real en el
-      // próximo render si el PATCH falló, mismo criterio que TasksBoard.
+      feedback.toast({ tone: "error", message: "No se pudo cambiar el estado. Revisa tu conexión." });
     } finally {
       setUpdatingId(null);
     }
@@ -64,7 +63,7 @@ export function MyTasksView({ initialTasks }: { initialTasks: MyTask[] }) {
       </div>
 
       {overdueCount > 0 && (
-        <div className="flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-xs font-medium text-red-700">
+        <div className="flex items-center gap-2 rounded-xl border border-danger/20 bg-danger/5 px-4 py-3 text-xs font-medium text-danger">
           <AlertTriangle size={14} />
           Tienes {overdueCount} {overdueCount === 1 ? "tarea vencida" : "tareas vencidas"}.
         </div>
@@ -79,7 +78,7 @@ export function MyTasksView({ initialTasks }: { initialTasks: MyTask[] }) {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
               <caption className="sr-only">Tareas asignadas a mí, con proyecto, estado y horas</caption>
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th scope="col" className="px-4 py-3">Tarea</th>
                   <th scope="col" className="px-4 py-3">Proyecto</th>
@@ -93,17 +92,17 @@ export function MyTasksView({ initialTasks }: { initialTasks: MyTask[] }) {
                   const overdue = isOverdue(task);
                   const isOverEstimate = task.estimated_hours !== null && task.actual_hours > task.estimated_hours;
                   return (
-                    <tr key={task.id} className={overdue ? "bg-red-500/[0.03]" : undefined}>
+                    <tr key={task.id} className={overdue ? "bg-danger/[0.03]" : undefined}>
                       <td className="px-4 py-3">
                         <div className="font-medium text-foreground">{task.title}</div>
                         {task.sprint_title && (
-                          <div className="text-[10px] text-foreground/50 font-mono mt-0.5">{task.sprint_title}</div>
+                          <div className="text-[11px] text-foreground/70 font-mono mt-0.5">{task.sprint_title}</div>
                         )}
                       </td>
                       <td className="px-4 py-3">
                         <Link
                           href={`/dashboard/proyectos/${task.project_id}`}
-                          className="text-accent hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+                          className="text-accent-strong hover:underline outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
                         >
                           {task.project_title}
                         </Link>
@@ -113,7 +112,7 @@ export function MyTasksView({ initialTasks }: { initialTasks: MyTask[] }) {
                           value={task.status}
                           disabled={updatingId === task.id}
                           onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
-                          className={`rounded-full px-2 py-1 text-[10px] font-bold outline-none disabled:opacity-50 ${STATUS_STYLES[task.status]}`}
+                          className={`rounded-full px-2 py-1 text-[11px] font-bold outline-none disabled:opacity-50 ${badgeToneClass(TASK_STATUS[task.status].tone)}`}
                         >
                           {STATUS_OPTIONS.map((s) => (
                             <option key={s} value={s} className="bg-background text-foreground">{s}</option>
@@ -126,18 +125,18 @@ export function MyTasksView({ initialTasks }: { initialTasks: MyTask[] }) {
                         )}
                       </td>
                       <td className="px-4 py-3 text-right font-mono">
-                        <span className={isOverEstimate ? "text-amber-700 font-bold" : "text-foreground"}>
+                        <span className={isOverEstimate ? "text-warning font-bold" : "text-foreground"}>
                           {task.actual_hours}h
                         </span>
                         {task.estimated_hours !== null && (
-                          <span className="text-foreground/50"> / {task.estimated_hours}h</span>
+                          <span className="text-foreground/70"> / {task.estimated_hours}h</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-foreground/60 font-mono whitespace-nowrap">
+                      <td className="px-4 py-3 text-foreground/70 font-mono whitespace-nowrap">
                         {task.due_date ? (
                           <span className="flex items-center gap-1">
                             <Clock size={11} />
-                            {new Date(task.due_date).toLocaleDateString("es-CO")}
+                            {formatCalendarDate(task.due_date)}
                           </span>
                         ) : (
                           "—"

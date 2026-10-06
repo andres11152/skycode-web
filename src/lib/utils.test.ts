@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { cn, escapeHtml, formatDate, formatMoney, slugify, toCsvCell } from "./utils";
+import {
+  cn,
+  escapeHtml,
+  formatCalendarDate,
+  formatDate,
+  formatDateTime,
+  formatMoney,
+  formatNumber,
+  formatShortDate,
+  slugify,
+  toCsvCell,
+} from "./utils";
 
 describe("toCsvCell", () => {
   it("wraps plain values in quotes", () => {
@@ -98,5 +109,25 @@ describe("formatDate con fechas sin hora", () => {
     expect(formatDate("2026-10-02")).toBe("2 de octubre de 2026");
     expect(formatDate("2026-10-02", "en")).toBe("October 2, 2026");
     expect(formatDate("2026-01-01")).toBe("1 de enero de 2026");
+  });
+});
+
+describe("formatos compactos del panel", () => {
+  it("una columna DATE nunca cae al día anterior en Bogotá", () => {
+    expect(formatCalendarDate("2026-10-06")).toBe("6 de oct de 2026");
+    // Así llega un DATE serializado por `pg` sin `::text` (medianoche UTC).
+    expect(formatCalendarDate("2026-10-06T00:00:00.000Z")).toBe("6 de oct de 2026");
+    expect(formatCalendarDate("2026-10-06", "dayMonth")).toBe("6 de oct");
+  });
+
+  it("un instante se muestra en hora de Bogotá", () => {
+    // 02:00 UTC del 7 = 21:00 del 6 en Bogotá.
+    expect(formatShortDate("2026-10-07T02:00:00Z")).toBe("6 de oct de 2026");
+    expect(formatShortDate("2026-10-07T02:00:00Z", "monthYear")).toBe("octubre de 2026");
+    expect(formatDateTime("2026-10-06T20:45:00Z")).toBe("6 de oct de 2026, 3:45 p. m.");
+  });
+
+  it("formatNumber usa separadores de es-CO", () => {
+    expect(formatNumber(1234567)).toBe("1.234.567");
   });
 });

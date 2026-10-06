@@ -12,6 +12,8 @@ import { OnboardingChecklist } from "./OnboardingChecklist";
 import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import type { Project } from "./types";
+import { formatCalendarDate } from "@/lib/utils";
+import { PROJECT_STATUS, SPRINT_STATUS } from "./statusMeta";
 
 interface ProjectsBoardProps {
   initialProjects: Project[];
@@ -71,7 +73,7 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
           />
         </div>
       ) : (
-        <div className="grid gap-6">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6">
           {projects.map((project) => (
             <div
               key={project.id}
@@ -82,15 +84,7 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-xl font-bold text-foreground">{project.title}</h2>
                     <Badge
-                      tone={
-                        project.status === "En Desarrollo"
-                          ? "info"
-                          : project.status === "Fase QA"
-                          ? "warning"
-                          : project.status === "Garantía SLA"
-                          ? "success"
-                          : "neutral"
-                      }
+                      tone={PROJECT_STATUS[project.status].tone}
                     >
                       {project.status}
                     </Badge>
@@ -99,7 +93,7 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
                     <p className="text-xs text-foreground/70 mt-1">{project.description}</p>
                   )}
                   {variant === "internal" && (
-                    <p className="text-[10px] text-foreground/40 font-mono mt-1">
+                    <p className="text-[11px] text-foreground/70 font-mono mt-1">
                       Cliente: {project.client.name} ({project.client.email})
                     </p>
                   )}
@@ -143,11 +137,11 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs font-semibold">
                   <span>Progreso General del Software:</span>
-                  <span className="font-mono text-accent font-bold">{project.progress}%</span>
+                  <span className="font-mono text-accent-strong font-bold">{project.progress}%</span>
                 </div>
                 <div className="h-2 w-full bg-foreground/10 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-accent to-sky-400 transition-all duration-500"
+                    className="h-full bg-accent transition-all duration-500"
                     style={{ width: `${project.progress}%` }}
                   />
                 </div>
@@ -157,7 +151,7 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
 
               {variant === "portal" && project.sprints && project.sprints.length > 0 && (
                 <div className="space-y-3 pt-4 border-t border-foreground/10">
-                  <h3 className="text-xs font-mono font-bold text-foreground/60 uppercase tracking-wider">
+                  <h3 className="text-xs font-mono font-bold text-foreground/70 uppercase tracking-wider">
                     Línea de Tiempo
                   </h3>
                   <ProjectTimeline sprints={project.sprints} />
@@ -165,11 +159,11 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
               )}
 
               <div className="space-y-4 pt-4 border-t border-foreground/10">
-                <h3 className="text-xs font-mono font-bold text-foreground/60 uppercase tracking-wider">
+                <h3 className="text-xs font-mono font-bold text-foreground/70 uppercase tracking-wider">
                   Sprints de Desarrollo &amp; Entregables
                 </h3>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2">
                   {project.sprints && project.sprints.map((sprint) => (
                     <div
                       key={sprint.id}
@@ -177,26 +171,18 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
                     >
                       <div className="flex items-start justify-between gap-2">
                         <span className="text-xs font-bold text-foreground leading-tight">{sprint.title}</span>
-                        <span className={`text-[10px] font-bold rounded px-1.5 py-0.5 ${
-                          sprint.status === "Completado"
-                            ? "bg-green-500/10 text-green-700"
-                            : sprint.status === "En Progreso"
-                            ? "bg-sky-500/10 text-sky-700"
-                            : "bg-foreground/20 text-foreground/50"
-                        }`}>
-                          {sprint.status}
-                        </span>
+                        <Badge tone={SPRINT_STATUS[sprint.status].tone}>{SPRINT_STATUS[sprint.status].label}</Badge>
                       </div>
 
                       <div className="space-y-1">
-                        <div className="flex justify-between text-[10px] font-mono text-foreground/50">
+                        <div className="flex justify-between text-[11px] font-mono text-foreground/70">
                           <span>Avance</span>
                           <span>{sprint.progress}%</span>
                         </div>
                         <div className="h-1 w-full bg-foreground/10 rounded-full overflow-hidden">
                           <div
                             className={`h-full transition-all ${
-                              sprint.status === "Completado" ? "bg-green-400" : "bg-sky-400"
+                              sprint.status === "Completado" ? "bg-success" : "bg-info"
                             }`}
                             style={{ width: `${sprint.progress}%` }}
                           />
@@ -214,18 +200,18 @@ export function ProjectsBoard({ initialProjects, variant = "internal" }: Project
               </div>
 
               {project.status === "Garantía SLA" && (
-                <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="rounded-xl border border-success/20 bg-success/5 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                   <div className="flex items-center gap-2.5">
-                    <ShieldCheck size={20} className="text-green-700 shrink-0" />
+                    <ShieldCheck size={20} className="text-success shrink-0" />
                     <div>
-                      <strong className="text-green-700 block font-semibold">Garantía Post-Entrega de 90 Días SLA Activa</strong>
-                      <span className="text-[11px] text-foreground/60">Cero bugs cubierto a nivel de infraestructura y código.</span>
+                      <strong className="text-success block font-semibold">Garantía Post-Entrega de 90 Días SLA Activa</strong>
+                      <span className="text-[11px] text-foreground/70">Cero bugs cubierto a nivel de infraestructura y código.</span>
                     </div>
                   </div>
                   {project.sla_warranty_start && project.sla_warranty_end && (
-                    <div className="flex items-center gap-1.5 text-green-700/90 font-mono text-[10px] shrink-0 border border-green-500/20 rounded-lg p-2 bg-green-500/5">
+                    <div className="flex items-center gap-1.5 text-success/90 font-mono text-[11px] shrink-0 border border-success/20 rounded-lg p-2 bg-success/5">
                       <Calendar size={12} />
-                      <span>Vence: {new Date(project.sla_warranty_end).toLocaleDateString()}</span>
+                      <span>Vence: {formatCalendarDate(project.sla_warranty_end)}</span>
                     </div>
                   )}
                 </div>

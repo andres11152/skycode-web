@@ -1,21 +1,12 @@
 import { Receipt, DownloadSimple } from "@phosphor-icons/react/ssr";
 import { EmptyState } from "../dashboard/EmptyState";
-import { Badge, type BadgeTone } from "../dashboard/ui/Badge";
+import { Badge } from "../dashboard/ui/Badge";
 import { BoldPayButton } from "./BoldPayButton";
-import { formatMoney } from "@/lib/utils";
-import type { Invoice, InvoiceStatus } from "../dashboard/types";
-
-const STATUS_LABELS: Record<InvoiceStatus, string> = {
-  pending: "Por pagar",
-  overdue: "Vencida",
-  paid: "Pagada",
-};
-
-const STATUS_TONES: Record<InvoiceStatus, BadgeTone> = {
-  pending: "info",
-  overdue: "danger",
-  paid: "success",
-};
+import { formatMoney, formatCalendarDate } from "@/lib/utils";
+import { StatCard } from "../dashboard/ui/StatCard";
+import type { Currency } from "@/lib/currency";
+import type { Invoice } from "../dashboard/types";
+import { INVOICE_STATUS } from "@/components/dashboard/statusMeta";
 
 /**
  * El cliente sigue sin poder CREAR facturas (eso es exclusivo de
@@ -26,7 +17,12 @@ const STATUS_TONES: Record<InvoiceStatus, BadgeTone> = {
  * escriben en la misma tabla `payments`, distinguidos por `provider`.
  */
 export function PortalInvoicesPanel({ invoices }: { invoices: Invoice[] }) {
-  const totalBalance = invoices.reduce((sum, inv) => sum + Math.max(inv.balance, 0), 0);
+  // Un total por moneda: sumar COP y USD directo daba una cifra sin sentido (y la
+  // mostraba toda en pesos).
+  const balanceByCurrency = invoices.reduce<Partial<Record<Currency, number>>>((acc, inv) => {
+    acc[inv.currency] = (acc[inv.currency] ?? 0) + Math.max(inv.balance, 0);
+    return acc;
+  }, {});
 
   return (
     <section aria-labelledby="portal-invoices-heading" className="space-y-4">
@@ -36,11 +32,18 @@ export function PortalInvoicesPanel({ invoices }: { invoices: Invoice[] }) {
       </div>
 
       {invoices.length > 0 && (
-        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 max-w-xs space-y-1">
-          <span className="text-xs text-foreground/60">Saldo pendiente total</span>
-          <div className={`text-xl font-bold font-mono ${totalBalance > 0 ? "text-amber-700" : "text-green-700"}`}>
-            {formatMoney(totalBalance, "COP")}
-          </div>
+        <div className="grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
+          {(Object.entries(balanceByCurrency) as [Currency, number][])
+            // Una moneda sin deuda no aporta si hay otra con saldo.
+            .filter(([, total], _i, all) => total > 0 || all.every(([, t]) => t === 0))
+            .map(([currency, total]) => (
+            <StatCard
+              key={currency}
+              label={`Saldo pendiente (${currency})`}
+              value={formatMoney(total, currency)}
+              tone={total > 0 ? "warning" : "success"}
+            />
+          ))}
         </div>
       )}
 
@@ -51,7 +54,7 @@ export function PortalInvoicesPanel({ invoices }: { invoices: Invoice[] }) {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
               <caption className="sr-only">Tus facturas, con saldo y estado</caption>
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th scope="col" className="px-5 py-3.5">Proyecto</th>
                   <th scope="col" className="px-5 py-3.5">Descripción</th>
@@ -66,30 +69,30 @@ export function PortalInvoicesPanel({ invoices }: { invoices: Invoice[] }) {
                   <tr key={inv.id}>
                     <td className="px-5 py-4 font-bold text-foreground">
                       {inv.project_title}
-                      {inv.invoice_number && <div className="text-[10px] text-foreground/50 font-mono">{inv.invoice_number}</div>}
+                      {inv.invoice_number && <div className="text-[11px] text-foreground/70 font-mono">{inv.invoice_number}</div>}
                     </td>
                     <td className="px-5 py-4 max-w-xs truncate">{inv.description}</td>
                     <td className="px-5 py-4 font-mono">
-                      <div className={`font-bold ${inv.balance > 0 ? "text-amber-700" : "text-green-700"}`}>
+                      <div className={`font-bold ${inv.balance > 0 ? "text-warning" : "text-success"}`}>
                         {formatMoney(inv.balance, inv.currency)}
                       </div>
                     </td>
                     <td className="px-5 py-4">
-                      <Badge tone={STATUS_TONES[inv.status]}>{STATUS_LABELS[inv.status]}</Badge>
+                      <Badge tone={INVOICE_STATUS[inv.status].tone}>{INVOICE_STATUS[inv.status].clientLabel}</Badge>
                     </td>
-                    <td className="px-5 py-4 font-mono text-[10px] text-foreground/60">
-                      {new Date(inv.due_date).toLocaleDateString("es-CO")}
+                    <td className="px-5 py-4 font-mono text-[11px] text-foreground/70">
+                      {formatCalendarDate(inv.due_date)}
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <a
                           href={`/api/invoices/${inv.id}/pdf`}
                           aria-label={`Descargar PDF de la factura ${inv.invoice_number || inv.project_title}`}
-                          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground/60 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <DownloadSimple size={14} />
                         </a>
-                        {inv.balance > 0 && <BoldPayButton invoiceId={inv.id} />}
+                        {inv.balance > 0 && <BoldPayButton invoiceId={inv.id} amountLabel={formatMoney(inv.balance, inv.currency)} />}
                       </div>
                     </td>
                   </tr>

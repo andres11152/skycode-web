@@ -11,16 +11,19 @@ type PageProps = {
   // checkout (ver lib/bold.ts) — se leen acá (Server Component) en vez de
   // con `useSearchParams()` en PortalView.tsx, para no tener que envolver
   // ese componente en <Suspense> solo por esto.
-  searchParams: Promise<{ "bold-order-id"?: string }>;
+  searchParams: Promise<{ "bold-order-id"?: string; tab?: string }>;
 };
 
 export default async function PortalPage({ searchParams }: PageProps) {
   const session = await requireSessionOrRedirect();
-  const { "bold-order-id": boldOrderId } = await searchParams;
+  const { "bold-order-id": boldOrderId, tab } = await searchParams;
 
   if (!session.clientId) {
     return (
       <PortalView
+        clientName={session.name}
+        linked={false}
+        initialTab={tab}
         projects={[]}
         invoices={[]}
         documents={[]}
@@ -44,6 +47,9 @@ export default async function PortalPage({ searchParams }: PageProps) {
 
   return (
     <PortalView
+      clientName={session.name}
+      linked
+      initialTab={tab}
       projects={projects}
       invoices={invoices}
       documents={documents}

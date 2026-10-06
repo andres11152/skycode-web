@@ -75,7 +75,7 @@ export function SprintComments({ sprintId }: { sprintId: number }) {
         type="button"
         onClick={handleToggle}
         aria-expanded={open}
-        className="flex min-h-9 items-center gap-1.5 text-[11px] font-semibold text-foreground/60 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+        className="flex min-h-9 items-center gap-1.5 text-[11px] font-semibold text-foreground/70 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
       >
         <MessageSquare size={12} />
         {comments === null ? "Comentarios" : `Comentarios (${comments.length})`}
@@ -84,9 +84,9 @@ export function SprintComments({ sprintId }: { sprintId: number }) {
       {open && (
         <div className="mt-2 space-y-2">
           {comments === null ? (
-            <p className="text-[10px] text-foreground/40">Cargando…</p>
+            <p className="text-[11px] text-foreground/70">Cargando…</p>
           ) : comments.length === 0 ? (
-            <p className="text-[10px] text-foreground/40">Sin comentarios todavía.</p>
+            <p className="text-[11px] text-foreground/70">Sin comentarios todavía.</p>
           ) : (
             <ul className="max-h-40 space-y-2 overflow-y-auto">
               {comments.map((c) => (
@@ -94,7 +94,7 @@ export function SprintComments({ sprintId }: { sprintId: number }) {
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-bold text-foreground">{c.author?.name ?? "Cuenta eliminada"}</span>
                     {c.author && (
-                      <span className="rounded bg-foreground/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-foreground/50">
+                      <span className="rounded bg-foreground/10 px-1.5 py-0.5 text-[11px] font-semibold uppercase text-foreground/70">
                         {ROLE_LABELS[c.author.role] ?? c.author.role}
                       </span>
                     )}
@@ -105,7 +105,7 @@ export function SprintComments({ sprintId }: { sprintId: number }) {
             </ul>
           )}
 
-          {error && <p className="text-[10px] text-red-700">{error}</p>}
+          {error && <p className="text-[11px] text-danger">{error}</p>}
 
           <form onSubmit={handleSubmit} className="flex items-start gap-1.5">
             <textarea
@@ -114,13 +114,13 @@ export function SprintComments({ sprintId }: { sprintId: number }) {
               placeholder="Escribe un comentario…"
               rows={1}
               maxLength={2000}
-              className="flex-1 min-w-0 resize-none rounded-lg border border-foreground/15 bg-background px-2.5 py-1.5 text-[11px] text-foreground placeholder:text-foreground/40 outline-none focus:border-accent"
+              className="flex-1 min-w-0 resize-none rounded-lg border border-foreground/15 bg-background px-2.5 py-1.5 text-[11px] text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
             />
             <button
               type="submit"
               disabled={isSubmitting || !body.trim()}
               aria-label="Enviar comentario"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-strong text-white hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent-strong text-white hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <Send size={12} />
             </button>

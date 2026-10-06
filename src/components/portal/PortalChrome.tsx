@@ -5,6 +5,8 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { SignOut } from "@phosphor-icons/react";
 import { Button } from "@/components/dashboard/ui/Button";
+import { FeedbackProvider } from "@/components/dashboard/ui/Feedback";
+import { TableEnhancer } from "@/components/dashboard/ui/TableEnhancer";
 import { UserAvatar } from "@/components/dashboard/UserAvatar";
 import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/components/dashboard/types";
@@ -28,6 +30,8 @@ export function PortalChrome({ user, children }: { user: SessionUser; children: 
   };
 
   return (
+    <FeedbackProvider>
+    <TableEnhancer />
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-foreground/10 bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl sticky top-0 z-40">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
@@ -44,7 +48,7 @@ export function PortalChrome({ user, children }: { user: SessionUser; children: 
             </span>
           </div>
 
-          <nav aria-label="Secciones del portal" className="flex items-center gap-1">
+          <nav aria-label="Navegación del portal" className="flex items-center gap-1">
             {PORTAL_NAV.map((item) => {
               const active = item.isActive(pathname);
               return (
@@ -78,5 +82,6 @@ export function PortalChrome({ user, children }: { user: SessionUser; children: 
 
       <main className="mx-auto max-w-7xl px-4 py-8 space-y-8 sm:px-6">{children}</main>
     </div>
+    </FeedbackProvider>
   );
 }

@@ -3,11 +3,12 @@
 import { useState, useTransition, useRef } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Building2, Search, ChevronLeft, ChevronRight, ArrowRight, Layers, Receipt } from "lucide-react";
+import { Building2, Search,   ArrowRight, Layers, Receipt } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { EmptyState } from "./EmptyState";
 import { formatMoney } from "@/lib/utils";
 import type { Client } from "./types";
+import { Pagination } from "./ui/Pagination";
 
 interface ClientsTableProps {
   clients: Client[];
@@ -49,7 +50,6 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
     searchTimeoutRef.current = setTimeout(() => pushQuery({ q: value }), 400);
   };
 
-  const totalPages = Math.ceil(total / pageSize) || 1;
 
   return (
     <div className="space-y-8">
@@ -63,7 +63,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <SpotlightCard>
           <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-foreground/60">
+            <div className="flex items-center justify-between text-xs text-foreground/70">
               <span>Total Clientes</span>
               <Building2 size={18} className="text-accent" />
             </div>
@@ -72,22 +72,22 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
         </SpotlightCard>
         <SpotlightCard>
           <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-foreground/60">
+            <div className="flex items-center justify-between text-xs text-foreground/70">
               <span>Facturado (esta página)</span>
-              <Receipt size={18} className="text-green-700" />
+              <Receipt size={18} className="text-success" />
             </div>
-            <div className="text-lg font-bold font-mono text-green-700">
+            <div className="text-lg font-bold font-mono text-success">
               {formatMoney(clients.reduce((sum, c) => sum + c.totalBilledCop, 0), "COP")}
             </div>
           </div>
         </SpotlightCard>
         <SpotlightCard>
           <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-            <div className="flex items-center justify-between text-xs text-foreground/60">
+            <div className="flex items-center justify-between text-xs text-foreground/70">
               <span>Saldo pendiente (esta página)</span>
-              <Layers size={18} className="text-amber-700" />
+              <Layers size={18} className="text-warning" />
             </div>
-            <div className="text-lg font-bold font-mono text-amber-700">
+            <div className="text-lg font-bold font-mono text-warning">
               {formatMoney(clients.reduce((sum, c) => sum + c.totalOutstandingCop, 0), "COP")}
             </div>
           </div>
@@ -96,7 +96,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
 
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
         <div className="relative w-full sm:w-80">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/70" />
           <input
             type="text"
             value={searchInput}
@@ -119,7 +119,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-foreground/90">
                 <caption className="sr-only">Directorio de clientes con proyectos activos, facturado y saldo pendiente</caption>
-                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                   <tr>
                     <th scope="col" className="px-5 py-3.5">Cliente</th>
                     <th scope="col" className="px-5 py-3.5">Empresa</th>
@@ -134,7 +134,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
                     <tr key={client.id} className="hover:bg-foreground/10 transition-colors">
                       <td className="px-5 py-4">
                         <div className="font-bold text-foreground">{client.name}</div>
-                        <div className="text-[11px] text-foreground/60 font-mono">{client.email}</div>
+                        <div className="text-[11px] text-foreground/70 font-mono">{client.email}</div>
                       </td>
                       <td className="px-5 py-4 text-foreground/80">{client.company || "—"}</td>
                       <td className="px-5 py-4 text-center font-mono">{client.projectCount}</td>
@@ -143,7 +143,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
                       </td>
                       <td
                         className={`px-5 py-4 text-right font-mono font-bold ${
-                          client.totalOutstandingCop > 0 ? "text-amber-700" : "text-foreground/50"
+                          client.totalOutstandingCop > 0 ? "text-warning" : "text-foreground/70"
                         }`}
                       >
                         {formatMoney(client.totalOutstandingCop, "COP")}
@@ -163,30 +163,7 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
               </table>
             </div>
 
-            <div className="flex items-center justify-between border-t border-foreground/10 px-5 py-3.5 text-xs text-foreground/60 font-mono">
-              <div>
-                Mostrando {((page - 1) * pageSize) + 1} a {Math.min(page * pageSize, total)} de {total} registros
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => pushQuery({ page: page - 1 })}
-                  disabled={page === 1 || isNavigating}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label="Página anterior"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <span>Página {page} de {totalPages}</span>
-                <button
-                  onClick={() => pushQuery({ page: page + 1 })}
-                  disabled={page === totalPages || isNavigating}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-foreground/15 hover:bg-foreground/10 disabled:opacity-30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label="Página siguiente"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
+            <Pagination page={page} pageSize={pageSize} total={total} noun="registros" onPageChange={(next) => pushQuery({ page: next })} disabled={isNavigating} />
           </>
         )}
       </div>

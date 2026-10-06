@@ -9,6 +9,7 @@ import { ModalShell } from "../dashboard/ModalShell";
 import { Button } from "../dashboard/ui/Button";
 import { Alert } from "../dashboard/ui/Alert";
 import type { ProjectDocument, ProjectOption } from "../dashboard/types";
+import { formatShortDate } from "@/lib/utils";
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -50,14 +51,14 @@ export function PortalDocumentsPanel({ documents, projects }: { documents: Proje
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
               <caption className="sr-only">Documentos de tus proyectos, descargables</caption>
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th scope="col" className="px-5 py-3.5">Archivo</th>
                   <th scope="col" className="px-5 py-3.5">Proyecto</th>
                   <th scope="col" className="px-5 py-3.5">Subido por</th>
                   <th scope="col" className="px-5 py-3.5 text-right">Tamaño</th>
                   <th scope="col" className="px-5 py-3.5">Fecha</th>
-                  <th scope="col" className="px-5 py-3.5 sr-only">Descargar</th>
+                  <th scope="col" className="relative px-5 py-3.5"><span className="sr-only">Descargar</span></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-foreground/10">
@@ -65,21 +66,21 @@ export function PortalDocumentsPanel({ documents, projects }: { documents: Proje
                   <tr key={doc.id}>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2 font-medium text-foreground">
-                        <FileText size={13} className="text-foreground/40 shrink-0" />
+                        <FileText size={13} className="text-foreground/70 shrink-0" />
                         <span className="truncate max-w-xs">{doc.original_filename}</span>
                       </div>
                     </td>
                     <td className="px-5 py-4 text-foreground/70">{doc.project_title}</td>
                     <td className="px-5 py-4 text-foreground/70">{doc.uploaded_by?.name ?? "—"}</td>
-                    <td className="px-5 py-4 text-right font-mono text-foreground/60">{formatBytes(doc.size_bytes)}</td>
-                    <td className="px-5 py-4 font-mono text-foreground/60 whitespace-nowrap">
-                      {new Date(doc.created_at).toLocaleDateString("es-CO")}
+                    <td className="px-5 py-4 text-right font-mono text-foreground/70">{formatBytes(doc.size_bytes)}</td>
+                    <td className="px-5 py-4 font-mono text-foreground/70 whitespace-nowrap">
+                      {formatShortDate(doc.created_at)}
                     </td>
                     <td className="px-5 py-4 text-right">
                       <a
                         href={`/api/documents/${doc.id}/download`}
                         aria-label={`Descargar ${doc.original_filename}`}
-                        className="ml-auto flex h-11 w-11 items-center justify-center rounded-lg text-foreground/60 hover:bg-accent/10 hover:text-accent transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        className="ml-auto flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-accent/10 hover:text-accent-strong transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
                         <DownloadSimple size={14} />
                       </a>
@@ -166,7 +167,7 @@ function UploadDocumentModal({ projects, onClose }: { projects: ProjectOption[];
             onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
             className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent file:mr-3 file:rounded-lg file:border-0 file:bg-accent-strong file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white file:cursor-pointer cursor-pointer"
           />
-          <p className="text-[10px] text-foreground/50">PDF, Office, imagen, ZIP, TXT o CSV — máximo 20 MB.</p>
+          <p className="text-[11px] text-foreground/70">PDF, Office, imagen, ZIP, TXT o CSV — máximo 20 MB.</p>
         </div>
         <Button type="submit" variant="accent" disabled={isSubmitting || !fileName} className="w-full py-3">
           {isSubmitting ? "Subiendo..." : "Subir documento"}

@@ -18,6 +18,12 @@
   --accent-strong: #006998;
   --accent-foreground: #ffffff;
   --accent-secondary: #ffd100;
+  /* Tokens de estado: SOLO dashboard y portal; el sitio público sigue con
+     foreground/background/accent. Ver components/dashboard/statusMeta.ts. */
+  --success: #166534;
+  --warning: #92400e;
+  --danger: #b91c1c;
+  --info: #075985;
   /* Tokens de movimiento — espejo de DURATION/EASE_OUT en lib/animations.ts. */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-fast: 150ms;
@@ -35,6 +41,10 @@
   --color-accent-strong: var(--accent-strong);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-secondary: var(--accent-secondary);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
   --font-sans: var(--font-body);
   --font-heading: var(--font-heading);
   --font-mono: var(--font-geist-mono);
@@ -57,4 +67,61 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading), var(--font-sans), sans-serif;
+}
+
+/* Errores de formulario (ui/FieldError.tsx): entran desde arriba (4px) para
+   leerse como "salido" del campo, no como un salto de layout seco. Vive aquí
+   y no en globals.css porque el dashboard/portal (dashboard.css) también
+   valida formularios con FieldError. */
+@keyframes enter-error {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.animate-enter-error {
+  animation: enter-error var(--dur-base) var(--ease-out) both;
+}
+
+/* Popovers/menús (origen según `origin-*`) y avisos/hojas que suben desde abajo. */
+@keyframes enter-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+}
+
+@keyframes enter-from-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes enter-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-enter-pop {
+  animation: enter-pop var(--dur-fast) var(--ease-out) both;
+}
+
+.animate-enter-from-bottom {
+  animation: enter-from-bottom var(--dur-base) var(--ease-out) both;
+}
+
+.animate-enter-from-left {
+  animation: enter-from-left var(--dur-base) var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-enter-pop,
+  .animate-enter-from-bottom,
+  .animate-enter-from-left,
+  .animate-enter-error {
+    animation: none !important;
+  }
 }

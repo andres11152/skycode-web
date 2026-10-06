@@ -3,27 +3,16 @@
 import { Fragment, useEffect, useId, useState } from "react";
 import { Plus, X, ChevronDown, LifeBuoy, Clock, AlertTriangle, RefreshCw } from "lucide-react";
 import { EmptyState } from "./EmptyState";
-import { Badge, type BadgeTone } from "./ui/Badge";
+import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import type { ProjectOption, SupportTicket, TicketPriority, TicketStatus } from "./types";
+import { formatDateTime } from "@/lib/utils";
+import { TICKET_PRIORITY, TICKET_STATUS } from "./statusMeta";
+import { useFeedback } from "./ui/Feedback";
 
 const PRIORITY_OPTIONS: TicketPriority[] = ["Baja", "Media", "Alta", "Urgente"];
 const STATUS_OPTIONS: TicketStatus[] = ["Abierto", "En Progreso", "Resuelto", "Cerrado"];
-
-const PRIORITY_TONES: Record<TicketPriority, BadgeTone> = {
-  Baja: "neutral",
-  Media: "info",
-  Alta: "warning",
-  Urgente: "danger",
-};
-
-const STATUS_TONES: Record<TicketStatus, BadgeTone> = {
-  Abierto: "info",
-  "En Progreso": "warning",
-  Resuelto: "success",
-  Cerrado: "neutral",
-};
 
 function SlaBadge({ slaDueAt, status, now }: { slaDueAt: string; status: TicketStatus; now: number | null }) {
   if (status === "Resuelto" || status === "Cerrado" || now === null) return null;
@@ -33,7 +22,7 @@ function SlaBadge({ slaDueAt, status, now }: { slaDueAt: string; status: TicketS
 
   if (diffHours < 0) {
     return (
-      <span className="inline-flex items-center gap-1 rounded bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-700 animate-pulse">
+      <span className="inline-flex items-center gap-1 rounded bg-danger/10 px-2 py-0.5 text-[11px] font-bold text-danger animate-pulse motion-reduce:animate-none">
         <AlertTriangle size={11} />
         SLA Vencido
       </span>
@@ -41,16 +30,16 @@ function SlaBadge({ slaDueAt, status, now }: { slaDueAt: string; status: TicketS
   }
   if (diffHours < 4) {
     return (
-      <span className="inline-flex items-center gap-1 rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+      <span className="inline-flex items-center gap-1 rounded bg-warning/10 px-2 py-0.5 text-[11px] font-bold text-warning">
         <Clock size={11} />
         Vence en {Math.round(diffHours)}h
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 rounded bg-foreground/20 px-2 py-0.5 text-[10px] text-foreground/60">
+    <span className="inline-flex items-center gap-1 rounded bg-foreground/5 px-2 py-0.5 text-[11px] text-foreground/70">
       <Clock size={11} />
-      Vence {new Date(slaDueAt).toLocaleDateString("es-CO")}
+      Vence {formatDateTime(slaDueAt, "dayTime")}
     </span>
   );
 }
@@ -121,6 +110,7 @@ export function SupportTicketsBoard({
     }
   };
 
+  const feedback = useFeedback();
   const patchTicket = async (id: number, body: Record<string, unknown>) => {
     const res = await fetch(`/api/support-tickets/${id}`, {
       method: "PATCH",
@@ -130,6 +120,10 @@ export function SupportTicketsBoard({
     if (res.ok) {
       const data = await res.json();
       setTickets((prev) => prev.map((t) => (t.id === id ? data.ticket : t)));
+      feedback.toast({ message: "Ticket actualizado." });
+    } else {
+      const data = await res.json().catch(() => ({}));
+      feedback.toast({ tone: "error", message: data.error || "No se pudo actualizar el ticket." });
     }
   };
 
@@ -141,6 +135,9 @@ export function SupportTicketsBoard({
       if (res.ok) {
         const data = await res.json();
         setTickets((prev) => prev.map((t) => (t.id === id ? data.ticket : t)));
+        feedback.toast({ message: "SLA recalculado desde ahora." });
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo recalcular el SLA." });
       }
     } finally {
       setRecalculatingId(null);
@@ -235,7 +232,7 @@ export function SupportTicketsBoard({
       )}
 
       <div className="flex items-center gap-2 bg-background border border-foreground/10 shadow-sm shadow-black/5 p-4 rounded-xl">
-        <span className="text-xs text-foreground/60 font-mono">Estado:</span>
+        <span className="text-xs text-foreground/70 font-mono">Estado:</span>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as TicketStatus | "ALL")}
@@ -262,14 +259,14 @@ export function SupportTicketsBoard({
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
               <caption className="sr-only">Tickets de soporte con proyecto, prioridad, estado y SLA</caption>
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th scope="col" className="px-5 py-3.5">Ticket</th>
                   <th scope="col" className="px-5 py-3.5">Proyecto</th>
                   <th scope="col" className="px-5 py-3.5">Prioridad</th>
                   <th scope="col" className="px-5 py-3.5">Estado</th>
                   <th scope="col" className="px-5 py-3.5">SLA</th>
-                  <th scope="col" className="px-5 py-3.5 sr-only">Detalle</th>
+                  <th scope="col" className="relative px-5 py-3.5"><span className="sr-only">Detalle</span></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-foreground/10">
@@ -293,24 +290,24 @@ export function SupportTicketsBoard({
                         <td className="px-5 py-3.5">
                           <div className="font-bold text-foreground">{ticket.title}</div>
                           {ticket.assignee && (
-                            <div className="text-[10px] text-foreground/50 font-mono mt-0.5">{ticket.assignee.name}</div>
+                            <div className="text-[11px] text-foreground/70 font-mono mt-0.5">{ticket.assignee.name}</div>
                           )}
                         </td>
                         <td className="px-5 py-3.5">
                           <div className="text-foreground/80">{ticket.project_title}</div>
-                          <div className="text-[10px] text-foreground/50 font-mono">{ticket.client_name}</div>
+                          <div className="text-[11px] text-foreground/70 font-mono">{ticket.client_name}</div>
                         </td>
                         <td className="px-5 py-3.5">
-                          <Badge tone={PRIORITY_TONES[ticket.priority]}>{ticket.priority}</Badge>
+                          <Badge tone={TICKET_PRIORITY[ticket.priority].tone}>{ticket.priority}</Badge>
                         </td>
                         <td className="px-5 py-3.5">
-                          <Badge tone={STATUS_TONES[ticket.status]}>{ticket.status}</Badge>
+                          <Badge tone={TICKET_STATUS[ticket.status].tone}>{ticket.status}</Badge>
                         </td>
                         <td className="px-5 py-3.5">
                           <SlaBadge slaDueAt={ticket.sla_due_at} status={ticket.status} now={now} />
                         </td>
                         <td className="px-5 py-3.5 text-right">
-                          <ChevronDown size={14} className={`text-foreground/40 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                          <ChevronDown size={14} className={`text-foreground/70 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                         </td>
                       </tr>
                       {isExpanded && (
@@ -324,11 +321,12 @@ export function SupportTicketsBoard({
                               {canWrite ? (
                                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                                   <div className="space-y-1">
-                                    <label className="text-[10px] font-medium text-foreground/60">Prioridad</label>
+                                    <label htmlFor={`ticket-${ticket.id}-priority`} className="text-xs font-semibold text-foreground/70">Prioridad</label>
                                     <select
+                                      id={`ticket-${ticket.id}-priority`}
                                       value={ticket.priority}
                                       onChange={(e) => patchTicket(ticket.id, { priority: e.target.value })}
-                                      className="w-full rounded-lg border border-foreground/20 bg-foreground/10 px-2 py-1.5 text-[11px] text-foreground outline-none focus:border-accent"
+                                      className="w-full min-h-11 rounded-lg border border-foreground/20 bg-background px-3 py-2 text-xs text-foreground outline-none focus:border-accent"
                                     >
                                       {PRIORITY_OPTIONS.map((p) => (
                                         <option key={p} value={p} className="bg-background">{p}</option>
@@ -341,19 +339,22 @@ export function SupportTicketsBoard({
                                         handleRecalculateSla(ticket.id);
                                       }}
                                       disabled={recalculatingId === ticket.id}
-                                      className="mt-1 inline-flex items-center gap-1 text-[10px] font-medium text-accent hover:underline disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
-                                      title="Cambiar la prioridad no mueve el vencimiento del SLA por sí solo — usa esto para darle una ventana nueva desde ahora con la prioridad actual."
+                                      className="mt-1 inline-flex min-h-11 items-center gap-1 text-xs font-medium text-accent-strong hover:underline disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
                                     >
-                                      <RefreshCw size={10} className={recalculatingId === ticket.id ? "animate-spin" : ""} />
+                                      <RefreshCw size={12} className={recalculatingId === ticket.id ? "animate-spin" : ""} />
                                       {recalculatingId === ticket.id ? "Recalculando…" : "Recalcular SLA"}
                                     </button>
+                                    <p className="text-[11px] leading-snug text-foreground/70">
+                                      Cambiar la prioridad no mueve el vencimiento: recalcúlalo para dar una ventana nueva desde ahora.
+                                    </p>
                                   </div>
                                   <div className="space-y-1">
-                                    <label className="text-[10px] font-medium text-foreground/60">Estado</label>
+                                    <label htmlFor={`ticket-${ticket.id}-status`} className="text-xs font-semibold text-foreground/70">Estado</label>
                                     <select
+                                      id={`ticket-${ticket.id}-status`}
                                       value={ticket.status}
                                       onChange={(e) => patchTicket(ticket.id, { status: e.target.value })}
-                                      className="w-full rounded-lg border border-foreground/20 bg-foreground/10 px-2 py-1.5 text-[11px] text-foreground outline-none focus:border-accent"
+                                      className="w-full min-h-11 rounded-lg border border-foreground/20 bg-background px-3 py-2 text-xs text-foreground outline-none focus:border-accent"
                                     >
                                       {STATUS_OPTIONS.map((s) => (
                                         <option key={s} value={s} className="bg-background">{s}</option>
@@ -361,13 +362,14 @@ export function SupportTicketsBoard({
                                     </select>
                                   </div>
                                   <div className="space-y-1">
-                                    <label className="text-[10px] font-medium text-foreground/60">Responsable</label>
+                                    <label htmlFor={`ticket-${ticket.id}-assignee`} className="text-xs font-semibold text-foreground/70">Responsable</label>
                                     <select
+                                      id={`ticket-${ticket.id}-assignee`}
                                       value={ticket.assignee?.id ?? ""}
                                       onChange={(e) =>
                                         patchTicket(ticket.id, { assignee_id: e.target.value ? Number(e.target.value) : null })
                                       }
-                                      className="w-full rounded-lg border border-foreground/20 bg-foreground/10 px-2 py-1.5 text-[11px] text-foreground outline-none focus:border-accent"
+                                      className="w-full min-h-11 rounded-lg border border-foreground/20 bg-background px-3 py-2 text-xs text-foreground outline-none focus:border-accent"
                                     >
                                       <option value="" className="bg-background">Sin asignar</option>
                                       {teamMembers.map((m) => (
@@ -380,8 +382,9 @@ export function SupportTicketsBoard({
 
                               {canWrite && (
                                 <div className="space-y-1">
-                                  <label className="text-[10px] font-medium text-foreground/60">Nota de resolución</label>
+                                  <label htmlFor={`ticket-${ticket.id}-note`} className="text-xs font-semibold text-foreground/70">Nota de resolución</label>
                                   <textarea
+                                    id={`ticket-${ticket.id}-note`}
                                     rows={2}
                                     defaultValue={ticket.resolution_note ?? ""}
                                     onBlur={(e) => {
@@ -389,14 +392,14 @@ export function SupportTicketsBoard({
                                         patchTicket(ticket.id, { resolution_note: e.target.value });
                                       }
                                     }}
-                                    className="w-full rounded-lg border border-foreground/20 bg-foreground/10 px-2 py-1.5 text-[11px] text-foreground outline-none focus:border-accent"
+                                    className="w-full min-h-11 rounded-lg border border-foreground/20 bg-background px-3 py-2 text-xs text-foreground outline-none focus:border-accent"
                                     placeholder="Qué se hizo para resolver esta incidencia..."
                                   />
                                 </div>
                               )}
 
                               {!canWrite && ticket.resolution_note && (
-                                <p className="text-[11px] text-foreground/60">
+                                <p className="text-[11px] text-foreground/70">
                                   <strong className="text-foreground/80">Resolución: </strong>
                                   {ticket.resolution_note}
                                 </p>

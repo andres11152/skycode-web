@@ -1,6 +1,8 @@
 import { Search, MousePointerClick, Eye, Target, Lightbulb, Clock } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import type { SeoPageRow, SeoQueryRow, SeoSummary } from "@/lib/queries/seoMetrics";
+import { formatNumber } from "@/lib/utils";
+import { StatCard } from "./ui/StatCard";
 
 const LOCALE_LABELS: Record<string, string> = { es: "ES", en: "EN", fr: "FR" };
 
@@ -30,7 +32,7 @@ export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQue
         <h1 className="text-2xl font-bold tracking-tight text-foreground">SEO</h1>
         <p className="mt-1 text-xs text-foreground/70 font-sans">
           Métricas de Google Search Console de los últimos {windowDays} días — ingeridas por el cron diario
-          <code className="mx-1 font-mono text-foreground/60">seo-pulse</code>
+          <code className="mx-1 font-mono text-foreground/70">seo-pulse</code>
         </p>
       </div>
 
@@ -53,34 +55,10 @@ export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQue
       ) : (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-              <div className="flex items-center justify-between text-xs text-foreground/60">
-                <span>Clics</span>
-                <MousePointerClick size={18} className="text-accent" />
-              </div>
-              <div className="text-2xl font-bold font-mono text-foreground">{summary.totalClicks.toLocaleString("es")}</div>
-            </div>
-            <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-              <div className="flex items-center justify-between text-xs text-foreground/60">
-                <span>Impresiones</span>
-                <Eye size={18} className="text-accent" />
-              </div>
-              <div className="text-2xl font-bold font-mono text-foreground">{summary.totalImpressions.toLocaleString("es")}</div>
-            </div>
-            <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-              <div className="flex items-center justify-between text-xs text-foreground/60">
-                <span>CTR promedio</span>
-                <Target size={18} className="text-green-700" />
-              </div>
-              <div className="text-2xl font-bold font-mono text-green-700">{formatPct(summary.avgCtr)}</div>
-            </div>
-            <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 backdrop-blur-xl space-y-2">
-              <div className="flex items-center justify-between text-xs text-foreground/60">
-                <span>Posición promedio</span>
-                <Search size={18} className="text-amber-700" />
-              </div>
-              <div className="text-2xl font-bold font-mono text-amber-700">{formatPosition(summary.avgPosition)}</div>
-            </div>
+            <StatCard label="Clics" value={formatNumber(summary.totalClicks)} icon={<MousePointerClick size={18} className="text-accent-strong" />} />
+            <StatCard label="Impresiones" value={formatNumber(summary.totalImpressions)} icon={<Eye size={18} className="text-accent-strong" />} />
+            <StatCard label="CTR promedio" value={formatPct(summary.avgCtr)} icon={<Target size={18} className="text-accent-strong" />} />
+            <StatCard label="Posición promedio" value={formatPosition(summary.avgPosition)} icon={<Search size={18} className="text-accent-strong" />} />
           </div>
 
           <section aria-label="Oportunidades de contenido">
@@ -88,7 +66,7 @@ export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQue
               <Lightbulb size={16} className="text-accent" />
               <h2 className="text-sm font-bold text-foreground">Oportunidades de contenido</h2>
             </div>
-            <p className="mb-3 text-xs text-foreground/60">
+            <p className="mb-3 text-xs text-foreground/70">
               Queries con impresiones pero cero clics, en posición 4-30 — las más baratas de mover con una pieza de
               contenido nueva o un ajuste de metadata.
             </p>
@@ -115,9 +93,9 @@ export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQue
             ) : (
               <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs text-foreground/90">
+                  <table data-keep-table data-sticky-first className="w-full text-left text-xs text-foreground/90">
                     <caption className="sr-only">Páginas ordenadas por clics totales</caption>
-                    <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+                    <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                       <tr>
                         <th scope="col" className="px-5 py-3.5">Página</th>
                         <th scope="col" className="px-5 py-3.5">Idioma</th>
@@ -131,7 +109,7 @@ export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQue
                       {topPages.map((row) => (
                         <tr key={row.page}>
                           <td className="px-5 py-3 text-foreground break-all">{row.page}</td>
-                          <td className="px-5 py-3 text-foreground/60 font-mono">{LOCALE_LABELS[row.locale] ?? row.locale}</td>
+                          <td className="px-5 py-3 text-foreground/70 font-mono">{LOCALE_LABELS[row.locale] ?? row.locale}</td>
                           <td className="px-5 py-3 text-right font-mono text-foreground">{row.clicks}</td>
                           <td className="px-5 py-3 text-right font-mono text-foreground/70">{row.impressions}</td>
                           <td className="px-5 py-3 text-right font-mono text-foreground/70">{formatPct(row.ctr)}</td>
@@ -154,9 +132,9 @@ function QueryTable({ rows, caption }: { rows: SeoQueryRow[]; caption: string })
   return (
     <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs text-foreground/90">
+        <table data-keep-table data-sticky-first className="w-full text-left text-xs text-foreground/90">
           <caption className="sr-only">{caption}</caption>
-          <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+          <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
             <tr>
               <th scope="col" className="px-5 py-3.5">Query</th>
               <th scope="col" className="px-5 py-3.5 text-right">Clics</th>

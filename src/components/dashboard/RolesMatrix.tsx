@@ -14,6 +14,13 @@ const DOMAIN_LABELS: Record<string, string> = {
   profitability: "Rentabilidad",
   seo: "SEO",
   content: "Contenido",
+  tasks: "Tareas",
+  support: "Soporte",
+  documents: "Documentos",
+  expenses: "Gastos",
+  settings: "Configuración",
+  portfolio: "Portafolio",
+  data_privacy: "Privacidad de datos",
 };
 
 const ACTION_LABELS: Record<string, string> = {
@@ -58,17 +65,49 @@ export function RolesMatrix() {
       <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-4 flex items-start gap-3">
         <ShieldCheck size={18} className="text-accent shrink-0 mt-0.5" />
         <p className="text-xs text-foreground/70">
-          <code className="font-mono text-foreground/60">client</code> no tiene permisos propios en esta matriz a
-          propósito: su acceso a proyectos es por dueño (<code className="font-mono text-foreground/60">client_id</code>),
+          <code className="font-mono text-foreground/70">client</code> no tiene permisos propios en esta matriz a
+          propósito: su acceso a proyectos es por dueño (<code className="font-mono text-foreground/70">client_id</code>),
           no por rol.
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
+      {/* Móvil: una tabla de 6 columnas no cabe; un acordeón por rol (<details>, sin JS) lista
+          solo lo que ese rol SÍ puede hacer. La tabla completa queda para `md` en adelante. */}
+      <div className="space-y-3 md:hidden">
+        {ALL_ROLES.map((role) => {
+          const granted = domainGroups
+            .map(([domain, permissions]) => ({
+              domain,
+              actions: permissions.filter((p) => rolePermissionSets[role].has(p)).map((p) => ACTION_LABELS[p.split(":")[1]] ?? p.split(":")[1]),
+            }))
+            .filter((g) => g.actions.length > 0);
+          const total = granted.reduce((n, g) => n + g.actions.length, 0);
+          return (
+            <details key={role} className="group rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
+              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent">
+                {ROLE_LABELS[role]}
+                <span className="text-xs font-normal text-foreground/70">{total === 0 ? "Sin permisos propios" : `${total} permisos`}</span>
+              </summary>
+              {granted.length > 0 && (
+                <dl className="divide-y divide-foreground/10 border-t border-foreground/10 px-4">
+                  {granted.map((g) => (
+                    <div key={g.domain} className="flex items-baseline justify-between gap-3 py-2.5 text-xs">
+                      <dt className="font-semibold text-foreground">{DOMAIN_LABELS[g.domain] ?? g.domain}</dt>
+                      <dd className="text-right text-foreground/70">{g.actions.join(" · ")}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+            </details>
+          );
+        })}
+      </div>
+
+      <div className="hidden overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 md:block">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-foreground/90">
+          <table data-keep-table className="w-full text-left text-xs text-foreground/90">
             <caption className="sr-only">Matriz de permisos por rol, agrupada por módulo</caption>
-            <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+            <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
               <tr>
                 <th scope="col" className="px-5 py-3.5">Módulo</th>
                 <th scope="col" className="px-5 py-3.5">Acción</th>
@@ -99,9 +138,9 @@ export function RolesMatrix() {
                         return (
                           <td key={role} className="px-5 py-3 text-center">
                             {granted ? (
-                              <Check size={15} className="inline text-green-700" aria-label="Sí" />
+                              <><Check size={15} aria-hidden="true" className="inline text-success" /><span className="sr-only">Sí</span></>
                             ) : (
-                              <Minus size={15} className="inline text-foreground/25" aria-label="No" />
+                              <><Minus size={15} aria-hidden="true" className="inline text-foreground/35" /><span className="sr-only">No</span></>
                             )}
                           </td>
                         );

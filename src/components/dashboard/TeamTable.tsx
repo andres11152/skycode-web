@@ -15,6 +15,8 @@ import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import type { Currency } from "@/lib/currency";
 import type { TeamMember, TeamRole } from "./types";
+import { formatShortDate } from "@/lib/utils";
+import { useFeedback } from "./ui/Feedback";
 
 // Mismas etiquetas que Roles y Permisos, Mi Cuenta y la ficha de persona
 // (antes acá decía "Sales Manager" y en el resto del panel "Comercial").
@@ -84,6 +86,7 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const feedback = useFeedback();
   const handleRoleChange = async (id: number, role: TeamRole) => {
     setBusyMemberId(id);
     try {
@@ -94,7 +97,12 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
       });
       if (res.ok) {
         setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, role } : m)));
+        feedback.toast({ message: "Cambio guardado." });
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo guardar el cambio." });
       }
+    } catch {
+      feedback.toast({ tone: "error", message: "No se pudo guardar. Revisa tu conexión." });
     } finally {
       setBusyMemberId(null);
     }
@@ -102,6 +110,15 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
 
   const handleStatusToggle = async (member: TeamMember) => {
     const nextStatus = member.status === "active" ? "disabled" : "active";
+    if (nextStatus === "disabled") {
+      const ok = await feedback.confirm({
+        title: `¿Desactivar la cuenta de ${member.name}?`,
+        description: "Se cerrarán todas sus sesiones y no podrá entrar hasta que la reactives.",
+        confirmLabel: "Desactivar",
+        tone: "danger",
+      });
+      if (!ok) return;
+    }
     setBusyMemberId(member.id);
     try {
       const res = await fetch("/api/team", {
@@ -111,7 +128,12 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
       });
       if (res.ok) {
         setMembers((prev) => prev.map((m) => (m.id === member.id ? { ...m, status: nextStatus } : m)));
+        feedback.toast({ message: "Cambio guardado." });
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo guardar el cambio." });
       }
+    } catch {
+      feedback.toast({ tone: "error", message: "No se pudo guardar. Revisa tu conexión." });
     } finally {
       setBusyMemberId(null);
     }
@@ -129,7 +151,12 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
         setMembers((prev) =>
           prev.map((m) => (m.id === id ? { ...m, hourly_cost: hourlyCost, hourly_cost_currency: hourlyCostCurrency } : m))
         );
+        feedback.toast({ message: "Cambio guardado." });
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo guardar el cambio." });
       }
+    } catch {
+      feedback.toast({ tone: "error", message: "No se pudo guardar. Revisa tu conexión." });
     } finally {
       setBusyMemberId(null);
     }
@@ -145,7 +172,12 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
       });
       if (res.ok) {
         setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, weekly_hours_capacity: weeklyHoursCapacity } : m)));
+        feedback.toast({ message: "Cambio guardado." });
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo guardar el cambio." });
       }
+    } catch {
+      feedback.toast({ tone: "error", message: "No se pudo guardar. Revisa tu conexión." });
     } finally {
       setBusyMemberId(null);
     }
@@ -183,7 +215,7 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th className="px-5 py-3.5">Nombre / Email</th>
                   <th className="px-5 py-3.5">Rol</th>
@@ -212,7 +244,7 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
                             <span className="flex items-center gap-2 font-bold text-foreground group-hover:text-accent-strong group-hover:underline">
                               {member.name}
                               {isSelf && (
-                                <span className="rounded bg-foreground/10 px-1.5 py-0.5 text-[10px] uppercase text-foreground/70 no-underline">
+                                <span className="rounded bg-foreground/10 px-1.5 py-0.5 text-[11px] uppercase text-foreground/70 no-underline">
                                   Tú
                                 </span>
                               )}
@@ -257,8 +289,8 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
                           {member.status === "active" ? "Activo" : "Desactivado"}
                         </Badge>
                       </td>
-                      <td className="px-5 py-4 font-mono text-[10px] text-foreground/60">
-                        {new Date(member.created_at).toLocaleDateString("es-CO")}
+                      <td className="px-5 py-4 font-mono text-[11px] text-foreground/70">
+                        {formatShortDate(member.created_at)}
                       </td>
                       <td className="px-5 py-4 text-right">
                         <button
@@ -266,8 +298,8 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: T
                           disabled={isSelf || isBusy}
                           className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-40 disabled:cursor-not-allowed ${
                             member.status === "active"
-                              ? "border-red-500/30 bg-red-500/10 text-red-700 hover:bg-red-500/20"
-                              : "border-green-500/30 bg-green-500/10 text-green-700 hover:bg-green-500/20"
+                              ? "border-danger/30 bg-danger/10 text-danger hover:bg-danger/20"
+                              : "border-success/30 bg-success/10 text-success hover:bg-success/20"
                           }`}
                         >
                           {member.status === "active" ? <Ban size={12} /> : <PlayCircle size={12} />}
@@ -342,12 +374,12 @@ function HourlyCostCell({
         onChange={(e) => setDraft(e.target.value)}
         onBlur={commit}
         placeholder="Sin definir"
-        className="w-20 rounded-lg border border-foreground/15 bg-foreground/10 px-2 py-1 text-[11px] text-foreground placeholder:text-foreground/40 outline-none focus:border-accent font-mono disabled:opacity-40"
+        className="w-20 rounded-lg border border-foreground/15 bg-foreground/10 px-2 py-1 text-[11px] text-foreground placeholder:text-foreground/60 outline-none focus:border-accent font-mono disabled:opacity-40"
       />
       <CurrencySelect
         value={member.hourly_cost_currency}
         onChange={(currency) => onChange(member.hourly_cost, currency)}
-        className="rounded-lg border border-foreground/15 bg-foreground/10 px-1.5 py-1 text-[10px] text-foreground outline-none focus:border-accent cursor-pointer disabled:opacity-40"
+        className="rounded-lg border border-foreground/15 bg-foreground/10 px-1.5 py-1 text-[11px] text-foreground outline-none focus:border-accent cursor-pointer disabled:opacity-40"
       />
     </div>
   );
@@ -396,7 +428,7 @@ function WeeklyHoursCapacityCell({
         onBlur={commit}
         className="w-16 rounded-lg border border-foreground/15 bg-foreground/10 px-2 py-1 text-[11px] text-foreground outline-none focus:border-accent font-mono disabled:opacity-40"
       />
-      <span className="text-[10px] text-foreground/50">h</span>
+      <span className="text-xs text-foreground/70">h</span>
     </div>
   );
 }
@@ -441,9 +473,9 @@ function InviteModal({
               <span className="flex-1 truncate text-xs font-mono text-foreground/90">{inviteUrl}</span>
               <button
                 onClick={onCopyUrl}
-                className="flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="flex items-center gap-1 rounded-lg bg-accent/20 border border-accent/30 px-2.5 py-1 text-[11px] font-bold text-accent-strong hover:bg-accent/30 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                {copied ? <Check size={12} className="text-green-700" /> : <Copy size={12} />}
+                {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
                 <span>{copied ? "Copiado" : "Copiar"}</span>
               </button>
             </div>
@@ -468,7 +500,7 @@ function InviteModal({
                 value={email}
                 onChange={(e) => onEmailChange(e.target.value)}
                 placeholder="persona@skycode.agency"
-                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent focus:ring-1 focus:ring-accent font-mono"
+                className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent focus:ring-1 focus:ring-accent font-mono"
               />
             </div>
             <div className="space-y-1.5">

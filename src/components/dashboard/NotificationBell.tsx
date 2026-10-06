@@ -91,13 +91,13 @@ export function NotificationBell() {
         aria-haspopup="true"
         aria-expanded={open}
         aria-label={unreadCount > 0 ? `Notificaciones — ${unreadCount} sin leer` : "Notificaciones"}
-        className="relative flex h-9 w-9 items-center justify-center rounded-lg text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="relative flex h-11 w-11 items-center justify-center rounded-lg text-foreground/80 hover:bg-foreground/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <Bell size={18} />
         {unreadCount > 0 && (
           <span
             aria-hidden="true"
-            className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent-strong px-1 text-[9px] font-bold text-white"
+            className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent-strong px-1 text-[11px] font-bold text-white"
           >
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
@@ -125,7 +125,7 @@ export function NotificationBell() {
 
           <div className="max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="px-4 py-8 text-center text-xs text-foreground/50">Sin notificaciones todavía.</p>
+              <p className="px-4 py-8 text-center text-xs text-foreground/70">Sin notificaciones todavía.</p>
             ) : (
               <ul>
                 {notifications.map((notification) => (
@@ -145,7 +145,7 @@ export function NotificationBell() {
                         </span>
                       </div>
                       <p className="line-clamp-2 text-[11px] text-foreground/70">{notification.body}</p>
-                      <span className="font-mono text-[10px] text-foreground/40">{timeAgo(notification.created_at)}</span>
+                      <span className="font-mono text-[11px] text-foreground/70">{timeAgo(notification.created_at)}</span>
                     </button>
                   </li>
                 ))}

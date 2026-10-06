@@ -139,12 +139,12 @@ export function TwoFactorSetup({ initialEnabled, initialRemainingBackupCodes }: 
     <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${enabled ? "bg-emerald-500/10 text-emerald-600" : "bg-foreground/5 text-foreground/50"}`}>
+          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${enabled ? "bg-success/10 text-success" : "bg-foreground/5 text-foreground/70"}`}>
             {enabled ? <ShieldCheck size={18} /> : <ShieldAlert size={18} />}
           </div>
           <div>
             <h3 className="text-sm font-bold text-foreground">Autenticación en dos pasos</h3>
-            <p className="mt-0.5 text-xs text-foreground/60">
+            <p className="mt-0.5 text-xs text-foreground/70">
               {enabled
                 ? `Activada — te quedan ${remainingBackupCodes} código${remainingBackupCodes === 1 ? "" : "s"} de respaldo.`
                 : "Agrega una capa extra de seguridad con Google Authenticator, Authy o similar."}
@@ -175,7 +175,7 @@ export function TwoFactorSetup({ initialEnabled, initialRemainingBackupCodes }: 
           <button
             type="button"
             onClick={() => setStep("disabling")}
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-red-500/20 bg-red-500/10 px-3.5 py-2 text-xs font-medium text-red-700 hover:bg-red-500/20 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-danger/20 bg-danger/10 px-3.5 py-2 text-xs font-medium text-danger hover:bg-danger/20 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             Desactivar 2FA
           </button>
@@ -197,12 +197,12 @@ export function TwoFactorSetup({ initialEnabled, initialRemainingBackupCodes }: 
               type="button"
               onClick={copySecret}
               aria-label="Copiar código secreto"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-foreground/50 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              {copied ? <CheckCircle size={14} className="text-emerald-600" /> : <Copy size={14} />}
+              {copied ? <CheckCircle size={14} className="text-success" /> : <Copy size={14} />}
             </button>
           </div>
-          <p className="text-[10px] text-foreground/50">¿No puedes escanear? Escribe el código de arriba a mano en tu app.</p>
+          <p className="text-[11px] text-foreground/70">¿No puedes escanear? Escribe el código de arriba a mano en tu app.</p>
 
           <div className="space-y-1.5">
             <label htmlFor="confirm-code" className="block text-xs font-semibold text-foreground/80">
@@ -258,7 +258,7 @@ export function TwoFactorSetup({ initialEnabled, initialRemainingBackupCodes }: 
       {/* Desactivar — exige un código válido */}
       {step === "disabling" && (
         <form onSubmit={handleDisable} className="space-y-3">
-          <div className="flex items-start gap-2 rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2.5 text-xs text-amber-700">
+          <div className="flex items-start gap-2 rounded-lg border border-warning/20 bg-warning/10 px-3 py-2.5 text-xs text-warning">
             <AlertCircle size={14} className="mt-0.5 shrink-0" />
             <span>Escribe un código actual de tu app (o uno de respaldo) para confirmar que quieres desactivar 2FA.</span>
           </div>
@@ -275,7 +275,7 @@ export function TwoFactorSetup({ initialEnabled, initialRemainingBackupCodes }: 
             <button
               type="submit"
               disabled={loading || code.trim().length === 0}
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-red-600 px-3.5 text-xs font-bold text-white hover:bg-red-500 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-danger px-3.5 text-xs font-bold text-white hover:brightness-90 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               {loading ? "Desactivando…" : "Desactivar"}
             </button>

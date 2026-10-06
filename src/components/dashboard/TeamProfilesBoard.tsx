@@ -31,7 +31,7 @@ function ProfileThumb({ profile, name }: { profile: AdminTeamProfile; name: stri
       {profile.avatar ? (
         <Image src={profile.avatar.sm} alt="" fill sizes="48px" className="object-cover object-top" />
       ) : (
-        <span aria-hidden="true" className="flex h-full w-full items-center justify-center text-xs font-bold text-foreground/50">
+        <span aria-hidden="true" className="flex h-full w-full items-center justify-center text-xs font-bold text-foreground/70">
           {initials(name)}
         </span>
       )}
@@ -190,7 +190,7 @@ export function TeamProfilesBoard({ initialProfiles, canWrite }: { initialProfil
                           onClick={() => handleMove(index, -1)}
                           disabled={busy || index === 0}
                           aria-label={`Subir a ${name}`}
-                          className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/60 transition-colors hover:bg-foreground/5 disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 transition-colors hover:bg-foreground/5 disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <ArrowUp size={14} />
                         </button>
@@ -199,7 +199,7 @@ export function TeamProfilesBoard({ initialProfiles, canWrite }: { initialProfil
                           onClick={() => handleMove(index, 1)}
                           disabled={busy || index === profiles.length - 1}
                           aria-label={`Bajar a ${name}`}
-                          className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/60 transition-colors hover:bg-foreground/5 disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 transition-colors hover:bg-foreground/5 disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <ArrowDown size={14} />
                         </button>

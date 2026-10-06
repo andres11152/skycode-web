@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Circle, ClipboardCheck } from "lucide-react";
 import { logError } from "@/lib/logger";
 import type { OnboardingItem } from "./types";
+import { useFeedback } from "./ui/Feedback";
 
 // Etiqueta neutral en tercera persona a propósito ("Cliente"/"Equipo", no
 // "Tú"): este mismo componente lo ve tanto el cliente en /portal como el
@@ -23,6 +24,7 @@ const RESPONSIBLE_LABELS: Record<"client" | "team", string> = { client: "Cliente
 export function OnboardingChecklist({ projectId }: { projectId: number }) {
   const [items, setItems] = useState<OnboardingItem[] | null>(null);
   const [togglingId, setTogglingId] = useState<number | null>(null);
+  const feedback = useFeedback();
 
   useEffect(() => {
     fetch(`/api/projects/${projectId}/onboarding`)
@@ -51,9 +53,11 @@ export function OnboardingChecklist({ projectId }: { projectId: number }) {
       if (!res.ok) {
         // Revierte el optimismo si el servidor no lo aceptó.
         setItems((prev) => (prev ? prev.map((i) => (i.id === item.id ? { ...i, completed: item.completed } : i)) : prev));
+        feedback.toast({ tone: "error", message: "No se pudo actualizar el paso. Se restauró su estado." });
       }
     } catch (err) {
       logError("Error al actualizar ítem de onboarding", err);
+      feedback.toast({ tone: "error", message: "No se pudo actualizar el paso. Revisa tu conexión." });
       setItems((prev) => (prev ? prev.map((i) => (i.id === item.id ? { ...i, completed: item.completed } : i)) : prev));
     } finally {
       setTogglingId(null);
@@ -63,19 +67,19 @@ export function OnboardingChecklist({ projectId }: { projectId: number }) {
   return (
     <div className="space-y-3 rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5">
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-foreground/60">
+        <h2 className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-foreground/70">
           <ClipboardCheck size={14} className="text-accent" />
           Checklist de Arranque
         </h2>
         {items && (
-          <span className="font-mono text-[10px] text-foreground/50">
+          <span className="font-mono text-xs text-foreground/70">
             {completedCount}/{items.length}
           </span>
         )}
       </div>
 
       {items === null ? (
-        <p className="text-[11px] text-foreground/40">Cargando…</p>
+        <p className="text-xs text-foreground/70">Cargando…</p>
       ) : (
         <ul className="space-y-1.5">
           {items.map((item) => (
@@ -84,17 +88,18 @@ export function OnboardingChecklist({ projectId }: { projectId: number }) {
                 type="button"
                 onClick={() => handleToggle(item)}
                 disabled={togglingId === item.id}
-                className="flex w-full min-h-9 items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-foreground/5 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                aria-pressed={item.completed}
+                className="flex w-full min-h-11 items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-foreground/5 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 {item.completed ? (
-                  <CheckCircle2 size={16} className="shrink-0 text-green-700" />
+                  <CheckCircle2 size={16} className="shrink-0 text-success" />
                 ) : (
                   <Circle size={16} className="shrink-0 text-foreground/30" />
                 )}
-                <span className={`flex-1 text-xs ${item.completed ? "text-foreground/50 line-through" : "text-foreground"}`}>
+                <span className={`flex-1 text-xs ${item.completed ? "text-foreground/70 line-through" : "text-foreground"}`}>
                   {item.title}
                 </span>
-                <span className="shrink-0 rounded bg-foreground/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-foreground/50">
+                <span className="shrink-0 rounded bg-foreground/10 px-1.5 py-0.5 text-[11px] font-semibold uppercase text-foreground/70">
                   {RESPONSIBLE_LABELS[item.responsible]}
                 </span>
               </button>

@@ -90,19 +90,7 @@
  * opacity/transform, con los tokens de theme.css. El origen del zoom lo pone
  * cada uso (`origin-top-right`, etc.).
  */
-@keyframes enter-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.96) translateY(-4px);
-  }
-}
-
-@keyframes enter-from-bottom {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-}
+/* `enter-pop` y `enter-from-bottom` viven en theme.css (los usa también el panel). */
 
 /* Respuesta de FAQ al abrirse (<details>): fundido + 6px, solo opacity/transform.
    La altura NO se anima (regla del proyecto) — el contenido aparece ya en su
@@ -116,27 +104,6 @@
 
 .animate-faq-in {
   animation: faq-in var(--dur-base) var(--ease-out) both;
-}
-
-.animate-enter-pop {
-  animation: enter-pop var(--dur-fast) var(--ease-out) both;
-}
-
-.animate-enter-from-bottom {
-  animation: enter-from-bottom var(--dur-base) var(--ease-out) both;
-}
-
-/* Errores de formulario: entran desde arriba (4px) para leerse como
-   "salido" del campo, no como un salto de layout seco. */
-@keyframes enter-error {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-}
-
-.animate-enter-error {
-  animation: enter-error var(--dur-base) var(--ease-out) both;
 }
 
 /* Temblor corto (300ms, ±6px) para un envío fallido. Se re-dispara cambiando
@@ -358,9 +325,6 @@
   .animate-hero-fade-up,
   .animate-hero-scale-in,
   .animate-marquee,
-  .animate-enter-pop,
-  .animate-enter-from-bottom,
-  .animate-enter-error,
   .animate-faq-in,
   .animate-shake,
   .animate-pop-in,

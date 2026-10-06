@@ -7,16 +7,15 @@ import { Repeat, Plus, Trash2, Pause, Play, XCircle } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
 import { CurrencySelect } from "./CurrencySelect";
-import { Badge, type BadgeTone } from "./ui/Badge";
+import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, formatCalendarDate } from "@/lib/utils";
 import { logError } from "@/lib/logger";
 import type { Currency } from "@/lib/currency";
 import type { Project, Retainer, RetainerStatus } from "./types";
-
-const STATUS_LABELS: Record<RetainerStatus, string> = { active: "Activo", paused: "Pausado", cancelled: "Cancelado" };
-const STATUS_TONES: Record<RetainerStatus, BadgeTone> = { active: "success", paused: "warning", cancelled: "neutral" };
+import { RETAINER_STATUS } from "./statusMeta";
+import { useFeedback } from "./ui/Feedback";
 
 export function RetainersBoard({
   retainers: initialRetainers,
@@ -55,14 +54,21 @@ export function RetainersBoard({
     }
   };
 
+  const feedback = useFeedback();
   const handleDelete = async (retainer: Retainer) => {
-    if (!window.confirm(`¿Eliminar el retainer "${retainer.description}"? Deja de generar facturas futuras.`)) return;
+    if (!(await feedback.confirm({ title: `¿Eliminar el retainer "${retainer.description}"? Deja de generar facturas futuras.`, tone: "danger" }))) return;
     setBusyId(retainer.id);
     try {
       const res = await fetch(`/api/retainers/${retainer.id}`, { method: "DELETE" });
-      if (res.ok) setRetainers((prev) => prev.filter((r) => r.id !== retainer.id));
+      if (res.ok) {
+        setRetainers((prev) => prev.filter((r) => r.id !== retainer.id));
+        feedback.toast({ message: "Retainer eliminado." });
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo eliminar el retainer." });
+      }
     } catch (err) {
       logError("Error al eliminar el retainer", err);
+      feedback.toast({ tone: "error", message: "No se pudo eliminar el retainer. Revisa tu conexión." });
     } finally {
       setBusyId(null);
     }
@@ -97,7 +103,7 @@ export function RetainersBoard({
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
               <caption className="sr-only">Retainers recurrentes, con proyecto, monto mensual y próxima fecha de cobro</caption>
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th scope="col" className="px-5 py-3.5">Descripción / Cliente</th>
                   <th scope="col" className="px-5 py-3.5">Proyecto</th>
@@ -112,15 +118,15 @@ export function RetainersBoard({
                   <tr key={retainer.id}>
                     <td className="px-5 py-4">
                       <div className="font-bold text-foreground">{retainer.description}</div>
-                      <div className="text-[11px] text-foreground/60 font-mono">{retainer.client_name}</div>
+                      <div className="text-[11px] text-foreground/70 font-mono">{retainer.client_name}</div>
                     </td>
                     <td className="px-5 py-4 text-foreground/70">{retainer.project_title}</td>
-                    <td className="px-5 py-4 font-mono font-bold text-green-700">{formatMoney(retainer.amount, retainer.currency)}</td>
-                    <td className="px-5 py-4 font-mono text-[10px] text-foreground/60 whitespace-nowrap">
-                      {new Date(`${retainer.next_invoice_date}T00:00:00`).toLocaleDateString("es-CO")}
+                    <td className="px-5 py-4 font-mono font-bold text-success">{formatMoney(retainer.amount, retainer.currency)}</td>
+                    <td className="px-5 py-4 font-mono text-[11px] text-foreground/70 whitespace-nowrap">
+                      {formatCalendarDate(retainer.next_invoice_date)}
                     </td>
                     <td className="px-5 py-4">
-                      <Badge tone={STATUS_TONES[retainer.status]}>{STATUS_LABELS[retainer.status]}</Badge>
+                      <Badge tone={RETAINER_STATUS[retainer.status].tone}>{RETAINER_STATUS[retainer.status].label}</Badge>
                     </td>
                     {canWrite && (
                       <td className="px-5 py-4 text-right">
@@ -130,7 +136,7 @@ export function RetainersBoard({
                               onClick={() => handleStatusChange(retainer, "paused")}
                               disabled={busyId === retainer.id}
                               aria-label={`Pausar ${retainer.description}`}
-                              className="flex h-9 w-9 items-center justify-center rounded-lg text-amber-700 hover:bg-amber-500/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                              className="flex h-11 w-11 items-center justify-center rounded-lg text-warning hover:bg-warning/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                             >
                               <Pause size={14} />
                             </button>
@@ -140,7 +146,7 @@ export function RetainersBoard({
                               onClick={() => handleStatusChange(retainer, "active")}
                               disabled={busyId === retainer.id}
                               aria-label={`Reanudar ${retainer.description}`}
-                              className="flex h-9 w-9 items-center justify-center rounded-lg text-green-700 hover:bg-green-500/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                              className="flex h-11 w-11 items-center justify-center rounded-lg text-success hover:bg-success/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                             >
                               <Play size={14} />
                             </button>
@@ -150,7 +156,7 @@ export function RetainersBoard({
                               onClick={() => handleStatusChange(retainer, "cancelled")}
                               disabled={busyId === retainer.id}
                               aria-label={`Cancelar ${retainer.description}`}
-                              className="flex h-9 w-9 items-center justify-center rounded-lg text-foreground/50 hover:bg-foreground/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                              className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                             >
                               <XCircle size={14} />
                             </button>
@@ -159,7 +165,7 @@ export function RetainersBoard({
                             onClick={() => handleDelete(retainer)}
                             disabled={busyId === retainer.id}
                             aria-label={`Eliminar ${retainer.description}`}
-                            className="flex h-9 w-9 items-center justify-center rounded-lg text-red-700 hover:bg-red-500/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="flex h-11 w-11 items-center justify-center rounded-lg text-danger hover:bg-danger/10 transition-colors disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                           >
                             <Trash2 size={14} />
                           </button>
@@ -264,7 +270,7 @@ function CreateRetainerModal({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Ej. Mantenimiento y soporte mensual"
-            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/50 outline-none focus:border-accent"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground placeholder:text-foreground/60 outline-none focus:border-accent"
           />
         </div>
         <div className="space-y-1.5">

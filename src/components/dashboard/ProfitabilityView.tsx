@@ -48,7 +48,7 @@ export function ProfitabilityView({
       <ExchangeRateNote usdToCopRate={usdToCopRate} />
 
       <section aria-labelledby="por-proyecto-heading" className="space-y-4">
-        <h2 id="por-proyecto-heading" className="text-sm font-bold font-mono uppercase tracking-wider text-foreground/60">
+        <h2 id="por-proyecto-heading" className="text-sm font-bold font-mono uppercase tracking-wider text-foreground/70">
           Por Proyecto
         </h2>
         <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
@@ -56,8 +56,8 @@ export function ProfitabilityView({
             <EmptyState icon={BarChart3} title="Sin proyectos todavía" description="El reporte aparece cuando haya proyectos con horas o facturas." />
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-foreground/90">
-                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <table data-keep-table data-sticky-first className="w-full text-left text-xs text-foreground/90">
+                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                   <tr>
                     <th className="px-5 py-3.5">Proyecto / Cliente</th>
                     <th className="px-5 py-3.5">Cotizado</th>
@@ -74,14 +74,14 @@ export function ProfitabilityView({
                     <tr key={p.id}>
                       <td className="px-5 py-3.5">
                         <div className="font-bold text-foreground">{p.title}</div>
-                        <div className="text-[10px] text-foreground/50 font-mono">{p.client_name}</div>
+                        <div className="text-[11px] text-foreground/70 font-mono">{p.client_name}</div>
                       </td>
                       <td className="px-5 py-3.5 font-mono text-foreground/80">
                         {p.quotedAmountOriginal !== null && p.quotedCurrencyOriginal ? (
                           <>
                             {formatMoney(p.quotedAmountOriginal, p.quotedCurrencyOriginal)}
                             {p.quotedCurrencyOriginal === "USD" && p.quotedAmountCop !== null && (
-                              <div className="text-[10px] text-foreground/40">
+                              <div className="text-[11px] text-foreground/70">
                                 ≈ {formatMoney(p.quotedAmountCop, "COP")}
                               </div>
                             )}
@@ -91,20 +91,20 @@ export function ProfitabilityView({
                         )}
                       </td>
                       <td className="px-5 py-3.5 font-mono text-foreground/80">{p.totalHours.toFixed(1)}h</td>
-                      <td className="px-5 py-3.5 font-mono text-amber-700">{formatMoney(p.totalCostCop, "COP")}</td>
-                      <td className="px-5 py-3.5 font-mono text-amber-700">{formatMoney(p.totalExpensesCop, "COP")}</td>
-                      <td className="px-5 py-3.5 font-mono text-sky-700">{formatMoney(p.totalBilledCop, "COP")}</td>
-                      <td className={`px-5 py-3.5 font-mono font-bold ${p.marginVsBilledCop >= 0 ? "text-green-700" : "text-red-700"}`}>
+                      <td className="px-5 py-3.5 font-mono text-warning">{formatMoney(p.totalCostCop, "COP")}</td>
+                      <td className="px-5 py-3.5 font-mono text-warning">{formatMoney(p.totalExpensesCop, "COP")}</td>
+                      <td className="px-5 py-3.5 font-mono text-info">{formatMoney(p.totalBilledCop, "COP")}</td>
+                      <td className={`px-5 py-3.5 font-mono font-bold ${p.marginVsBilledCop >= 0 ? "text-success" : "text-danger"}`}>
                         {formatMoney(p.marginVsBilledCop, "COP")}
                       </td>
                       <td className="px-5 py-3.5">
                         {p.deviationPct !== null ? (
-                          <span className={`inline-flex items-center gap-1 font-mono font-semibold ${p.deviationPct > 0 ? "text-red-700" : "text-green-700"}`}>
+                          <span className={`inline-flex items-center gap-1 font-mono font-semibold ${p.deviationPct > 0 ? "text-danger" : "text-success"}`}>
                             {p.deviationPct > 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                             {Math.abs(p.deviationPct).toFixed(0)}%
                           </span>
                         ) : (
-                          <span className="text-foreground/40">—</span>
+                          <span className="text-foreground/70">—</span>
                         )}
                       </td>
                     </tr>
@@ -117,7 +117,7 @@ export function ProfitabilityView({
       </section>
 
       <section aria-labelledby="por-canal-heading" className="space-y-4">
-        <h2 id="por-canal-heading" className="text-sm font-bold font-mono uppercase tracking-wider text-foreground/60">
+        <h2 id="por-canal-heading" className="text-sm font-bold font-mono uppercase tracking-wider text-foreground/70">
           Por Canal
         </h2>
         <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">
@@ -125,8 +125,8 @@ export function ProfitabilityView({
             <EmptyState icon={BarChart3} title="Sin campañas todavía" description="El margen por canal aparece cuando haya inversión registrada." />
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-foreground/90">
-                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <table data-keep-table data-sticky-first className="w-full text-left text-xs text-foreground/90">
+                <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                   <tr>
                     <th className="px-5 py-3.5">Campaña</th>
                     <th className="px-5 py-3.5">Canal</th>
@@ -143,18 +143,18 @@ export function ProfitabilityView({
                       <td className="px-5 py-3.5 font-bold text-foreground">{c.name}</td>
                       <td className="px-5 py-3.5 text-foreground/70">{CHANNEL_LABELS[c.channel] || c.channel}</td>
                       <td className="px-5 py-3.5 font-mono text-foreground/80">{formatMoney(c.totalSpendCop, "COP")}</td>
-                      <td className="px-5 py-3.5 font-mono text-sky-700">{formatMoney(c.totalBilledCop, "COP")}</td>
-                      <td className="px-5 py-3.5 font-mono text-amber-700">{formatMoney(c.totalCostCop, "COP")}</td>
-                      <td className={`px-5 py-3.5 font-mono font-bold ${c.netMarginCop >= 0 ? "text-green-700" : "text-red-700"}`}>
+                      <td className="px-5 py-3.5 font-mono text-info">{formatMoney(c.totalBilledCop, "COP")}</td>
+                      <td className="px-5 py-3.5 font-mono text-warning">{formatMoney(c.totalCostCop, "COP")}</td>
+                      <td className={`px-5 py-3.5 font-mono font-bold ${c.netMarginCop >= 0 ? "text-success" : "text-danger"}`}>
                         {formatMoney(c.netMarginCop, "COP")}
                       </td>
                       <td className="px-5 py-3.5 font-mono">
                         {c.roi !== null ? (
-                          <span className={c.roi >= 0 ? "text-green-700" : "text-red-700"}>
+                          <span className={c.roi >= 0 ? "text-success" : "text-danger"}>
                             {(c.roi * 100).toFixed(0)}%
                           </span>
                         ) : (
-                          <span className="text-foreground/40">—</span>
+                          <span className="text-foreground/70">—</span>
                         )}
                       </td>
                     </tr>
@@ -164,7 +164,7 @@ export function ProfitabilityView({
             </div>
           )}
         </div>
-        <p className="text-[10px] text-foreground/40 max-w-2xl">
+        <p className="text-[11px] text-foreground/70 max-w-2xl">
           La atribución de campaña a proyecto se infiere por el correo del lead que llegó por esa campaña y luego
           se convirtió en cliente — es una aproximación, no una relación garantizada por el esquema.
         </p>

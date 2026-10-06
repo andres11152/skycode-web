@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ArrowsClockwise, Warning } from "@phosphor-icons/react";
+import { ErrorState } from "@/components/dashboard/ui/ErrorState";
 import { logError } from "@/lib/logger";
 
 export default function PortalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
@@ -10,23 +10,14 @@ export default function PortalError({ error, reset }: { error: Error & { digest?
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-6">
-      <div className="max-w-md text-center space-y-4">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20">
-          <Warning size={22} className="text-red-700" />
-        </div>
-        <h1 className="text-lg font-bold text-foreground">No pudimos cargar tu portal</h1>
-        <p className="text-xs text-foreground/60">
-          Algo falló al obtener tus proyectos. Intenta de nuevo — si el problema continúa, escríbenos.
-        </p>
-        <button
-          onClick={reset}
-          className="inline-flex items-center gap-2 rounded-xl bg-accent-strong px-4 py-2.5 text-xs font-bold text-white shadow-lg hover:brightness-90 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          <ArrowsClockwise size={14} />
-          <span>Reintentar</span>
-        </button>
-      </div>
-    </div>
+    <ErrorState
+      title="No pudimos cargar tu portal"
+      description="Algo falló al obtener tu información. Intenta de nuevo; si el problema continúa, escríbenos y menciona la referencia de abajo."
+      digest={error.digest}
+      onRetry={reset}
+      homeHref="/portal"
+      homeLabel="Volver a tus proyectos"
+      contactHref="mailto:contact@skycode.agency"
+    />
   );
 }

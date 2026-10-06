@@ -48,6 +48,87 @@ export function formatDate(isoDate: string, locale: keyof typeof DATE_LOCALES = 
   return dateFormatters[locale].format(instant);
 }
 
+// Formatos compactos del panel interno/portal (solo es-CO). Antes había 33
+// `toLocaleDateString` a mano con tres criterios distintos de zona horaria,
+// y los campos `DATE` (vencimientos, fecha de gasto, de horas) se mostraban
+// un día antes en Colombia: `new Date("2026-10-06")` es medianoche UTC.
+const PANEL_TZ = "America/Bogota";
+const shortDateFormatter = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "short", year: "numeric", timeZone: PANEL_TZ });
+const dayMonthFormatter = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "short", timeZone: PANEL_TZ });
+const monthYearFormatter = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric", timeZone: PANEL_TZ });
+const dateTimeFormatter = new Intl.DateTimeFormat("es-CO", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  timeZone: PANEL_TZ,
+});
+const dayTimeFormatter = new Intl.DateTimeFormat("es-CO", {
+  day: "numeric",
+  month: "short",
+  hour: "numeric",
+  minute: "2-digit",
+  timeZone: PANEL_TZ,
+});
+const numberFormatter = new Intl.NumberFormat("es-CO");
+
+/**
+ * Columna `DATE` de Postgres (fecha de calendario, no instante). Toma solo
+ * `YYYY-MM-DD` aunque llegue serializada como `2026-10-06T00:00:00.000Z`
+ * (así devuelve `pg` un DATE sin `::text`) y la ancla a mediodía de Bogotá,
+ * así nunca cruza al día anterior.
+ */
+function calendarInstant(value: string): Date {
+  const day = /^\d{4}-\d{2}-\d{2}/.exec(value)?.[0];
+  return day ? new Date(`${day}T12:00:00-05:00`) : new Date(value);
+}
+
+function timestampInstant(value: string): Date {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? calendarInstant(value) : new Date(value);
+}
+
+export type CalendarDateStyle = "short" | "dayMonth" | "monthYear";
+
+const CALENDAR_FORMATTERS: Record<CalendarDateStyle, Intl.DateTimeFormat> = {
+  short: shortDateFormatter,
+  dayMonth: dayMonthFormatter,
+  monthYear: monthYearFormatter,
+};
+
+/** Para columnas `DATE` (vencimiento, fecha de gasto/horas, ingreso): "6 de oct de 2026". */
+export function formatCalendarDate(value: string, style: CalendarDateStyle = "short"): string {
+  return CALENDAR_FORMATTERS[style].format(calendarInstant(value));
+}
+
+/** Para `TIMESTAMPTZ` (creado, actualizado), en hora de Bogotá: "6 de oct de 2026". */
+export function formatShortDate(value: string, style: CalendarDateStyle = "short"): string {
+  return CALENDAR_FORMATTERS[style].format(timestampInstant(value));
+}
+
+/** Para `TIMESTAMPTZ` cuando la hora importa (actividad, sesiones, auditoría): "6 de oct de 2026, 3:45 p. m.". */
+export function formatDateTime(value: string, style: "full" | "dayTime" = "full"): string {
+  // `dayTime` ("6 de oct, 3:45 p. m.") para plazos cercanos (SLA), donde el año es ruido.
+  return (style === "dayTime" ? dayTimeFormatter : dateTimeFormatter).format(timestampInstant(value));
+}
+
+const compactCopFormatter = new Intl.NumberFormat("es-CO", {
+  style: "currency",
+  currency: "COP",
+  notation: "compact",
+  maximumFractionDigits: 1,
+});
+
+/** Pesos abreviados para etiquetas de gráfica donde el monto completo no cabe: "$ 12,5 M". */
+export function formatCompactCop(value: number): string {
+  return compactCopFormatter.format(value);
+}
+
+/** Enteros y decimales con separadores de es-CO: "1.234.567". */
+export function formatNumber(value: number): string {
+  return numberFormatter.format(value);
+}
+
 export function slugify(text: string): string {
   return text
     .normalize("NFD")

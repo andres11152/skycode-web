@@ -3,24 +3,15 @@
 import { useId, useState } from "react";
 import { Plus, X, Trash2, Clock, ClipboardList } from "lucide-react";
 import { EmptyState } from "./EmptyState";
-import { Badge, type BadgeTone } from "./ui/Badge";
+import { Badge,  badgeToneClass } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import type { Sprint, Task, TaskStatus } from "./types";
+import { formatCalendarDate } from "@/lib/utils";
+import { TASK_STATUS } from "./statusMeta";
+import { useFeedback } from "./ui/Feedback";
 
 const STATUS_OPTIONS: TaskStatus[] = ["Pendiente", "En Progreso", "Completada"];
-
-const STATUS_STYLES: Record<TaskStatus, string> = {
-  Pendiente: "bg-foreground/10 text-foreground/60",
-  "En Progreso": "bg-sky-500/10 border border-sky-500/20 text-sky-700",
-  Completada: "bg-green-500/10 border border-green-500/20 text-green-700",
-};
-
-const STATUS_TONES: Record<TaskStatus, BadgeTone> = {
-  Pendiente: "neutral",
-  "En Progreso": "info",
-  Completada: "success",
-};
 
 interface TasksBoardProps {
   projectId: number;
@@ -76,6 +67,7 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
     }
   };
 
+  const feedback = useFeedback();
   const handleStatusChange = async (taskId: number, status: TaskStatus) => {
     setUpdatingId(taskId);
     try {
@@ -87,22 +79,31 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
       if (res.ok) {
         const data = await res.json();
         setTasks((prev) => prev.map((t) => (t.id === taskId ? data.task : t)));
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo cambiar el estado de la tarea." });
       }
     } catch {
-      // Silencioso a propósito: el select vuelve a su valor real en el
-      // próximo render si el PATCH falló, sin bloquear la UI con un toast.
+      feedback.toast({ tone: "error", message: "No se pudo cambiar el estado. Revisa tu conexión." });
     } finally {
       setUpdatingId(null);
     }
   };
 
   const handleDelete = async (taskId: number) => {
+    const title = tasks.find((t) => t.id === taskId)?.title ?? "esta tarea";
+    const ok = await feedback.confirm({ title: `¿Eliminar «${title}»?`, confirmLabel: "Eliminar", tone: "danger" });
+    if (!ok) return;
     setUpdatingId(taskId);
     try {
       const res = await fetch(`/api/tasks/${taskId}`, { method: "DELETE" });
       if (res.ok) {
         setTasks((prev) => prev.filter((t) => t.id !== taskId));
+        feedback.toast({ message: "Tarea eliminada." });
+      } else {
+        feedback.toast({ tone: "error", message: "No se pudo eliminar la tarea." });
       }
+    } catch {
+      feedback.toast({ tone: "error", message: "No se pudo eliminar la tarea. Revisa tu conexión." });
     } finally {
       setUpdatingId(null);
     }
@@ -111,7 +112,7 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
   return (
     <section aria-labelledby="tasks-heading" className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 id="tasks-heading" className="text-sm font-bold uppercase tracking-wide text-foreground/60">
+        <h2 id="tasks-heading" className="text-sm font-bold uppercase tracking-wide text-foreground/70">
           Tareas
         </h2>
         {canWrite && (
@@ -215,14 +216,14 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground/90">
               <caption className="sr-only">Tareas del proyecto, con responsable, estado y horas</caption>
-              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[10px] text-foreground/60">
+              <thead className="border-b border-foreground/10 bg-foreground/[0.025] font-mono uppercase text-[11px] text-foreground/70">
                 <tr>
                   <th scope="col" className="px-4 py-3">Tarea</th>
                   <th scope="col" className="px-4 py-3">Responsable</th>
                   <th scope="col" className="px-4 py-3">Estado</th>
                   <th scope="col" className="px-4 py-3 text-right">Horas (real/estimado)</th>
                   <th scope="col" className="px-4 py-3">Vence</th>
-                  {canWrite && <th scope="col" className="px-4 py-3 sr-only">Eliminar</th>}
+                  {canWrite && <th scope="col" className="relative px-4 py-3"><span className="sr-only">Eliminar</span></th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-foreground/10">
@@ -234,7 +235,7 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
                       <td className="px-4 py-3">
                         <div className="font-medium text-foreground">{task.title}</div>
                         {task.sprint_title && (
-                          <div className="text-[10px] text-foreground/50 font-mono mt-0.5">{task.sprint_title}</div>
+                          <div className="text-[11px] text-foreground/70 font-mono mt-0.5">{task.sprint_title}</div>
                         )}
                       </td>
                       <td className="px-4 py-3 text-foreground/70">{task.assignee?.name ?? "Sin asignar"}</td>
@@ -244,29 +245,29 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
                             value={task.status}
                             disabled={updatingId === task.id}
                             onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
-                            className={`rounded-full px-2 py-1 text-[10px] font-bold outline-none disabled:opacity-50 ${STATUS_STYLES[task.status]}`}
+                            className={`rounded-full px-2 py-1 text-[11px] font-bold outline-none disabled:opacity-50 ${badgeToneClass(TASK_STATUS[task.status].tone)}`}
                           >
                             {STATUS_OPTIONS.map((s) => (
                               <option key={s} value={s} className="bg-background text-foreground">{s}</option>
                             ))}
                           </select>
                         ) : (
-                          <Badge tone={STATUS_TONES[task.status]}>{task.status}</Badge>
+                          <Badge tone={TASK_STATUS[task.status].tone}>{task.status}</Badge>
                         )}
                       </td>
                       <td className="px-4 py-3 text-right font-mono">
-                        <span className={isOverEstimate ? "text-amber-700 font-bold" : "text-foreground"}>
+                        <span className={isOverEstimate ? "text-warning font-bold" : "text-foreground"}>
                           {task.actual_hours}h
                         </span>
                         {task.estimated_hours !== null && (
-                          <span className="text-foreground/50"> / {task.estimated_hours}h</span>
+                          <span className="text-foreground/70"> / {task.estimated_hours}h</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-foreground/60 font-mono whitespace-nowrap">
+                      <td className="px-4 py-3 text-foreground/70 font-mono whitespace-nowrap">
                         {task.due_date ? (
                           <span className="flex items-center gap-1">
                             <Clock size={11} />
-                            {new Date(task.due_date).toLocaleDateString("es-CO")}
+                            {formatCalendarDate(task.due_date)}
                           </span>
                         ) : (
                           "—"
@@ -278,7 +279,7 @@ export function TasksBoard({ projectId, sprints, initialTasks, teamMembers, canW
                             onClick={() => handleDelete(task.id)}
                             disabled={updatingId === task.id}
                             aria-label={`Eliminar tarea ${task.title}`}
-                            className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/50 hover:bg-red-500/10 hover:text-red-700 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ml-auto"
+                            className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-danger/10 hover:text-danger transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ml-auto"
                           >
                             <Trash2 size={13} />
                           </button>

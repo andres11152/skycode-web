@@ -1,11 +1,10 @@
 "use client";
 
-import { useId, useState } from "react";
-import Link from "next/link";
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowUp, ArrowDown, Trash2, Plus, Star, Upload, X } from "lucide-react";
-import { Badge, type BadgeTone } from "./ui/Badge";
+import {  ArrowUp, ArrowDown, Trash2, Plus, Star,  X } from "lucide-react";
+import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import { TechIcon } from "@/components/portfolio/TechIcon";
@@ -21,18 +20,13 @@ import type {
   AdminPortfolioTranslation,
 } from "@/lib/queries/portfolio";
 import type { Locale } from "@/lib/i18n";
-
-const STATUS_LABELS: Record<PortfolioStatus, string> = {
-  draft: "Borrador",
-  published: "Publicado",
-  archived: "Archivado",
-};
-
-const STATUS_TONES: Record<PortfolioStatus, BadgeTone> = {
-  draft: "neutral",
-  published: "success",
-  archived: "warning",
-};
+import { PORTFOLIO_STATUS } from "./statusMeta";
+import { useFeedback } from "./ui/Feedback";
+import { PageHeader } from "./ui/PageHeader";
+import { Tabs, tabId, tabPanelId } from "./ui/Tabs";
+import { FileDropzone } from "./ui/FileDropzone";
+import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
+import { UnsavedNotice } from "./ui/UnsavedNotice";
 
 const LOCALE_LABELS: Record<Locale, string> = { es: "Español", en: "English", fr: "Français" };
 const LOCALES: Locale[] = ["es", "en", "fr"];
@@ -88,69 +82,59 @@ export function PortfolioEditor({
 
   return (
     <div className="space-y-6">
-      <Link
-        href="/dashboard/portafolio"
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground/70 hover:text-foreground transition-colors outline-none rounded focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-      >
-        <ArrowLeft size={14} />
-        Volver al portafolio
-      </Link>
-
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">{project.translations.es?.title || `/${project.slug}`}</h1>
-          <div className="mt-1.5 flex items-center gap-2">
-            <Badge tone={STATUS_TONES[status]}>{STATUS_LABELS[status]}</Badge>
-            <span className="text-[11px] font-mono text-foreground/50">/{project.slug}</span>
-          </div>
-        </div>
-        {canWrite && (
-          <div className="flex items-center gap-2">
-            {status !== "draft" && (
-              <Button variant="secondary" onClick={() => handleStatusChange("draft")} disabled={isChangingStatus}>
-                Volver a borrador
-              </Button>
-            )}
-            {status !== "archived" && (
-              <Button variant="secondary" onClick={() => handleStatusChange("archived")} disabled={isChangingStatus}>
-                Archivar
-              </Button>
-            )}
-            {status !== "published" && (
-              <Button variant="accent" onClick={() => handleStatusChange("published")} disabled={isChangingStatus}>
-                Publicar
-              </Button>
-            )}
-          </div>
-        )}
-      </div>
+      <PageHeader
+        back={{ href: "/dashboard/portafolio", label: "Volver al portafolio" }}
+        title={project.translations.es?.title || `/${project.slug}`}
+        badge={
+          <>
+            <Badge tone={PORTFOLIO_STATUS[status].tone}>{PORTFOLIO_STATUS[status].label}</Badge>
+            <span className="font-mono text-xs text-foreground/70">/{project.slug}</span>
+          </>
+        }
+        actions={
+          canWrite ? (
+            <>
+              {status !== "draft" && (
+                <Button variant="secondary" onClick={() => handleStatusChange("draft")} disabled={isChangingStatus}>
+                  Volver a borrador
+                </Button>
+              )}
+              {status !== "archived" && (
+                <Button variant="secondary" onClick={() => handleStatusChange("archived")} disabled={isChangingStatus}>
+                  Archivar
+                </Button>
+              )}
+              {status !== "published" && (
+                <Button variant="accent" onClick={() => handleStatusChange("published")} disabled={isChangingStatus}>
+                  Publicar
+                </Button>
+              )}
+            </>
+          ) : undefined
+        }
+      />
 
       {statusError && <Alert tone="error">{statusError}</Alert>}
 
-      <nav aria-label="Secciones del editor" className="flex flex-wrap gap-2 border-b border-foreground/10 pb-3">
-        {TABS.map(({ key, label }) => (
-          <button
-            key={key}
-            onClick={() => setActiveTab(key)}
-            aria-current={activeTab === key ? "page" : undefined}
-            className={`rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-              activeTab === key ? "bg-accent-strong text-white" : "text-foreground/70 hover:bg-foreground/10 hover:text-foreground"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
+      <Tabs idBase="portfolio-editor" label="Secciones del editor" items={TABS.map(({ key, label }) => ({ id: key, label }))} value={activeTab} onChange={setActiveTab} />
 
-      {activeTab === "general" && <GeneralTab project={project} canWrite={canWrite} />}
-      {activeTab === "content" && <ContentTab projectId={project.id} translations={project.translations} canWrite={canWrite} />}
-      {activeTab === "tech" && (
+      {/* Los paneles siguen MONTADOS (solo ocultos): cambiar de pestaña desmontaba la
+          anterior y se perdía todo lo escrito sin guardar. */}
+      <div role="tabpanel" id={tabPanelId("portfolio-editor", "general")} aria-labelledby={tabId("portfolio-editor", "general")} hidden={activeTab !== "general"}>
+        <GeneralTab project={project} canWrite={canWrite} />
+      </div>
+      <div role="tabpanel" id={tabPanelId("portfolio-editor", "content")} aria-labelledby={tabId("portfolio-editor", "content")} hidden={activeTab !== "content"}>
+        <ContentTab projectId={project.id} translations={project.translations} canWrite={canWrite} />
+      </div>
+      <div role="tabpanel" id={tabPanelId("portfolio-editor", "tech")} aria-labelledby={tabId("portfolio-editor", "tech")} hidden={activeTab !== "tech"}>
         <TechnologiesTab projectId={project.id} allTechnologies={allTechnologies} initialSelected={project.technologies} canWrite={canWrite} />
-      )}
-      {activeTab === "images" && (
+      </div>
+      <div role="tabpanel" id={tabPanelId("portfolio-editor", "images")} aria-labelledby={tabId("portfolio-editor", "images")} hidden={activeTab !== "images"}>
         <ImagesTab projectId={project.id} initialImages={project.images} initialCoverImageId={project.coverImageId} canWrite={canWrite} />
-      )}
-      {activeTab === "metrics" && <MetricsTab projectId={project.id} initialMetrics={project.metrics} canWrite={canWrite} />}
+      </div>
+      <div role="tabpanel" id={tabPanelId("portfolio-editor", "metrics")} aria-labelledby={tabId("portfolio-editor", "metrics")} hidden={activeTab !== "metrics"}>
+        <MetricsTab projectId={project.id} initialMetrics={project.metrics} canWrite={canWrite} />
+      </div>
     </div>
   );
 }
@@ -164,6 +148,7 @@ function GeneralTab({ project, canWrite }: { project: AdminPortfolioDetail; canW
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const { dirty, markSaved } = useUnsavedChanges({ slug, liveUrl, industryIcon, isFeatured });
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,6 +166,7 @@ function GeneralTab({ project, canWrite }: { project: AdminPortfolioDetail; canW
         setError(data.error || "No se pudo guardar.");
         return;
       }
+      markSaved();
       setSaved(true);
       router.refresh();
     } finally {
@@ -193,16 +179,19 @@ function GeneralTab({ project, canWrite }: { project: AdminPortfolioDetail; canW
       {error && <Alert tone="error">{error}</Alert>}
       {saved && <Alert tone="success">Guardado.</Alert>}
       <div>
-        <label className={labelClasses}>Slug (URL: /portafolio/…)</label>
-        <input value={slug} onChange={(e) => setSlug(e.target.value)} disabled={!canWrite} pattern="^[a-z0-9]+(-[a-z0-9]+)*$" required className={`${inputClasses} font-mono`} />
+        <label htmlFor="pe-field-1" className={labelClasses}>Slug (URL: /portafolio/…)</label>
+        <input
+          id="pe-field-1" value={slug} onChange={(e) => setSlug(e.target.value)} disabled={!canWrite} pattern="^[a-z0-9]+(-[a-z0-9]+)*$" required className={`${inputClasses} font-mono`} />
       </div>
       <div>
-        <label className={labelClasses}>URL en vivo del sitio (opcional)</label>
-        <input value={liveUrl} onChange={(e) => setLiveUrl(e.target.value)} disabled={!canWrite} type="url" placeholder="https://…" className={inputClasses} />
+        <label htmlFor="pe-field-2" className={labelClasses}>URL en vivo del sitio (opcional)</label>
+        <input
+          id="pe-field-2" value={liveUrl} onChange={(e) => setLiveUrl(e.target.value)} disabled={!canWrite} type="url" placeholder="https://…" className={inputClasses} />
       </div>
       <div>
-        <label className={labelClasses}>Ícono de industria</label>
-        <select value={industryIcon} onChange={(e) => setIndustryIcon(e.target.value)} disabled={!canWrite} className={`${inputClasses} cursor-pointer`}>
+        <label htmlFor="pe-field-3" className={labelClasses}>Ícono de industria</label>
+        <select
+          id="pe-field-3" value={industryIcon} onChange={(e) => setIndustryIcon(e.target.value)} disabled={!canWrite} className={`${inputClasses} cursor-pointer`}>
           {PORTFOLIO_ICON_NAMES.map((iconName) => (
             <option key={iconName} value={iconName} className="bg-background">{iconName}</option>
           ))}
@@ -210,13 +199,16 @@ function GeneralTab({ project, canWrite }: { project: AdminPortfolioDetail; canW
       </div>
       <label className="flex items-center gap-2 text-xs font-medium text-foreground/80 cursor-pointer">
         <input type="checkbox" checked={isFeatured} onChange={(e) => setIsFeatured(e.target.checked)} disabled={!canWrite} className="h-4 w-4 accent-accent" />
-        <Star size={14} className={isFeatured ? "fill-amber-400 text-amber-400" : "text-foreground/40"} />
+        <Star size={14} className={isFeatured ? "fill-warning text-warning" : "text-foreground/70"} />
         Caso destacado
       </label>
       {canWrite && (
+        <>
         <button type="submit" disabled={isSaving} className="rounded-lg bg-accent-strong px-4 py-2.5 text-xs font-bold text-white hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background">
           {isSaving ? "Guardando…" : "Guardar"}
         </button>
+        <span className="ml-3 align-middle"><UnsavedNotice dirty={dirty} /></span>
+        </>
       )}
     </form>
   );
@@ -249,6 +241,7 @@ function ContentTab({
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const { dirty, markSaved } = useUnsavedChanges({ drafts, capabilitiesText });
 
   const current = drafts[locale];
   const update = (field: keyof AdminPortfolioTranslation, value: string) => {
@@ -276,6 +269,7 @@ function ContentTab({
         return;
       }
       setDrafts((prev) => ({ ...prev, [locale]: { ...prev[locale], capabilities } }));
+      markSaved();
       setSaved(true);
     } finally {
       setIsSaving(false);
@@ -293,11 +287,11 @@ function ContentTab({
               setSaved(false);
             }}
             className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-              locale === l ? "bg-accent/20 text-accent border border-accent/30" : "text-foreground/60 hover:bg-foreground/10"
+              locale === l ? "bg-accent/20 text-accent-strong border border-accent/30" : "text-foreground/70 hover:bg-foreground/10"
             }`}
           >
             {LOCALE_LABELS[l]}
-            {!translations[l] && <span className="ml-1.5 text-[9px] uppercase text-foreground/40">(vacío)</span>}
+            {!translations[l] && <span className="ml-1.5 text-[11px] uppercase text-foreground/70">(vacío)</span>}
           </button>
         ))}
       </div>
@@ -306,32 +300,39 @@ function ContentTab({
         {error && <Alert tone="error">{error}</Alert>}
         {saved && <Alert tone="success">Guardado.</Alert>}
         <div>
-          <label className={labelClasses}>Título</label>
-          <input value={current.title} onChange={(e) => update("title", e.target.value)} disabled={!canWrite} required className={inputClasses} />
-        </div>
-        <div>
-          <label className={labelClasses}>Cliente (ej. &quot;Acme S.A.S. · Sector Inmobiliario&quot;)</label>
-          <input value={current.clientLabel} onChange={(e) => update("clientLabel", e.target.value)} disabled={!canWrite} className={inputClasses} />
-        </div>
-        <div>
-          <label className={labelClasses}>Resumen (tarjeta del portafolio)</label>
-          <textarea value={current.summary} onChange={(e) => update("summary", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
-        </div>
-        <div>
-          <label className={labelClasses}>El reto</label>
-          <textarea value={current.challenge} onChange={(e) => update("challenge", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
-        </div>
-        <div>
-          <label className={labelClasses}>La solución</label>
-          <textarea value={current.solution} onChange={(e) => update("solution", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
-        </div>
-        <div>
-          <label className={labelClasses}>Los resultados</label>
-          <textarea value={current.results} onChange={(e) => update("results", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
-        </div>
-        <div>
-          <label className={labelClasses}>Capacidades, separadas por coma (ej. &quot;Catálogo Digital, SEO &amp; Rendimiento&quot;)</label>
+          <label htmlFor="pe-field-4" className={labelClasses}>Título</label>
           <input
+            id="pe-field-4" value={current.title} onChange={(e) => update("title", e.target.value)} disabled={!canWrite} required className={inputClasses} />
+        </div>
+        <div>
+          <label htmlFor="pe-field-5" className={labelClasses}>Cliente (ej. &quot;Acme S.A.S. · Sector Inmobiliario&quot;)</label>
+          <input
+            id="pe-field-5" value={current.clientLabel} onChange={(e) => update("clientLabel", e.target.value)} disabled={!canWrite} className={inputClasses} />
+        </div>
+        <div>
+          <label htmlFor="pe-field-6" className={labelClasses}>Resumen (tarjeta del portafolio)</label>
+          <textarea
+            id="pe-field-6" value={current.summary} onChange={(e) => update("summary", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
+        </div>
+        <div>
+          <label htmlFor="pe-field-7" className={labelClasses}>El reto</label>
+          <textarea
+            id="pe-field-7" value={current.challenge} onChange={(e) => update("challenge", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
+        </div>
+        <div>
+          <label htmlFor="pe-field-8" className={labelClasses}>La solución</label>
+          <textarea
+            id="pe-field-8" value={current.solution} onChange={(e) => update("solution", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
+        </div>
+        <div>
+          <label htmlFor="pe-field-9" className={labelClasses}>Los resultados</label>
+          <textarea
+            id="pe-field-9" value={current.results} onChange={(e) => update("results", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
+        </div>
+        <div>
+          <label htmlFor="pe-field-10" className={labelClasses}>Capacidades, separadas por coma (ej. &quot;Catálogo Digital, SEO &amp; Rendimiento&quot;)</label>
+          <input
+            id="pe-field-10"
             value={capabilitiesText[locale]}
             onChange={(e) => setCapabilitiesText((prev) => ({ ...prev, [locale]: e.target.value }))}
             disabled={!canWrite}
@@ -339,9 +340,12 @@ function ContentTab({
           />
         </div>
         {canWrite && (
+          <>
           <button type="submit" disabled={isSaving} className="rounded-lg bg-accent-strong px-4 py-2.5 text-xs font-bold text-white hover:brightness-90 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background">
             {isSaving ? "Guardando…" : `Guardar ${LOCALE_LABELS[locale]}`}
           </button>
+        <span className="ml-3 align-middle"><UnsavedNotice dirty={dirty} /></span>
+          </>
         )}
       </form>
     </div>
@@ -410,21 +414,21 @@ function TechnologiesTab({
         {error && <Alert tone="error">{error}</Alert>}
         {saved && <Alert tone="success">Guardado.</Alert>}
         {selected.length === 0 ? (
-          <p className="text-xs text-foreground/50">Ninguna todavía — elige del catálogo a la derecha.</p>
+          <p className="text-xs text-foreground/70">Ninguna todavía — elige del catálogo a la derecha.</p>
         ) : (
           <ul className="space-y-1.5">
             {selected.map((tech, index) => (
               <li key={tech.id} className="flex items-center gap-2 rounded-lg border border-foreground/10 px-3 py-2">
                 <TechIcon technology={tech} size={16} />
                 <span className="flex-1 text-xs font-medium text-foreground">{tech.name}</span>
-                <button type="button" onClick={() => move(index, -1)} disabled={!canWrite || index === 0} aria-label="Subir" className="flex h-8 w-8 items-center justify-center rounded text-foreground/50 hover:bg-foreground/10 disabled:opacity-30">
+                <button type="button" onClick={() => move(index, -1)} disabled={!canWrite || index === 0} aria-label="Subir" className="flex h-11 w-11 items-center justify-center rounded text-foreground/70 hover:bg-foreground/10 disabled:opacity-30">
                   <ArrowUp size={12} />
                 </button>
-                <button type="button" onClick={() => move(index, 1)} disabled={!canWrite || index === selected.length - 1} aria-label="Bajar" className="flex h-8 w-8 items-center justify-center rounded text-foreground/50 hover:bg-foreground/10 disabled:opacity-30">
+                <button type="button" onClick={() => move(index, 1)} disabled={!canWrite || index === selected.length - 1} aria-label="Bajar" className="flex h-11 w-11 items-center justify-center rounded text-foreground/70 hover:bg-foreground/10 disabled:opacity-30">
                   <ArrowDown size={12} />
                 </button>
                 {canWrite && (
-                  <button type="button" onClick={() => remove(tech.id)} aria-label={`Quitar ${tech.name}`} className="flex h-8 w-8 items-center justify-center rounded text-foreground/50 hover:bg-red-500/10 hover:text-red-700">
+                  <button type="button" onClick={() => remove(tech.id)} aria-label={`Quitar ${tech.name}`} className="flex h-11 w-11 items-center justify-center rounded text-foreground/70 hover:bg-danger/10 hover:text-danger">
                     <X size={12} />
                   </button>
                 )}
@@ -442,11 +446,11 @@ function TechnologiesTab({
       <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-6 space-y-4 max-h-[500px] overflow-y-auto">
         <h2 className="text-sm font-bold text-foreground">Catálogo</h2>
         {Object.keys(groupedAvailable).length === 0 ? (
-          <p className="text-xs text-foreground/50">Ya agregaste todo el catálogo, o está vacío — créalas en &quot;Tecnologías&quot;.</p>
+          <p className="text-xs text-foreground/70">Ya agregaste todo el catálogo, o está vacío — créalas en &quot;Tecnologías&quot;.</p>
         ) : (
           Object.entries(groupedAvailable).map(([category, techs]) => (
             <div key={category} className="space-y-1.5">
-              <h3 className="text-[10px] font-mono uppercase tracking-wide text-foreground/40">{category}</h3>
+              <h3 className="text-[11px] font-mono uppercase tracking-wide text-foreground/70">{category}</h3>
               {techs.map((tech) => (
                 <button
                   key={tech.id}
@@ -457,7 +461,7 @@ function TechnologiesTab({
                 >
                   <TechIcon technology={tech} size={16} />
                   <span className="text-xs text-foreground/80">{tech.name}</span>
-                  <Plus size={12} className="ml-auto text-foreground/40" />
+                  <Plus size={12} className="ml-auto text-foreground/70" />
                 </button>
               ))}
             </div>
@@ -483,11 +487,8 @@ function ImagesTab({
   const [coverImageId, setCoverImageId] = useState(initialCoverImageId);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const inputId = useId();
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleUpload = async (file: File) => {
     setIsUploading(true);
     setError(null);
     try {
@@ -502,16 +503,19 @@ function ImagesTab({
       setImages((prev) => [...prev, { ...data.image, alt: {} }]);
     } finally {
       setIsUploading(false);
-      e.target.value = "";
     }
   };
 
+  const feedback = useFeedback();
   const handleDelete = async (imageId: number) => {
-    if (!window.confirm("¿Eliminar esta imagen?")) return;
+    if (!(await feedback.confirm({ title: "¿Eliminar esta imagen?", tone: "danger" }))) return;
     const res = await fetch(`/api/portfolio/images/${imageId}`, { method: "DELETE" });
     if (res.ok) {
       setImages((prev) => prev.filter((img) => img.id !== imageId));
       if (coverImageId === imageId) setCoverImageId(null);
+      feedback.toast({ message: "Imagen eliminada." });
+    } else {
+      feedback.toast({ tone: "error", message: "No se pudo eliminar la imagen." });
     }
   };
 
@@ -524,13 +528,24 @@ function ImagesTab({
     if (res.ok) setCoverImageId(imageId);
   };
 
-  const handleAltChange = async (imageId: number, locale: Locale, value: string) => {
+  // El texto alternativo se guarda al SALIR del campo, no en cada tecla: antes
+  // cada letra disparaba un PATCH (y un error de red pasaba sin avisar).
+  const handleAltChange = (imageId: number, locale: Locale, value: string) => {
     setImages((prev) => prev.map((img) => (img.id === imageId ? { ...img, alt: { ...img.alt, [locale]: value } } : img)));
-    await fetch(`/api/portfolio/images/${imageId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ alt: { [locale]: value } }),
-    });
+  };
+
+  const handleAltBlur = async (imageId: number, locale: Locale) => {
+    const value = images.find((img) => img.id === imageId)?.alt[locale] ?? "";
+    try {
+      const res = await fetch(`/api/portfolio/images/${imageId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ alt: { [locale]: value } }),
+      });
+      if (!res.ok) feedback.toast({ tone: "error", message: "No se pudo guardar el texto alternativo." });
+    } catch {
+      feedback.toast({ tone: "error", message: "No se pudo guardar el texto alternativo. Revisa tu conexión." });
+    }
   };
 
   const handleMove = async (index: number, direction: -1 | 1) => {
@@ -538,29 +553,38 @@ function ImagesTab({
     if (target < 0 || target >= images.length) return;
     const next = [...images];
     [next[index], next[target]] = [next[target], next[index]];
+    const previous = images;
     setImages(next);
-    await fetch(`/api/portfolio/projects/${projectId}/images/reorder`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ imageIds: next.map((img) => img.id) }),
-    });
+    try {
+      const res = await fetch(`/api/portfolio/projects/${projectId}/images/reorder`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageIds: next.map((img) => img.id) }),
+      });
+      if (!res.ok) throw new Error("reorder");
+    } catch {
+      setImages(previous);
+      feedback.toast({ tone: "error", message: "No se pudo reordenar. Se restauró el orden anterior." });
+    }
   };
 
   return (
     <div className="space-y-4">
       {error && <Alert tone="error">{error}</Alert>}
       {canWrite && (
-        <div>
-          <label htmlFor={inputId} className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-lg bg-accent-strong px-4 text-xs font-bold text-white hover:brightness-90 transition-all">
-            <Upload size={14} />
-            {isUploading ? "Subiendo…" : "Subir imagen"}
-          </label>
-          <input id={inputId} type="file" accept="image/png,image/jpeg,image/webp" onChange={handleUpload} disabled={isUploading} className="sr-only" />
-        </div>
+        <FileDropzone
+          accept="image/png,image/jpeg,image/webp"
+          maxBytes={15 * 1024 * 1024}
+          label="Arrastra una captura o haz clic para elegirla"
+          hint="PNG, JPG o WebP"
+          busy={isUploading}
+          onFile={handleUpload}
+          onReject={setError}
+        />
       )}
 
       {images.length === 0 ? (
-        <p className="text-xs text-foreground/50">Sin imágenes todavía.</p>
+        <p className="text-xs text-foreground/70">Sin imágenes todavía.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {images.map((img, index) => (
@@ -568,7 +592,7 @@ function ImagesTab({
               <div className="relative aspect-video bg-foreground/10">
                 <Image src={img.variants.md} alt="" fill className="object-cover" />
                 {coverImageId === img.id && (
-                  <span className="absolute top-2 left-2 rounded-full bg-accent-strong px-2 py-0.5 text-[10px] font-bold text-white">Portada</span>
+                  <span className="absolute top-2 left-2 rounded-full bg-accent-strong px-2 py-0.5 text-[11px] font-bold text-white">Portada</span>
                 )}
               </div>
               <div className="p-3 space-y-2">
@@ -577,23 +601,25 @@ function ImagesTab({
                     key={l}
                     value={img.alt[l] ?? ""}
                     onChange={(e) => handleAltChange(img.id, l, e.target.value)}
+                    onBlur={() => handleAltBlur(img.id, l)}
                     disabled={!canWrite}
                     placeholder={`Texto alternativo (${LOCALE_LABELS[l]})`}
-                    className="w-full rounded-lg border border-foreground/15 bg-foreground/[0.02] px-2.5 py-1.5 text-[11px] text-foreground outline-none focus:border-accent"
+                    aria-label={`Texto alternativo (${LOCALE_LABELS[l]}) de la imagen ${index + 1}`}
+                    className="min-h-11 w-full rounded-lg border border-foreground/15 bg-foreground/[0.02] px-3 py-2 text-xs text-foreground outline-none focus:border-accent"
                   />
                 ))}
                 {canWrite && (
                   <div className="flex items-center gap-1.5 pt-1">
-                    <button onClick={() => handleSetCover(img.id)} disabled={coverImageId === img.id} className="flex-1 rounded-lg border border-foreground/15 px-2 py-1.5 text-[10px] font-semibold text-foreground/70 hover:bg-foreground/10 disabled:opacity-40">
+                    <button onClick={() => handleSetCover(img.id)} disabled={coverImageId === img.id} className="flex-1 rounded-lg border border-foreground/15 px-2 py-1.5 text-[11px] font-semibold text-foreground/70 hover:bg-foreground/10 disabled:opacity-40">
                       Usar como portada
                     </button>
-                    <button onClick={() => handleMove(index, -1)} disabled={index === 0} aria-label="Subir" className="flex h-8 w-8 items-center justify-center rounded text-foreground/50 hover:bg-foreground/10 disabled:opacity-30">
+                    <button onClick={() => handleMove(index, -1)} disabled={index === 0} aria-label="Subir" className="flex h-11 w-11 items-center justify-center rounded text-foreground/70 hover:bg-foreground/10 disabled:opacity-30">
                       <ArrowUp size={12} />
                     </button>
-                    <button onClick={() => handleMove(index, 1)} disabled={index === images.length - 1} aria-label="Bajar" className="flex h-8 w-8 items-center justify-center rounded text-foreground/50 hover:bg-foreground/10 disabled:opacity-30">
+                    <button onClick={() => handleMove(index, 1)} disabled={index === images.length - 1} aria-label="Bajar" className="flex h-11 w-11 items-center justify-center rounded text-foreground/70 hover:bg-foreground/10 disabled:opacity-30">
                       <ArrowDown size={12} />
                     </button>
-                    <button onClick={() => handleDelete(img.id)} aria-label="Eliminar imagen" className="flex h-8 w-8 items-center justify-center rounded text-foreground/50 hover:bg-red-500/10 hover:text-red-700">
+                    <button onClick={() => handleDelete(img.id)} aria-label="Eliminar imagen" className="flex h-11 w-11 items-center justify-center rounded text-foreground/70 hover:bg-danger/10 hover:text-danger">
                       <Trash2 size={12} />
                     </button>
                   </div>
@@ -658,7 +684,7 @@ function MetricsTab({
     <div className="max-w-2xl space-y-4 rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-6">
       {error && <Alert tone="error">{error}</Alert>}
       {saved && <Alert tone="success">Guardado.</Alert>}
-      <p className="text-xs text-foreground/60">Resultados medibles del caso (ej. &quot;−60%&quot; / &quot;tiempo de despacho&quot;). Máximo 6.</p>
+      <p className="text-xs text-foreground/70">Resultados medibles del caso (ej. &quot;−60%&quot; / &quot;tiempo de despacho&quot;). Máximo 6.</p>
       {metrics.map((metric, index) => (
         <div key={index} className="rounded-lg border border-foreground/10 p-3 space-y-2">
           <div className="flex items-center gap-2">
@@ -667,10 +693,11 @@ function MetricsTab({
               onChange={(e) => update(index, "value", e.target.value)}
               disabled={!canWrite}
               placeholder="Valor (ej. −60%)"
+              aria-label={`Valor de la métrica ${index + 1}`}
               className={`${inputClasses} font-mono w-32`}
             />
             {canWrite && (
-              <button type="button" onClick={() => remove(index)} aria-label="Quitar métrica" className="flex h-9 w-9 items-center justify-center rounded text-foreground/50 hover:bg-red-500/10 hover:text-red-700">
+              <button type="button" onClick={() => remove(index)} aria-label="Quitar métrica" className="flex h-11 w-11 items-center justify-center rounded text-foreground/70 hover:bg-danger/10 hover:text-danger">
                 <Trash2 size={13} />
               </button>
             )}
@@ -683,7 +710,8 @@ function MetricsTab({
                 onChange={(e) => update(index, l, e.target.value)}
                 disabled={!canWrite}
                 placeholder={`Etiqueta (${LOCALE_LABELS[l]})`}
-                className="rounded-lg border border-foreground/15 bg-foreground/[0.02] px-2.5 py-1.5 text-[11px] text-foreground outline-none focus:border-accent"
+                aria-label={`Etiqueta de la métrica ${index + 1} (${LOCALE_LABELS[l]})`}
+                className="min-h-11 rounded-lg border border-foreground/15 bg-foreground/[0.02] px-3 py-2 text-xs text-foreground outline-none focus:border-accent"
               />
             ))}
           </div>

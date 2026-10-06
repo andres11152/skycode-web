@@ -10,6 +10,10 @@ import { PortalSupportPanel } from "./PortalSupportPanel";
 import { PortalActivityFeed } from "./PortalActivityFeed";
 import { parseInvoiceIdFromBoldOrderId } from "@/lib/bold";
 import { logError } from "@/lib/logger";
+import { formatMoney } from "@/lib/utils";
+import type { Currency } from "@/lib/currency";
+import { Tabs, tabId, tabPanelId } from "../dashboard/ui/Tabs";
+import { StatCard } from "../dashboard/ui/StatCard";
 import type { Project, Invoice, ProjectDocument, SupportTicket, ProjectOption } from "../dashboard/types";
 import type { ClientActivityEvent } from "@/lib/queries/clientActivity";
 
@@ -22,6 +26,8 @@ const TABS = [
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
+
+const isTabKey = (value: string | undefined): value is TabKey => TABS.some((t) => t.key === value);
 type BoldConfirmation = "checking" | "approved" | "other";
 
 /**
@@ -31,6 +37,9 @@ type BoldConfirmation = "checking" | "approved" | "other";
  * mientras el portal crece de "solo proyectos" a 4 secciones.
  */
 export function PortalView({
+  clientName,
+  linked,
+  initialTab,
   projects,
   invoices,
   documents,
@@ -39,6 +48,11 @@ export function PortalView({
   projectOptions,
   boldOrderId,
 }: {
+  clientName: string;
+  /** `false` si la cuenta aún no está enlazada a un cliente (no hay nada que mostrar). */
+  linked: boolean;
+  /** `?tab=` de la URL, para que recargar o compartir el enlace conserve la pestaña. */
+  initialTab?: string;
   projects: Project[];
   invoices: Invoice[];
   documents: ProjectDocument[];
@@ -51,7 +65,12 @@ export function PortalView({
    * (evita el requisito de envolver en <Suspense> solo por esto). */
   boldOrderId?: string;
 }) {
-  const [activeTab, setActiveTab] = useState<TabKey>(boldOrderId ? "facturas" : "proyectos");
+  const [activeTab, setActiveTab] = useState<TabKey>(boldOrderId ? "facturas" : isTabKey(initialTab) ? initialTab : "proyectos");
+  // La pestaña activa vive en la URL (sin navegar: solo reemplaza la entrada de historial).
+  const selectTab = (key: TabKey) => {
+    setActiveTab(key);
+    window.history.replaceState(null, "", key === "proyectos" ? "/portal" : `/portal?tab=${key}`);
+  };
   const [boldConfirmation, setBoldConfirmation] = useState<BoldConfirmation | null>(boldOrderId ? "checking" : null);
   const router = useRouter();
   // Evita reintentar la confirmación en un segundo render (StrictMode en
@@ -96,10 +115,10 @@ export function PortalView({
           role="status"
           className={`flex items-center gap-2.5 rounded-xl border p-4 text-sm font-medium ${
             boldConfirmation === "approved"
-              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700"
+              ? "border-success/30 bg-success/10 text-success"
               : boldConfirmation === "checking"
               ? "border-foreground/10 bg-foreground/[0.03] text-foreground/70"
-              : "border-amber-500/30 bg-amber-500/10 text-amber-700"
+              : "border-warning/30 bg-warning/10 text-warning"
           }`}
         >
           {boldConfirmation === "checking" && <Spinner size={16} className="animate-spin shrink-0" />}
@@ -114,29 +133,109 @@ export function PortalView({
         </div>
       )}
 
-      <nav aria-label="Secciones del portal" className="flex flex-wrap gap-2 border-b border-foreground/10 pb-3">
-        {TABS.map(({ key, label, icon: Icon }) => (
-          <button
-            key={key}
-            onClick={() => setActiveTab(key)}
-            aria-current={activeTab === key ? "page" : undefined}
-            className={`flex min-h-11 items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-              activeTab === key
-                ? "bg-accent-strong text-white"
-                : "text-foreground/70 hover:bg-foreground/10 hover:text-foreground"
-            }`}
-          >
-            <Icon size={14} />
-            <span>{label}</span>
-          </button>
-        ))}
-      </nav>
+      {!linked ? (
+        <div role="status" className="mx-auto max-w-md space-y-2 rounded-xl border border-foreground/10 bg-background p-8 text-center shadow-sm shadow-black/5">
+          <h1 className="text-lg font-bold text-foreground">Tu cuenta aún no está vinculada</h1>
+          <p className="text-sm leading-relaxed text-foreground/80">
+            Todavía no asociamos tu usuario a un proyecto. Escríbenos a{" "}
+            <a href="mailto:contact@skycode.agency" className="font-semibold text-accent-strong underline-offset-4 hover:underline">
+              contact@skycode.agency
+            </a>{" "}
+            y lo dejamos listo.
+          </p>
+        </div>
+      ) : (
+        <>
+          <PortalSummary
+            clientName={clientName}
+            projects={projects}
+            invoices={invoices}
+            tickets={tickets}
+            onGoTo={selectTab}
+          />
 
-      {activeTab === "proyectos" && <ProjectsBoard initialProjects={projects} variant="portal" />}
-      {activeTab === "actividad" && <PortalActivityFeed events={activity} />}
-      {activeTab === "facturas" && <PortalInvoicesPanel invoices={invoices} />}
-      {activeTab === "documentos" && <PortalDocumentsPanel documents={documents} projects={projectOptions} />}
-      {activeTab === "soporte" && <PortalSupportPanel tickets={tickets} projects={projectOptions} />}
+          <Tabs
+            idBase="portal"
+            label="Contenido del portal"
+            items={TABS.map(({ key, label, icon: Icon }) => ({ id: key, label, icon: <Icon size={16} aria-hidden="true" /> }))}
+            value={activeTab}
+            onChange={selectTab}
+          />
+
+          <div role="tabpanel" id={tabPanelId("portal", activeTab)} aria-labelledby={tabId("portal", activeTab)}>
+            {activeTab === "proyectos" && <ProjectsBoard initialProjects={projects} variant="portal" />}
+            {activeTab === "actividad" && <PortalActivityFeed events={activity} />}
+            {activeTab === "facturas" && <PortalInvoicesPanel invoices={invoices} />}
+            {activeTab === "documentos" && <PortalDocumentsPanel documents={documents} projects={projectOptions} />}
+            {activeTab === "soporte" && <PortalSupportPanel tickets={tickets} projects={projectOptions} />}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+
+/**
+ * Resumen de bienvenida: lo que un cliente viene a mirar (¿qué debo?, ¿cómo
+ * va mi proyecto?, ¿hay algo abierto?) antes de entrar a cada pestaña. Cada
+ * tarjeta lleva a la pestaña correspondiente.
+ */
+function PortalSummary({
+  clientName,
+  projects,
+  invoices,
+  tickets,
+  onGoTo,
+}: {
+  clientName: string;
+  projects: Project[];
+  invoices: Invoice[];
+  tickets: SupportTicket[];
+  onGoTo: (tab: TabKey) => void;
+}) {
+  const firstName = clientName.trim().split(/\s+/)[0] || clientName;
+
+  const unpaid = invoices.filter((i) => i.status !== "paid" && i.balance > 0);
+  const overdueCount = unpaid.filter((i) => i.status === "overdue").length;
+  // Un total por moneda: nunca se suman COP y USD.
+  const owed = unpaid.reduce<Partial<Record<Currency, number>>>((acc, i) => {
+    acc[i.currency] = (acc[i.currency] ?? 0) + i.balance;
+    return acc;
+  }, {});
+  const owedText = (Object.entries(owed) as [Currency, number][]).map(([c, v]) => formatMoney(v, c)).join(" · ");
+
+  const mainProject = projects.find((p) => p.status !== "Entregado") ?? projects[0];
+  const openTickets = tickets.filter((t) => t.status !== "Resuelto" && t.status !== "Cerrado").length;
+
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl font-bold tracking-tight text-foreground">Hola, {firstName}</h1>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatCard
+          onClick={() => onGoTo("facturas")}
+          label="Por pagar"
+          value={unpaid.length === 0 ? "Al día" : owedText}
+          tone={overdueCount > 0 ? "danger" : unpaid.length === 0 ? "success" : "neutral"}
+          hint={
+            unpaid.length === 0
+              ? "No tienes facturas pendientes"
+              : `${unpaid.length} ${unpaid.length === 1 ? "factura" : "facturas"}${overdueCount > 0 ? ` · ${overdueCount} vencida${overdueCount === 1 ? "" : "s"}` : ""}`
+          }
+        />
+        <StatCard
+          onClick={() => onGoTo("proyectos")}
+          label={mainProject ? `Avance · ${mainProject.title}` : "Avance"}
+          value={mainProject ? `${mainProject.progress}%` : "—"}
+          hint={mainProject ? mainProject.status : "Aún no hay proyectos"}
+        />
+        <StatCard
+          onClick={() => onGoTo("soporte")}
+          label="Soporte"
+          value={openTickets}
+          hint={openTickets === 1 ? "incidencia abierta" : "incidencias abiertas"}
+        />
+      </div>
     </div>
   );
 }

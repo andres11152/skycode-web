@@ -11,7 +11,7 @@ import {
   type Icon,
 } from "@phosphor-icons/react";
 import { EmptyState } from "../dashboard/EmptyState";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, formatShortDate } from "@/lib/utils";
 import type { ClientActivityEvent } from "@/lib/queries/clientActivity";
 
 const ICONS: Record<ClientActivityEvent["type"], Icon> = {
@@ -95,7 +95,7 @@ export function PortalActivityFeed({ events }: { events: ClientActivityEvent[] }
                 <li key={`${event.type}-${event.id}`} className="flex items-start gap-3 px-5 py-4">
                   <div
                     className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                      isNegative ? "bg-red-500/10 text-red-600" : "bg-accent/10 text-accent-strong"
+                      isNegative ? "bg-danger/10 text-danger" : "bg-accent/10 text-accent-strong"
                     }`}
                   >
                     {isNegative ? <XCircle size={16} /> : <EventIcon size={16} />}
@@ -104,8 +104,8 @@ export function PortalActivityFeed({ events }: { events: ClientActivityEvent[] }
                     <p className="text-xs font-semibold text-foreground">{eventTitle(event)}</p>
                     <p className="mt-0.5 truncate text-xs text-foreground/70">{eventDescription(event)}</p>
                   </div>
-                  <time dateTime={event.createdAt} className="shrink-0 text-[11px] text-foreground/50">
-                    {new Date(event.createdAt).toLocaleDateString("es-CO", { day: "2-digit", month: "short" })}
+                  <time dateTime={event.createdAt} className="shrink-0 text-[11px] text-foreground/70">
+                    {formatShortDate(event.createdAt, "dayMonth")}
                   </time>
                 </li>
               );

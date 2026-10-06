@@ -9,7 +9,7 @@ import { WarningCircle } from "@phosphor-icons/react/ssr";
  */
 export function FieldError({ id, children }: { id: string; children: React.ReactNode }) {
   return (
-    <p id={id} className="animate-enter-error flex items-center gap-1 text-xs font-medium text-red-600">
+    <p id={id} className="animate-enter-error flex items-center gap-1 text-xs font-medium text-danger">
       <WarningCircle size={12} aria-hidden="true" /> {children}
     </p>
   );

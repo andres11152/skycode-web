@@ -16,7 +16,7 @@ export function EmptyState({
     <div className="py-20 text-center space-y-2">
       <Icon size={32} className="text-foreground/30 mx-auto" />
       <h3 className="text-sm font-bold text-foreground">{title}</h3>
-      <p className="text-xs text-foreground/60">{description}</p>
+      <p className="text-xs text-foreground/70">{description}</p>
       {action && (
         <div className="pt-4">
           <Button variant="accent" onClick={action.onClick} className="mx-auto">

@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, Pencil, X, Search } from "lucide-react";
+import {  Plus, Trash2, Pencil, X, Search } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { ModalShell } from "./ModalShell";
 import { Button } from "./ui/Button";
 import { Alert } from "./ui/Alert";
 import { TechIcon } from "@/components/portfolio/TechIcon";
 import { PORTFOLIO_TECH_CATEGORIES, type PortfolioTechCategory, type PortfolioTechnology } from "@/content/portfolioShared";
+import { useFeedback } from "./ui/Feedback";
+import { PageBack } from "./ui/PageHeader";
 
 type TechnologyWithUsage = PortfolioTechnology & { projectCount: number };
 
@@ -27,9 +28,10 @@ export function TechnologyCatalog({
   const [editing, setEditing] = useState<TechnologyWithUsage | "new" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const feedback = useFeedback();
   const handleDelete = async (tech: TechnologyWithUsage) => {
     if (tech.projectCount > 0) return;
-    if (!window.confirm(`¿Eliminar "${tech.name}" del catálogo?`)) return;
+    if (!(await feedback.confirm({ title: `¿Eliminar "${tech.name}" del catálogo?`, tone: "danger" }))) return;
     setError(null);
     const res = await fetch(`/api/portfolio/technologies/${tech.id}`, { method: "DELETE" });
     const data = await res.json();
@@ -38,6 +40,7 @@ export function TechnologyCatalog({
       return;
     }
     setTechnologies((prev) => prev.filter((t) => t.id !== tech.id));
+    feedback.toast({ message: `«${tech.name}» eliminada del catálogo.` });
   };
 
   const grouped = technologies.reduce<Record<string, TechnologyWithUsage[]>>((acc, tech) => {
@@ -47,13 +50,7 @@ export function TechnologyCatalog({
 
   return (
     <div className="space-y-8">
-      <Link
-        href="/dashboard/portafolio"
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground/70 hover:text-foreground transition-colors outline-none rounded focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-      >
-        <ArrowLeft size={14} />
-        Volver al portafolio
-      </Link>
+      <PageBack href="/dashboard/portafolio" label="Volver al portafolio" />
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -83,14 +80,14 @@ export function TechnologyCatalog({
         <div className="space-y-6">
           {PORTFOLIO_TECH_CATEGORIES.filter((category) => grouped[category]?.length).map((category) => (
             <div key={category}>
-              <h2 className="mb-2 text-[10px] font-mono uppercase tracking-wide text-foreground/40">{category}</h2>
+              <h2 className="mb-2 text-[11px] font-mono uppercase tracking-wide text-foreground/70">{category}</h2>
               <div className="overflow-hidden rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 divide-y divide-foreground/10">
                 {grouped[category].map((tech) => (
                   <div key={tech.id} className="flex items-center gap-3 px-4 py-3">
                     <TechIcon technology={tech} size={20} />
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-medium text-foreground">{tech.name}</div>
-                      <div className="text-[10px] font-mono text-foreground/50">
+                      <div className="text-[11px] font-mono text-foreground/70">
                         {tech.slug} · {tech.projectCount} {tech.projectCount === 1 ? "caso" : "casos"}
                       </div>
                     </div>
@@ -99,7 +96,7 @@ export function TechnologyCatalog({
                         <button
                           onClick={() => setEditing(tech)}
                           aria-label={`Editar ${tech.name}`}
-                          className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/50 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-foreground/10 hover:text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <Pencil size={14} />
                         </button>
@@ -108,7 +105,7 @@ export function TechnologyCatalog({
                           disabled={tech.projectCount > 0}
                           aria-label={`Eliminar ${tech.name}`}
                           title={tech.projectCount > 0 ? "En uso — no se puede eliminar" : undefined}
-                          className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/50 hover:bg-red-500/10 hover:text-red-700 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-foreground/50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                          className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/70 hover:bg-danger/10 hover:text-danger transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-foreground/50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -216,13 +213,15 @@ function TechnologyModal({
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <Alert tone="error">{error}</Alert>}
         <div>
-          <label className={labelClasses}>Nombre</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} required className={inputClasses} />
+          <label htmlFor="tc-field-1" className={labelClasses}>Nombre</label>
+          <input
+            id="tc-field-1" value={name} onChange={(e) => setName(e.target.value)} required className={inputClasses} />
         </div>
         {!technology && (
           <div>
-            <label className={labelClasses}>Slug (identificador único, no editable después)</label>
+            <label htmlFor="tc-field-2" className={labelClasses}>Slug (identificador único, no editable después)</label>
             <input
+              id="tc-field-2"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
               required
@@ -233,16 +232,18 @@ function TechnologyModal({
           </div>
         )}
         <div>
-          <label className={labelClasses}>Categoría</label>
-          <select value={category} onChange={(e) => setCategory(e.target.value as PortfolioTechCategory)} className={`${inputClasses} cursor-pointer`}>
+          <label htmlFor="tc-field-3" className={labelClasses}>Categoría</label>
+          <select
+            id="tc-field-3" value={category} onChange={(e) => setCategory(e.target.value as PortfolioTechCategory)} className={`${inputClasses} cursor-pointer`}>
             {PORTFOLIO_TECH_CATEGORIES.map((cat) => (
               <option key={cat} value={cat} className="bg-background">{cat}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className={labelClasses}>Origen del ícono</label>
+          <label htmlFor="tc-field-4" className={labelClasses}>Origen del ícono</label>
           <select
+            id="tc-field-4"
             value={iconSource}
             onChange={(e) => {
               setIconSource(e.target.value as "simple-icons" | "custom");
@@ -257,8 +258,9 @@ function TechnologyModal({
 
         {iconSource === "simple-icons" ? (
           <div className="space-y-2">
-            <label className={labelClasses}>Buscar ícono</label>
+            <label htmlFor="tc-field-5" className={labelClasses}>Buscar ícono</label>
             <input
+              id="tc-field-5"
               value={iconQuery}
               onChange={(e) => setIconQuery(e.target.value)}
               placeholder="ej. react, postgresql…"
@@ -267,7 +269,7 @@ function TechnologyModal({
             {iconRef && (
               <div className="flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-foreground">
                 <span className="font-mono">{iconRef}</span>
-                <button type="button" onClick={() => setIconRef("")} className="ml-auto text-foreground/50 hover:text-foreground">
+                <button type="button" onClick={() => setIconRef("")} className="ml-auto text-foreground/70 hover:text-foreground">
                   <X size={12} />
                 </button>
               </div>
@@ -285,7 +287,7 @@ function TechnologyModal({
                       }}
                       className="w-full px-3 py-2 text-left text-xs text-foreground/80 hover:bg-foreground/10"
                     >
-                      {result.title} <span className="font-mono text-foreground/40">({result.slug})</span>
+                      {result.title} <span className="font-mono text-foreground/70">({result.slug})</span>
                     </button>
                   </li>
                 ))}
@@ -294,14 +296,16 @@ function TechnologyModal({
           </div>
         ) : (
           <div>
-            <label className={labelClasses}>URL de la imagen del ícono</label>
-            <input value={iconRef} onChange={(e) => setIconRef(e.target.value)} required type="url" placeholder="https://…" className={inputClasses} />
+            <label htmlFor="tc-field-6" className={labelClasses}>URL de la imagen del ícono</label>
+            <input
+              id="tc-field-6" value={iconRef} onChange={(e) => setIconRef(e.target.value)} required type="url" placeholder="https://…" className={inputClasses} />
           </div>
         )}
 
         <div>
-          <label className={labelClasses}>Sitio web (opcional)</label>
-          <input value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} type="url" placeholder="https://…" className={inputClasses} />
+          <label htmlFor="tc-field-7" className={labelClasses}>Sitio web (opcional)</label>
+          <input
+            id="tc-field-7" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} type="url" placeholder="https://…" className={inputClasses} />
         </div>
 
         <button

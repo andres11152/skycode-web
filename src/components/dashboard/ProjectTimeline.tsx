@@ -32,21 +32,21 @@ export function ProjectTimeline({ sprints }: { sprints: Sprint[] }) {
               <div
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 ${
                   isDone
-                    ? "border-green-500 bg-green-500/10 text-green-700"
+                    ? "border-success bg-success/10 text-success"
                     : isCurrent
-                    ? "border-accent bg-accent/10 text-accent animate-pulse"
+                    ? "border-accent bg-accent/10 text-accent-strong animate-pulse motion-reduce:animate-none"
                     : "border-foreground/20 bg-background text-foreground/30"
                 }`}
               >
                 {isDone ? <CheckCircle2 size={16} /> : isCurrent ? <Clock size={14} /> : <Circle size={12} />}
               </div>
-              <span className={`line-clamp-2 text-[10px] font-semibold leading-tight ${isDone || isCurrent ? "text-foreground" : "text-foreground/50"}`}>
+              <span className={`line-clamp-2 text-[11px] font-semibold leading-tight ${isDone || isCurrent ? "text-foreground" : "text-foreground/70"}`}>
                 {sprint.title}
               </span>
               {sprint.approval_status && (
                 <span
-                  className={`flex items-center gap-0.5 text-[9px] font-bold ${
-                    sprint.approval_status === "aprobado" ? "text-green-700" : "text-red-700"
+                  className={`flex items-center gap-0.5 text-[11px] font-bold ${
+                    sprint.approval_status === "aprobado" ? "text-success" : "text-danger"
                   }`}
                 >
                   {sprint.approval_status === "aprobado" ? <CheckCircle2 size={9} /> : <XCircle size={9} />}
@@ -57,7 +57,7 @@ export function ProjectTimeline({ sprints }: { sprints: Sprint[] }) {
 
             {!isLast && (
               <div
-                className={`mt-4 h-0.5 w-10 shrink-0 sm:w-16 ${isDone ? "bg-green-500" : "bg-foreground/15"}`}
+                className={`mt-4 h-0.5 w-10 shrink-0 sm:w-16 ${isDone ? "bg-success" : "bg-foreground/15"}`}
                 aria-hidden="true"
               />
             )}
