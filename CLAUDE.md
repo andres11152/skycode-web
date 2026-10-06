@@ -298,6 +298,7 @@ Resultado de una auditoría completa; son reglas vigentes, no historia:
 - **Consentimiento**: la etiqueta de Google Ads de `/gracias` solo carga con la categoría `measurement`; está declarada en `cookieInventory.ts` y en la política (el texto legal requiere revisión de un abogado).
 - **Operación**: `GET /api/health` (Render health check), `JWT_SECRET` ≥ 32 caracteres, `BOLD_SECRET_KEY` obligatoria en producción (`BOLD_ALLOW_EMPTY_SECRET=true` solo para sandbox), Node 22 (`.nvmrc`), `AbortSignal.timeout` en toda llamada externa, Sentry con `beforeSend` que oculta correos.
 - **Formulario público de contacto**: el correo de confirmación reduce el nombre a letras y quita enlaces del extracto (`sanitizeEmailName`/`stripLinks`), para no servir de relay de phishing.
+- **Sin `loading.tsx` en la raíz de `/dashboard` ni `/portal`**: un `loading.tsx` raíz hace que Next empiece a transmitir con status 200 antes de que `notFound()`/`redirect()` de una página resuelvan, y un acceso no autorizado dejaba de dar 404/307 (lo detecta `e2e/team-member-detail`). Los `loading.tsx` van por módulo.
 - **Pendiente conocido**: `withAuth` no acepta `params` (63 rutas validan permisos a mano); `LeadsTable.tsx` (~1000 líneas); conversión de moneda retroactiva (guardar la tasa en cada pago); `campaign_spend` mezcla COP/USD.
 
 ## Flujo de verificación obligatorio

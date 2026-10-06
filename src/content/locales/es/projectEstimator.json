@@ -125,5 +125,8 @@
     "ctaLabel": "Hablar con el equipo",
     "footerNote": "Este es un correo automático con la cotización que generaste en skycode.agency. Si no reconoces este mensaje, puedes ignorarlo con tranquilidad."
   },
-  "teaserCta": "Calcular mi proyecto"
+  "teaserCta": "Calcular mi proyecto",
+  "h1": "Cotizador de desarrollo de software: calcula costo y tiempo",
+  "seoTitle": "Cotizador de Desarrollo de Software",
+  "seoDescription": "Calcula el costo y el tiempo de tu proyecto de software: elige tipo, funciones y ritmo y obtén un estimado en COP o USD. Sin compromiso."
 }

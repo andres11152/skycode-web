@@ -1,0 +1,53 @@
+{
+  "index": {
+    "title": "Servicios de Desarrollo de Software en Colombia",
+    "description": "Desarrollo de software a la medida, apps móviles, APIs, ecommerce, seguridad e IA para empresas. Código 100% tuyo y 90 días de garantía. Cotiza sin costo.",
+    "h1": "Servicios de desarrollo de software para empresas"
+  },
+  "items": {
+    "desarrollo-software-medida": {
+      "title": "Desarrollo de Software a la Medida para Empresas",
+      "description": "Plataformas, CRM y sistemas de gestión a la medida para empresas en Colombia. Código 100% tuyo, avances semanales y 90 días de garantía. Cotiza sin costo.",
+      "h1": "Desarrollo de software a la medida para empresas"
+    },
+    "desarrollo-aplicaciones-moviles": {
+      "title": "Desarrollo de Apps Móviles iOS y Android",
+      "description": "Desarrollamos apps móviles para iOS y Android que siguen funcionando sin conexión. Código 100% tuyo, entregas semanales y 90 días de garantía.",
+      "h1": "Desarrollo de aplicaciones móviles para iOS y Android"
+    },
+    "apis-integraciones": {
+      "title": "Integración de Sistemas y Desarrollo de APIs",
+      "description": "Conectamos tu software con pasarelas de pago, ERPs, sistemas contables y WhatsApp mediante APIs seguras y documentadas. Respuesta en menos de 24 h hábiles.",
+      "h1": "Integración de sistemas y desarrollo de APIs"
+    },
+    "frontend-alto-rendimiento": {
+      "title": "Desarrollo Web a la Medida con Next.js y React",
+      "description": "Sitios y aplicaciones web rápidas, accesibles y pensadas para posicionar en Google, con Next.js y React. Código 100% tuyo y 90 días de garantía.",
+      "h1": "Desarrollo web a la medida con Next.js y React"
+    },
+    "ecommerce-tienda-online": {
+      "title": "Desarrollo de Tiendas Online y Ecommerce",
+      "description": "Tiendas online a la medida con catálogo amplio, checkout ágil e integración con inventario, pagos y envíos. Tu código, sin ataduras a una plataforma.",
+      "h1": "Desarrollo de tiendas online y ecommerce a la medida"
+    },
+    "seguridad-cumplimiento": {
+      "title": "Seguridad de Software y Cumplimiento Ley 1581",
+      "description": "Seguridad desde la arquitectura: accesos por rol, cifrado de datos y cumplimiento de Habeas Data (Ley 1581) y RGPD, con buenas prácticas OWASP.",
+      "h1": "Seguridad de software y cumplimiento de la Ley 1581"
+    },
+    "arquitectura-documentacion": {
+      "title": "Arquitectura y Documentación Técnica de Software",
+      "description": "Entregamos repositorios, variables de entorno y diagramas de arquitectura para que tu equipo u otro proveedor continúe el código sin depender de nosotros.",
+      "h1": "Arquitectura y documentación técnica de tu software"
+    },
+    "migracion-datos-legacy": {
+      "title": "Servicios de migración de sistemas legacy",
+      "description": "Migramos tu sistema legacy por fases a una plataforma moderna: sin downtime, sin perder datos y con integridad validada. Te respondemos en 24 h."
+    },
+    "inteligencia-artificial-aplicada": {
+      "title": "IA para Empresas: Asistentes y Automatización",
+      "description": "Asistentes de IA y automatización de documentos conectados a la información de tu empresa para ahorrar horas operativas. Implementación a la medida.",
+      "h1": "Inteligencia artificial aplicada a tu negocio"
+    }
+  }
+}

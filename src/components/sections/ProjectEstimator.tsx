@@ -158,9 +158,10 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
             <SectionEyebrow className="mb-3">{content.badge}</SectionEyebrow>
-            <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              {content.title}
-            </h2>
+            {/* H1 de la página /cotizador (este componente solo se monta ahí). */}
+            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+              {content.h1}
+            </h1>
             <p className="mt-3 text-base text-foreground/80">{content.subtitle}</p>
           </div>
 

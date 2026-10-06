@@ -1,3 +1,4 @@
+import { titleSuffix } from "@/lib/site";
 import { describe, expect, it } from "vitest";
 import { getFaqContent, getFaqPageContent } from "@/content/faq";
 import { services } from "@/content/services";
@@ -90,7 +91,7 @@ describe("FAQ de la home", () => {
 describe("SEO de la página", () => {
   it("el <title> final (con el sufijo del layout) no pasa de 60 caracteres", () => {
     for (const locale of locales) {
-      expect(getFaqPageContent(locale).meta.title.length + " | SkyCode Agency".length).toBeLessThanOrEqual(60);
+      expect(getFaqPageContent(locale).meta.title.length + titleSuffix.length).toBeLessThanOrEqual(60);
     }
   });
 

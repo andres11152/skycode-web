@@ -1,0 +1,53 @@
+{
+  "index": {
+    "title": "Services de Développement Logiciel en Colombie",
+    "description": "Logiciels sur mesure, apps mobiles, API, e-commerce, sécurité et IA pour entreprises. Code 100 % à vous et 90 jours de garantie. Devis gratuit.",
+    "h1": "Services de développement logiciel pour entreprises"
+  },
+  "items": {
+    "desarrollo-software-medida": {
+      "title": "Développement de Logiciels sur Mesure",
+      "description": "Plateformes, CRM et systèmes de gestion conçus pour vos processus. Code 100 % à vous, démonstrations hebdomadaires et 90 jours de garantie. Devis gratuit.",
+      "h1": "Développement de logiciels sur mesure pour entreprises"
+    },
+    "desarrollo-aplicaciones-moviles": {
+      "title": "Développement d'Apps Mobiles iOS et Android",
+      "description": "Nous développons des applications iOS et Android qui fonctionnent aussi hors connexion. Code 100 % à vous, livraisons hebdomadaires, 90 jours de garantie.",
+      "h1": "Développement d'applications mobiles iOS et Android"
+    },
+    "apis-integraciones": {
+      "title": "Intégration de Systèmes et Développement d'API",
+      "description": "Nous connectons votre logiciel aux passerelles de paiement, ERP, outils comptables et WhatsApp via des API sécurisées. Réponse sous 24 h ouvrées.",
+      "h1": "Intégration de systèmes et développement d'API"
+    },
+    "frontend-alto-rendimiento": {
+      "title": "Développement Web sur Mesure avec Next.js",
+      "description": "Sites et applications web rapides, accessibles et pensés pour le référencement Google, avec Next.js et React. Code 100 % à vous, 90 jours de garantie.",
+      "h1": "Développement web sur mesure avec Next.js et React"
+    },
+    "ecommerce-tienda-online": {
+      "title": "Développement de Boutiques en Ligne sur Mesure",
+      "description": "Boutiques en ligne sur mesure : grand catalogue, paiement fluide, synchronisation stock, paiements et livraison. Votre code, sans plateforme captive.",
+      "h1": "Développement de boutiques en ligne sur mesure"
+    },
+    "seguridad-cumplimiento": {
+      "title": "Sécurité Logicielle et Conformité RGPD",
+      "description": "Sécurité dès l'architecture : accès par rôle, chiffrement des données, conformité RGPD et loi colombienne Habeas Data (Ley 1581), bonnes pratiques OWASP.",
+      "h1": "Sécurité logicielle et conformité à la protection des données"
+    },
+    "arquitectura-documentacion": {
+      "title": "Architecture et Documentation Technique",
+      "description": "Nous remettons dépôts, variables d'environnement et schémas d'architecture pour que votre équipe ou un autre prestataire reprenne le code sans nous.",
+      "h1": "Architecture logicielle et documentation technique"
+    },
+    "migracion-datos-legacy": {
+      "title": "Services de migration de systèmes legacy",
+      "description": "Nous migrons votre système legacy par étapes vers une plateforme moderne : sans interruption, sans perte de données, intégrité vérifiée. Réponse en 24 h."
+    },
+    "inteligencia-artificial-aplicada": {
+      "title": "IA pour Entreprises : Assistants et Automatisation",
+      "description": "Assistants IA et automatisation de documents connectés aux connaissances de votre entreprise pour gagner des heures d'exploitation. Sur mesure.",
+      "h1": "Intelligence artificielle appliquée à votre activité"
+    }
+  }
+}

@@ -17,8 +17,22 @@ export const contactPhone = siteConfig.contactPhone;
 export const socials = siteConfig.socials;
 export const whatsappHref = `https://wa.me/${contactPhone.replace("+", "")}`;
 
-/** Tagline/descripción localizadas — el resto de campos de site.json no varían por idioma. */
+/**
+ * Sufijo que el layout raíz agrega a cada `<title>` (`title.template`). Va
+ * corto a propósito (10 caracteres): deja 50 para el título propio de cada
+ * página sin pasar el límite de 60 que recorta Google. Si se cambia, ajusta
+ * también los títulos (los verifican serviceSeo.test.ts y faq.test.ts).
+ */
+export const titleSuffix = " | SkyCode";
+export const TITLE_MAX_LENGTH = 60;
+
+/** Tagline/descripción/título de home localizados — el resto de campos de site.json no varían por idioma. */
 export function getSiteText(locale: Locale) {
   const data = siteByLocale[locale];
-  return { siteTagline: data.siteTagline, siteDescription: data.siteDescription };
+  return {
+    siteTagline: data.siteTagline,
+    siteDescription: data.siteDescription,
+    homeTitle: data.homeTitle,
+    homeDescription: data.homeDescription,
+  };
 }

@@ -125,5 +125,8 @@
     "ctaLabel": "Talk to the team",
     "footerNote": "This is an automatic email with the quote you generated at skycode.agency. If you don't recognize this message, you can safely ignore it."
   },
-  "teaserCta": "Calculate my project"
+  "teaserCta": "Calculate my project",
+  "h1": "Software development cost calculator: estimate price and timeline",
+  "seoTitle": "Software Development Cost Calculator",
+  "seoDescription": "Estimate the cost and timeline of your software project: pick the type, features and pace and get a price range in USD or COP. No commitment."
 }

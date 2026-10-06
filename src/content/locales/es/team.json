@@ -43,10 +43,22 @@
     }
   ],
   "stats": [
-    { "value": "+10K", "label": "usuarios activos en sistemas entregados" },
-    { "value": "+30",  "label": "proyectos en producción" },
-    { "value": "99.9%", "label": "uptime promedio en producción" },
-    { "value": "90d",   "label": "garantía técnica incluida" }
+    {
+      "value": "+10K",
+      "label": "usuarios activos en sistemas entregados"
+    },
+    {
+      "value": "+30",
+      "label": "proyectos en producción"
+    },
+    {
+      "value": "99.9%",
+      "label": "uptime promedio en producción"
+    },
+    {
+      "value": "90d",
+      "label": "garantía técnica incluida"
+    }
   ],
   "closingTitle": "¿Quieres trabajar directamente con este equipo?",
   "closingDescription": "Agenda una llamada de 15 min para contarnos tu proyecto — hablarás directamente con quien va a construirlo, sin intermediarios comerciales ni cajas negras.",
@@ -54,5 +66,7 @@
   "ctaSecondary": {
     "label": "Ver proyectos reales",
     "href": "/#portfolio"
-  }
+  },
+  "seoTitle": "Equipo de Ingenieros de Software en Bogotá",
+  "seoDescription": "Ingenieros y diseñadores sénior que lideran tu proyecto de software: trabajas directo con quien diseña la arquitectura y escribe el código."
 }

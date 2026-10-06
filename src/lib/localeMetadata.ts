@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getSiteText, ogImageUrl, siteName, siteUrl } from "@/lib/site";
+import { getSiteText, ogImageUrl, siteName, siteUrl, titleSuffix } from "@/lib/site";
 import { localeOgLocale, type Locale } from "@/lib/i18n";
 
 const otherOgLocales: Record<Locale, string[]> = {
@@ -10,11 +10,13 @@ const otherOgLocales: Record<Locale, string[]> = {
 
 /** Metadata (título/OG/hreflang) para las homes localizadas ("/", "/en", "/fr"). */
 export function buildHomeMetadata(locale: Locale, path: string): Metadata {
-  const { siteTagline, siteDescription } = getSiteText(locale);
-  const title = `${siteName} — ${siteTagline}`;
+  const { homeTitle, homeDescription: siteDescription } = getSiteText(locale);
+  // Título completo (con sufijo) para OG/Twitter; el `<title>` pasa por la
+  // plantilla del layout, que agrega el mismo sufijo.
+  const title = `${homeTitle}${titleSuffix}`;
 
   return {
-    title,
+    title: homeTitle,
     description: siteDescription,
     alternates: {
       canonical: path,

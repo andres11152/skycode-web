@@ -1,0 +1,53 @@
+{
+  "index": {
+    "title": "Software Development Services in Colombia",
+    "description": "Custom software, mobile apps, APIs, ecommerce, security and AI for businesses. Source code 100% yours and a 90-day warranty. Get a free quote.",
+    "h1": "Software development services for businesses"
+  },
+  "items": {
+    "desarrollo-software-medida": {
+      "title": "Custom Software Development for Businesses",
+      "description": "Custom platforms, CRMs and management systems built for your workflow. 100% yours: source code, weekly demos and a 90-day warranty. Get a free quote.",
+      "h1": "Custom software development for businesses"
+    },
+    "desarrollo-aplicaciones-moviles": {
+      "title": "iOS & Android Mobile App Development",
+      "description": "We build iOS and Android apps that keep working offline. You own the code, you get weekly deliveries and a 90-day technical warranty.",
+      "h1": "iOS and Android mobile app development"
+    },
+    "apis-integraciones": {
+      "title": "System Integration & API Development",
+      "description": "We connect your software to payment gateways, ERPs, accounting systems and WhatsApp through secure, documented APIs. Reply within 24 business hours.",
+      "h1": "System integration and API development"
+    },
+    "frontend-alto-rendimiento": {
+      "title": "Custom Web Development with Next.js & React",
+      "description": "Fast, accessible web apps and websites built to rank on Google, using Next.js and React. 100% yours: source code and a 90-day warranty.",
+      "h1": "Custom web development with Next.js and React"
+    },
+    "ecommerce-tienda-online": {
+      "title": "Custom Ecommerce & Online Store Development",
+      "description": "Custom online stores with large catalogs, fast checkout and live sync with inventory, payments and shipping. Your code, no platform lock-in.",
+      "h1": "Custom ecommerce and online store development"
+    },
+    "seguridad-cumplimiento": {
+      "title": "Software Security & Data Protection Compliance",
+      "description": "Security built into the architecture: role-based access, data encryption and GDPR plus Colombia's Habeas Data (Ley 1581) compliance, following OWASP.",
+      "h1": "Software security and data protection compliance"
+    },
+    "arquitectura-documentacion": {
+      "title": "Software Architecture & Technical Documentation",
+      "description": "We hand over repositories, environment variables and architecture diagrams so your team or any other vendor can continue the code without depending on us.",
+      "h1": "Software architecture and technical documentation"
+    },
+    "migracion-datos-legacy": {
+      "title": "Legacy Software Migration Services",
+      "description": "We migrate your legacy system to a modern platform in phases: zero downtime, no data loss and verified data integrity. Get a reply within 24 hours."
+    },
+    "inteligencia-artificial-aplicada": {
+      "title": "AI for Business: Assistants & Automation",
+      "description": "AI assistants and document automation connected to your company's own knowledge base to save operating hours. Implemented to fit your processes.",
+      "h1": "Applied artificial intelligence for your business"
+    }
+  }
+}

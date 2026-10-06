@@ -50,3 +50,14 @@ export function getTeamSectionContent(locale: Locale): PublicTeamSection {
       : {}),
   };
 }
+
+/**
+ * `<title>`/descripción para buscadores. Aparte de `getTeamSectionContent`
+ * a propósito: esa estructura viaja como prop a `TeamView` (cliente) y estos
+ * textos solo los necesita `generateMetadata`. El título lleva ≤50
+ * caracteres (el layout agrega " | SkyCode").
+ */
+export function getTeamSeo(locale: Locale): { title: string; description: string } {
+  const data = teamByLocale[locale];
+  return { title: data.seoTitle, description: data.seoDescription };
+}

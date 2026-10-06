@@ -43,10 +43,22 @@
     }
   ],
   "stats": [
-    { "value": "+10K", "label": "active users across delivered systems" },
-    { "value": "+30",  "label": "projects in production" },
-    { "value": "99.9%", "label": "average uptime in production" },
-    { "value": "90d",   "label": "technical warranty included" }
+    {
+      "value": "+10K",
+      "label": "active users across delivered systems"
+    },
+    {
+      "value": "+30",
+      "label": "projects in production"
+    },
+    {
+      "value": "99.9%",
+      "label": "average uptime in production"
+    },
+    {
+      "value": "90d",
+      "label": "technical warranty included"
+    }
   ],
   "closingTitle": "Ready to work directly with this team?",
   "closingDescription": "Schedule a 15-minute call to tell us about your project — you'll talk directly to the engineers building your solution, with no sales intermediaries.",
@@ -54,5 +66,7 @@
   "ctaSecondary": {
     "label": "Explore real projects",
     "href": "/en/#portfolio"
-  }
+  },
+  "seoTitle": "Senior Software Engineering Team in Bogotá",
+  "seoDescription": "Senior engineers and designers who lead your software project: you work directly with the people who design the architecture and write the code."
 }

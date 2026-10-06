@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTeamSectionContent } from "@/content/team";
+import { getTeamSeo } from "@/content/team";
 import { ogImageUrl, siteUrl } from "@/lib/site";
 import { localeHomePath, type Locale } from "@/lib/i18n";
 
@@ -10,7 +10,7 @@ export function teamPath(locale: Locale): string {
 }
 
 export function buildTeamMetadata(locale: Locale): Metadata {
-  const teamData = getTeamSectionContent(locale);
+  const teamData = getTeamSeo(locale);
 
   return {
     title: teamData.title,

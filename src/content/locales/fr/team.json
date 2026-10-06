@@ -43,10 +43,22 @@
     }
   ],
   "stats": [
-    { "value": "+10K", "label": "utilisateurs actifs dans les systèmes livrés" },
-    { "value": "+30",  "label": "projets en production" },
-    { "value": "99.9%", "label": "disponibilité moyenne en production" },
-    { "value": "90j",   "label": "garantie technique incluse" }
+    {
+      "value": "+10K",
+      "label": "utilisateurs actifs dans les systèmes livrés"
+    },
+    {
+      "value": "+30",
+      "label": "projets en production"
+    },
+    {
+      "value": "99.9%",
+      "label": "disponibilité moyenne en production"
+    },
+    {
+      "value": "90j",
+      "label": "garantie technique incluse"
+    }
   ],
   "closingTitle": "Prêt à collaborer directement avec cette équipe ?",
   "closingDescription": "Planifiez un échange de 15 minutes pour nous présenter votre projet — vous parlerez directement avec les ingénieurs qui concevront et bâtiront votre solution.",
@@ -54,5 +66,7 @@
   "ctaSecondary": {
     "label": "Voir les projets réels",
     "href": "/fr/#portfolio"
-  }
+  },
+  "seoTitle": "Équipe d'Ingénieurs Logiciel Senior à Bogotá",
+  "seoDescription": "Ingénieurs et designers senior qui dirigent votre projet logiciel : vous travaillez directement avec ceux qui conçoivent l'architecture et écrivent le code."
 }

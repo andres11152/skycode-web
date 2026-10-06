@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getServiceBySlug, getServicesContent } from "@/content/services";
+import { getServiceSeo, getServicesIndexSeo } from "@/content/serviceSeo";
 import { ogImageUrl, siteUrl } from "@/lib/site";
 import { localeHomePath, type Locale } from "@/lib/i18n";
 
@@ -19,11 +20,11 @@ export function servicesIndexPath(locale: Locale): string {
 }
 
 export function buildServicesIndexMetadata(locale: Locale): Metadata {
-  const { servicesSection } = getServicesContent(locale);
+  const seo = getServicesIndexSeo(locale);
 
   return {
-    title: servicesSection.title,
-    description: servicesSection.description,
+    title: seo.title,
+    description: seo.description,
     alternates: {
       canonical: servicesIndexPath(locale),
       languages: {
@@ -35,14 +36,14 @@ export function buildServicesIndexMetadata(locale: Locale): Metadata {
     },
     openGraph: {
       type: "website",
-      title: servicesSection.title,
-      description: servicesSection.description,
-      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: servicesSection.title }],
+      title: seo.title,
+      description: seo.description,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: seo.title }],
     },
     twitter: {
       card: "summary_large_image",
-      title: servicesSection.title,
-      description: servicesSection.description,
+      title: seo.title,
+      description: seo.description,
       images: [ogImageUrl],
     },
   };
@@ -52,8 +53,9 @@ export function buildServiceMetadata(locale: Locale, slug: string): Metadata {
   const service = getServiceBySlug(slug, locale);
   // Nunca `{}`: heredaría título y canonical de la home.
   if (!service) notFound();
-  const title = service.seo?.title ?? service.title;
-  const description = service.seo?.description ?? service.description;
+  const seo = getServiceSeo(slug, locale);
+  const title = seo?.title ?? service.title;
+  const description = seo?.description ?? service.description;
 
   return {
     title,

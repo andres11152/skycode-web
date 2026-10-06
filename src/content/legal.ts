@@ -46,7 +46,7 @@ export const legalDocuments: LegalDocument[] = [
     slug: "politica-privacidad",
     title: "Política de Privacidad",
     description:
-      "Quién es el responsable de sus datos, para qué los usamos, con qué proveedores los compartimos, cuánto tiempo los conservamos y cómo ejercer sus derechos (Ley 1581 de 2012).",
+      "Quién es el responsable de sus datos, para qué los usamos, con qué proveedores los compartimos, cuánto los conservamos y cómo ejercer sus derechos (Ley 1581).",
     updatedAt: "2026-10-02",
     version: "2.0",
     summary: [

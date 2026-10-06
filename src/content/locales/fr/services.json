@@ -89,11 +89,7 @@
         "Nettoyage, déduplication et alignement des données historiques",
         "Migration par étapes sans arrêt de service",
         "Contrôle strict d'intégrité et de cohérence"
-      ],
-      "seo": {
-        "title": "Services de migration de systèmes legacy",
-        "description": "Nous migrons votre système legacy par étapes vers une plateforme moderne : sans interruption, sans perte de données, intégrité vérifiée. Réponse en 24 h."
-      }
+      ]
     },
     {
       "slug": "inteligencia-artificial-aplicada",

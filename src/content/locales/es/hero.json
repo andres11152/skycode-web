@@ -2,9 +2,9 @@
   "sectionAria": "Presentación de la agencia",
   "actionsAria": "Acciones principales",
   "badge": "DESARROLLO DE SOFTWARE HONESTO Y SIN AMARRES",
-  "titleBefore": "Creamos el software de tu empresa. ",
-  "titleAccent": "El código es tuyo.",
-  "titleAfter": " Limpio y sin depender de nosotros.",
+  "titleBefore": "Desarrollo de software a la medida en Colombia. ",
+  "titleAccent": "El código es 100% tuyo",
+  "titleAfter": "",
   "subtitle": "Desarrollamos sistemas y aplicaciones a tu medida, con entregas claras cada semana y comunicación directa con los ingenieros que programan. Sin intermediarios comerciales ni cajas negras.",
   "description": "Sabemos lo difícil que es confiar un proyecto tecnológico: agencias que desaparecen, retrasos eternos o código imposible de mantener. En SkyCode te entregamos el 100% de la propiedad, repositorios a tu nombre y documentación paso a paso para que tengas el control absoluto.",
   "ctaPrimary": {
@@ -26,9 +26,21 @@
     "Trato directo con ingenieros"
   ],
   "stats": [
-    { "value": "+10K", "label": "usuarios activos en sistemas entregados" },
-    { "value": "+30",  "label": "proyectos en producción" },
-    { "value": "99.9%", "label": "uptime promedio en producción" },
-    { "value": "90d",   "label": "garantía técnica incluida" }
+    {
+      "value": "+10K",
+      "label": "usuarios activos en sistemas entregados"
+    },
+    {
+      "value": "+30",
+      "label": "proyectos en producción"
+    },
+    {
+      "value": "99.9%",
+      "label": "uptime promedio en producción"
+    },
+    {
+      "value": "90d",
+      "label": "garantía técnica incluida"
+    }
   ]
 }

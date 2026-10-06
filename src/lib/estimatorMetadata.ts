@@ -15,8 +15,8 @@ export function buildEstimatorMetadata(locale: Locale): Metadata {
   const content = getProjectEstimatorContent(locale);
 
   return {
-    title: content.title,
-    description: content.subtitle,
+    title: content.seoTitle,
+    description: content.seoDescription,
     alternates: {
       canonical: estimatorPath(locale),
       languages: {
@@ -28,14 +28,14 @@ export function buildEstimatorMetadata(locale: Locale): Metadata {
     },
     openGraph: {
       type: "website",
-      title: content.title,
-      description: content.subtitle,
-      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: content.title }],
+      title: content.seoTitle,
+      description: content.seoDescription,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: content.seoTitle }],
     },
     twitter: {
       card: "summary_large_image",
-      title: content.title,
-      description: content.subtitle,
+      title: content.seoTitle,
+      description: content.seoDescription,
       images: [ogImageUrl],
     },
   };

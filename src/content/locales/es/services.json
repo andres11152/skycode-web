@@ -89,11 +89,7 @@
         "Limpieza, deduplicación y mapeo de datos históricos",
         "Migración por fases sin tiempos de inactividad",
         "Validación estricta de consistencia e integridad"
-      ],
-      "seo": {
-        "title": "Servicios de migración de sistemas legacy",
-        "description": "Migramos tu sistema legacy por fases a una plataforma moderna: sin downtime, sin perder datos y con integridad validada. Te respondemos en 24 h."
-      }
+      ]
     },
     {
       "slug": "inteligencia-artificial-aplicada",

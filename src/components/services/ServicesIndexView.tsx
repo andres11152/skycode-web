@@ -7,6 +7,7 @@ import { ServicesExplorer } from "@/components/services/ServicesExplorer";
 import { ServiceCaseCard } from "@/components/services/ServiceCaseCard";
 import { getServicesContent, getServiceSlugsForProject } from "@/content/services";
 import { getServicePageContent } from "@/content/servicePage";
+import { getServicesIndexSeo } from "@/content/serviceSeo";
 import { getNavContent } from "@/content/nav";
 import { getProcessContent } from "@/content/process";
 import { getTrustContent } from "@/content/trust";
@@ -87,7 +88,7 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
             <div className="flex max-w-3xl flex-col items-start gap-6">
               <SectionEyebrow>{servicesSection.badge}</SectionEyebrow>
               <h1 className="text-4xl font-bold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
-                {servicesSection.title}
+                {getServicesIndexSeo(locale).h1}
               </h1>
               <p className="max-w-2xl text-lg leading-relaxed text-foreground/80">{servicesSection.description}</p>
               <div className="flex flex-wrap gap-3 pt-2">

@@ -55,14 +55,6 @@ export interface Service {
   description: string;
   coverIcon: Icon;
   features: string[];
-  /**
-   * `<title>`/meta description propios para buscadores, cuando el título
-   * visible (que también usa el carrusel de la home) no incluye la keyword
-   * con la que la gente busca el servicio. El layout raíz agrega
-   * " | SkyCode Agency" (17 caracteres): `seo.title` debe quedar en ≤42
-   * para que el `<title>` final no pase de 60.
-   */
-  seo?: { title: string; description: string };
 }
 
 /**
@@ -107,7 +99,6 @@ export function getServicesContent(locale: Locale) {
       description: item.description,
       coverIcon: iconMap[item.iconName] ?? Blueprint,
       features: item.features,
-      seo: item.seo,
     })) satisfies Service[],
   };
 }

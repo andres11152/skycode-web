@@ -146,7 +146,9 @@ describe("Autogestión de 2FA — POST /api/auth/2fa/*", () => {
     const badRes = await client.post("/api/auth/2fa/disable", { code: "000000" });
     expect(badRes.status).toBe(400);
 
-    const goodRes = await client.post("/api/auth/2fa/disable", { code: generateTotpCode(secret) });
+    // El código del login ya se gastó (anti-replay): se usa el del paso siguiente,
+    // que sigue dentro de la ventana ±1 que tolera el servidor.
+    const goodRes = await client.post("/api/auth/2fa/disable", { code: generateTotpCode(secret, Date.now() + 30_000) });
     expect(goodRes.status).toBe(200);
 
     // Ahora un login con esa cuenta ya no debería pedir 2FA.

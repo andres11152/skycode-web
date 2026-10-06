@@ -125,5 +125,8 @@
     "ctaLabel": "Parler à l'équipe",
     "footerNote": "Ceci est un e-mail automatique contenant le devis que vous avez généré sur skycode.agency. Si vous ne reconnaissez pas ce message, vous pouvez l'ignorer en toute tranquillité."
   },
-  "teaserCta": "Calculer mon projet"
+  "teaserCta": "Calculer mon projet",
+  "h1": "Simulateur de coût de développement logiciel : budget et délais",
+  "seoTitle": "Simulateur de Coût de Développement Logiciel",
+  "seoDescription": "Estimez le coût et les délais de votre projet logiciel : choisissez type, fonctions et rythme, obtenez une fourchette en USD ou COP. Sans engagement."
 }

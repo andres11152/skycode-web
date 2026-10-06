@@ -27,7 +27,8 @@ export type SeoIssueCode =
   | "description_missing"
   | "description_too_long"
   | "h1_count"
-  | "noindex_in_sitemap";
+  | "noindex_in_sitemap"
+  | "todo_placeholder";
 
 export interface SeoIssue {
   code: SeoIssueCode;
@@ -47,6 +48,7 @@ export interface SeoPageResult {
   description: string | null;
   canonical: string | null;
   h1Count: number;
+  h1Text: string | null;
   robots: string | null;
   issues: SeoIssue[];
 }
@@ -75,6 +77,8 @@ export interface ParsedHtml {
   description: string | null;
   canonical: string | null;
   h1Count: number;
+  /** Texto del primer H1 visible (sin etiquetas), útil para auditar el titular. */
+  h1Text: string | null;
   robots: string | null;
 }
 
@@ -132,12 +136,15 @@ export function parseHtml(html: string): ParsedHtml {
 
   // Solo los H1 visibles: un `hidden`/`aria-hidden` no es el encabezado de la página.
   const h1Count = findTags(stripped, "h1").filter((tag) => !/\shidden(\s|=|>|$)/i.test(tag)).length;
+  const h1Match = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(stripped);
+  const h1Text = h1Match ? decodeEntities(h1Match[1].replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim() : null;
 
   return {
     title: title && title.length > 0 ? title : null,
     description: description && description.trim().length > 0 ? description.trim() : null,
     canonical: canonical && canonical.trim().length > 0 ? canonical.trim() : null,
     h1Count,
+    h1Text: h1Text && h1Text.length > 0 ? h1Text : null,
     robots,
   };
 }
@@ -179,6 +186,7 @@ export function auditParsedPage(
     description: null,
     canonical: null,
     h1Count: 0,
+    h1Text: null,
     robots: null,
     issues: [],
   };
@@ -197,6 +205,7 @@ export function auditParsedPage(
   base.description = parsed.description;
   base.canonical = parsed.canonical;
   base.h1Count = parsed.h1Count;
+  base.h1Text = parsed.h1Text;
   base.robots = parsed.robots;
 
   if (response.status !== 200) return base;
@@ -225,6 +234,11 @@ export function auditParsedPage(
 
   if (parsed.h1Count !== 1) {
     base.issues.push(issue("h1_count", "error", `Tiene ${parsed.h1Count} etiquetas H1 (debe haber exactamente 1)`));
+  }
+
+  // Un `{{TODO: …}}` visible en una página pública es contenido a medio escribir.
+  if (response.html.includes("{{TODO")) {
+    base.issues.push(issue("todo_placeholder", "error", "El HTML contiene un marcador {{TODO}} sin completar"));
   }
 
   if (parsed.robots && /\bnoindex\b/i.test(parsed.robots)) {

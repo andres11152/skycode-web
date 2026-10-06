@@ -9,12 +9,16 @@ import {
   contactPhone,
   ogImageUrl,
   siteDescription,
+  getSiteText,
   siteName,
   siteTagline,
   siteUrl,
+  titleSuffix,
   whatsappHref,
 } from "@/lib/site";
 import "./globals.css";
+
+const { homeTitle } = getSiteText("es");
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-heading",
@@ -32,8 +36,9 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteName} — ${siteTagline}`,
-    template: `%s | ${siteName}`,
+    // Solo lo usa una página que no declare título (p. ej. not-found).
+    default: `${homeTitle}${titleSuffix}`,
+    template: `%s${titleSuffix}`,
   },
   description: siteDescription,
   keywords: [
