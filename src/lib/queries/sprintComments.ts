@@ -14,7 +14,7 @@ interface QueryRunner {
  */
 export async function isSprintOwnedByClient(sprintId: number, clientId: number | string): Promise<boolean> {
   const res = await query(
-    `SELECT 1 FROM sprints s JOIN projects p ON p.id = s.project_id WHERE s.id = $1 AND p.client_id = $2;`,
+    `SELECT 1 FROM sprints s JOIN projects p ON p.id = s.project_id AND p.deleted_at IS NULL WHERE s.id = $1 AND p.client_id = $2;`,
     [sprintId, clientId]
   );
   return res.rows.length > 0;

@@ -97,7 +97,7 @@ export async function notifyOverdueInvoices(): Promise<number> {
       SELECT ib.id, ib.description, ib.balance, ib.created_by, p.title AS project_title,
              c.name AS client_name, u.email AS creator_email
       FROM invoice_balances ib
-      JOIN projects p ON p.id = ib.project_id
+      JOIN projects p ON p.id = ib.project_id AND p.deleted_at IS NULL
       JOIN clients c ON c.id = p.client_id
       LEFT JOIN users u ON u.id = ib.created_by
       WHERE ib.balance > 0
@@ -147,7 +147,7 @@ export async function notifySlaWarnings(): Promise<number> {
     WITH candidates AS (
       SELECT t.id, t.title, t.sla_due_at, t.assignee_id, p.title AS project_title, u.email AS assignee_email
       FROM support_tickets t
-      JOIN projects p ON p.id = t.project_id
+      JOIN projects p ON p.id = t.project_id AND p.deleted_at IS NULL
       LEFT JOIN users u ON u.id = t.assignee_id
       WHERE t.deleted_at IS NULL AND t.sla_warning_notified_at IS NULL
         AND t.status NOT IN ('Resuelto', 'Cerrado')

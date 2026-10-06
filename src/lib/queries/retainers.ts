@@ -14,7 +14,7 @@ const RETAINERS_SELECT = `
          r.next_invoice_date::text AS next_invoice_date, r.created_at
   FROM retainers r
   JOIN clients c ON c.id = r.client_id
-  JOIN projects p ON p.id = r.project_id
+  JOIN projects p ON p.id = r.project_id AND p.deleted_at IS NULL
 `;
 
 function shapeRetainerRow(row: Record<string, unknown>): Retainer {
@@ -155,6 +155,7 @@ export async function generateDueRetainerInvoices(): Promise<number> {
     `SELECT id, project_id, description, amount, currency, next_invoice_date::text AS next_invoice_date, created_by
      FROM retainers
      WHERE deleted_at IS NULL AND status = 'active' AND next_invoice_date <= (now() AT TIME ZONE 'America/Bogota')::date
+       AND EXISTS (SELECT 1 FROM projects p WHERE p.id = retainers.project_id AND p.deleted_at IS NULL)
      ORDER BY id;`
   );
 

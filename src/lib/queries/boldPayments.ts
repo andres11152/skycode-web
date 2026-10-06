@@ -8,7 +8,7 @@ import { logError } from "../logger";
  */
 export async function isInvoiceOwnedByClient(invoiceId: number, clientId: number | string): Promise<boolean> {
   const res = await query(
-    `SELECT 1 FROM invoices i JOIN projects p ON p.id = i.project_id
+    `SELECT 1 FROM invoices i JOIN projects p ON p.id = i.project_id AND p.deleted_at IS NULL
      WHERE i.id = $1 AND p.client_id = $2 AND i.deleted_at IS NULL;`,
     [invoiceId, clientId]
   );

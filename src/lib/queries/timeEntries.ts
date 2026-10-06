@@ -7,7 +7,7 @@ const TIME_ENTRY_SELECT = `
          te.billable, te.created_at
   FROM time_entries te
   JOIN users u ON u.id = te.user_id
-  JOIN projects p ON p.id = te.project_id
+  JOIN projects p ON p.id = te.project_id AND p.deleted_at IS NULL
   LEFT JOIN sprints s ON s.id = te.sprint_id
 `;
 

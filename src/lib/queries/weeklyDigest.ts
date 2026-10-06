@@ -37,6 +37,7 @@ export async function getWeeklyDigestStats(): Promise<WeeklyDigestStats> {
          SELECT i.id, (i.amount - COALESCE(SUM(p.amount), 0)) AS balance
          FROM invoices i
          LEFT JOIN payments p ON p.invoice_id = i.id
+         JOIN projects pr ON pr.id = i.project_id AND pr.deleted_at IS NULL
          WHERE i.deleted_at IS NULL AND i.due_date < (now() AT TIME ZONE 'America/Bogota')::date
          GROUP BY i.id
        )
@@ -45,6 +46,7 @@ export async function getWeeklyDigestStats(): Promise<WeeklyDigestStats> {
     query(
       `SELECT COUNT(*) AS count FROM support_tickets
        WHERE deleted_at IS NULL AND status NOT IN ('Resuelto', 'Cerrado')
+         AND EXISTS (SELECT 1 FROM projects pr WHERE pr.id = support_tickets.project_id AND pr.deleted_at IS NULL)
          AND sla_due_at <= now() + ($1 || ' hours')::interval;`,
       [SLA_AT_RISK_WINDOW_HOURS]
     ),

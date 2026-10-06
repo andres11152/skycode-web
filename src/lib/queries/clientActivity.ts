@@ -58,14 +58,14 @@ export async function getClientActivityFeed(clientId: number | string, limit = 3
     `
     (SELECT 'document' AS type, d.id, d.created_at, d.project_id, p.title AS project_title,
             d.original_filename AS label, NULL::numeric AS amount, NULL::varchar AS currency, NULL::varchar AS status
-     FROM documents d JOIN projects p ON p.id = d.project_id
+     FROM documents d JOIN projects p ON p.id = d.project_id AND p.deleted_at IS NULL
      WHERE p.client_id = $1 AND d.deleted_at IS NULL)
 
     UNION ALL
 
     (SELECT 'invoice', i.id, i.created_at, i.project_id, p.title,
             COALESCE(i.invoice_number, 'INV-' || i.id), i.amount, i.currency, NULL
-     FROM invoices i JOIN projects p ON p.id = i.project_id
+     FROM invoices i JOIN projects p ON p.id = i.project_id AND p.deleted_at IS NULL
      WHERE p.client_id = $1 AND i.deleted_at IS NULL)
 
     UNION ALL
@@ -74,28 +74,28 @@ export async function getClientActivityFeed(clientId: number | string, limit = 3
             COALESCE(i.invoice_number, 'INV-' || i.id), pay.amount, i.currency, NULL
      FROM payments pay
      JOIN invoices i ON i.id = pay.invoice_id
-     JOIN projects p ON p.id = i.project_id
+     JOIN projects p ON p.id = i.project_id AND p.deleted_at IS NULL
      WHERE p.client_id = $1 AND i.deleted_at IS NULL)
 
     UNION ALL
 
     (SELECT 'ticket_created', t.id, t.created_at, t.project_id, p.title,
             t.title, NULL, NULL, t.priority
-     FROM support_tickets t JOIN projects p ON p.id = t.project_id
+     FROM support_tickets t JOIN projects p ON p.id = t.project_id AND p.deleted_at IS NULL
      WHERE p.client_id = $1 AND t.deleted_at IS NULL)
 
     UNION ALL
 
     (SELECT 'ticket_resolved', t.id, t.resolved_at, t.project_id, p.title,
             t.title, NULL, NULL, NULL
-     FROM support_tickets t JOIN projects p ON p.id = t.project_id
+     FROM support_tickets t JOIN projects p ON p.id = t.project_id AND p.deleted_at IS NULL
      WHERE p.client_id = $1 AND t.deleted_at IS NULL AND t.resolved_at IS NOT NULL)
 
     UNION ALL
 
     (SELECT 'sprint_approval', s.id, s.approved_at, s.project_id, p.title,
             s.title, NULL, NULL, s.approval_status
-     FROM sprints s JOIN projects p ON p.id = s.project_id
+     FROM sprints s JOIN projects p ON p.id = s.project_id AND p.deleted_at IS NULL
      WHERE p.client_id = $1 AND s.approved_at IS NOT NULL)
 
     UNION ALL
@@ -104,7 +104,7 @@ export async function getClientActivityFeed(clientId: number | string, limit = 3
             s.title, NULL, NULL, NULL
      FROM sprint_comments c
      JOIN sprints s ON s.id = c.sprint_id
-     JOIN projects p ON p.id = s.project_id
+     JOIN projects p ON p.id = s.project_id AND p.deleted_at IS NULL
      WHERE p.client_id = $1
        AND NOT EXISTS (
          SELECT 1 FROM users u WHERE u.id = c.author_id AND u.role = 'client' AND u.client_id = $1

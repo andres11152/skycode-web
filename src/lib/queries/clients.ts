@@ -69,7 +69,7 @@ export async function getClientsPage({ q, page, pageSize, usdToCopRate }: Client
     const invoicesRes = await query(
       `SELECT i.amount, i.currency, COALESCE(pay.paid_amount, 0) AS paid_amount
        FROM invoices i
-       JOIN projects p ON p.id = i.project_id
+       JOIN projects p ON p.id = i.project_id AND p.deleted_at IS NULL
        LEFT JOIN (
          SELECT invoice_id, SUM(amount) AS paid_amount FROM payments GROUP BY invoice_id
        ) pay ON pay.invoice_id = i.id
@@ -138,7 +138,7 @@ export async function getClientDetail(id: number, usdToCopRate: number): Promise
       `SELECT i.id, i.project_id, pr.title AS project_title, i.description, i.amount, i.currency,
               i.due_date, i.created_at, COALESCE(pay.paid_amount, 0) AS paid_amount
        FROM invoices i
-       JOIN projects pr ON pr.id = i.project_id
+       JOIN projects pr ON pr.id = i.project_id AND pr.deleted_at IS NULL
        LEFT JOIN (
          SELECT invoice_id, SUM(amount) AS paid_amount FROM payments GROUP BY invoice_id
        ) pay ON pay.invoice_id = i.id

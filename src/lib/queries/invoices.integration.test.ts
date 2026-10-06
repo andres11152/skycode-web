@@ -260,3 +260,19 @@ describe("recordInvoicePayment — tope de sobrepago", () => {
     expect(ok).not.toBeNull();
   });
 });
+
+describe("proyecto borrado (soft-delete)", () => {
+  it("sus facturas desaparecen del listado, del portal y del cobro", async () => {
+    const { isInvoiceOwnedByClient } = await import("./boldPayments");
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const invoice = await createTestInvoice(project.id, { amount: 1000 });
+    expect(await isInvoiceOwnedByClient(invoice.id, client.id)).toBe(true);
+
+    await query("UPDATE projects SET deleted_at = now() WHERE id = $1;", [project.id]);
+
+    expect(await getAllInvoices()).toHaveLength(0);
+    expect(await getClientInvoices(client.id)).toHaveLength(0);
+    expect(await isInvoiceOwnedByClient(invoice.id, client.id)).toBe(false);
+  });
+});

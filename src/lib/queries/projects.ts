@@ -232,7 +232,7 @@ export async function approveSprint(
 ): Promise<SprintApprovalResult> {
   const res = await dbRunner.query(
     `SELECT s.id, s.status, s.approval_status, p.client_id
-     FROM sprints s JOIN projects p ON p.id = s.project_id
+     FROM sprints s JOIN projects p ON p.id = s.project_id AND p.deleted_at IS NULL
      WHERE s.id = $1;`,
     [sprintId]
   );

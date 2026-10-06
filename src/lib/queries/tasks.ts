@@ -75,7 +75,7 @@ export async function getTasksAssignedToUser(userId: number | string): Promise<M
            u.id AS assignee_id, u.name AS assignee_name, u.email AS assignee_email,
            COALESCE(te.actual_hours, 0) AS actual_hours
     FROM tasks t
-    JOIN projects p ON p.id = t.project_id
+    JOIN projects p ON p.id = t.project_id AND p.deleted_at IS NULL
     LEFT JOIN sprints s ON s.id = t.sprint_id
     LEFT JOIN users u ON u.id = t.assignee_id
     LEFT JOIN (

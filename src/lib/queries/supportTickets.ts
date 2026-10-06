@@ -27,7 +27,7 @@ const TICKETS_SELECT = `
          t.sla_due_at, t.created_at, t.resolved_at, t.closed_at,
          u.id AS assignee_id, u.name AS assignee_name, u.email AS assignee_email
   FROM support_tickets t
-  JOIN projects p ON p.id = t.project_id
+  JOIN projects p ON p.id = t.project_id AND p.deleted_at IS NULL
   JOIN clients c ON c.id = p.client_id
   LEFT JOIN users u ON u.id = t.assignee_id
 `;

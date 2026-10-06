@@ -5,7 +5,7 @@ const DOCUMENTS_SELECT = `
   SELECT d.id, d.project_id, p.title AS project_title, d.original_filename, d.mime_type, d.size_bytes, d.created_at,
          u.id AS uploader_id, u.name AS uploader_name, u.email AS uploader_email
   FROM documents d
-  JOIN projects p ON p.id = d.project_id
+  JOIN projects p ON p.id = d.project_id AND p.deleted_at IS NULL
   LEFT JOIN users u ON u.id = d.uploaded_by
 `;
 
@@ -49,7 +49,7 @@ export async function getClientDocuments(clientId: number | string): Promise<Pro
 /** `true` si el proyecto dueño del documento pertenece a ese cliente (para la ruta de descarga desde /portal). */
 export async function isDocumentOwnedByClient(documentId: number, clientId: number | string): Promise<boolean> {
   const res = await query(
-    `SELECT 1 FROM documents d JOIN projects p ON p.id = d.project_id
+    `SELECT 1 FROM documents d JOIN projects p ON p.id = d.project_id AND p.deleted_at IS NULL
      WHERE d.id = $1 AND p.client_id = $2 AND d.deleted_at IS NULL;`,
     [documentId, clientId]
   );

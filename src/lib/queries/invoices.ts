@@ -40,7 +40,7 @@ async function queryInvoices(clientId?: number | string): Promise<Invoice[]> {
            i.description, i.amount, i.currency, i.due_date, i.created_at,
            COALESCE(pay.paid_amount, 0) AS paid_amount
     FROM invoices i
-    JOIN projects p ON p.id = i.project_id
+    JOIN projects p ON p.id = i.project_id AND p.deleted_at IS NULL
     JOIN clients c ON c.id = p.client_id
     LEFT JOIN (
       SELECT invoice_id, SUM(amount) AS paid_amount FROM payments GROUP BY invoice_id
@@ -135,7 +135,7 @@ export async function getInvoiceForPdf(id: number): Promise<InvoicePdfData | nul
             i.description, i.amount, i.currency, i.due_date, i.created_at,
             COALESCE(pay.paid_amount, 0) AS paid_amount
      FROM invoices i
-     JOIN projects p ON p.id = i.project_id
+     JOIN projects p ON p.id = i.project_id AND p.deleted_at IS NULL
      JOIN clients c ON c.id = p.client_id
      LEFT JOIN (
        SELECT invoice_id, SUM(amount) AS paid_amount FROM payments GROUP BY invoice_id

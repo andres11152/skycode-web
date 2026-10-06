@@ -57,6 +57,7 @@ export async function getCashProjection(prefetchedRate?: number): Promise<CashPr
       SELECT i.due_date, i.currency, (i.amount - COALESCE(SUM(p.amount), 0)) AS balance
       FROM invoices i
       LEFT JOIN payments p ON p.invoice_id = i.id
+      JOIN projects pr ON pr.id = i.project_id AND pr.deleted_at IS NULL
       WHERE i.deleted_at IS NULL
       GROUP BY i.id
     )
