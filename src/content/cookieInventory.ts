@@ -88,6 +88,14 @@ export const THIRD_PARTY_STORAGE_NOTE = {
     "Solo si paga una factura desde el portal de clientes: el formulario de pago de Bold, que se abre en un marco propio, puede guardar sus propias cookies técnicas y antifraude. Nosotros no las controlamos ni las leemos.",
 } as const;
 
+/** Solo se carga si la persona acepta la categoría "medición", en /gracias. */
+export const GOOGLE_ADS_STORAGE_NOTE = {
+  provider: "Google Ads",
+  category: "measurement" as ConsentCategory,
+  purpose:
+    "Solo si acepta la categoría de medición: la página de confirmación de envío (/gracias) carga la etiqueta de conversión de Google Ads para medir qué anuncios generan consultas. Google puede guardar cookies propias (como _gcl_au) y recibe la dirección IP y datos del navegador.",
+} as const;
+
 export function entriesByCategory(category: ConsentCategory): StorageEntry[] {
   return STORAGE_INVENTORY.filter((entry) => entry.category === category);
 }

@@ -160,6 +160,7 @@ export async function fetchBoldPaymentVoucher(orderId: string): Promise<BoldPaym
   try {
     const res = await fetch(`https://payments.api.bold.co/v2/payment-voucher/${encodeURIComponent(orderId)}`, {
       method: "GET",
+      signal: AbortSignal.timeout(10_000),
       headers: { Authorization: `x-api-key ${apiKey}` },
       cache: "no-store",
     });

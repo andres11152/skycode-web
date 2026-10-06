@@ -131,6 +131,7 @@ Esta query tiene impresiones reales en Google Search Console pero cero clics —
 
   const res = await fetch(ANTHROPIC_API_URL, {
     method: "POST",
+    signal: AbortSignal.timeout(120_000),
     headers: {
       "x-api-key": apiKey,
       "anthropic-version": ANTHROPIC_VERSION,

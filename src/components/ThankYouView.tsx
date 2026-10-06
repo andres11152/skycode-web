@@ -9,6 +9,8 @@ import { getUiContent } from "@/content/ui";
 import { whatsappHref } from "@/lib/site";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 import { fadeUp } from "@/lib/animations";
+import { useConsentRecord } from "@/lib/useConsent";
+import { isCategoryAllowed } from "@/lib/consent";
 
 const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 
@@ -24,10 +26,14 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
   const contactData = getContactContent(locale);
   const uiData = getUiContent(locale);
   const reduced = useReducedMotion();
+  // La etiqueta de Google Ads solo se carga con consentimiento de "medición":
+  // sin él no se contacta a Google ni se guardan sus cookies (_gcl_*).
+  const consent = useConsentRecord();
+  const adsAllowed = isCategoryAllowed(consent ?? null, "measurement");
 
   return (
     <>
-      {googleAdsId && (
+      {googleAdsId && adsAllowed && (
         // Movido aquí desde app/layout.tsx: antes se cargaba en TODAS las
         // páginas del sitio (148KB de JS, gran parte sin usar fuera de esta
         // página), inflando el trabajo del hilo principal justo cuando un
@@ -51,7 +57,6 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', '${googleAdsId}');
-              console.log('[GAds] gtag config ejecutado en', window.location.pathname, '- revisa la pestaña Network filtrando por "googleads" o "pagead" para confirmar el disparo de la conversión.');
             `}
           </Script>
         </>

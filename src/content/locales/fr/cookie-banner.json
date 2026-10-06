@@ -1,6 +1,6 @@
 {
   "ariaLabel": "Avis sur les cookies",
-  "message": "Nous utilisons un stockage propre pour faire fonctionner le site et, si vous l'autorisez, pour mémoriser votre pays et la campagne d'où vous venez. Nous n'utilisons ni analyse ni publicité de tiers.",
+  "message": "Nous utilisons un stockage propre pour faire fonctionner le site et, si vous l'autorisez, pour mémoriser votre pays et la campagne d'où vous venez. Nous n'utilisons pas d'analyse de tiers ; la page de confirmation ne charge la balise de conversion Google Ads que si vous acceptez la mesure.",
   "linkText": "Politique de cookies",
   "linkUrl": "/politica-cookies",
   "acceptAll": "Tout accepter",

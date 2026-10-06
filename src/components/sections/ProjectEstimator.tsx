@@ -7,7 +7,7 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProjectEstimatorContent, getDefaultCurrency } from "@/content/projectEstimator";
-import { defaultLocale, localeHomePath, t, type Locale } from "@/lib/i18n";
+import { defaultLocale, t, type Locale } from "@/lib/i18n";
 import { useGeoCountry } from "@/lib/useGeoCountry";
 import { openContactModal } from "@/lib/contactModalEvent";
 import { ESTIMATOR_TYPE_TO_SERVICE_SLUG } from "@/lib/leadServices";

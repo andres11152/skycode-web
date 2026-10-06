@@ -24,7 +24,14 @@ const pool = new Pool({
 
 const migrationsDir = path.join(import.meta.dirname, "..", "db", "migrations");
 
+// Candado de asesoría de Postgres: dos deploys simultáneos (o un deploy y un
+// operador) no pueden aplicar las mismas migraciones a la vez. La conexión que
+// toma el candado se mantiene abierta hasta el final (es por sesión).
+const MIGRATION_LOCK_KEY = 727274;
+const lockClient = await pool.connect();
+
 try {
+  await lockClient.query("SELECT pg_advisory_lock($1);", [MIGRATION_LOCK_KEY]);
   await pool.query(`
     CREATE TABLE IF NOT EXISTS schema_migrations (
       id VARCHAR(255) PRIMARY KEY,
@@ -60,5 +67,7 @@ try {
 
   if (!ranAny) console.log("Sin migraciones pendientes.");
 } finally {
+  await lockClient.query("SELECT pg_advisory_unlock($1);", [MIGRATION_LOCK_KEY]).catch(() => {});
+  lockClient.release();
   await pool.end();
 }

@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "db:migrate": "node --env-file=.env.local scripts/migrate.mjs",
+    "db:migrate:deploy": "node scripts/migrate.mjs",
     "db:seed-dev-users": "node --env-file=.env.local scripts/seed-dev-users.mjs",
     "db:seed-articles": "node --env-file=.env.local scripts/seed-articles-from-json.mjs",
     "db:seed-portfolio": "node --env-file=.env.local scripts/migrate-portfolio-projects.mjs",
@@ -74,5 +75,8 @@
     "edge >= 109",
     "firefox >= 109",
     "safari >= 16.4"
-  ]
+  ],
+  "engines": {
+    "node": ">=22"
+  }
 }

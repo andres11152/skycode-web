@@ -25,12 +25,13 @@ jobs:
   verify:
     name: Tipos, lint, tests unitarios y build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm ci
@@ -51,6 +52,7 @@ jobs:
     name: Tests de integración y E2E
     needs: verify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     # Mismas credenciales y puerto que docker-compose.test.yml — así los
     # scripts de package.json (que leen .env.test) funcionan sin cambios.
     services:
@@ -97,7 +99,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm ci

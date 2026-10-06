@@ -1,6 +1,6 @@
 {
   "ariaLabel": "Cookie notice",
-  "message": "We use first-party storage to make the site work and, if you allow it, to remember your country and which campaign brought you here. We don't use third-party analytics or advertising.",
+  "message": "We use first-party storage to make the site work and, if you allow it, to remember your country and which campaign brought you here. We don't use third-party analytics; only if you accept measurement does the confirmation page load the Google Ads conversion tag.",
   "linkText": "Cookie policy",
   "linkUrl": "/politica-cookies",
   "acceptAll": "Accept all",

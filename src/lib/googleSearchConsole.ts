@@ -54,6 +54,7 @@ async function getAccessToken(): Promise<string> {
 
   const res = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
+    signal: AbortSignal.timeout(15_000),
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
@@ -97,6 +98,7 @@ export async function fetchSearchAnalytics(startDate: string, endDate: string): 
 
   const res = await fetch(endpoint, {
     method: "POST",
+    signal: AbortSignal.timeout(30_000),
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

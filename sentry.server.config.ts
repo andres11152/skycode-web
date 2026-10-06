@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
+import { sentryBaseOptions } from "@/lib/sentryScrub";
 
 // Sin `SENTRY_DSN` configurada (desarrollo local, o antes de que exista una
 // cuenta de Sentry real), el SDK queda inactivo automáticamente — no hace
@@ -13,5 +14,5 @@ Sentry.init({
   // envuelve next.config.ts con `withSentryConfig`: la captura de errores
   // igual funciona vía `onRequestError` (instrumentation.ts) y las
   // llamadas explícitas de lib/logger.ts, independientes del bundler.
-  tracesSampleRate: 0.1,
+  ...sentryBaseOptions,
 });

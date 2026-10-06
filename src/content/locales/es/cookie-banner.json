@@ -1,6 +1,6 @@
 {
   "ariaLabel": "Aviso de cookies",
-  "message": "Usamos almacenamiento propio para que el sitio funcione y, si usted lo permite, para recordar su país y de qué campaña llegó. No usamos analítica ni publicidad de terceros.",
+  "message": "Usamos almacenamiento propio para que el sitio funcione y, si usted lo permite, para recordar su país y de qué campaña llegó. No usamos analítica de terceros; solo si acepta la medición, la página de confirmación carga la etiqueta de conversión de Google Ads.",
   "linkText": "Política de cookies",
   "linkUrl": "/politica-cookies",
   "acceptAll": "Aceptar todo",

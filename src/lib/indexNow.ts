@@ -27,6 +27,7 @@ export async function pingIndexNow(urls: string[]): Promise<void> {
     const host = new URL(siteUrl).host;
     await fetch(INDEXNOW_ENDPOINT, {
       method: "POST",
+      signal: AbortSignal.timeout(5_000),
       headers: { "Content-Type": "application/json; charset=utf-8" },
       body: JSON.stringify({
         host,

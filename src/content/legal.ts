@@ -1,6 +1,6 @@
 import type { BlogBlock } from "./blogShared";
 import { contactEmail, siteName } from "@/lib/site";
-import { STORAGE_INVENTORY, THIRD_PARTY_STORAGE_NOTE, storageKindLabel } from "./cookieInventory";
+import { GOOGLE_ADS_STORAGE_NOTE, STORAGE_INVENTORY, THIRD_PARTY_STORAGE_NOTE, storageKindLabel } from "./cookieInventory";
 
 /**
  * Bloques propios de los documentos legales, además de los del blog:
@@ -322,7 +322,7 @@ export const legalDocuments: LegalDocument[] = [
       { type: "heading", level: 2, text: "1. Qué no usamos" },
       {
         type: "paragraph",
-        text: "No usamos Google Analytics ni otra analítica de terceros, píxeles de redes sociales, cookies publicitarias ni herramientas de grabación de sesiones o de seguimiento entre sitios. No vendemos ni compartimos con redes publicitarias lo que se guarda en su navegador.",
+        text: "No usamos Google Analytics ni otra analítica de terceros, píxeles de redes sociales ni herramientas de grabación de sesiones o de seguimiento entre sitios. La única excepción es la etiqueta de conversión de Google Ads de la página de confirmación de envío, que solo se carga si usted acepta la categoría de medición (ver la sección 5). No vendemos lo que se guarda en su navegador.",
       },
       { type: "heading", level: 2, text: "2. Qué guardamos, para qué y cuánto tiempo" },
       {
@@ -364,6 +364,10 @@ export const legalDocuments: LegalDocument[] = [
       {
         type: "paragraph",
         text: `${THIRD_PARTY_STORAGE_NOTE.purpose} Consulte la política de privacidad de ${THIRD_PARTY_STORAGE_NOTE.provider} para conocer su detalle.`,
+      },
+      {
+        type: "paragraph",
+        text: `${GOOGLE_ADS_STORAGE_NOTE.purpose} Consulte la política de privacidad de ${GOOGLE_ADS_STORAGE_NOTE.provider} para conocer su detalle.`,
       },
       {
         type: "paragraph",

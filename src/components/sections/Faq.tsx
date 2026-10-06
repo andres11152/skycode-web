@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowRight } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { FaqAccordionItem } from "@/components/faq/FaqAccordionItem";
