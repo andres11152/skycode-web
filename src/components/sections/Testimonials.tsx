@@ -26,13 +26,13 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
     >
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
-          <SectionEyebrow onDark className="reveal-blur mb-4">
+          <SectionEyebrow onDark className="reveal-up mb-4">
             {testimonialsSection.badge}
           </SectionEyebrow>
           <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance text-background sm:text-5xl">
             <RevealText text={testimonialsSection.title} />
           </h2>
-          <p style={{ "--i": 3 } as CSSProperties} className="reveal-blur mt-5 text-lg leading-relaxed text-background/80">{testimonialsSection.description}</p>
+          <p style={{ "--i": 3 } as CSSProperties} className="reveal-up mt-5 text-lg leading-relaxed text-background/80">{testimonialsSection.description}</p>
         </div>
 
         <ul className="mt-16 grid gap-x-12 gap-y-14 md:grid-cols-2">

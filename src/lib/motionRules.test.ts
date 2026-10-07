@@ -94,6 +94,17 @@ describe("reglas de movimiento: CSS global", () => {
     expect(hits).toEqual([]);
   });
 
+  it("ningún @keyframes ligado al scroll usa `filter` (no se compone: repinta en el hilo principal)", () => {
+    const hits: string[] = [];
+    for (const { file, css } of publicCss) {
+      for (const match of css.matchAll(/@keyframes\s+([\w-]+)\s*\{((?:[^{}]*\{[^{}]*\})*[^{}]*)\}/g)) {
+        // `via-blur` es del par `.morph` de las transiciones de vista (una sola vez, no por cuadro de scroll).
+        if (match[1] !== "via-blur" && /(^|[;{\s])(backdrop-)?filter\s*:/.test(match[2])) hits.push(`${file}: @keyframes ${match[1]}`);
+      }
+    }
+    expect(hits).toEqual([]);
+  });
+
   it("toda animación `infinite` tiene su anulación bajo prefers-reduced-motion", () => {
     const hits: string[] = [];
     for (const { file, css } of publicCss) {

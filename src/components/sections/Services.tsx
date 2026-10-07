@@ -27,11 +27,11 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
       <div className="mx-auto max-w-6xl">
         <div className="mb-14 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
-            <SectionEyebrow className="reveal-blur mb-4">{servicesSection.badge}</SectionEyebrow>
+            <SectionEyebrow className="reveal-up mb-4">{servicesSection.badge}</SectionEyebrow>
             <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl">
               <RevealText text={servicesSection.title} />
             </h2>
-            <p style={{ "--i": 3 } as CSSProperties} className="reveal-blur mt-5 text-lg leading-relaxed text-foreground/80">{servicesSection.description}</p>
+            <p style={{ "--i": 3 } as CSSProperties} className="reveal-up mt-5 text-lg leading-relaxed text-foreground/80">{servicesSection.description}</p>
           </div>
           <div className="shrink-0">
             <Button href={`${prefix}/servicios`} variant="secondary" size="md">

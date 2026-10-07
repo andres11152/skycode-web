@@ -91,7 +91,7 @@ function Band({
 
 function Paragraph({ text, className, index = 0 }: { text: string; className?: string; index?: number }) {
   return (
-    <p className={cn(BODY, "reveal-blur text-foreground/80", className)} style={stagger(index)}>
+    <p className={cn(BODY, "reveal-up text-foreground/80", className)} style={stagger(index)}>
       <InlineText text={text} />
     </p>
   );
@@ -374,7 +374,7 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
       <Band id="testimonios" tone="dark" eyebrow={content.testimonials.eyebrow} heading={content.testimonials.heading}>
         <ul className="grid gap-4 md:grid-cols-2">
           {testimonials.map((item, index) => (
-            <li key={`${item.company}-${item.name}`} className="reveal-blur" style={stagger(index)}>
+            <li key={`${item.company}-${item.name}`} className="reveal-up" style={stagger(index)}>
               <figure className="flex h-full flex-col justify-between gap-8 rounded-xl bg-background p-8 text-foreground">
                 <blockquote className="text-base leading-relaxed text-foreground/80 sm:text-lg sm:leading-relaxed">
                   “{item.quote}”
@@ -535,7 +535,7 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
       {/* ───────────── FAQ (claro) ───────────── */}
       {faq.items.length > 0 && (
         <Band id={faq.id} heading={faq.heading}>
-          <div className="reveal-blur max-w-3xl border-t border-foreground/10">
+          <div className="reveal-up max-w-3xl border-t border-foreground/10">
             {faq.items.map((item) => (
               <FaqAccordionItem key={item.id} item={item} />
             ))}
@@ -559,7 +559,7 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
             >
               <RevealWords text={cta.heading} />
             </h2>
-            <p className="reveal-blur mt-4 text-lg leading-relaxed text-background/80">{cta.body}</p>
+            <p className="reveal-up mt-4 text-lg leading-relaxed text-background/80">{cta.body}</p>
           </div>
           <div className="reveal-right flex flex-wrap items-center gap-3">
             <Button href={CONTACT_HREF} variant="accent" size="lg" className="focus-visible:ring-offset-foreground">

@@ -18,14 +18,14 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
     <section id="proceso" aria-labelledby="process-title" className="scroll-mt-24 px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
-          <SectionEyebrow className="reveal-blur mb-4">{processData.badge}</SectionEyebrow>
+          <SectionEyebrow className="reveal-up mb-4">{processData.badge}</SectionEyebrow>
           <h2
             id="process-title"
             className="text-4xl font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl"
           >
             <RevealText text={processData.title} />
           </h2>
-          <p style={{ "--i": 3 } as CSSProperties} className="reveal-blur mt-5 text-lg leading-relaxed text-foreground/80">{processData.description}</p>
+          <p style={{ "--i": 3 } as CSSProperties} className="reveal-up mt-5 text-lg leading-relaxed text-foreground/80">{processData.description}</p>
         </div>
 
         <div className="relative mt-16">

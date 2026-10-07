@@ -102,7 +102,7 @@ export function Contact({
             </h2>
           ) : (
             <>
-              <SectionEyebrow className="reveal-blur mb-3">{contactData.badge}</SectionEyebrow>
+              <SectionEyebrow className="reveal-up mb-3">{contactData.badge}</SectionEyebrow>
               <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
                 <RevealText text={contactData.title} />
               </h2>

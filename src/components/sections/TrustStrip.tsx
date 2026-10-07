@@ -33,7 +33,7 @@ export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
           <li
             key={item.label}
             style={{ "--i": index } as CSSProperties}
-            className="reveal-blur flex items-baseline gap-4 py-5 text-sm leading-snug text-background/80 sm:py-6 sm:last:odd:col-span-2 lg:px-6 lg:first:pl-0 lg:last:pr-0 lg:last:odd:col-span-1"
+            className="reveal-up flex items-baseline gap-4 py-5 text-sm leading-snug text-background/80 sm:py-6 sm:last:odd:col-span-2 lg:px-6 lg:first:pl-0 lg:last:pr-0 lg:last:odd:col-span-1"
           >
             <span className="font-mono text-xs text-background/60">{String(index + 1).padStart(2, "0")}</span>
             <span>{item.label}</span>

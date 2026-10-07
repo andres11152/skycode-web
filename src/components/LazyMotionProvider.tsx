@@ -2,7 +2,31 @@
 
 import { LazyMotion, MotionConfig } from "framer-motion";
 
-const loadFeatures = () => import("@/lib/framerMotionFeatures").then((mod) => mod.default);
+/**
+ * Las features (`domMax`, ~30 KB gzip) se piden cuando el navegador está ocioso, no en el primer render
+ * que usa `m`: compiten con la hidratación y con el primer pintado, y ninguna animación de Motion es
+ * necesaria antes (los revelados del sitio son CSS). Mientras no llegan, los `m.*` se ven estáticos en
+ * su estado inicial, que ya es el definitivo.
+ */
+const whenIdle = () =>
+  new Promise<void>((resolve) => {
+    if (typeof window === "undefined") return resolve();
+    const events = ["pointerdown", "keydown", "touchstart", "scroll"] as const;
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      events.forEach((name) => window.removeEventListener(name, finish));
+      resolve();
+    };
+    // La primera interacción las pide de inmediato: un modal o el menú no pueden esperar al reposo.
+    events.forEach((name) => window.addEventListener(name, finish, { passive: true, once: true }));
+    if ("requestIdleCallback" in window) window.requestIdleCallback(finish, { timeout: 3000 });
+    else globalThis.setTimeout(finish, 1500);
+  });
+
+const loadFeatures = () =>
+  whenIdle().then(() => import("@/lib/framerMotionFeatures").then((mod) => mod.default));
 
 /**
  * Envuelve todo el árbol una sola vez en el layout raíz. Cada componente que

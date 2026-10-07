@@ -52,11 +52,11 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
     <section id="por-que" aria-label={data.sectionAria} className="scroll-mt-24 px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
-          <SectionEyebrow className="reveal-blur mb-4">{data.badge}</SectionEyebrow>
+          <SectionEyebrow className="reveal-up mb-4">{data.badge}</SectionEyebrow>
           <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl">
             <RevealText text={data.title} />
           </h2>
-          <p style={{ "--i": 3 } as CSSProperties} className="reveal-blur mt-5 text-lg leading-relaxed text-foreground/80">{data.description}</p>
+          <p style={{ "--i": 3 } as CSSProperties} className="reveal-up mt-5 text-lg leading-relaxed text-foreground/80">{data.description}</p>
         </div>
 
         <ol className="mt-16 grid gap-10 sm:grid-cols-3 sm:gap-8">

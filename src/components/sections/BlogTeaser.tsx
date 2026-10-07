@@ -17,7 +17,7 @@ export function BlogTeaser({ locale = defaultLocale, posts }: { locale?: Locale;
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
-            <SectionEyebrow className="reveal-blur mb-3">{blogTeaserData.badge}</SectionEyebrow>
+            <SectionEyebrow className="reveal-up mb-3">{blogTeaserData.badge}</SectionEyebrow>
             <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
               <RevealText text={blogTeaserData.title} />
             </h2>

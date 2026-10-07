@@ -180,7 +180,7 @@ export function Portfolio({
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
-            <SectionEyebrow className="reveal-blur mb-3">{sectionCopy.badge}</SectionEyebrow>
+            <SectionEyebrow className="reveal-up mb-3">{sectionCopy.badge}</SectionEyebrow>
             <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl"><RevealText text={sectionCopy.title} /></h2>
             <p className="mt-3 text-base text-foreground/80 sm:text-lg">{sectionCopy.description}</p>
           </div>

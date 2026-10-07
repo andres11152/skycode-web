@@ -21,7 +21,7 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
-            <SectionEyebrow className="reveal-blur mb-3">{faqData.badge}</SectionEyebrow>
+            <SectionEyebrow className="reveal-up mb-3">{faqData.badge}</SectionEyebrow>
             <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl"><RevealText text={faqData.title} /></h2>
             <p className="mt-3 text-foreground/80">{faqData.description}</p>
           </div>
