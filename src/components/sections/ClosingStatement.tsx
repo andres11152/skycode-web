@@ -60,7 +60,7 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
       >
         <div
           aria-hidden="true"
-          className="absolute left-1/2 top-1/2 -z-10 h-[480px] w-[820px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/[0.16] blur-[130px]"
+          className="absolute left-1/2 top-1/2 -z-10 h-[740px] w-[1080px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--accent)_15%,transparent),color-mix(in_srgb,var(--accent)_6%,transparent)_55%,transparent)]"
         />
 
         <div className="mx-auto flex w-full max-w-4xl flex-col items-start gap-8">

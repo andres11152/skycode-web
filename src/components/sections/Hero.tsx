@@ -35,9 +35,12 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
         aria-hidden="true"
         className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(10,10,10,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(10,10,10,0.05)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_70%_60%_at_65%_35%,black,transparent)]"
       />
+      {/* Resplandor de marca con `radial-gradient`, no con `blur-[110px]`: un desenfoque de 110 px sobre un
+          bloque de 520x420 se rasteriza en CPU en los dispositivos lentos y retrasaba el primer pintado del
+          titular. Misma mancha (caja ampliada por el radio del desenfoque), cero filtros. */}
       <div
         aria-hidden="true"
-        className="parallax absolute top-0 right-0 -z-10 h-[420px] w-[520px] rounded-full bg-accent/[0.10] blur-[110px]"
+        className="parallax absolute -top-[110px] -right-[110px] -z-10 h-[640px] w-[740px] bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--accent)_9%,transparent),color-mix(in_srgb,var(--accent)_4%,transparent)_55%,transparent)]"
       />
       <div className="relative mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-10 xl:gap-16">
         {/* min-w-0 en ambas columnas: un ítem de grid tiene `min-width: auto` y, si algo adentro no
