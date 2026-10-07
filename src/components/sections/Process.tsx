@@ -15,7 +15,7 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
   const processData = getProcessContent(locale);
 
   return (
-    <section id="proceso" aria-labelledby="process-title" className="scroll-mt-24 px-6 py-24 sm:py-32">
+    <section id="proceso" aria-labelledby="process-title" className="cv-auto [--cv-h:1390px] lg:[--cv-h:840px] scroll-mt-24 px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
           <SectionEyebrow className="reveal-up mb-4">{processData.badge}</SectionEyebrow>

@@ -49,7 +49,7 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
   const prefix = homePath === "/" ? "" : homePath;
 
   return (
-    <section id="por-que" aria-label={data.sectionAria} className="scroll-mt-24 px-6 py-24 sm:py-32">
+    <section id="por-que" aria-label={data.sectionAria} className="cv-auto [--cv-h:1750px] lg:[--cv-h:1080px] scroll-mt-24 px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
           <SectionEyebrow className="reveal-up mb-4">{data.badge}</SectionEyebrow>

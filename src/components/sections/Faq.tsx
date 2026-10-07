@@ -12,7 +12,7 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
   const faqHref = faqPath(locale);
 
   return (
-    <section id="faq" className="scroll-mt-24 px-6 py-24 sm:py-32">
+    <section id="faq" className="cv-auto [--cv-h:1030px] lg:[--cv-h:970px] scroll-mt-24 px-6 py-24 sm:py-32">
       {/* max-w-6xl: mismo ancho de contenedor que el resto de secciones. El
           acordeón en sí se queda en `max-w-3xl` (las preguntas no deben
           estirarse a todo el ancho) pero centrado dentro de ese contenedor

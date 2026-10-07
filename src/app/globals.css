@@ -649,3 +649,15 @@
     translate: 0 -3px;
   }
 }
+
+/*
+ * Secciones bajo el primer pliegue de la home: `content-visibility: auto` evita calcular estilo, layout y
+ * pintura de lo que está lejos del viewport (en la portada el trabajo de renderizado inicial bajó ~45 %
+ * a 4x de CPU). `contain-intrinsic-size: auto <alto>` da un alto estimado (`--cv-h`, medido por
+ * breakpoint) hasta que se renderiza y desde entonces recuerda el real. No se usa en el hero, la franja
+ * oscura, el cierre (`sticky`) ni el formulario: ahí el alto exacto importa o ya van diferidos.
+ */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--cv-h, 900px);
+}

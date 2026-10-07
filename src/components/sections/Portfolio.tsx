@@ -175,7 +175,7 @@ export function Portfolio({
     <section
       id="portfolio"
       aria-label={uiData.portfolioSectionAria}
-      className="scroll-mt-24 px-6 py-24 sm:py-32"
+      className="cv-auto [--cv-h:2400px] lg:[--cv-h:1800px] scroll-mt-24 px-6 py-24 sm:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">

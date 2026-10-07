@@ -28,7 +28,7 @@ export function ProjectEstimatorTeaser({ locale = defaultLocale }: { locale?: Lo
     <section
       id="cotizador"
       aria-label={content.sectionAria}
-      className="scroll-mt-24 border-y border-foreground/10 bg-foreground/[0.03] px-6 py-24 sm:py-32"
+      className="cv-auto [--cv-h:1045px] lg:[--cv-h:740px] scroll-mt-24 border-y border-foreground/10 bg-foreground/[0.03] px-6 py-24 sm:py-32"
     >
       {/* `grid-cols-[minmax(0,1fr)]` en móvil: sin columna explícita, el contenido ancho (cifra de precio) estira la pista y desborda la página. */}
       <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:items-center lg:gap-20">

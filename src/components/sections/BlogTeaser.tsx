@@ -13,7 +13,7 @@ export function BlogTeaser({ locale = defaultLocale, posts }: { locale?: Locale;
   const blogTeaserData = getBlogTeaserContent(locale);
 
   return (
-    <section id="blog" aria-label={blogTeaserData.sectionAria} className="scroll-mt-24 px-6 py-24 sm:py-32">
+    <section id="blog" aria-label={blogTeaserData.sectionAria} className="cv-auto [--cv-h:1300px] lg:[--cv-h:700px] scroll-mt-24 px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
