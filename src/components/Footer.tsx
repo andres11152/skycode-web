@@ -166,28 +166,6 @@ export function Footer() {
               </ul>
             </nav>
 
-            {/* Enlaces <a href> reales a la misma página en los otros idiomas: el selector del Navbar solo los pinta al abrirse, así que un rastreador no los veía. */}
-            <nav aria-label={footerData.languagesLabel}>
-              <ColumnHeading>{footerData.languagesLabel}</ColumnHeading>
-              <ul className="mt-4 flex flex-col gap-3">
-                {locales
-                  .filter((target) => target !== locale)
-                  .map((target) => (
-                    <li key={target}>
-                      <Link
-                        prefetch={false}
-                        href={switchLocalePath(pathname, target)}
-                        hrefLang={target}
-                        lang={target}
-                        className={linkClasses}
-                      >
-                        {localeNames[target]}
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
-            </nav>
-
             <nav aria-label={footerData.servicesHeading}>
               <ColumnHeading>{footerData.servicesHeading}</ColumnHeading>
               <ul className="mt-4 flex flex-col gap-3">
@@ -229,11 +207,41 @@ export function Footer() {
             </nav>
           </div>
 
-          <div className="mx-auto mt-16 flex max-w-5xl flex-col gap-4 border-t border-foreground/10 pt-6 text-xs text-foreground/60 sm:flex-row sm:items-center sm:justify-between">
-            <p>
-              {siteName} © {FOUNDED_YEAR}–{currentYear}. {footerData.rightsReserved}
-            </p>
-            <ul className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="mx-auto mt-16 flex max-w-5xl flex-col gap-5 border-t border-foreground/10 pt-6 text-xs text-foreground/60">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <p>
+                {siteName} © {FOUNDED_YEAR}–{currentYear}. {footerData.rightsReserved}
+              </p>
+              {/* Enlaces <a href> reales a esta misma página en los otros idiomas: el selector del Navbar solo los pinta al abrirse y un rastreador no los veía. */}
+              <nav aria-label={footerData.languagesLabel}>
+                <ul className="flex w-fit items-center gap-1 rounded-full border border-foreground/10 p-1">
+                  {locales.map((target) => (
+                    <li key={target}>
+                      {target === locale ? (
+                        <span
+                          aria-current="true"
+                          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full bg-foreground px-3 font-mono text-[11px] font-semibold tracking-wide text-background uppercase sm:min-h-8 sm:min-w-9"
+                        >
+                          {target}
+                        </span>
+                      ) : (
+                        <Link
+                          prefetch={false}
+                          href={switchLocalePath(pathname, target)}
+                          hrefLang={target}
+                          lang={target}
+                          aria-label={localeNames[target]}
+                          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 font-mono text-[11px] font-semibold tracking-wide text-foreground/70 uppercase outline-none transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:min-h-8 sm:min-w-9"
+                        >
+                          {target}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+            <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-foreground/10 pt-5">
               {legalLinks.map((link) => (
                 <li key={link.href}>
                   <Link prefetch={false} href={link.href} className={cn(linkClasses, "inline-flex items-center gap-1.5")}>
