@@ -10,7 +10,6 @@ import { Phone } from "@phosphor-icons/react";
 import { MailIcon } from "@/components/icons/UiIcons";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { Button } from "@/components/ui/Button";
-import { getServicesContent } from "@/content/services";
 import { useRecentArticles } from "@/lib/useRecentArticles";
 import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
 import { faqPath } from "@/lib/faqPaths";
@@ -21,7 +20,7 @@ import { cn } from "@/lib/utils";
 import { getFooterContent } from "@/content/footer";
 import { getNavContent } from "@/content/nav";
 import { useLocale } from "@/components/LocaleProvider";
-import { localeHomePath, localeNames, locales, t } from "@/lib/i18n";
+import { localeHomePath, localeNames, locales, t, type Locale } from "@/lib/i18n";
 import { switchLocalePath } from "@/lib/localePaths";
 import { EsBadge } from "@/components/ui/EsBadge";
 
@@ -99,13 +98,16 @@ function ColumnHeading({ children, esOnly }: { children: string; esOnly?: boolea
   );
 }
 
-export function Footer() {
+/** Enlaces a los servicios por idioma, calculados en el servidor (layout): el Footer viaja en todas las páginas y no debe importar `content/services` (los 9 servicios con descripciones en 3 idiomas, ~19 KB gzip de JS). */
+export type FooterServiceLinks = Record<Locale, { slug: string; title: string }[]>;
+
+export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
   const currentYear = new Date().getFullYear();
   const locale = useLocale();
   const pathname = usePathname();
   const footerData = getFooterContent(locale);
   const navData = getNavContent(locale);
-  const { services } = getServicesContent(locale);
+  const services = serviceLinks[locale];
   const homePath = localeHomePath(locale);
   const prefix = homePath === "/" ? "" : homePath;
   // Ya vienen del más reciente al más antiguo (GET /api/articles/recent),

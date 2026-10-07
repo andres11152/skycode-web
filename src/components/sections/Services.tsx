@@ -16,7 +16,8 @@ import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
  * cargan diferidas y solo en escritorio.
  */
 export function Services({ locale = defaultLocale }: { locale?: Locale }) {
-  const { servicesSection } = getServicesContent(locale);
+  const { servicesSection, services } = getServicesContent(locale);
+  const explorerServices = services.map(({ slug, title, description, features }) => ({ slug, title, description, features }));
   const { index } = getServicePageContent(locale);
   const homePath = localeHomePath(locale);
   const prefix = homePath === "/" ? "" : homePath;
@@ -41,6 +42,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
 
         <ServicesExplorer
           locale={locale}
+          services={explorerServices}
           headingLevel="h3"
           copy={{ listAria: index.listAria, previewLabel: index.previewLabel, openService: index.openService }}
         />

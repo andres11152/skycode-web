@@ -4,7 +4,7 @@ import { useLayoutEffect } from "react";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { Footer, type FooterServiceLinks } from "@/components/Footer";
 import { SkipLink } from "@/components/SkipLink";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { AttributionCapture } from "@/components/AttributionCapture";
@@ -23,7 +23,7 @@ const CookieBanner = dynamic(
 );
 
 
-export function ConditionalLayout({ children }: { children: React.ReactNode }) {
+export function ConditionalLayout({ children, serviceLinks }: { children: React.ReactNode; serviceLinks: FooterServiceLinks }) {
   const pathname = usePathname();
   const locale = useLocale();
   // `startsWith`, no igualdad exacta: /dashboard, /portal, /invitar y
@@ -103,7 +103,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
       <NavigationProgress />
       <Navbar />
       <PageTransition>{children}</PageTransition>
-      <Footer />
+      <Footer serviceLinks={serviceLinks} />
       <HtmlLangSync />
       <WhatsAppButton locale={locale} />
       <CookieBanner />

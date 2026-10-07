@@ -143,6 +143,7 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
         <div className="mx-auto max-w-6xl">
           <ServicesExplorer
             locale={locale}
+            services={services.map(({ slug, title, description, features }) => ({ slug, title, description, features }))}
             copy={{ listAria: copy.listAria, previewLabel: copy.previewLabel, openService: copy.openService }}
           />
         </div>

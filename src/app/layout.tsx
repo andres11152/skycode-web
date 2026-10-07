@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { LazyMotionProvider } from "@/components/LazyMotionProvider";
 import { LocaleProvider } from "@/components/LocaleProvider";
-import { services } from "@/content/services";
+import { getServicesContent, services } from "@/content/services";
+import { locales, type Locale } from "@/lib/i18n";
+import type { FooterServiceLinks } from "@/components/Footer";
 import {
   contactEmail,
   contactPhone,
@@ -20,6 +22,11 @@ import { bogotaGeo, organizationSameAs } from "@/lib/organizationProfiles";
 import "./globals.css";
 
 const { homeTitle } = getSiteText("es");
+
+// Títulos de servicio por idioma para el Footer (cliente): se calculan aquí, en el servidor.
+const SERVICE_LINKS = Object.fromEntries(
+  locales.map((locale: Locale) => [locale, getServicesContent(locale).services.map(({ slug, title }) => ({ slug, title }))])
+) as FooterServiceLinks;
 
 // Una sola familia (Geist) para titulares y texto, y su monoespaciada para etiquetas,
 // numeración y código. Las dos tipografías anteriores (Space Grotesk + Plus Jakarta Sans)
@@ -246,7 +253,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <LazyMotionProvider>
           <LocaleProvider>
-            <ConditionalLayout>{children}</ConditionalLayout>
+            <ConditionalLayout serviceLinks={SERVICE_LINKS}>{children}</ConditionalLayout>
           </LocaleProvider>
         </LazyMotionProvider>
       </body>

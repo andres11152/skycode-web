@@ -1,10 +1,40 @@
 "use client";
 
-import { useState } from "react";
-import NumberFlow from "@number-flow/react";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { m as motion } from "framer-motion";
 import { SPRING_SNAPPY } from "@/lib/animations";
 import { cn } from "@/lib/utils";
+
+// NumberFlow (~11 KB gzip) solo anima el cambio de cifra: hasta que el navegador está ocioso se muestra el
+// mismo texto, formateado con `Intl`, y recién entonces se descarga la librería. Antes viajaba en el JS
+// inicial de la portada aunque esta sección esté bajo el primer pliegue.
+const NumberFlow = dynamic(() => import("@number-flow/react"), { ssr: false });
+
+function AnimatedNumber({
+  value,
+  animated,
+  locales,
+  format,
+  prefix = "",
+  suffix = "",
+}: {
+  value: number;
+  animated: boolean;
+  locales?: string;
+  format?: { maximumFractionDigits?: number };
+  prefix?: string;
+  suffix?: string;
+}) {
+  if (animated) return <NumberFlow value={value} locales={locales} format={format} prefix={prefix} suffix={suffix} />;
+  return (
+    <>
+      {prefix}
+      {new Intl.NumberFormat(locales, format).format(value)}
+      {suffix}
+    </>
+  );
+}
 
 export interface EstimatorPreviewType {
   id: string;
@@ -33,6 +63,17 @@ export function EstimatorPreview({
   copy: { groupLabel: string; fromLabel: string; weeksSuffix: string };
 }) {
   const [selectedId, setSelectedId] = useState(types[0]?.id ?? "");
+  const [animated, setAnimated] = useState(false);
+
+  useEffect(() => {
+    const enable = () => setAnimated(true);
+    if ("requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(enable, { timeout: 4000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = globalThis.setTimeout(enable, 2500);
+    return () => globalThis.clearTimeout(id);
+  }, []);
   const selected = types.find((type) => type.id === selectedId) ?? types[0];
   if (!selected) return null;
 
@@ -105,11 +146,11 @@ export function EstimatorPreview({
         <div>
           <p className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-background/70">{copy.fromLabel}</p>
           <p aria-live="polite" className="mt-2 text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">
-            <NumberFlow value={selected.price} locales={numberLocale} format={format} prefix="$" suffix={` ${currency}`} />
+            <AnimatedNumber animated={animated} value={selected.price} locales={numberLocale} format={format} prefix="$" suffix={` ${currency}`} />
           </p>
         </div>
         <p className="pb-1 font-mono text-sm whitespace-nowrap text-background/80 sm:text-right">
-          <NumberFlow value={selected.weeks} /> {copy.weeksSuffix}
+          <AnimatedNumber animated={animated} value={selected.weeks} /> {copy.weeksSuffix}
         </p>
       </div>
     </div>

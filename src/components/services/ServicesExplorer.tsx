@@ -7,7 +7,6 @@ import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, CheckCircle } from "@phosphor-icons/react";
 import { ServiceDemoSkeleton } from "@/components/services/ServiceDemoSkeleton";
 import { MorphTransition } from "@/components/ui/CoverTransition";
-import { getServicesContent } from "@/content/services";
 import { DURATION, EASE_OUT, SPRING_SNAPPY } from "@/lib/animations";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import { localeHomePath, type Locale } from "@/lib/i18n";
@@ -33,12 +32,22 @@ const ServiceDemo = dynamic(() => import("@/components/services/ServiceDemo"), {
  * `content/servicePage`: ese JSON trae la FAQ del índice en 3 idiomas, y
  * importarlo aquí lo mandaría entero al navegador.
  */
+export interface ExplorerService {
+  slug: string;
+  title: string;
+  description: string;
+  features: string[];
+}
+
 export function ServicesExplorer({
   locale,
+  services,
   copy,
   headingLevel = "h2",
 }: {
   locale: Locale;
+  /** Solo el idioma activo, desde el servidor: importar `content/services` aquí mandaba los 9 servicios en 3 idiomas (con sus descripciones y listas) al JS de la portada. */
+  services: ExplorerService[];
   copy: { listAria: string; previewLabel: string; openService: string };
   /** Nivel del título de cada fila: `h3` cuando el índice vive bajo el `h2` de otra sección (home). */
   headingLevel?: "h2" | "h3";
@@ -46,7 +55,6 @@ export function ServicesExplorer({
   const Heading = headingLevel;
   const reduced = Boolean(useReducedMotion());
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const { services } = getServicesContent(locale);
   const homePath = localeHomePath(locale);
   const prefix = homePath === "/" ? "" : homePath;
 
