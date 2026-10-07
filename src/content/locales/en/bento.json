@@ -1,8 +1,19 @@
 {
   "codeConsole": {
-    "logsInitial": ["[BUILD] Compiling TypeScript...", "[TEST] Running test suite...", "[READY] Ready to deploy"],
-    "logsRunning": ["[BUILD] Compiling services...", "[TEST] Running automated tests..."],
-    "logsSuccessAppend": ["[SUCCESS] Build successful", "[DEPLOY] Deployed to staging environment", "STATUS: 200 OK"],
+    "logsInitial": [
+      "[BUILD] Compiling TypeScript...",
+      "[TEST] Running test suite...",
+      "[READY] Ready to deploy"
+    ],
+    "logsRunning": [
+      "[BUILD] Compiling services...",
+      "[TEST] Running automated tests..."
+    ],
+    "logsSuccessAppend": [
+      "[SUCCESS] Build successful",
+      "[DEPLOY] Deployed to staging environment",
+      "STATUS: 200 OK"
+    ],
     "codeComment": "// Validated on every request, no exceptions",
     "running": "Running...",
     "run": "Run"
@@ -50,5 +61,22 @@
     "initialResponse": "Agent: \"Automated workflow.\"",
     "runningResponse": "LLM agent processing the prompt...",
     "finalResponse": "Agent: response generated successfully."
+  },
+  "performance": {
+    "caption": "Measured on the production build of skycode.agency",
+    "items": [
+      {
+        "label": "Home page weight",
+        "value": "2.75 MB → 390 KB"
+      },
+      {
+        "label": "JS per page (gzip)",
+        "value": "≈ 250–300 KB"
+      },
+      {
+        "label": "Logo at its real size",
+        "value": "−98% weight"
+      }
+    ]
   }
 }

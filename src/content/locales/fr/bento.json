@@ -1,8 +1,19 @@
 {
   "codeConsole": {
-    "logsInitial": ["[BUILD] Compilation de TypeScript...", "[TEST] Exécution de la suite de tests...", "[READY] Prêt à déployer"],
-    "logsRunning": ["[BUILD] Compilation des services...", "[TEST] Exécution des tests automatisés..."],
-    "logsSuccessAppend": ["[SUCCESS] Compilation réussie", "[DEPLOY] Déployé sur l'environnement de staging", "STATUS: 200 OK"],
+    "logsInitial": [
+      "[BUILD] Compilation de TypeScript...",
+      "[TEST] Exécution de la suite de tests...",
+      "[READY] Prêt à déployer"
+    ],
+    "logsRunning": [
+      "[BUILD] Compilation des services...",
+      "[TEST] Exécution des tests automatisés..."
+    ],
+    "logsSuccessAppend": [
+      "[SUCCESS] Compilation réussie",
+      "[DEPLOY] Déployé sur l'environnement de staging",
+      "STATUS: 200 OK"
+    ],
     "codeComment": "// Validé à chaque requête, sans exception",
     "running": "En cours...",
     "run": "Exécuter"
@@ -50,5 +61,22 @@
     "initialResponse": "Agent : \"Flux de travail automatisé.\"",
     "runningResponse": "L'agent LLM traite le prompt...",
     "finalResponse": "Agent : réponse générée avec succès."
+  },
+  "performance": {
+    "caption": "Mesuré sur la version de production de skycode.agency",
+    "items": [
+      {
+        "label": "Poids de la page d'accueil",
+        "value": "2,75 Mo → 390 Ko"
+      },
+      {
+        "label": "JS par page (gzip)",
+        "value": "≈ 250–300 Ko"
+      },
+      {
+        "label": "Logo à sa taille réelle",
+        "value": "−98 % de poids"
+      }
+    ]
   }
 }

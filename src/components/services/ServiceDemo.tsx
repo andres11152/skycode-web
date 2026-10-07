@@ -28,7 +28,7 @@ export default function ServiceDemo({ slug, locale }: { slug: string; locale: Lo
     case "apis-integraciones":
       return <ApiInspectorWidget locale={locale} />;
     case "frontend-alto-rendimiento":
-      return <PerformanceMeterWidget />;
+      return <PerformanceMeterWidget locale={locale} />;
     case "ecommerce-tienda-online":
       return <EcommerceCheckoutWidget />;
     case "seguridad-cumplimiento":

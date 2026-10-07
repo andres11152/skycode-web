@@ -320,30 +320,24 @@ export function ApiInspectorWidget({ locale = defaultLocale }: WidgetProps) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  4. Interactive Performance Lighthouse Widget (Frontend Alto Rendimiento)   */
+/*  4. Performance Widget (Frontend Alto Rendimiento)                          */
 /* -------------------------------------------------------------------------- */
-// Cifras reales, medidas contra el build de producción de este mismo sitio
-// (ver "Rendimiento" en CLAUDE.md) — no se inventan, y si el sitio cambia hay
-// que re-auditar con Lighthouse y actualizar estos tres números.
-const LIGHTHOUSE_SCORES = [
-  { label: "Performance", score: 91 },
-  { label: "Accessibility", score: 100 },
-  { label: "SEO", score: 100 },
-];
-
-export function PerformanceMeterWidget() {
+// Cifras reales, medidas sobre el build de producción de este mismo sitio (ver
+// "Rendimiento" en CLAUDE.md). Sin puntajes de Lighthouse: varían por dispositivo
+// y condiciones, así que solo se muestran magnitudes verificables (peso, JS, imágenes).
+export function PerformanceMeterWidget({ locale = defaultLocale }: WidgetProps) {
+  const content = getBentoContent(locale).performance;
   return (
     <div className="w-full rounded-xl border border-foreground/10 bg-background/50 p-4 backdrop-blur-md">
-      <div className="flex items-center justify-around gap-2 text-center">
-        {LIGHTHOUSE_SCORES.map(({ label, score }) => (
-          <div key={label} className="flex flex-col items-center">
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-full border-2 border-accent bg-accent/10 text-accent-strong font-bold text-sm">
-              {score}
-            </div>
-            <span className="mt-1 text-[10px] font-semibold text-foreground/80">{label}</span>
+      <dl className="flex flex-col divide-y divide-foreground/10">
+        {content.items.map(({ label, value }) => (
+          <div key={label} className="flex items-baseline justify-between gap-3 py-2 first:pt-0">
+            <dt className="text-[11px] font-semibold text-foreground/80">{label}</dt>
+            <dd className="text-sm font-bold text-accent-strong">{value}</dd>
           </div>
         ))}
-      </div>
+      </dl>
+      <p className="mt-2 text-[11px] text-foreground/70">{content.caption}</p>
     </div>
   );
 }

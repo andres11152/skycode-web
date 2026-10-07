@@ -61,5 +61,22 @@
     "initialResponse": "Asistente: \"Listo para responder consultas de tus clientes.\"",
     "runningResponse": "Procesando respuesta en tiempo real...",
     "finalResponse": "Asistente: respuesta generada con base en los datos de tu empresa."
+  },
+  "performance": {
+    "caption": "Medido sobre la versión de producción de skycode.agency",
+    "items": [
+      {
+        "label": "Peso de la portada",
+        "value": "2,75 MB → 390 KB"
+      },
+      {
+        "label": "JS por página (gzip)",
+        "value": "≈ 250–300 KB"
+      },
+      {
+        "label": "Logo a su tamaño real",
+        "value": "−98 % de peso"
+      }
+    ]
   }
 }
