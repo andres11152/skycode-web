@@ -42,7 +42,7 @@
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "cobe": "^2.0.1",
-    "framer-motion": "^12.42.2",
+    "framer-motion": "^14.0.0",
     "geoip-country": "^5.0.202608050059",
     "jose": "^6.2.8",
     "lucide-react": "^1.25.0",
