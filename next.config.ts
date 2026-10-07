@@ -68,15 +68,11 @@ const nextConfig: NextConfig = {
     // (los límites reales los aplica cada ruta).
     proxyClientMaxBodySize: "25mb",
   },
-  // Casos retirados del portafolio: redirección permanente al índice del idioma
-  // para conservar el enlace y la autoridad que ya tenía (en vez de un 404).
-  async redirects() {
-    return [
-      { source: "/portafolio/moncyre", destination: "/portafolio", permanent: true },
-      { source: "/en/portfolio/moncyre", destination: "/en/portfolio", permanent: true },
-      { source: "/fr/portfolio/moncyre", destination: "/fr/portfolio", permanent: true },
-    ];
-  },
+  // La barra final se resuelve en `proxy.ts` (junto con las URLs heredadas de WordPress y los casos
+  // retirados, ver lib/legacyUrls.ts), no con la redirección interna de Next: esa va ANTES que las del
+  // usuario y convertía `/es/inicio/` en 308 + 301 (dos saltos). Con esto cada variante resuelve en uno.
+  // Sigue habiendo UNA sola forma canónica (sin barra): el proxy redirige `/x/` → `/x` con 308.
+  skipTrailingSlashRedirect: true,
   async headers() {
     return [
       { source: "/(.*)", headers: SECURITY_HEADERS },

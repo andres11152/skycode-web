@@ -117,6 +117,7 @@ export function Footer() {
     { label: footerData.homeLabel, href: homePath, esOnly: false },
     { label: footerData.servicesHeading, href: `${prefix}/servicios`, esOnly: false },
     { label: navData.portafolio, href: portfolioIndexPath(locale), esOnly: false },
+    { label: navData.cotizador, href: `${prefix}/cotizador`, esOnly: false },
     { label: navData.equipo, href: `${prefix}/equipo`, esOnly: false },
     { label: "Blog", href: blogIndexPath(locale), esOnly: false },
     { label: navData.faq, href: faqPath(locale), esOnly: false },

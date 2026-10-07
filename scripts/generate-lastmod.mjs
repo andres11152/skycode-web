@@ -15,12 +15,15 @@
 // las fechas saldrían iguales a la del despliegue: en ese caso el script NO
 // toca el archivo ya versionado.
 import { execFileSync } from "node:child_process";
-import { existsSync, statSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const outFile = join(root, "src/content/lastmod.json");
+// Hash del contenido de cada página de detalle de servicio y su fecha (ver más abajo). Se versiona junto a lastmod.json.
+const hashesFile = join(root, "src/content/lastmod-hashes.json");
 const LOCALES = ["es", "en", "fr"];
 
 function git(args) {
@@ -81,6 +84,35 @@ for (const [key, files] of Object.entries(pages)) {
   const date = latest(files);
   if (date) result[key] = date;
 }
+
+// ── Detalle de servicio: fecha POR PÁGINA, según el contenido real ──────────────────────────────
+// Los nueve detalles de un idioma salen de los mismos JSON (service-details, services, service-seo):
+// con la fecha del último commit de esos archivos, editar un servicio "actualizaba" los nueve. Aquí
+// cada página guarda el hash del contenido que de verdad la pinta —su bloque de service-details, su
+// ficha en services/service-seo, el copy compartido de la plantilla y la plantilla misma— y su fecha
+// solo avanza cuando ese hash cambia. Sin hash previo (primera vez) se usa la fecha de los archivos.
+const readJson = (rel) => JSON.parse(readFileSync(join(root, rel), "utf8"));
+const sha = (value) => createHash("sha256").update(typeof value === "string" ? value : JSON.stringify(value)).digest("hex").slice(0, 16);
+const previous = existsSync(hashesFile) ? JSON.parse(readFileSync(hashesFile, "utf8")) : {};
+const hashes = {};
+const templateHash = sha(readFileSync(join(root, "src/components/services/ServiceView.tsx"), "utf8"));
+for (const locale of LOCALES) {
+  const details = readJson(`src/content/locales/${locale}/service-details.json`);
+  const services = Object.fromEntries(readJson(`src/content/locales/${locale}/services.json`).items.map((item) => [item.slug, item]));
+  const seo = readJson(`src/content/locales/${locale}/service-seo.json`).items ?? {};
+  // El bloque `index` es de la página de índice, no del detalle: se excluye del copy compartido.
+  const sharedDetailCopy = Object.fromEntries(Object.entries(readJson(`src/content/locales/${locale}/service-page.json`)).filter(([key]) => key !== "index"));
+  const shared = sha([sharedDetailCopy, templateHash]);
+  for (const slug of Object.keys(details)) {
+    const key = `services-detail:${locale}:${slug}`;
+    const hash = sha([details[slug], services[slug] ?? null, seo[slug] ?? null, shared]);
+    const stored = previous[key];
+    const date = stored && stored.hash === hash ? stored.date : (result[`services-detail:${locale}`] ?? new Date().toISOString());
+    hashes[key] = { hash, date };
+    result[key] = date;
+  }
+}
+writeFileSync(hashesFile, JSON.stringify(hashes, null, 2) + "\n");
 
 writeFileSync(outFile, JSON.stringify(result, null, 2) + "\n");
 console.log(`seo:lastmod → ${Object.keys(result).length} páginas escritas en src/content/lastmod.json`);

@@ -9,7 +9,8 @@ import { SERVICE_PROJECT_SLUGS, services } from "@/content/services";
 import { parseInlineLinks, stripInlineLinks } from "@/lib/inlineLinks";
 import { blogPostPath } from "@/lib/blogPaths";
 import { locales, type Locale } from "@/lib/i18n";
-import { portfolioCasePath } from "@/lib/portfolioPaths";
+import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
+import { estimatorPath } from "@/lib/estimatorMetadata";
 import { servicePath } from "@/lib/serviceMetadata";
 
 // Enlazado interno contextual del blog. Los posts viven en Postgres, así que
@@ -34,7 +35,7 @@ const postsByLocale: Record<Locale, SeedPost[]> = {
 
 const data = loadRules() as {
   minInternalLinks: number;
-  posts: Record<string, { kind: "service" | "post" | "case"; slug: string; always: boolean }[]>;
+  posts: Record<string, { kind: "service" | "post" | "case" | "page"; slug: string; always: boolean }[]>;
 };
 
 // Este post no tiene reglas aquí: lo amplía `seo-legacy-migration-cluster.mjs`, que ya trae sus enlaces.
@@ -81,6 +82,8 @@ describe("rutas del script", () => {
       expect(pathFor("service", locale, "apis-integraciones")).toBe(servicePath(locale, "apis-integraciones"));
       expect(pathFor("post", locale, "buenas-practicas-apis-rest")).toBe(blogPostPath(locale, "buenas-practicas-apis-rest"));
       expect(pathFor("case", locale, "sentry-crm")).toBe(portfolioCasePath(locale, "sentry-crm"));
+      expect(pathFor("page", locale, "cotizador")).toBe(estimatorPath(locale));
+      expect(pathFor("page", locale, "portafolio")).toBe(portfolioIndexPath(locale));
     }
   });
 });
@@ -96,6 +99,8 @@ describe("reglas de enlazado interno", () => {
         } else if (rule.kind === "post") {
           expect(allBlogSlugs.has(rule.slug), `post inexistente ${rule.slug}`).toBe(true);
           expect(rule.slug).not.toBe(postSlug);
+        } else if (rule.kind === "page") {
+          expect(["cotizador", "portafolio"], `página desconocida ${rule.slug}`).toContain(rule.slug);
         } else {
           expect(caseSlugs.has(rule.slug), `caso inexistente ${rule.slug}`).toBe(true);
         }

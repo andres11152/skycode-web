@@ -76,8 +76,8 @@
         "The software is designed around the local context from day one. If you handle personal data of customers or employees, role-based permissions, change history and the flows to answer data-subject requests are built to line up with Colombia's Law 1581 (Habeas Data). Connections to what you already use in the country, such as payment gateways or accounting systems, are planned during the initial mapping. Payment is split 50/50, the repositories are in your name from the first commit, and you get a 90-day technical warranty. Every phase ends with something usable in production, not a status report, so your team starts saving hours from the first module."
       ],
       "facts": [
-        "Typical investment (COP): {{TODO: rango de precio en COP de software a la medida}}",
-        "Typical timeline: {{TODO: tiempo típico de software a la medida}}"
+        "Starting investment: from {priceUsd.software}",
+        "Typical time to first launch: about {weeks.software} weeks"
       ]
     }
   },
@@ -149,8 +149,8 @@
         "We serve companies across the country by video call and send installable test builds every week, so your field team can try them in real conditions. We publish to the App Store and Google Play under your own developer accounts. If the app stores personal data of customers or staff, we apply the principles of Colombia's Law 1581 (Habeas Data): consent, a defined purpose and role-restricted access. After launch you have a 90-day technical warranty. If the app must also talk to your internal systems, the integration is scoped in the same plan rather than added as an afterthought."
       ],
       "facts": [
-        "Typical investment (COP): {{TODO: rango de precio en COP de aplicaciones móviles}}",
-        "Typical timeline: {{TODO: tiempo típico de aplicaciones móviles}}"
+        "Starting investment: from {priceUsd.mobile}",
+        "Typical time to first launch: about {weeks.mobile} weeks"
       ]
     }
   },
@@ -231,15 +231,16 @@
         "Each integration is designed to fail safely: idempotency, retries with backoff, verified webhook signatures and a log of every event. Since these flows move customer data, we apply the principles of Colombia's Law 1581 (Habeas Data): only what is needed travels, with encrypted credentials and least-privilege permissions per integration. Credentials and access stay under your accounts, and you see progress in a test environment every week. If the system you want to connect has no API, we assess honestly how robust each alternative can be."
       ],
       "facts": [
-        "Typical investment (COP): {{TODO: rango de precio en COP de integraciones y APIs}}",
-        "Typical timeline: {{TODO: tiempo típico de integraciones y APIs}}"
+        "Starting investment: from {priceUsd.apis}",
+        "Typical time to first launch: about {weeks.apis} weeks"
       ]
     }
   },
   "frontend-alto-rendimiento": {
     "intro": [
       "Site speed isn't a technical detail: it affects how many visitors stay, how many convert and how Google ranks you. We build websites and web applications with Next.js and React, designed at the architecture level to load fast, be accessible and get indexed well.",
-      "We measure with real tools (Lighthouse and Core Web Vitals) against the production build, not a development environment that produces misleading numbers."
+      "We measure with real tools (Lighthouse and Core Web Vitals) against the production build, not a development environment that produces misleading numbers.",
+      "Before writing code we set a performance budget: how much JavaScript each page may ship, the maximum weight of images and the range the Core Web Vitals must land in. Every design and development decision is checked against that budget, so speed is a condition of the project and not a last-minute adjustment."
     ],
     "challenge": {
       "heading": "When your current site is costing you customers",
@@ -296,17 +297,37 @@
       {
         "question": "Will I be able to edit content without a developer?",
         "answer": "Yes. When the project calls for it, we integrate a content panel so your team can publish and edit without touching code."
+      },
+      {
+        "question": "What performance targets do you set?",
+        "answer": "At a minimum, that all three Core Web Vitals land in the \"good\" range Google defines: Largest Contentful Paint (LCP) at 2.5 seconds or less, Interaction to Next Paint (INP) at 200 milliseconds or less and Cumulative Layout Shift (CLS) below 0.1. They are measured on the published version under mobile conditions, not on a developer machine."
+      },
+      {
+        "question": "How much does a website or web application cost, and how long does it take?",
+        "answer": "As a reference, a website starts at {priceUsd.web} and is typically ready in about {weeks.web} weeks. The final price depends on scope, integrations and the modules you add: the [estimator](/en/cotizador) calculates an approximate value and timeline in minutes, and we give the definitive quote after talking with you, with no commitment."
+      },
+      {
+        "question": "How do you handle images, fonts and third-party scripts?",
+        "answer": "They are the three usual culprits behind a slow site. Images are generated in several sizes and modern formats and loaded only when they are about to be seen; fonts are served from your own site with controlled loading to avoid layout shifts; and third-party scripts (analytics, chat widgets, pixels) load deferred and, where it applies, only after the visitor consents."
+      },
+      {
+        "question": "Can you build and index a multilingual website?",
+        "answer": "Yes. Each language version needs its own URL, hreflang annotations and metadata, so that every version can rank in its own market and search engines understand how the versions relate. This site is itself published in Spanish, English and French, with each page adapted to its language rather than copied."
+      },
+      {
+        "question": "What happens to performance after launch?",
+        "answer": "A fast site can degrade with every change: one unoptimized image or a new script is enough. With Search Console you can follow the real data of your visitors in the Core Web Vitals report. After launch you get a 90-day technical warranty and, if you want ongoing support, you can optionally contract maintenance with a custom SLA."
       }
     ],
     "colombia": {
-      "heading": "High-performance web development in Colombia",
+      "heading": "Web development for international teams, built from Bogotá, Colombia",
       "paragraphs": [
-        "For a Colombian company, the website is often the first storefront for customers who arrive on a phone. From Bogotá we build websites and web applications with Next.js and React, designed from the architecture up to load fast, be accessible and rank well on Google. We measure with Lighthouse and Core Web Vitals on the published version, not on a development environment that gives misleading numbers.",
-        "We serve companies across the country. If you already have a site that ranks, the redesign is planned to keep the URLs that bring visitors today or to set up permanent redirects, and if you sell outside Colombia we build well-indexed language versions. Forms that capture visitor data carry a visible processing authorization and policy, as Colombia's Law 1581 (Habeas Data) requires. The code and repositories are in your name, and you receive progress updates every week. When the project calls for it, we add a content panel so your team can publish and edit without depending on a developer."
+        "If your team is in the United States or Europe, working with a studio in Bogotá is less distant than it sounds. Colombia stays on UTC−5 all year with no daylight saving shift, so our working day matches US Eastern Time in winter, runs one hour behind it in summer and overlaps with the European afternoon during Bogotá's morning. We work and write in English, Spanish and French, and you talk directly to the engineers who build your site.",
+        "We build high-performance websites and web applications with Next.js and React, measured with Lighthouse and Core Web Vitals on the published version. Multilingual sites ship with their own URLs, hreflang annotations and metadata per language, as this site does. Forms and analytics are built around visitor consent, in line with GDPR and CCPA expectations, although legal compliance still needs your counsel. Payment is split 50% at signing and 50% on delivery, and the code and repositories are in your name from day one."
       ],
       "facts": [
-        "Typical investment (COP): {{TODO: rango de precio en COP de webs y aplicaciones web de alto rendimiento}}",
-        "Typical timeline: {{TODO: tiempo típico de webs y aplicaciones web de alto rendimiento}}"
+        "Starting investment: from {priceUsd.web}",
+        "Typical time to first launch: about {weeks.web} weeks"
       ]
     }
   },
@@ -377,8 +398,8 @@
         "If you sell on a generic platform today, we migrate your catalog, customers and order history and set up redirects so your product pages keep their search ranking. Because a store holds buyers' personal data, registration and checkout are designed with processing authorization and flows to answer data-subject requests, in line with Colombia's Law 1581 (Habeas Data). Payment is split 50/50, the code is 100% yours and you get a 90-day technical warranty. After launch we help tune the funnel with real conversion data during the first weeks."
       ],
       "facts": [
-        "Typical investment (COP): {{TODO: rango de precio en COP de e-commerce y tiendas en línea}}",
-        "Typical timeline: {{TODO: tiempo típico de e-commerce y tiendas en línea}}"
+        "Starting investment: from {priceUsd.ecommerce}",
+        "Typical time to first launch: about {weeks.ecommerce} weeks"
       ]
     }
   },
@@ -722,8 +743,8 @@
         "The data that feeds a model often includes customer information, so we apply Colombia's Law 1581 (Habeas Data) from the design stage: only what is strictly necessary reaches the model, we use providers and settings that do not train on data received through the API, and we document what information leaves your infrastructure. At critical points a person reviews and approves what the AI proposes. You see results in a test environment every week and we reply within 24 business hours. If AI is not the best tool for the problem, we tell you before you invest."
       ],
       "facts": [
-        "Typical investment (COP): {{TODO: rango de precio en COP de inteligencia artificial aplicada}}",
-        "Typical timeline: {{TODO: tiempo típico de inteligencia artificial aplicada}}"
+        "Starting investment: from {priceUsd.ai}",
+        "Typical time to first launch: about {weeks.ai} weeks"
       ]
     }
   }

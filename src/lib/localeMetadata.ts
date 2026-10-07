@@ -23,17 +23,17 @@ export function buildHomeMetadata(locale: Locale, path: string): Metadata {
     alternates: {
       canonical: path,
       languages: {
-        es: `${siteUrl}/`,
+        es: siteUrl,
         en: `${siteUrl}/en`,
         fr: `${siteUrl}/fr`,
-        "x-default": `${siteUrl}/`,
+        "x-default": siteUrl,
       },
     },
     openGraph: {
       type: "website",
       locale: localeOgLocale[locale],
       alternateLocale: otherOgLocales[locale],
-      url: `${siteUrl}${path}`,
+      url: path === "/" ? siteUrl : `${siteUrl}${path}`,
       siteName,
       title,
       description: siteDescription,

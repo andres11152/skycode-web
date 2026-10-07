@@ -76,8 +76,8 @@
         "El software se diseña con el contexto local desde el primer día: si manejas datos personales de clientes o empleados, los permisos por rol, el registro de cambios y los flujos para atender solicitudes de los titulares se construyen alineados con la Ley 1581 (Habeas Data). Y las conexiones con lo que ya usas en el país, como pasarelas de pago o sistemas contables, se planifican desde el mapeo inicial. El pago se divide 50/50, los repositorios quedan a tu nombre desde el primer commit y tienes 90 días de garantía técnica. Cada fase termina con algo usable en producción, no con un documento de avance, así que el equipo empieza a ahorrar horas desde el primer módulo."
       ],
       "facts": [
-        "Inversión orientativa (COP): {{TODO: rango de precio en COP de software a la medida}}",
-        "Plazo típico: {{TODO: tiempo típico de software a la medida}}"
+        "Inversión base de referencia: desde {price.software}",
+        "Plazo típico hasta el primer lanzamiento: unas {weeks.software} semanas"
       ]
     }
   },
@@ -149,8 +149,8 @@
         "Atendemos a empresas de todo el país por videollamada y te enviamos versiones de prueba instalables cada semana para que tu equipo de campo las use en condiciones reales. Publicamos en App Store y Google Play bajo tus cuentas de desarrollador. Si la app guarda datos personales de clientes o de tu personal, aplicamos los principios de la Ley 1581 (Habeas Data): consentimiento, finalidad definida y acceso restringido por rol. Tras el lanzamiento tienes 90 días de garantía técnica."
       ],
       "facts": [
-        "Inversión orientativa (COP): {{TODO: rango de precio en COP de aplicaciones móviles}}",
-        "Plazo típico: {{TODO: tiempo típico de aplicaciones móviles}}"
+        "Inversión base de referencia: desde {price.mobile}",
+        "Plazo típico hasta el primer lanzamiento: unas {weeks.mobile} semanas"
       ]
     }
   },
@@ -231,15 +231,16 @@
         "Cada integración se diseña para fallar de forma segura: idempotencia, reintentos con espera progresiva, firma de webhooks verificada y registro de cada evento. Como estos flujos mueven datos de clientes, aplicamos los principios de la Ley 1581 (Habeas Data): viaja solo lo necesario, con credenciales cifradas y permisos mínimos por integración. Las credenciales y los accesos quedan bajo tus cuentas y ves el avance en un entorno de pruebas cada semana. Si el sistema que quieres conectar no tiene API, evaluamos con honestidad qué tan robusta puede ser cada alternativa."
       ],
       "facts": [
-        "Inversión orientativa (COP): {{TODO: rango de precio en COP de integraciones y APIs}}",
-        "Plazo típico: {{TODO: tiempo típico de integraciones y APIs}}"
+        "Inversión base de referencia: desde {price.apis}",
+        "Plazo típico hasta el primer lanzamiento: unas {weeks.apis} semanas"
       ]
     }
   },
   "frontend-alto-rendimiento": {
     "intro": [
       "La velocidad de un sitio no es un detalle técnico: afecta cuántos visitantes se quedan, cuántos convierten y cómo te posiciona Google. Desarrollamos sitios y aplicaciones web con Next.js y React pensados desde la arquitectura para cargar rápido, ser accesibles y indexarse bien.",
-      "Medimos con herramientas reales (Lighthouse y las métricas Core Web Vitals) contra la versión de producción, no contra un entorno de desarrollo que da números engañosos."
+      "Medimos con herramientas reales (Lighthouse y las métricas Core Web Vitals) contra la versión de producción, no contra un entorno de desarrollo que da números engañosos.",
+      "Antes de escribir código fijamos un presupuesto de rendimiento: cuánto JavaScript puede enviar cada página, qué peso máximo tienen las imágenes y en qué rango deben quedar las Core Web Vitals. Cada decisión de diseño y de desarrollo se revisa contra ese presupuesto, para que la velocidad sea una condición del proyecto y no un ajuste de último momento."
     ],
     "challenge": {
       "heading": "Cuando el sitio actual te cuesta clientes",
@@ -296,6 +297,22 @@
       {
         "question": "¿Podré editar el contenido sin un desarrollador?",
         "answer": "Sí, cuando el proyecto lo requiere integramos un panel de contenido para que tu equipo publique y edite sin tocar código."
+      },
+      {
+        "question": "¿Qué metas de rendimiento nos ponemos?",
+        "answer": "Como mínimo, que las tres Core Web Vitals queden en el rango «bueno» que define Google: carga del contenido principal (LCP) en 2,5 segundos o menos, respuesta a la interacción (INP) en 200 milisegundos o menos y estabilidad visual (CLS) por debajo de 0,1. Se miden sobre la versión publicada y con condiciones de móvil, no en el equipo de desarrollo."
+      },
+      {
+        "question": "¿Cuánto cuesta y cuánto tarda un sitio o una aplicación web?",
+        "answer": "Como referencia, un sitio web parte desde {price.web} y suele estar listo en unas {weeks.web} semanas. El precio final depende del alcance, las integraciones y los módulos que sumes: el [cotizador](/cotizador) calcula un valor y un tiempo aproximados en minutos, y el presupuesto definitivo lo damos después de conversar, sin compromiso."
+      },
+      {
+        "question": "¿Cómo cuidan las imágenes, las fuentes y los scripts de terceros?",
+        "answer": "Son los tres culpables habituales de un sitio lento. Las imágenes se generan en varios tamaños y formatos modernos y se cargan solo cuando van a verse; las fuentes se sirven desde el propio sitio con carga controlada para evitar saltos de diseño; y los scripts de terceros (analítica, chats, píxeles) se cargan de forma diferida y, cuando corresponde, solo tras el consentimiento del visitante."
+      },
+      {
+        "question": "¿Qué pasa con el rendimiento después de publicar?",
+        "answer": "Un sitio rápido puede degradarse con cada cambio: una imagen sin optimizar o un script nuevo bastan. Con Search Console puedes seguir los datos reales de tus visitantes en el informe de Core Web Vitals. Después del lanzamiento tienes 90 días de garantía técnica y, si quieres acompañamiento continuo, puedes contratar de forma opcional un mantenimiento con SLA a la medida."
       }
     ],
     "colombia": {
@@ -305,8 +322,8 @@
         "Atendemos a empresas de todo el país. Si ya tienes un sitio posicionado, el rediseño se planifica para conservar las URLs que hoy traen visitas o configurar redirecciones permanentes, y si vendes fuera de Colombia armamos versiones por idioma bien indexadas. Los formularios que capturan datos de visitantes llevan autorización de tratamiento y política visibles, como pide la Ley 1581 (Habeas Data). El código y los repositorios quedan a tu nombre y recibes avances de forma semanal. Cuando el proyecto lo requiere, integramos un panel para que tu equipo publique y edite contenido sin depender de un desarrollador."
       ],
       "facts": [
-        "Inversión orientativa (COP): {{TODO: rango de precio en COP de webs y aplicaciones web de alto rendimiento}}",
-        "Plazo típico: {{TODO: tiempo típico de webs y aplicaciones web de alto rendimiento}}"
+        "Inversión base de referencia: desde {price.web}",
+        "Plazo típico hasta el primer lanzamiento: unas {weeks.web} semanas"
       ]
     }
   },
@@ -377,8 +394,8 @@
         "Si hoy vendes en una plataforma genérica, migramos catálogo, clientes e historial de pedidos y configuramos redirecciones para no perder el posicionamiento de tus páginas de producto. Como una tienda guarda datos personales de compradores, el registro y el checkout se diseñan con autorización de tratamiento y con flujos para atender las solicitudes de los titulares, según la Ley 1581 (Habeas Data). El pago se divide 50/50, el código es 100 % tuyo y tienes 90 días de garantía técnica."
       ],
       "facts": [
-        "Inversión orientativa (COP): {{TODO: rango de precio en COP de e-commerce y tiendas en línea}}",
-        "Plazo típico: {{TODO: tiempo típico de e-commerce y tiendas en línea}}"
+        "Inversión base de referencia: desde {price.ecommerce}",
+        "Plazo típico hasta el primer lanzamiento: unas {weeks.ecommerce} semanas"
       ]
     }
   },
@@ -722,8 +739,8 @@
         "Los datos que alimentan un modelo suelen incluir información de clientes, así que aplicamos la Ley 1581 (Habeas Data) desde el diseño: enviamos al modelo solo lo estrictamente necesario, usamos proveedores y configuraciones que no entrenan con los datos recibidos por API y documentamos qué información sale de tu infraestructura. En los puntos críticos una persona revisa y aprueba lo que propone la IA. Ves resultados en un entorno de pruebas cada semana y respondemos en menos de 24 horas hábiles. Si la IA no es la mejor herramienta para tu problema, te lo decimos antes de que inviertas."
       ],
       "facts": [
-        "Inversión orientativa (COP): {{TODO: rango de precio en COP de inteligencia artificial aplicada}}",
-        "Plazo típico: {{TODO: tiempo típico de inteligencia artificial aplicada}}"
+        "Inversión base de referencia: desde {price.ai}",
+        "Plazo típico hasta el primer lanzamiento: unas {weeks.ai} semanas"
       ]
     }
   }

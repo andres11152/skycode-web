@@ -6,6 +6,7 @@ import { getClientIp } from "@/lib/clientIp";
 import { shouldShed } from "@/lib/loadShed";
 import { originMatchesHost } from "@/lib/requestOrigin";
 import { buildStrictCsp, generateNonce, isStrictCspPath } from "@/lib/csp";
+import { resolveLegacyUrl, stripTrailingSlash } from "@/lib/legacyUrls";
 
 const UNSAFE_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
@@ -92,7 +93,36 @@ function nextWithStrictCsp(request: NextRequest): NextResponse {
   return response;
 }
 
+/**
+ * URLs heredadas del WordPress anterior y barra final. Va PRIMERO: son respuestas de un solo
+ * salto que no necesitan sesión, CSP ni límites. Ver lib/legacyUrls.ts (reglas) y
+ * `skipTrailingSlashRedirect` en next.config.ts (por qué la barra final se resuelve aquí).
+ */
+function handleLegacyAndTrailingSlash(request: NextRequest): NextResponse | null {
+  const { pathname, search } = request.nextUrl;
+
+  const legacy = resolveLegacyUrl(pathname);
+  if (legacy?.kind === "redirect") {
+    // La consulta se conserva (UTM de campañas): el destino no la usa para nada más.
+    return NextResponse.redirect(new URL(`${legacy.to}${search}`, request.url), legacy.status);
+  }
+  if (legacy?.kind === "gone") {
+    return new NextResponse("410 Gone", {
+      status: 410,
+      headers: { "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex" },
+    });
+  }
+
+  const stripped = stripTrailingSlash(pathname);
+  if (stripped) return NextResponse.redirect(new URL(`${stripped}${search}`, request.url), 308);
+
+  return null;
+}
+
 export async function proxy(request: NextRequest) {
+  const legacyResponse = handleLegacyAndTrailingSlash(request);
+  if (legacyResponse) return legacyResponse;
+
   if (CREDENTIAL_PATHS.has(request.nextUrl.pathname)) {
     const ip = getClientIp(request);
     // "unknown" (sin cabeceras de IP) no se limita: agruparía a todo el
@@ -142,7 +172,36 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
+  // Los matchers deben ser literales estáticos. Primero lo heredado y la barra final (únicas rutas
+  // públicas donde el proxy actúa), luego las rutas con sesión/credenciales de siempre.
   matcher: [
+    // Cualquier ruta con barra final → `/x` (reemplaza la redirección de Next, desactivada).
+    "/:path+/",
+    // URLs heredadas de WordPress y casos retirados (reglas en lib/legacyUrls.ts). El resto de las
+    // heredadas con barra final ya las cubre `/:path+/`.
+    "/es/inicio",
+    "/en/home",
+    "/politica-de-privacidad",
+    "/portafolio/all",
+    "/portfolio/all",
+    "/portafolio-cat/:path*",
+    "/portfolio-cat/:path*",
+    "/en/portfolio/all",
+    "/en/portfolio-cat/:path*",
+    "/fr/portfolio/all",
+    "/fr/portfolio-cat/:path*",
+    "/portafolio/moncyre",
+    "/en/portfolio/moncyre",
+    "/fr/portfolio/moncyre",
+    "/feed",
+    "/:path*/feed",
+    "/wp-content/:path*",
+    "/wp-includes/:path*",
+    "/wp-admin/:path*",
+    "/wp-json/:path*",
+    "/wp-login.php",
+    "/wp-cron.php",
+    "/xmlrpc.php",
     "/dashboard/:path*",
     "/portal/:path*",
     "/login",

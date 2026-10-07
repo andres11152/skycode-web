@@ -15,7 +15,7 @@ export const POST_RELATED_SERVICES: Record<string, string[]> = {
   "buenas-practicas-apis-rest": ["apis-integraciones", "desarrollo-software-medida", "seguridad-cumplimiento"],
   "outsourcing-software-latam-propiedad-codigo": ["desarrollo-software-medida", "arquitectura-documentacion"],
   "migracion-sistemas-legados-sin-interrupcion": ["migracion-datos-legacy", "apis-integraciones", "arquitectura-documentacion"],
-  "optimizacion-costos-nube-serverless-colombia": ["desarrollo-software-medida", "apis-integraciones"],
+  "optimizacion-costos-nube-serverless-colombia": ["desarrollo-software-medida", "apis-integraciones", "frontend-alto-rendimiento"],
 };
 
 export function getRelatedServiceSlugsForPost(postSlug: string): string[] {

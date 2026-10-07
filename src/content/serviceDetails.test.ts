@@ -11,6 +11,16 @@ import { hasTodo } from "@/lib/todoPlaceholders";
 // que un párrafo se copie entre servicios (contenido duplicado) o que se
 // salga del rango de 150–250 palabras que el plan de SEO exige.
 
+// Servicios con un tipo de proyecto equivalente en el cotizador (`PRICING`): sus viñetas llevan cifras reales.
+const SERVICES_WITH_PRICING = new Set([
+  "desarrollo-software-medida",
+  "desarrollo-aplicaciones-moviles",
+  "apis-integraciones",
+  "frontend-alto-rendimiento",
+  "ecommerce-tienda-online",
+  "inteligencia-artificial-aplicada",
+]);
+
 const TODO_PATTERN = /\{\{TODO[^}]*\}\}/g;
 const wordCount = (texts: string[]) => texts.join(" ").replace(TODO_PATTERN, "").split(/\s+/).filter(Boolean).length;
 
@@ -34,12 +44,20 @@ describe("sección «Desarrollo de X en Colombia» de cada servicio", () => {
           expect(wordCount([...colombia.paragraphs, ...colombia.facts])).toBeLessThanOrEqual(250);
         });
 
-        it(`${slug}: los marcadores TODO viven solo en las viñetas, uno por viñeta`, () => {
+        it(`${slug}: las viñetas de precio y plazo traen cifras reales del cotizador o, si no hay equivalente, un marcador TODO`, () => {
           if (!colombia) return;
           expect(hasTodo(colombia.paragraphs)).toBe(false);
           expect(colombia.facts).toHaveLength(2);
-          expect(colombia.facts[0]).toMatch(/\{\{TODO: rango de precio en COP de .+\}\}/);
-          expect(colombia.facts[1]).toMatch(/\{\{TODO: tiempo típico de .+\}\}/);
+          if (SERVICES_WITH_PRICING.has(slug)) {
+            // Sin tokens sin resolver ni marcadores: cifra de PRICING (COP en español, USD en inglés y francés) y semanas.
+            expect(hasTodo(colombia.facts)).toBe(false);
+            expect(colombia.facts[0]).toMatch(locale === "es" ? /\$[\d.]+ COP/ : /\$[\d,]+ USD/);
+            expect(colombia.facts[1]).toMatch(/\d/);
+            expect(colombia.facts.join(" ")).not.toMatch(/\{(price|priceUsd|weeks)\./);
+          } else {
+            expect(colombia.facts[0]).toMatch(/\{\{TODO: rango de precio en COP de .+\}\}/);
+            expect(colombia.facts[1]).toMatch(/\{\{TODO: tiempo típico de .+\}\}/);
+          }
         });
 
         it(`${slug}: solo enlaces internos válidos`, () => {

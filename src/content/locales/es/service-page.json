@@ -42,6 +42,18 @@
       {
         "question": "¿Qué pasa después del lanzamiento?",
         "answer": "Tienes 90 días de garantía ante cualquier falla técnica, sin costo. Después puedes seguir con nosotros en un plan de mantenimiento o continuar con tu propio equipo: el código y la documentación ya son tuyos."
+      },
+      {
+        "question": "¿Qué tecnologías usan?",
+        "answer": "Elegimos según el problema, no por moda. En web trabajamos sobre todo con TypeScript, Next.js y React; en móvil, con React Native; en el servidor, con Node.js y NestJS, y en datos, con PostgreSQL. También conocemos Laravel, PHP y WordPress cuando el caso lo pide. Todo queda en repositorios a tu nombre, así que no dependes de ninguna plataforma propietaria nuestra."
+      },
+      {
+        "question": "¿Trabajan con empresas fuera de Colombia?",
+        "answer": "Sí. Trabajamos con empresas de otras ciudades y países y atendemos en español, inglés y francés. Colombia usa la hora UTC−5 todo el año, sin cambio de horario, así que la diferencia con tu zona horaria es siempre la misma. En el [cotizador](/cotizador) puedes ver los precios base en pesos colombianos o en dólares."
+      },
+      {
+        "question": "¿Cómo se paga un proyecto?",
+        "answer": "En dos pagos: 50% al firmar el contrato con el cronograma acordado y 50% al recibir el proyecto funcionando, probado de punta a punta y con tu visto bueno final. No hay mensualidades forzadas ni licencias recurrentes."
       }
     ],
     "ctaTitle": "¿Tienes un proceso que ya no escala?",
@@ -63,5 +75,6 @@
     "relatedPostsHeading": "Artículos relacionados",
     "casesViewCase": "Ver caso",
     "secondaryCta": "Ver cómo trabajamos"
-  }
+  },
+  "estimatorLink": "O calcula primero el costo y el tiempo aproximados en el cotizador"
 }

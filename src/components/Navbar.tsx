@@ -46,6 +46,9 @@ export function Navbar() {
     // de ser esOnly, su ruta usa el mismo helper que servicios/equipo.
     { label: navData.blog, href: blogIndexPath(locale), esOnly: false },
     { label: navData.faq, href: faqPath(locale), esOnly: false },
+    // El cotizador es una ruta real y de las más útiles para el visitante, pero la píldora de escritorio no da
+    // para 6 enlaces por debajo de `lg` (ver el bug de arriba): ahí se oculta; el cajón móvil y el Footer lo enlazan.
+    { label: navData.cotizador, href: `${prefix}/cotizador`, esOnly: false, hideBelowLg: true },
   ];
   const contactHref = `${prefix}/#contacto`;
   // Estando ya en esta home, sus anclas (`/#servicios`, el logo, el CTA)
@@ -118,7 +121,7 @@ export function Navbar() {
           )}
         >
           {navLinks.map((link) => (
-            <li key={link.href}>
+            <li key={link.href} className={link.hideBelowLg ? "max-lg:hidden" : undefined}>
               <Link
                 href={link.href}
                 prefetch={prefetchFor(link.href)}

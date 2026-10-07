@@ -37,10 +37,12 @@ function newest(...dates: (string | null | undefined)[]): string | undefined {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const homeLanguages = {
-    es: `${siteUrl}/`,
+    // La raíz va SIN barra: es la forma que emiten el canonical y el hreflang de la home (Next la normaliza
+    // así), y la <loc> del sitemap debe coincidir exactamente con ellos.
+    es: siteUrl,
     en: `${siteUrl}/en`,
     fr: `${siteUrl}/fr`,
-    "x-default": `${siteUrl}/`,
+    "x-default": siteUrl,
   };
 
   const [postsEs, postsEn, postsFr, portfolioUpdated, teamUpdated] = await Promise.all([
@@ -57,7 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     // La home muestra los últimos artículos y casos: se mueve con ellos.
     ...(["es", "en", "fr"] as const).map((locale) => ({
-      url: locale === "es" ? `${siteUrl}/` : `${siteUrl}/${locale}`,
+      url: locale === "es" ? siteUrl : `${siteUrl}/${locale}`,
       lastModified: newest(staticLastmod(`home:${locale}`), newestPost(locale), newestProject),
       changeFrequency: "monthly" as const,
       priority: 1,
@@ -145,7 +147,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
     return (["es", "en", "fr"] as const).map((locale) => ({
       url: `${siteUrl}${servicePath(locale, service.slug)}`,
-      lastModified: staticLastmod(`services-detail:${locale}`),
+      // Por página: su fecha solo avanza cuando cambia SU contenido (hash en lastmod-hashes.json), no el de otro servicio.
+      lastModified: staticLastmod(`services-detail:${locale}:${service.slug}`) ?? staticLastmod(`services-detail:${locale}`),
       changeFrequency: "monthly" as const,
       priority: 0.7,
       alternates: { languages },

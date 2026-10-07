@@ -1,0 +1,110 @@
+{
+  "services-detail:es:desarrollo-software-medida": {
+    "hash": "13514d656b964814",
+    "date": "2026-10-07T16:40:15.795Z"
+  },
+  "services-detail:es:desarrollo-aplicaciones-moviles": {
+    "hash": "df9896f4b6927590",
+    "date": "2026-10-07T16:40:15.795Z"
+  },
+  "services-detail:es:apis-integraciones": {
+    "hash": "e49219d7e79549b7",
+    "date": "2026-10-07T16:40:15.795Z"
+  },
+  "services-detail:es:frontend-alto-rendimiento": {
+    "hash": "654e5d2d1aada4be",
+    "date": "2026-10-07T16:40:15.795Z"
+  },
+  "services-detail:es:ecommerce-tienda-online": {
+    "hash": "aa6c35cff62c5849",
+    "date": "2026-10-07T16:40:15.795Z"
+  },
+  "services-detail:es:seguridad-cumplimiento": {
+    "hash": "e78c4d7b32f96b3f",
+    "date": "2026-10-07T16:40:15.795Z"
+  },
+  "services-detail:es:arquitectura-documentacion": {
+    "hash": "04d9cf1c415aee70",
+    "date": "2026-10-07T16:40:15.795Z"
+  },
+  "services-detail:es:migracion-datos-legacy": {
+    "hash": "47fdfcf37de5147f",
+    "date": "2026-10-07T16:40:15.795Z"
+  },
+  "services-detail:es:inteligencia-artificial-aplicada": {
+    "hash": "109c220aa2c89901",
+    "date": "2026-10-07T16:40:15.795Z"
+  },
+  "services-detail:en:desarrollo-software-medida": {
+    "hash": "774bc7d3ef35bbe9",
+    "date": "2026-10-07T16:40:15.796Z"
+  },
+  "services-detail:en:desarrollo-aplicaciones-moviles": {
+    "hash": "52692dcf4c4e1e32",
+    "date": "2026-10-07T16:40:15.796Z"
+  },
+  "services-detail:en:apis-integraciones": {
+    "hash": "173d61c5d26194e4",
+    "date": "2026-10-07T16:40:15.796Z"
+  },
+  "services-detail:en:frontend-alto-rendimiento": {
+    "hash": "9b1e07445a901fae",
+    "date": "2026-10-07T16:40:15.796Z"
+  },
+  "services-detail:en:ecommerce-tienda-online": {
+    "hash": "8cc08eacca22f1a1",
+    "date": "2026-10-07T16:40:15.796Z"
+  },
+  "services-detail:en:seguridad-cumplimiento": {
+    "hash": "714d9e6c8ee36309",
+    "date": "2026-10-07T16:40:15.796Z"
+  },
+  "services-detail:en:arquitectura-documentacion": {
+    "hash": "57e6b7756fbf735f",
+    "date": "2026-10-07T16:40:15.796Z"
+  },
+  "services-detail:en:migracion-datos-legacy": {
+    "hash": "512ef8a505df4fee",
+    "date": "2026-10-07T16:40:15.796Z"
+  },
+  "services-detail:en:inteligencia-artificial-aplicada": {
+    "hash": "d948ad038d68a113",
+    "date": "2026-10-07T16:40:15.796Z"
+  },
+  "services-detail:fr:desarrollo-software-medida": {
+    "hash": "b55e9ec3c0dcc7ce",
+    "date": "2026-10-07T16:40:15.797Z"
+  },
+  "services-detail:fr:desarrollo-aplicaciones-moviles": {
+    "hash": "58d8ab0a8b1a2792",
+    "date": "2026-10-07T16:40:15.797Z"
+  },
+  "services-detail:fr:apis-integraciones": {
+    "hash": "f929c13ddbb35fdb",
+    "date": "2026-10-07T16:40:15.797Z"
+  },
+  "services-detail:fr:frontend-alto-rendimiento": {
+    "hash": "e4eeac67f33ccc3c",
+    "date": "2026-10-07T16:40:15.797Z"
+  },
+  "services-detail:fr:ecommerce-tienda-online": {
+    "hash": "6ef999e223141ce2",
+    "date": "2026-10-07T16:40:15.797Z"
+  },
+  "services-detail:fr:seguridad-cumplimiento": {
+    "hash": "cdbfb4facac98901",
+    "date": "2026-10-07T16:40:15.797Z"
+  },
+  "services-detail:fr:arquitectura-documentacion": {
+    "hash": "a209602583e1ce4d",
+    "date": "2026-10-07T16:40:15.797Z"
+  },
+  "services-detail:fr:migracion-datos-legacy": {
+    "hash": "96cd0de2e157b334",
+    "date": "2026-10-07T16:40:15.797Z"
+  },
+  "services-detail:fr:inteligencia-artificial-aplicada": {
+    "hash": "a88c1782dfec188d",
+    "date": "2026-10-07T16:40:15.797Z"
+  }
+}

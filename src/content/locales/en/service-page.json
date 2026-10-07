@@ -42,6 +42,18 @@
       {
         "question": "What happens after launch?",
         "answer": "You get a 90-day warranty against any technical failure, at no cost. After that you can stay with us on a maintenance plan or continue with your own team: the code and documentation are already yours."
+      },
+      {
+        "question": "Which technologies do you use?",
+        "answer": "We choose by problem, not by trend. On the web we mostly work with TypeScript, Next.js and React; on mobile, with React Native; on the server, with Node.js and NestJS; and for data, with PostgreSQL. We also know Laravel, PHP and WordPress when the case calls for them. Everything lives in repositories in your name, so you never depend on a proprietary platform of ours."
+      },
+      {
+        "question": "Do you work with companies outside Colombia?",
+        "answer": "Yes. We work with companies in other cities and countries and communicate in English, Spanish and French. Colombia stays on UTC−5 all year with no daylight saving shift, so the gap with your time zone is always the same: none with US Eastern Time in winter, one hour in summer, and six or seven hours with Western Europe. The [estimator](/en/cotizador) shows base prices in US dollars."
+      },
+      {
+        "question": "How is a project paid for?",
+        "answer": "In two payments: 50% at signing, with the agreed schedule, and 50% when you receive the working project, tested end to end and with your final approval. There are no forced monthly fees or recurring licenses."
       }
     ],
     "ctaTitle": "Running a process that no longer scales?",
@@ -63,5 +75,6 @@
     "relatedPostsHeading": "Related articles",
     "casesViewCase": "View case",
     "secondaryCta": "See how we work"
-  }
+  },
+  "estimatorLink": "Or estimate the cost and timeline first with the estimator"
 }

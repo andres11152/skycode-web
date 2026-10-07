@@ -76,8 +76,8 @@
         "Le logiciel est conçu dès le premier jour avec le contexte local en tête : si vous traitez des données personnelles de clients ou de salariés, les droits par rôle, l'historique des modifications et les parcours pour répondre aux demandes des personnes concernées sont construits en phase avec la loi colombienne 1581 (Habeas Data). Les connexions avec ce que vous utilisez déjà sur place, comme les passerelles de paiement ou les outils comptables, sont prévues dès la cartographie initiale. Le paiement est réparti 50/50, les dépôts sont à votre nom dès le premier commit et vous bénéficiez de 90 jours de garantie technique."
       ],
       "facts": [
-        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de software a la medida}}",
-        "Délai habituel : {{TODO: tiempo típico de software a la medida}}"
+        "Investissement de départ : à partir de {priceUsd.software}",
+        "Délai habituel avant le premier lancement : environ {weeks.software} semaines"
       ]
     }
   },
@@ -149,8 +149,8 @@
         "Nous accompagnons des entreprises de tout le pays en visioconférence et envoyons chaque semaine des versions de test installables pour que vos équipes de terrain les essaient en conditions réelles. Nous publions sur l'App Store et Google Play avec vos propres comptes développeur. Si l'application conserve des données personnelles de clients ou de collaborateurs, nous appliquons les principes de la loi colombienne 1581 (Habeas Data) : consentement, finalité définie et accès limité par rôle. Après le lancement, vous disposez de 90 jours de garantie technique."
       ],
       "facts": [
-        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de aplicaciones móviles}}",
-        "Délai habituel : {{TODO: tiempo típico de aplicaciones móviles}}"
+        "Investissement de départ : à partir de {priceUsd.mobile}",
+        "Délai habituel avant le premier lancement : environ {weeks.mobile} semaines"
       ]
     }
   },
@@ -231,15 +231,16 @@
         "Chaque intégration est conçue pour échouer sans dégât : idempotence, nouvelles tentatives à délai progressif, signature des webhooks vérifiée et journal de chaque événement. Ces flux transportant des données clients, nous appliquons les principes de la loi colombienne 1581 (Habeas Data) : seul le nécessaire circule, avec des identifiants chiffrés et des droits minimaux par intégration. Les identifiants et les accès restent sous vos comptes, et vous suivez l'avancement dans un environnement de test chaque semaine."
       ],
       "facts": [
-        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de integraciones y APIs}}",
-        "Délai habituel : {{TODO: tiempo típico de integraciones y APIs}}"
+        "Investissement de départ : à partir de {priceUsd.apis}",
+        "Délai habituel avant le premier lancement : environ {weeks.apis} semaines"
       ]
     }
   },
   "frontend-alto-rendimiento": {
     "intro": [
       "La vitesse d'un site n'est pas un détail technique : elle influe sur le nombre de visiteurs qui restent, sur ceux qui convertissent et sur votre positionnement dans Google. Nous développons des sites et applications web avec Next.js et React, pensés dès l'architecture pour se charger vite, être accessibles et bien s'indexer.",
-      "Nous mesurons avec de vrais outils (Lighthouse et les métriques Core Web Vitals) sur la version de production, et non sur un environnement de développement qui donne des chiffres trompeurs."
+      "Nous mesurons avec de vrais outils (Lighthouse et les métriques Core Web Vitals) sur la version de production, et non sur un environnement de développement qui donne des chiffres trompeurs.",
+      "Avant d'écrire du code, nous fixons un budget de performance : la quantité de JavaScript que chaque page peut envoyer, le poids maximal des images et la plage dans laquelle doivent se situer les Core Web Vitals. Chaque décision de conception et de développement est vérifiée par rapport à ce budget, pour que la vitesse soit une condition du projet et non un réglage de dernière minute."
     ],
     "challenge": {
       "heading": "Quand votre site actuel vous coûte des clients",
@@ -296,17 +297,37 @@
       {
         "question": "Pourrai-je modifier le contenu sans développeur ?",
         "answer": "Oui. Lorsque le projet le nécessite, nous intégrons un back-office de contenu pour que votre équipe publie et modifie sans toucher au code."
+      },
+      {
+        "question": "Quels objectifs de performance fixez-vous ?",
+        "answer": "Au minimum, que les trois Core Web Vitals se situent dans la plage « bon » définie par Google : chargement du contenu principal (LCP) en 2,5 secondes ou moins, réactivité à l'interaction (INP) en 200 millisecondes ou moins et stabilité visuelle (CLS) inférieure à 0,1. Ils sont mesurés sur la version publiée, en conditions mobiles, et non sur le poste du développeur."
+      },
+      {
+        "question": "Combien coûte et combien de temps prend un site ou une application web ?",
+        "answer": "À titre de référence, un site web démarre à {priceUsd.web} et est généralement prêt en environ {weeks.web} semaines. Le prix final dépend du périmètre, des intégrations et des modules ajoutés : l'[estimateur](/fr/cotizador) calcule en quelques minutes une valeur et un délai approximatifs, et nous donnons le devis définitif après un échange, sans engagement."
+      },
+      {
+        "question": "Comment traitez-vous les images, les polices et les scripts tiers ?",
+        "answer": "Ce sont les trois coupables habituels d'un site lent. Les images sont générées en plusieurs tailles et formats modernes et ne se chargent que lorsqu'elles vont être vues ; les polices sont servies depuis votre propre site avec un chargement maîtrisé pour éviter les décalages de mise en page ; et les scripts tiers (mesure d'audience, chat, pixels) se chargent en différé et, le cas échéant, seulement après le consentement du visiteur."
+      },
+      {
+        "question": "Mon site sera-t-il conforme au RGPD ?",
+        "answer": "Nous concevons le site pour respecter les exigences techniques : rien d'optionnel ne se charge avant que le visiteur accepte, les formulaires affichent la finalité du traitement et la politique de confidentialité, et les données sont protégées côté serveur. La conformité juridique dépend aussi de vos politiques et procédures internes ; l'avis d'un juriste reste nécessaire."
+      },
+      {
+        "question": "Que devient la performance après le lancement ?",
+        "answer": "Un site rapide peut se dégrader à chaque modification : une image non optimisée ou un nouveau script suffisent. Avec Search Console, vous suivez les données réelles de vos visiteurs dans le rapport Core Web Vitals. Après le lancement, vous bénéficiez de 90 jours de garantie technique et, si vous souhaitez un accompagnement continu, d'une maintenance optionnelle avec SLA sur mesure."
       }
     ],
     "colombia": {
-      "heading": "Développement web haute performance en Colombie",
+      "heading": "Développement web haute performance pour équipes francophones, depuis Bogotá, Colombie",
       "paragraphs": [
-        "Pour une entreprise colombienne, le site est souvent la première vitrine face à des clients qui arrivent depuis leur téléphone. Depuis Bogotá, nous développons des sites et des applications web avec Next.js et React, pensés dès l'architecture pour charger vite, rester accessibles et bien se positionner sur Google. Nous mesurons avec Lighthouse et les Core Web Vitals sur la version publiée, pas sur un environnement de développement qui donne des chiffres trompeurs.",
-        "Nous travaillons avec des entreprises de tout le pays. Si votre site est déjà bien positionné, la refonte est planifiée pour conserver les URL qui amènent aujourd'hui des visiteurs ou pour configurer des redirections permanentes, et si vous vendez hors de Colombie, nous préparons des versions linguistiques bien indexées. Les formulaires qui collectent des données de visiteurs affichent l'autorisation de traitement et la politique, comme l'exige la loi colombienne 1581 (Habeas Data). Le code et les dépôts sont à votre nom, et vous recevez un point d'avancement chaque semaine."
+        "Si votre équipe est en France, en Belgique ou en Suisse, travailler avec un studio basé à Bogotá reste simple. La Colombie est en UTC−5 toute l'année, sans changement d'heure : le décalage avec Paris est de 6 heures en hiver et de 7 heures en été, de sorte que les points de suivi se tiennent en fin de matinée à Bogotá, l'après-midi en Europe. Nous travaillons en français, en espagnol et en anglais, et vous échangez directement avec les ingénieurs qui développent votre site.",
+        "Nous développons des sites et des applications web haute performance avec Next.js et React, mesurés avec Lighthouse et les Core Web Vitals sur la version publiée. Les sites multilingues disposent de leurs propres URL, balises hreflang et métadonnées par langue, comme ce site. Le consentement aux cookies et à la mesure d'audience est géré dès l'architecture, dans l'esprit du RGPD, sans remplacer l'avis d'un juriste. Le paiement se fait en deux temps, 50 % à la signature et 50 % à la livraison, et le code et les dépôts sont à votre nom dès le premier jour."
       ],
       "facts": [
-        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de webs y aplicaciones web de alto rendimiento}}",
-        "Délai habituel : {{TODO: tiempo típico de webs y aplicaciones web de alto rendimiento}}"
+        "Investissement de départ : à partir de {priceUsd.web}",
+        "Délai habituel avant le premier lancement : environ {weeks.web} semaines"
       ]
     }
   },
@@ -377,8 +398,8 @@
         "Si vous vendez aujourd'hui sur une plateforme générique, nous migrons catalogue, clients et historique de commandes, et nous configurons des redirections pour que vos fiches produit gardent leur référencement. Une boutique conservant des données personnelles d'acheteurs, l'inscription et le paiement sont conçus avec une autorisation de traitement et des parcours pour répondre aux demandes des personnes concernées, conformément à la loi colombienne 1581 (Habeas Data). Le paiement est réparti 50/50, le code est 100 % à vous et vous bénéficiez de 90 jours de garantie technique."
       ],
       "facts": [
-        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de e-commerce y tiendas en línea}}",
-        "Délai habituel : {{TODO: tiempo típico de e-commerce y tiendas en línea}}"
+        "Investissement de départ : à partir de {priceUsd.ecommerce}",
+        "Délai habituel avant le premier lancement : environ {weeks.ecommerce} semaines"
       ]
     }
   },
@@ -722,8 +743,8 @@
         "Les données qui alimentent un modèle contiennent souvent des informations sur les clients ; nous appliquons donc la loi colombienne 1581 (Habeas Data) dès la conception : seul le strict nécessaire est transmis au modèle, nous utilisons des fournisseurs et des réglages qui n'entraînent pas leurs modèles sur les données reçues par API, et nous documentons les informations qui quittent votre infrastructure. Aux points critiques, une personne relit et valide ce que propose l'IA. Vous voyez des résultats dans un environnement de test chaque semaine et nous répondons en moins de 24 heures ouvrées."
       ],
       "facts": [
-        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de inteligencia artificial aplicada}}",
-        "Délai habituel : {{TODO: tiempo típico de inteligencia artificial aplicada}}"
+        "Investissement de départ : à partir de {priceUsd.ai}",
+        "Délai habituel avant le premier lancement : environ {weeks.ai} semaines"
       ]
     }
   }

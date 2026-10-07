@@ -20,7 +20,7 @@
 //   envuelve una frase que YA existe (no agrega palabras) y `append` suma
 //   una frase breve al final de un párrafo concreto.
 // - Solo rutas internas con el prefijo de idioma (`/servicios/x`,
-//   `/en/blog/x`, `/fr/portfolio/x`...): la sintaxis `[texto](/ruta)` de
+//   `/en/blog/x`, `/fr/portfolio/x`, `/cotizador`...): la sintaxis `[texto](/ruta)` de
 //   lib/inlineLinks.ts no admite otra cosa, y las funciones de ruta del
 //   sitio (servicePath, blogPostPath, portfolioCasePath) son las que
 //   `blogInternalLinks.test.ts` compara contra las de aquí.
@@ -56,6 +56,11 @@ export function pathFor(kind, locale, slug) {
   if (kind === "service") return `${localePrefix(locale)}/servicios/${slug}`;
   if (kind === "post") return `${localePrefix(locale)}/blog/${slug}`;
   if (kind === "case") return locale === "es" ? `/portafolio/${slug}` : `/${locale}/portfolio/${slug}`;
+  // Páginas fijas del sitio (no un recurso con slug propio): el cotizador y el índice del portafolio.
+  if (kind === "page") {
+    if (slug === "cotizador") return `${localePrefix(locale)}/cotizador`;
+    if (slug === "portafolio") return locale === "es" ? "/portafolio" : `/${locale}/portfolio`;
+  }
   throw new Error(`Tipo de destino desconocido: ${kind}`);
 }
 

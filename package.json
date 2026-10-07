@@ -32,7 +32,8 @@
     "test:all": "npm run test:db:up && npm run test:db:migrate && npm run test && npm run test:integration && npm run test:e2e",
     "seo:check": "node scripts/seo-check.ts",
     "seo:todos": "node scripts/seo-todos.mjs",
-    "seo:lastmod": "node scripts/generate-lastmod.mjs"
+    "seo:lastmod": "node scripts/generate-lastmod.mjs",
+    "seo:canonical": "node scripts/seo-canonical-audit.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1140.0",

@@ -42,6 +42,18 @@
       {
         "question": "Que se passe-t-il après le lancement ?",
         "answer": "Vous bénéficiez d'une garantie de 90 jours contre toute défaillance technique, sans frais. Ensuite, vous pouvez rester avec nous via un plan de maintenance ou poursuivre avec votre propre équipe : le code et la documentation vous appartiennent déjà."
+      },
+      {
+        "question": "Quelles technologies utilisez-vous ?",
+        "answer": "Nous choisissons selon le problème, pas selon la mode. Sur le web, nous travaillons surtout avec TypeScript, Next.js et React ; sur mobile, avec React Native ; côté serveur, avec Node.js et NestJS ; et pour les données, avec PostgreSQL. Nous connaissons aussi Laravel, PHP et WordPress quand le cas l'exige. Tout reste dans des dépôts à votre nom : vous ne dépendez d'aucune plateforme propriétaire de notre part."
+      },
+      {
+        "question": "Travaillez-vous avec des entreprises hors de Colombie ?",
+        "answer": "Oui. Nous travaillons avec des entreprises d'autres villes et d'autres pays et communiquons en français, en espagnol et en anglais. La Colombie reste en UTC−5 toute l'année, sans changement d'heure : le décalage avec Paris est donc toujours le même, 6 heures en hiver et 7 heures en été. L'[estimateur](/fr/cotizador) affiche les prix de base en dollars américains."
+      },
+      {
+        "question": "Comment se paie un projet ?",
+        "answer": "En deux paiements : 50 % à la signature du contrat, avec le calendrier convenu, et 50 % à la réception du projet en état de marche, testé de bout en bout et avec votre accord final. Il n'y a ni mensualités imposées ni licences récurrentes."
       }
     ],
     "ctaTitle": "Un processus qui ne suit plus la croissance ?",
@@ -63,5 +75,6 @@
     "relatedPostsHeading": "Articles liés",
     "casesViewCase": "Voir le cas",
     "secondaryCta": "Voir notre méthode"
-  }
+  },
+  "estimatorLink": "Ou estimez d'abord le coût et les délais avec l'estimateur"
 }

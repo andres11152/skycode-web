@@ -59,6 +59,7 @@ export async function ServiceView({
   const prefix = homePath === "/" ? "" : homePath;
   const servicesIndexHref = `${prefix}/servicios`;
   const contactHref = `${prefix}/#contacto`;
+  const estimatorHref = `${prefix}/cotizador`;
 
   const details = getServiceDetails(service.slug, locale);
   const currentIndex = services.findIndex((item) => item.slug === slug);
@@ -172,6 +173,12 @@ export async function ServiceView({
                 <Button href={contactHref} variant="primary" size="sm" showFlowArrows={false} data-contact-service={service.slug}>
                   {pageCopy.ctaButton}
                 </Button>
+                <Link
+                  href={estimatorHref}
+                  className="link-underline w-fit rounded text-sm font-medium text-foreground/80 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  {pageCopy.estimatorLink}
+                </Link>
               </div>
             </div>
           </aside>
@@ -398,6 +405,12 @@ export async function ServiceView({
               <Button href={contactHref} variant="primary" size="md" showFlowArrows={false} data-contact-service={service.slug}>
                 {pageCopy.ctaButton}
               </Button>
+              <Link
+                href={estimatorHref}
+                className="link-underline w-fit rounded text-sm font-medium text-foreground/80 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                {pageCopy.estimatorLink}
+              </Link>
             </div>
           </div>
         </div>

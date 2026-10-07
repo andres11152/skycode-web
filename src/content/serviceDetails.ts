@@ -1,6 +1,7 @@
 import serviceDetailsEs from "./locales/es/service-details.json";
 import serviceDetailsEn from "./locales/en/service-details.json";
 import serviceDetailsFr from "./locales/fr/service-details.json";
+import { fillPricingTokensDeep } from "./pricingTokens";
 import type { Locale } from "@/lib/i18n";
 
 /**
@@ -46,6 +47,8 @@ const detailsByLocale: Record<Locale, Record<string, ServiceDetails>> = {
   fr: serviceDetailsFr,
 };
 
+/** Los textos pueden traer tokens de precio/plazo (`{price.web}`, `{priceUsd.web}`, `{weeks.web}`): se resuelven aquí con las cifras del cotizador. */
 export function getServiceDetails(slug: string, locale: Locale): ServiceDetails | undefined {
-  return detailsByLocale[locale][slug];
+  const details = detailsByLocale[locale][slug];
+  return details ? fillPricingTokensDeep(details) : undefined;
 }

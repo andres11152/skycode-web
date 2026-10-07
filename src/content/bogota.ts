@@ -1,5 +1,6 @@
 import bogotaDataEs from "./locales/es/bogota.json";
 import { PRICING } from "./projectEstimator";
+import { fillPricingTokens, formatPriceCop } from "./pricingTokens";
 import { withoutTodos } from "@/lib/todoPlaceholders";
 
 // Página local `/desarrollo-software-bogota` — SOLO en español, a propósito:
@@ -178,32 +179,11 @@ type RawBogotaContent = Omit<BogotaContent, "pricing"> & {
 
 const raw: RawBogotaContent = bogotaDataEs;
 
-function formatCop(amount: number): string {
-  return `$${amount.toLocaleString("es-CO")} COP`;
-}
-
-/** "$4,5 M COP" — para el meta description, donde cada carácter cuenta. */
-function formatCopShort(amount: number): string {
-  const millions = (amount / 1_000_000).toLocaleString("es-CO", { maximumFractionDigits: 1 });
-  return `$${millions} M COP`;
-}
-
-/** Reemplaza `{price.x}`, `{priceShort.x}` y `{weeks.x}` con las cifras del cotizador. */
-export function fillPricingTokens(text: string): string {
-  return text.replace(/\{(price|priceShort|weeks)\.([a-z]+)\}/g, (match, kind: string, id: string) => {
-    const entry = PRICING[id];
-    if (!entry) return match;
-    if (kind === "price") return formatCop(entry.priceCop);
-    if (kind === "priceShort") return formatCopShort(entry.priceCop);
-    return String(entry.baseWeeks);
-  });
-}
-
 function resolvePlans(plans: RawBogotaPlan[]): BogotaPlan[] {
   return plans.map((plan) => {
     const entry = PRICING[plan.id];
     if (!entry) throw new Error(`bogota.json: el plan "${plan.id}" no existe en PRICING (projectEstimator.ts)`);
-    return { ...plan, price: formatCop(entry.priceCop), priceCop: entry.priceCop, weeks: entry.baseWeeks };
+    return { ...plan, price: formatPriceCop(entry.priceCop), priceCop: entry.priceCop, weeks: entry.baseWeeks };
   });
 }
 

@@ -1,5 +1,5 @@
 {
-  "_doc": "Reglas de enlazado interno contextual del blog (ver scripts/seo-blog-internal-links.mjs). Cada post trae una lista de enlaces candidatos EN ORDEN DE PRIORIDAD. kind = service | post | case (la ruta se arma por idioma: /servicios/{slug}, /blog/{slug}, /portafolio/{slug} o /{en|fr}/portfolio/{slug}). 'always: false' = solo se inserta si el post aún no llega a minInternalLinks enlaces internos distintos; 'always: true' = enlace de valor editorial que se agrega siempre (p. ej. los entrantes al post de outsourcing). Por idioma hay dos formas: { wrap } envuelve una frase que YA existe en el texto (no agrega palabras), o { block, anchor, append } agrega una frase breve al final del párrafo cuyo texto empieza por 'block'; 'append' lleva el marcador {link}, que se reemplaza por [anchor](ruta). Solo se enlaza donde la relación es real: nada de cifras ni afirmaciones nuevas.",
+  "_doc": "Reglas de enlazado interno contextual del blog (ver scripts/seo-blog-internal-links.mjs). Cada post trae una lista de enlaces candidatos EN ORDEN DE PRIORIDAD. kind = service | post | case | page (page: slug 'cotizador' o 'portafolio', rutas fijas; la ruta se arma por idioma: /servicios/{slug}, /blog/{slug}, /portafolio/{slug} o /{en|fr}/portfolio/{slug}). 'always: false' = solo se inserta si el post aún no llega a minInternalLinks enlaces internos distintos; 'always: true' = enlace de valor editorial que se agrega siempre (p. ej. los entrantes al post de outsourcing). Por idioma hay dos formas: { wrap } envuelve una frase que YA existe en el texto (no agrega palabras), o { block, anchor, append } agrega una frase breve al final del párrafo cuyo texto empieza por 'block'; 'append' lleva el marcador {link}, que se reemplaza por [anchor](ruta). Solo se enlaza donde la relación es real: nada de cifras ni afirmaciones nuevas.",
   "minInternalLinks": 2,
   "posts": {
     "ley-1581-guia-tecnica-software": [
@@ -196,6 +196,46 @@
           "anchor": "logiciels sur mesure",
           "append": "Pour appliquer ces décisions à votre propre système, découvrez notre service de {link}, déployé sur votre propre infrastructure."
         }
+      },
+      {
+        "kind": "service",
+        "slug": "frontend-alto-rendimiento",
+        "always": true,
+        "es": {
+          "block": "Una estrategia intermedia",
+          "anchor": "desarrollo web de alto rendimiento",
+          "append": "En la capa web, decidir qué se genera de forma estática y qué se renderiza bajo demanda puede reducir el cómputo que se paga por visita; es el enfoque de nuestro servicio de {link}."
+        },
+        "en": {
+          "block": "A hybrid strategy",
+          "anchor": "high-performance web development",
+          "append": "On the web layer, deciding what is generated statically and what is rendered on demand can cut the compute you pay for per visit; that is the approach behind our {link} service."
+        },
+        "fr": {
+          "block": "Une stratégie hybride",
+          "anchor": "développement web haute performance",
+          "append": "Côté web, décider ce qui est généré de façon statique et ce qui est rendu à la demande peut réduire le calcul facturé à chaque visite ; c'est l'approche de notre service de {link}."
+        }
+      },
+      {
+        "kind": "page",
+        "slug": "cotizador",
+        "always": true,
+        "es": {
+          "block": "Para una empresa que recién empieza a evaluar esta transición",
+          "anchor": "cotizador",
+          "append": "Si además quieres una referencia de inversión para un proyecto nuevo, nuestro {link} calcula un rango y un tiempo aproximados en minutos."
+        },
+        "en": {
+          "block": "For a company just starting to evaluate this transition",
+          "anchor": "estimator",
+          "append": "If you also want an investment reference for a new project, our {link} calculates an approximate range and timeline in minutes."
+        },
+        "fr": {
+          "block": "Pour une entreprise qui commence tout juste à évaluer cette transition",
+          "anchor": "estimateur",
+          "append": "Si vous voulez aussi une référence d'investissement pour un nouveau projet, notre {link} calcule une fourchette et un délai approximatifs en quelques minutes."
+        }
       }
     ],
     "outsourcing-software-latam-propiedad-codigo": [
@@ -237,6 +277,46 @@
           "block": "Lorsqu'on choisit un développement logiciel nearshore",
           "anchor": "développement de logiciels sur mesure",
           "append": "Dans notre service de {link}, le code, la base de données et l'infrastructure sont sous vos propres comptes dès le premier commit."
+        }
+      },
+      {
+        "kind": "page",
+        "slug": "cotizador",
+        "always": true,
+        "es": {
+          "block": "Antes de firmar, una conversación técnica directa",
+          "anchor": "cotizador",
+          "append": "Para llegar a esa reunión con una referencia de presupuesto, puedes calcular un rango en nuestro {link}."
+        },
+        "en": {
+          "block": "Before signing, a direct technical conversation",
+          "anchor": "estimator",
+          "append": "To arrive at that meeting with a budget reference, you can calculate a range in our {link}."
+        },
+        "fr": {
+          "block": "Avant de signer, une conversation technique directe",
+          "anchor": "estimateur",
+          "append": "Pour arriver à cette réunion avec une référence budgétaire, vous pouvez calculer une fourchette dans notre {link}."
+        }
+      },
+      {
+        "kind": "page",
+        "slug": "portafolio",
+        "always": true,
+        "es": {
+          "block": "Hay patrones que, en la experiencia",
+          "anchor": "proyectos reales en producción",
+          "append": "Una forma concreta de contrastar a un proveedor es revisar {link}: así se ven los nuestros."
+        },
+        "en": {
+          "block": "There are patterns that, in the experience",
+          "anchor": "real projects in production",
+          "append": "A concrete way to vet a vendor is to review {link}: this is what ours look like."
+        },
+        "fr": {
+          "block": "Il existe des schémas qui, dans l'expérience",
+          "anchor": "des projets réels en production",
+          "append": "Une façon concrète d'évaluer un prestataire est d'examiner {link} : voici à quoi ressemblent les nôtres."
         }
       }
     ]
