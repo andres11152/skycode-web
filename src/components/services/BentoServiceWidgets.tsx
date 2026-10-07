@@ -80,11 +80,11 @@ export function CodeConsoleWidget({ locale = defaultLocale }: WidgetProps) {
             tabIndex={0}
             onClick={handleRun}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleRun(e); }}
-            className={`ml-1 flex min-h-6 items-center gap-1 rounded bg-accent-strong px-2 sm:px-2.5 text-[10px] font-bold text-white shadow-sm hover:brightness-90 cursor-pointer active:scale-95 transition-all shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
+            className={`ml-1 flex min-h-6 items-center gap-1 rounded bg-accent-strong px-2 sm:px-2.5 text-[10px] font-bold text-white shadow-sm hover:brightness-90 cursor-pointer active:scale-95 transition shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
               isRunning ? "opacity-50 pointer-events-none" : ""
             }`}
           >
-            <Play size={10} className={isRunning ? "animate-spin" : ""} />
+            <Play size={10} className={isRunning ? "motion-safe:animate-spin" : ""} />
             {isRunning ? content.running : content.run}
           </span>
         </div>
@@ -192,7 +192,7 @@ export function MobileAppPreviewWidget({ locale = defaultLocale }: WidgetProps) 
                   }}
                   className="mx-auto flex items-center justify-center gap-1 rounded-full bg-accent/20 px-2 py-1 text-[9px] text-background font-bold cursor-pointer hover:bg-accent/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground"
                 >
-                  <ArrowsClockwise size={10} className={!synced ? "animate-spin" : ""} />
+                  <ArrowsClockwise size={10} className={!synced ? "motion-safe:animate-spin" : ""} />
                   {synced ? content.synced : content.syncing}
                 </span>
               </motion.div>
@@ -291,11 +291,11 @@ export function ApiInspectorWidget({ locale = defaultLocale }: WidgetProps) {
           tabIndex={0}
           onClick={handleTestApi}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleTestApi(e); }}
-          className={`flex items-center gap-1 rounded bg-accent-strong px-2.5 py-1 text-[10px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
+          className={`flex items-center gap-1 rounded bg-accent-strong px-2.5 py-1 text-[10px] font-bold text-white hover:brightness-90 cursor-pointer transition active:scale-95 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
             loading ? "opacity-50 pointer-events-none" : ""
           }`}
         >
-          <PaperPlaneTilt size={10} className={loading ? "animate-ping" : ""} />
+          <PaperPlaneTilt size={10} className={loading ? "motion-safe:animate-ping" : ""} />
           {loading ? content.testing : content.send}
         </span>
       </div>
@@ -383,7 +383,7 @@ export function SecurityComplianceWidget({ locale = defaultLocale }: WidgetProps
           tabIndex={0}
           onClick={handleAudit}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleAudit(e); }}
-          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
+          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
             scanning ? "opacity-50 pointer-events-none" : ""
           }`}
         >
@@ -426,7 +426,7 @@ export function ArchitectureDocWidget() {
           tabIndex={0}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("client"); }}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveNode("client"); } }}
-          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
+          className={`flex-1 rounded border p-1.5 cursor-pointer transition outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
             activeNode === "client" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
           }`}
         >
@@ -438,7 +438,7 @@ export function ArchitectureDocWidget() {
           tabIndex={0}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("gateway"); }}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveNode("gateway"); } }}
-          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
+          className={`flex-1 rounded border p-1.5 cursor-pointer transition outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
             activeNode === "gateway" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
           }`}
         >
@@ -450,7 +450,7 @@ export function ArchitectureDocWidget() {
           tabIndex={0}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveNode("db"); }}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setActiveNode("db"); } }}
-          className={`flex-1 rounded border p-1.5 cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
+          className={`flex-1 rounded border p-1.5 cursor-pointer transition outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
             activeNode === "db" ? "border-accent bg-accent/20 text-accent font-bold" : "border-foreground/15 bg-background/40 text-foreground/70"
           }`}
         >
@@ -509,7 +509,7 @@ export function LegacyMigrationWidget({ locale = defaultLocale }: WidgetProps) {
           tabIndex={0}
           onClick={handleMigrate}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleMigrate(e); }}
-          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
+          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
             migrating ? "opacity-50 pointer-events-none" : ""
           }`}
         >
@@ -576,7 +576,7 @@ export function AiAppliedWidget({ locale = defaultLocale }: WidgetProps) {
           tabIndex={0}
           onClick={handleRunAi}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleRunAi(e); }}
-          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition-all active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
+          className={`rounded bg-accent-strong px-2 py-0.5 text-[9px] font-bold text-white hover:brightness-90 cursor-pointer transition active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
             running ? "opacity-50 pointer-events-none" : ""
           }`}
         >
@@ -639,7 +639,7 @@ export function EcommerceCheckoutWidget() {
             tabIndex={0}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setGateway(g.id); }}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setGateway(g.id); } }}
-            className={`flex-1 rounded px-1.5 py-1 text-center text-[9px] cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
+            className={`flex-1 rounded px-1.5 py-1 text-center text-[9px] cursor-pointer transition outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-foreground ${
               gateway === g.id ? "bg-accent-strong text-white font-bold" : "bg-background/10 text-background/60"
             }`}
           >

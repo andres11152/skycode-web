@@ -95,14 +95,14 @@
     },
     {
       "slug": "cda-revifull",
-      "title": "CDA Revifull · Plateforme de Rendez-vous en Ligne",
+      "title": "CDA Revifull · Site Institutionnel et Réservation en Ligne",
       "client": "CDA Revifull S.A.S. · Centre de Contrôle Technique Automobile",
-      "description": "Portail rapide de réservation pour le contrôle technique des véhicules et deux-roues à Bogotá, avec rappels automatiques et canal direct WhatsApp.",
+      "description": "Site institutionnel pour un centre de contrôle technique à Bogotá (voitures et motos), avec une réservation en ligne basée sur le plugin Amelia, et les intégrations marketing pour mesurer les campagnes.",
       "tags": [
-        "Rendez-vous Web",
+        "Site Institutionnel",
         "Secteur Automobile",
-        "API WhatsApp",
-        "Next.js"
+        "WhatsApp",
+        "WordPress"
       ],
       "iconName": "Car",
       "link": "https://cdarevifull.com/",

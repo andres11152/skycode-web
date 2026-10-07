@@ -26,7 +26,7 @@
     "linkUrl": "/politica-privacidad"
   },
   "successModal": {
-    "title": "¡Mensaje recibido! 🎉",
+    "title": "¡Mensaje recibido!",
     "body": "Ya tenemos los detalles de tu proyecto. Uno de nosotros los revisará hoy mismo y te responderemos con una valoración honesta (nada de respuestas genéricas de bots).",
     "statusCrm": "Recibido directamente por el equipo técnico",
     "slaGuarantee": "Te respondemos en menos de 24 horas hábiles",
@@ -35,7 +35,7 @@
   },
   "confirmationEmail": {
     "subject": "Hemos recibido tu mensaje, {name}",
-    "preheader": "Uno de nuestros ingenieros revisará tu proyecto hoy mismo — sin respuestas genéricas de bots.",
+    "preheader": "Uno de nuestros ingenieros revisará tu proyecto hoy mismo, sin respuestas genéricas de bots.",
     "greeting": "Hola {name},",
     "serviceLabel": "Servicio solicitado",
     "messageLabel": "Tu mensaje",

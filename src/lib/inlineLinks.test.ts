@@ -29,6 +29,30 @@ describe("parseInlineLinks", () => {
   });
 });
 
+describe("código en línea", () => {
+  it("separa `código` del texto, sin las comillas invertidas", () => {
+    expect(parseInlineLinks("Evita `Access-Control-Allow-Origin: *` en producción.")).toEqual([
+      { type: "text", text: "Evita " },
+      { type: "code", text: "Access-Control-Allow-Origin: *" },
+      { type: "text", text: " en producción." },
+    ]);
+  });
+
+  it("convive con enlaces en el mismo texto y no interpreta un enlace dentro del código", () => {
+    const segments = parseInlineLinks("Usa `GET /x` y lee [la guía](/blog/x) o `[a](/b)`.");
+    expect(segments.map((segment) => segment.type)).toEqual(["text", "code", "text", "link", "text", "code", "text"]);
+    expect(segments[5]).toEqual({ type: "code", text: "[a](/b)" });
+  });
+
+  it("una comilla invertida suelta queda como texto", () => {
+    expect(parseInlineLinks("solo una ` comilla")).toEqual([{ type: "text", text: "solo una ` comilla" }]);
+  });
+
+  it("stripInlineLinks también quita las comillas invertidas", () => {
+    expect(stripInlineLinks("Cabecera `Cache-Control` y [guía](/blog/x)")).toBe("Cabecera Cache-Control y guía");
+  });
+});
+
 describe("stripInlineLinks", () => {
   it("deja solo el texto visible", () => {
     expect(stripInlineLinks("Lee [la guía](/blog/x) completa")).toBe("Lee la guía completa");

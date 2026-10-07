@@ -426,7 +426,7 @@
     "useCases": [
       "Entreprises qui traitent des données personnelles de clients et doivent se mettre en conformité avec la loi 1581 colombienne ou le RGPD.",
       "Plateformes qui vont faire l'objet d'un audit ou d'une due diligence de la part d'un client ou d'un investisseur.",
-      "Systèmes hérités à moderniser sans exposer d'informations sensibles — voir [migration de systèmes legacy](/fr/servicios/migracion-datos-legacy)."
+      "Systèmes hérités à moderniser sans exposer d'informations sensibles: voir [migration de systèmes legacy](/fr/servicios/migracion-datos-legacy)."
     ],
     "faqHeading": "Questions fréquentes sur la sécurité et la protection des données",
     "faqs": [
@@ -552,7 +552,7 @@
   "migracion-datos-legacy": {
     "intro": [
       "Un système legacy n'est pas seulement un vieux logiciel : c'est celui qui fait encore tourner la facturation, les stocks ou l'activité quotidienne, mais que plus personne n'ose modifier. Notre service de migration de systèmes legacy le remplace module par module, l'ancien système restant en service en parallèle jusqu'à ce que le nouveau prouve qu'il traite les mêmes opérations avec les mêmes résultats.",
-      "Pas de bascule « big bang » le week-end. Nous appliquons le pattern Strangler Fig, la synchronisation des données entre les deux systèmes et un rapprochement automatisé avant chaque bascule — détaillés dans notre [guide de migration d'un système legacy sans coupure](/fr/blog/migracion-sistemas-legados-sin-interrupcion)."
+      "Pas de bascule « big bang » le week-end. Nous appliquons le pattern Strangler Fig, la synchronisation des données entre les deux systèmes et un rapprochement automatisé avant chaque bascule, détaillés dans notre [guide de migration d'un système legacy sans coupure](/fr/blog/migracion-sistemas-legados-sin-interrupcion)."
     ],
     "challenge": {
       "heading": "Les signes que votre système est déjà devenu un système legacy",
@@ -578,7 +578,7 @@
       },
       {
         "title": "Décision par module : migrer, conserver ou décommissionner",
-        "text": "Tout ne mérite pas une refonte. Chaque module est classé : réhébergé, refactorisé, remplacé par un SaaS, encapsulé derrière une API ou décommissionné — le budget va là où l'existant freine vraiment l'activité."
+        "text": "Tout ne mérite pas une refonte. Chaque module est classé : réhébergé, refactorisé, remplacé par un SaaS, encapsulé derrière une API ou décommissionné, le budget va là où l'existant freine vraiment l'activité."
       },
       {
         "title": "Architecture cible et couche de routage",
@@ -594,7 +594,7 @@
       },
       {
         "title": "Bascule, supervision et décommissionnement",
-        "text": "Le trafic bascule de façon progressive et réversible, nous surveillons erreurs et performances, et ce n'est qu'à la fin que l'ancien système est décommissionné — avec une archive en lecture seule des données que la loi impose de conserver."
+        "text": "Le trafic bascule de façon progressive et réversible, nous surveillons erreurs et performances, et ce n'est qu'à la fin que l'ancien système est décommissionné, avec une archive en lecture seule des données que la loi impose de conserver."
       }
     ],
     "useCasesHeading": "Projets de modernisation legacy typiques",
@@ -602,7 +602,7 @@
       "Un ERP ou logiciel de gestion développé sur mesure il y a 10-15 ans, sans documentation, maîtrisé par une seule personne.",
       "Une activité qui repose sur des fichiers Excel, XML ou Access dispersés et a besoin d'une base unique, avec droits d'accès et traçabilité.",
       "Des applications client lourd (Visual Basic, Delphi, ancien PHP) à porter vers le web ou le cloud sans arrêter la facturation.",
-      "Des bases de données non conformes au RGPD qui ont besoin de chiffrement, de contrôle d'accès et de journalisation — voir notre service [sécurité et conformité](/fr/servicios/seguridad-cumplimiento).",
+      "Des bases de données non conformes au RGPD qui ont besoin de chiffrement, de contrôle d'accès et de journalisation: voir notre service [sécurité et conformité](/fr/servicios/seguridad-cumplimiento).",
       "Des systèmes à décommissionner sans reprendre tout l'historique : seules les données actives migrent, le reste est archivé en consultation."
     ],
     "faqHeading": "Questions fréquentes sur la migration de systèmes legacy",

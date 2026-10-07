@@ -1,6 +1,6 @@
 {
-  "badge": "Portfolio & Réalisations",
-  "title": "Portfolio",
+  "badge": "Portfolio et réalisations",
+  "title": "Des logiciels déjà en production",
   "description": "Des solutions concrètes développées pour éliminer les goulots d'étranglement opérationnels et accélérer la croissance.",
   "viewAll": "Voir tous les projets",
   "featuredBadge": "Étude de Cas",
@@ -43,14 +43,15 @@
     "viewAllCases": "Voir tous les cas",
     "ctaTitle": "Un projet similaire en tête ?",
     "ctaButton": "Parler à un ingénieur",
-    "captureAlt": "{title} — capture {index}",
+    "captureAlt": "{title}, capture {index}",
     "lightbox": {
       "dialog": "Galerie d'images",
       "close": "Fermer",
       "prev": "Image précédente",
       "next": "Image suivante",
       "zoomIn": "Zoomer",
-      "zoomOut": "Dézoomer"
+      "zoomOut": "Dézoomer",
+      "position": "Image {index} sur {total}"
     },
     "related": {
       "title": "Pour aller plus loin",

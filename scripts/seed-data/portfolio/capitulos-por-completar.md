@@ -36,7 +36,7 @@ Reto/Solución son una propuesta de redacción; los Resultados quedan en blanco 
 ## 4. cda-revifull — Plataforma de Agendamiento en Línea
 
 - **Reto (borrador):** Agendar la revisión técnico-mecánica de vehículos y motos en Bogotá sin llamadas ni coordinación manual, y cotizar de forma directa.
-- **Solución (borrador):** Portal de agendamiento rápido con recordatorios automáticos y cotización directa por WhatsApp.
+- **Solución (borrador):** Sitio en WordPress con agendamiento en línea sobre el plugin Amelia (asistente de reserva en tres pasos) justo después de la portada.
 - **Resultados — necesito de ti:** ¿citas agendadas en línea por mes? ¿% que llega por el portal? ¿reducción de inasistencias gracias a los recordatorios?
 
 ## 5. racingbike — Racing Bike 1998 · Tienda Online de Ciclismo

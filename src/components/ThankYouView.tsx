@@ -82,7 +82,7 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
 
         <div className="mt-6 space-y-2.5 rounded-xl border border-foreground/10 bg-foreground/[0.03] p-4 text-left text-xs text-foreground/80">
           <div className="flex items-center gap-2 font-medium">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="h-2 w-2 rounded-full bg-emerald-500 motion-safe:animate-pulse" />
             <span>{contactData.successModal.statusCrm}</span>
           </div>
           <div className="flex items-center gap-2 font-medium">
@@ -94,7 +94,7 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
         <div className="mt-7 flex w-full flex-col gap-3 sm:flex-row">
           <Link
             href={localeHomePath(locale)}
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent-strong px-5 text-sm font-bold text-white outline-none transition-all hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent-strong px-5 text-sm font-bold text-white outline-none transition hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             {uiData.backToHome}
           </Link>
@@ -102,7 +102,7 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
             href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 text-sm font-bold text-emerald-700 outline-none transition-all hover:border-emerald-500/50 hover:bg-emerald-500/20 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 text-sm font-bold text-emerald-700 outline-none transition hover:border-emerald-500/50 hover:bg-emerald-500/20 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <ChatCircle size={16} />
             {contactData.successModal.whatsappCta}

@@ -1,5 +1,5 @@
 {
-  "badge": "Contact & Diagnostic",
+  "badge": "Contact et diagnostic",
   "title": "Parlons de votre projet",
   "description": "Arrêtez de reporter le développement de votre plateforme. Parlez-nous de votre défi technique aujourd'hui et recevez un pré-diagnostic d'architecture gratuit directement de notre équipe d'ingénierie, pas une réponse automatique.",
   "placeholders": {
@@ -35,7 +35,7 @@
   },
   "confirmationEmail": {
     "subject": "Nous avons bien reçu votre message, {name}",
-    "preheader": "Un de nos ingénieurs examinera votre projet aujourd'hui — sans réponses génériques de bot.",
+    "preheader": "Un de nos ingénieurs examinera votre projet aujourd'hui, sans réponses génériques de bot.",
     "greeting": "Bonjour {name},",
     "serviceLabel": "Service demandé",
     "messageLabel": "Votre message",

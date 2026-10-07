@@ -8,7 +8,7 @@
   },
   "globalError": {
     "title": "Algo salió mal",
-    "description": "Ocurrió un error inesperado al cargar el sitio. Intente de nuevo — si el problema persiste, contáctenos por WhatsApp.",
+    "description": "Ocurrió un error inesperado al cargar el sitio. Intente de nuevo, si el problema persiste, contáctenos por WhatsApp.",
     "ctaRetry": "Reintentar",
     "ctaHome": "Volver al inicio"
   }

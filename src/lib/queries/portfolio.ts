@@ -10,6 +10,7 @@ import {
   type PortfolioProject,
   type PortfolioStatus,
   type PortfolioTechnology,
+  type StoredImageVariants,
   toPublicProject,
 } from "@/content/portfolioShared";
 
@@ -17,10 +18,20 @@ interface QueryRunner {
   query: typeof query;
 }
 
+/** Separa las URLs de las variantes del marcador de posición que viaja en el mismo JSONB. */
+function splitStoredVariants(raw: unknown): { variants: PortfolioImage["variants"]; blurDataURL: string | null; color: string | null } {
+  const stored = (raw ?? { sm: "", md: "", lg: "" }) as StoredImageVariants;
+  const { blur, color, ...variants } = stored;
+  return { variants, blurDataURL: blur ?? null, color: color ?? null };
+}
+
 function shapeImage(row: Record<string, unknown>, locale: Locale): PortfolioImage {
+  const { variants, blurDataURL, color } = splitStoredVariants(row.variants);
   return {
     id: Number(row.id),
-    variants: (row.variants ?? { sm: "", md: "", lg: "" }) as PortfolioImage["variants"],
+    variants,
+    blurDataURL,
+    color,
     width: Number(row.width),
     height: Number(row.height),
     alt: resolveLocalizedText(row.alt, locale),
@@ -349,7 +360,7 @@ export async function getAdminPortfolioDetail(id: number): Promise<AdminPortfoli
     technologies: techRes.rows.map(shapeTechnology),
     images: imagesRes.rows.map((row) => ({
       id: Number(row.id),
-      variants: (row.variants ?? { sm: "", md: "", lg: "" }) as PortfolioImage["variants"],
+      variants: splitStoredVariants(row.variants).variants,
       width: Number(row.width),
       height: Number(row.height),
       alt: (row.alt ?? {}) as Record<string, string>,
@@ -548,6 +559,8 @@ export async function softDeletePortfolioProject(id: number, dbRunner: QueryRunn
 export interface AddPortfolioImageData {
   storageKey: string;
   variants: PortfolioImage["variants"];
+  /** Marcador de posición; se guarda dentro del JSONB `variants` (ver `StoredImageVariants`). */
+  placeholder?: { blurDataURL: string; color: string };
   width: number;
   height: number;
 }
@@ -565,7 +578,16 @@ export async function addPortfolioProjectImage(
   const res = await dbRunner.query(
     `INSERT INTO portfolio_project_images (project_id, storage_key, variants, width, height, sort_order)
      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;`,
-    [projectId, data.storageKey, JSON.stringify(data.variants), data.width, data.height, nextOrder]
+    [
+      projectId,
+      data.storageKey,
+      JSON.stringify(
+        data.placeholder ? { ...data.variants, blur: data.placeholder.blurDataURL, color: data.placeholder.color } : data.variants
+      ),
+      data.width,
+      data.height,
+      nextOrder,
+    ]
   );
   return { id: res.rows[0].id as number, sortOrder: nextOrder };
 }

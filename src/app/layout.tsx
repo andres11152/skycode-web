@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { LazyMotionProvider } from "@/components/LazyMotionProvider";
 import { LocaleProvider } from "@/components/LocaleProvider";
@@ -21,16 +21,21 @@ import "./globals.css";
 
 const { homeTitle } = getSiteText("es");
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-heading",
-  subsets: ["latin"],
-  display: "optional",
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
+// Una sola familia (Geist) para titulares y texto, y su monoespaciada para etiquetas,
+// numeración y código. Las dos tipografías anteriores (Space Grotesk + Plus Jakarta Sans)
+// son las elecciones por defecto de las plantillas generadas; una familia sobria con
+// jerarquía por peso y tamaño se lee como producto de ingeniería. `swap` con el ajuste
+// automático de métricas de next/font evita el salto de layout al cargar.
+const geist = Geist({
   variable: "--font-body",
   subsets: ["latin"],
-  display: "optional",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 
@@ -232,7 +237,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${spaceGrotesk.variable} ${plusJakartaSans.variable} h-full antialiased`}
+      className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <OrganizationJsonLd />

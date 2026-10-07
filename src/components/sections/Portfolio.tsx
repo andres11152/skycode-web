@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { m as motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "@phosphor-icons/react";
+import { RevealText } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { Button } from "@/components/ui/Button";
 import { EsBadge } from "@/components/ui/EsBadge";
@@ -57,6 +58,8 @@ function FeaturedCase({
         <CaseVisual
           slug={project.slug}
           imageSrc={project.coverImage?.variants.lg ?? null}
+          blurDataURL={project.coverImage?.blurDataURL}
+          color={project.coverImage?.color}
           alt={project.coverImage?.alt || project.title}
           industryIcon={project.industryIcon}
           url={getProjectHostname(project)}
@@ -121,6 +124,8 @@ function SecondaryCase({
       <CaseVisual
         slug={project.slug}
         imageSrc={project.coverImage?.variants.md ?? null}
+          blurDataURL={project.coverImage?.blurDataURL}
+          color={project.coverImage?.color}
         alt={project.coverImage?.alt || project.title}
         industryIcon={project.industryIcon}
         url={getProjectHostname(project)}
@@ -174,17 +179,17 @@ export function Portfolio({
     <section
       id="portfolio"
       aria-label={uiData.portfolioSectionAria}
-      className="scroll-mt-24 border-y border-foreground/5 bg-foreground/[0.02] px-6 py-20 sm:py-24 lg:py-28"
+      className="scroll-mt-24 px-6 py-24 sm:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
-            <SectionEyebrow className="mb-3">{sectionCopy.badge}</SectionEyebrow>
-            <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">{sectionCopy.title}</h2>
+            <SectionEyebrow className="reveal-blur mb-3">{sectionCopy.badge}</SectionEyebrow>
+            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl"><RevealText text={sectionCopy.title} /></h2>
             <p className="mt-3 text-base text-foreground/80 sm:text-lg">{sectionCopy.description}</p>
           </div>
 
-          <Button href={portfolioIndexPath(locale)} variant="secondary" size="sm" className="shrink-0">
+          <Button href={portfolioIndexPath(locale)} variant="secondary" size="md" className="shrink-0">
             {sectionCopy.viewAll}
           </Button>
         </div>
@@ -215,12 +220,6 @@ export function Portfolio({
             </div>
           )}
 
-          {/* Botón para explorar el catálogo completo de proyectos */}
-          <div className="flex justify-center pt-4">
-            <Button href={portfolioIndexPath(locale)} variant="secondary" size="lg">
-              {sectionCopy.viewAll}
-            </Button>
-          </div>
         </motion.div>
       </div>
     </section>

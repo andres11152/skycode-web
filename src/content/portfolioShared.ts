@@ -44,6 +44,18 @@ export interface PortfolioImageVariants {
   sm: string;
   md: string;
   lg: string;
+  /** Solo si la fuente era más ancha que `lg` (ver portfolioStorage.ts): el zoom del visor cae a `lg` sin ella. */
+  xl?: string;
+}
+
+/**
+ * Lo que se guarda en la columna JSONB `variants`: las URLs más el marcador de
+ * posición. Van juntos a propósito (sin migración): son datos de la misma
+ * subida y siempre se leen con la fila.
+ */
+export interface StoredImageVariants extends PortfolioImageVariants {
+  blur?: string;
+  color?: string;
 }
 
 export interface PortfolioImage {
@@ -53,6 +65,10 @@ export interface PortfolioImage {
   height: number;
   /** Ya resuelto al locale pedido (con fallback a español), no el JSONB crudo — ver `resolveLocalizedText()`. */
   alt: string;
+  /** Difuminado de ~16px para `placeholder="blur"`; `null` en imágenes anteriores al relleno (ver db:portfolio-image-placeholders). */
+  blurDataURL: string | null;
+  /** Color medio (`#rrggbb`); `null` igual que `blurDataURL`. */
+  color: string | null;
 }
 
 export interface PortfolioTechnology {
@@ -230,4 +246,64 @@ export function visibleCaseBlocks(text: string | null | undefined): CaseTextBloc
 export interface CaseRelatedLinks {
   services: { slug: string; title: string; href: string }[];
   posts: { slug: string; title: string; href: string }[];
+}
+
+/** Máximo de capturas que el índice lleva por caso (el resto se pide al abrir el visor). */
+export const INDEX_PREVIEW_LIMIT = 8;
+
+/**
+ * Lo que el índice `/portafolio` necesita de cada caso. `PortfolioIndexView` es
+ * un componente cliente: todo lo que reciba por prop viaja en la carga RSC del
+ * HTML. Con `PortfolioProject` completo eso eran los capítulos de texto largo
+ * y las 19 capturas de un solo caso; acá solo va el resumen y unas pocas
+ * capturas.
+ */
+export interface PortfolioIndexItem {
+  slug: string;
+  isFeatured: boolean;
+  liveUrl: string | null;
+  industryIcon: string;
+  title: string;
+  clientLabel: string;
+  summary: string;
+  capabilities: string[];
+  coverImage: PortfolioImage | null;
+  /** Portada primero y luego las demás, hasta `INDEX_PREVIEW_LIMIT`. */
+  previewImages: PortfolioImage[];
+  /** Total real de capturas del caso (puede ser mayor que `previewImages.length`). */
+  imageCount: number;
+}
+
+export function toIndexItem(project: PortfolioProject): PortfolioIndexItem {
+  const cover = project.coverImage;
+  const ordered = cover ? [cover, ...project.images.filter((image) => image.id !== cover.id)] : project.images;
+  return {
+    slug: project.slug,
+    isFeatured: project.isFeatured,
+    liveUrl: project.liveUrl,
+    industryIcon: project.industryIcon,
+    title: project.title,
+    clientLabel: project.clientLabel,
+    summary: project.summary,
+    capabilities: project.capabilities,
+    coverImage: cover,
+    previewImages: ordered.slice(0, INDEX_PREVIEW_LIMIT),
+    imageCount: project.images.length,
+  };
+}
+
+/** Tecnologías únicas de todos los casos, las más repetidas primero (datos reales, nada inventado). */
+export function topTechnologies(projects: Pick<PortfolioProject, "technologies">[], limit: number): PortfolioTechnology[] {
+  const counts = new Map<number, { technology: PortfolioTechnology; count: number }>();
+  for (const project of projects) {
+    for (const technology of project.technologies) {
+      const entry = counts.get(technology.id);
+      if (entry) entry.count += 1;
+      else counts.set(technology.id, { technology, count: 1 });
+    }
+  }
+  return [...counts.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit)
+    .map((entry) => entry.technology);
 }

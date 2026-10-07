@@ -66,14 +66,49 @@ const ALLOWED_FORMATS = new Set(["jpeg", "png", "webp"]);
 const VARIANT_WIDTHS = { sm: 400, md: 800, lg: 1600 } as const;
 type VariantSize = keyof typeof VARIANT_WIDTHS;
 
+// Variante `xl`: solo para el zoom del visor en pantallas retina. Se genera
+// ÚNICAMENTE si la fuente es más ancha que `lg` (con `withoutEnlargement` una
+// fuente de 1600px o menos produciría un `xl` idéntico a `lg`: subir ese
+// duplicado solo gastaría bucket y ancho de banda). Sin `xl`, la UI cae a `lg`.
+const XL_WIDTH = 2400;
+
+// Marcador de posición: ~16px de ancho en WebP embebido como data URI (unos
+// 300 bytes) para `next/image placeholder="blur"`. El mismo cálculo (mismos
+// números) está duplicado en scripts/backfill-portfolio-image-placeholders.mjs,
+// que corre fuera de Next/TypeScript — si cambias uno, cambia el otro.
+const PLACEHOLDER_WIDTH = 16;
+const PLACEHOLDER_QUALITY = 40;
+
 const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
 
+export interface ImagePlaceholder {
+  /** `data:image/webp;base64,…` de ~16px, listo para `blurDataURL`. */
+  blurDataURL: string;
+  /** Color medio de la imagen (`#rrggbb`), fondo mientras llega la captura. */
+  color: string;
+}
+
+/** Marcador de posición (difuminado + color medio) de una imagen ya validada. */
+export async function buildImagePlaceholder(buffer: Buffer): Promise<ImagePlaceholder> {
+  const [tiny, pixel] = await Promise.all([
+    sharp(buffer, SHARP_INPUT_OPTIONS)
+      .rotate()
+      .resize({ width: PLACEHOLDER_WIDTH })
+      .webp({ quality: PLACEHOLDER_QUALITY })
+      .toBuffer(),
+    sharp(buffer, SHARP_INPUT_OPTIONS).rotate().resize(1, 1, { fit: "cover" }).removeAlpha().raw().toBuffer(),
+  ]);
+  const color = `#${[pixel[0], pixel[1], pixel[2]].map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+  return { blurDataURL: `data:image/webp;base64,${tiny.toString("base64")}`, color };
+}
+
 export interface ProcessedPortfolioImage {
-  /** UUID compartido entre las 3 variantes — es lo que se guarda en `portfolio_project_images.storage_key`. */
+  /** UUID compartido entre las variantes — es lo que se guarda en `portfolio_project_images.storage_key`. */
   storageKey: string;
-  variants: Record<VariantSize, string>;
+  variants: Record<VariantSize, string> & { xl?: string };
   width: number;
   height: number;
+  placeholder: ImagePlaceholder;
 }
 
 /**
@@ -110,11 +145,14 @@ export async function processAndUploadPortfolioImage(buffer: Buffer): Promise<Pr
 
   const storageKey = randomUUID();
   const client = getPortfolioR2Client();
-  const variants = {} as Record<VariantSize, string>;
+  const variants = {} as Record<VariantSize, string> & { xl?: string };
   let width = 0;
   let height = 0;
 
-  for (const [size, targetWidth] of Object.entries(VARIANT_WIDTHS) as [VariantSize, number][]) {
+  const targets: [VariantSize | "xl", number][] = Object.entries(VARIANT_WIDTHS) as [VariantSize, number][];
+  if ((metadata.width ?? 0) > VARIANT_WIDTHS.lg) targets.push(["xl", XL_WIDTH]);
+
+  for (const [size, targetWidth] of targets) {
     const { data, info } = await sharp(buffer, SHARP_INPUT_OPTIONS)
       .resize({ width: targetWidth, withoutEnlargement: true })
       .webp({ quality: 82 })
@@ -146,14 +184,15 @@ export async function processAndUploadPortfolioImage(buffer: Buffer): Promise<Pr
     }
   }
 
-  return { storageKey, variants, width, height };
+  const placeholder = await buildImagePlaceholder(buffer);
+  return { storageKey, variants, width, height, placeholder };
 }
 
-/** Borra las 3 variantes de una imagen del bucket — `DeleteObjectCommand` es idempotente (no falla si la key ya no existe), mismo criterio que `deleteDocumentFile()`. */
+/** Borra todas las variantes de una imagen del bucket (`xl` puede no existir) — `DeleteObjectCommand` es idempotente (no falla si la key ya no existe), mismo criterio que `deleteDocumentFile()`. */
 export async function deletePortfolioImageFiles(storageKey: string): Promise<void> {
   const client = getPortfolioR2Client();
   await Promise.all(
-    (Object.keys(VARIANT_WIDTHS) as VariantSize[]).map((size) =>
+    [...(Object.keys(VARIANT_WIDTHS) as VariantSize[]), "xl" as const].map((size) =>
       client.send(new DeleteObjectCommand({ Bucket: PORTFOLIO_BUCKET, Key: `${storageKey}-${size}.webp` }))
     )
   );

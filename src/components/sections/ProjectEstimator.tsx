@@ -440,7 +440,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                         className="flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-background/10 px-3.5 text-xs font-bold text-background transition-colors hover:bg-background/20 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                       >
                         {captureStatus === "sending" ? (
-                          <Spinner size={13} className="animate-spin" />
+                          <Spinner size={13} className="motion-safe:animate-spin" />
                         ) : (
                           <span>{content.emailCapture.submitLabel}</span>
                         )}

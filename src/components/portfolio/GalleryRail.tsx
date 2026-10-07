@@ -7,6 +7,14 @@ import { CaretLeft, CaretRight, CornersOut } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import type { PortfolioImage } from "@/content/portfolioShared";
 
+/**
+ * `sizes` de las miniaturas del carrusel. Se exporta porque el visor reutiliza
+ * exactamente la misma cadena para su capa de vista previa: con el mismo `src` y
+ * `sizes`, `next/image` pide la MISMA URL del optimizador y sale del caché del
+ * navegador al instante (otra cadena de `sizes` serían otras URLs y otra descarga).
+ */
+export const GALLERY_RAIL_SIZES = "(max-width: 640px) 86vw, (max-width: 1024px) 58vw, 560px";
+
 const FOCUS =
   "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
@@ -24,6 +32,7 @@ export function GalleryRail({
   nextLabel,
   expandLabel,
   onOpen,
+  onIntent,
 }: {
   images: PortfolioImage[];
   title: string;
@@ -32,6 +41,8 @@ export function GalleryRail({
   nextLabel: string;
   expandLabel: string;
   onOpen: (index: number) => void;
+  /** Hover o foco sobre una miniatura: el padre aprovecha para precargar el visor. */
+  onIntent?: () => void;
 }) {
   const reduced = Boolean(useReducedMotion());
   const railRef = useRef<HTMLDivElement>(null);
@@ -110,7 +121,10 @@ export function GalleryRail({
             key={image.id}
             type="button"
             onClick={() => onOpen(index)}
+            onPointerEnter={onIntent}
+            onFocus={onIntent}
             aria-label={`${expandLabel}: ${index + 1} / ${images.length}`}
+            style={image.color ? { backgroundColor: image.color } : undefined}
             className={cn(
               "group relative aspect-[16/10] w-[86%] shrink-0 snap-start overflow-hidden rounded-xl border border-foreground/10 bg-foreground/5 sm:w-[58%] lg:w-[48%]",
               "transition-colors duration-200 hover:border-foreground/30",
@@ -121,7 +135,10 @@ export function GalleryRail({
               src={image.variants.md}
               alt={image.alt}
               fill
-              sizes="(max-width: 640px) 86vw, (max-width: 1024px) 58vw, 560px"
+              sizes={GALLERY_RAIL_SIZES}
+              placeholder={image.blurDataURL ? "blur" : "empty"}
+              blurDataURL={image.blurDataURL ?? undefined}
+              style={{ objectFit: "cover", objectPosition: "top" }}
               className="object-cover object-top motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out motion-safe:group-hover:scale-[1.03]"
             />
             <span

@@ -5,6 +5,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, CheckCircle } from "@phosphor-icons/react";
+import { ServiceDemoSkeleton } from "@/components/services/ServiceDemoSkeleton";
 import { MorphTransition } from "@/components/ui/CoverTransition";
 import { getServicesContent } from "@/content/services";
 import { DURATION, EASE_OUT, SPRING_SNAPPY } from "@/lib/animations";
@@ -18,7 +19,7 @@ import { cn } from "@/lib/utils";
 // JS en la primera carga, también en móvil.
 const ServiceDemo = dynamic(() => import("@/components/services/ServiceDemo"), {
   ssr: false,
-  loading: () => <div className="h-72 rounded-xl bg-foreground/[0.04]" />,
+  loading: () => <ServiceDemoSkeleton />,
 });
 
 /**
@@ -35,10 +36,14 @@ const ServiceDemo = dynamic(() => import("@/components/services/ServiceDemo"), {
 export function ServicesExplorer({
   locale,
   copy,
+  headingLevel = "h2",
 }: {
   locale: Locale;
   copy: { listAria: string; previewLabel: string; openService: string };
+  /** Nivel del título de cada fila: `h3` cuando el índice vive bajo el `h2` de otra sección (home). */
+  headingLevel?: "h2" | "h3";
 }) {
+  const Heading = headingLevel;
   const reduced = Boolean(useReducedMotion());
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const { services } = getServicesContent(locale);
@@ -56,7 +61,7 @@ export function ServicesExplorer({
           const href = `${prefix}/servicios/${service.slug}`;
 
           return (
-            <li key={service.slug} className="relative border-b border-foreground/10">
+            <li key={service.slug} className="scroll-reveal relative border-b border-foreground/10">
               {isActive && (
                 <motion.span
                   layoutId="services-index-active"
@@ -69,7 +74,7 @@ export function ServicesExplorer({
                 href={href}
                 onMouseEnter={() => setActiveSlug(service.slug)}
                 onFocus={() => setActiveSlug(service.slug)}
-                className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-start gap-4 rounded-xl px-2 py-6 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:grid-cols-[2.5rem_3rem_minmax(0,1fr)_auto] sm:items-center sm:gap-5 sm:px-4 sm:py-7"
+                className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-start gap-4 rounded-xl px-2 py-6 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-center sm:gap-5 sm:px-4 sm:py-7"
               >
                 <span
                   aria-hidden="true"
@@ -81,22 +86,10 @@ export function ServicesExplorer({
                   {String(index + 1).padStart(2, "0")}
                 </span>
 
-                <MorphTransition name={`service-icon-${service.slug}`}>
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      "hidden h-12 w-12 items-center justify-center rounded-xl border border-foreground/10 bg-background text-foreground/70 transition-colors duration-200 group-hover:border-accent/30 group-hover:text-accent-strong sm:flex",
-                      isActive && "border-accent/30 text-accent-strong",
-                    )}
-                  >
-                    <service.coverIcon size={24} weight="duotone" />
-                  </span>
-                </MorphTransition>
-
                 <span className="min-w-0">
-                  <h2 className="text-lg font-bold tracking-tight text-balance text-foreground sm:text-2xl">
+                  <Heading className="text-lg font-semibold tracking-tight text-balance text-foreground sm:text-2xl">
                     {service.title}
-                  </h2>
+                  </Heading>
                   <span className="mt-1.5 block max-w-xl text-sm leading-relaxed text-foreground/80 line-clamp-2">
                     {service.description}
                   </span>

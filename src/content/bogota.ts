@@ -1,4 +1,5 @@
 import bogotaDataEs from "./locales/es/bogota.json";
+import { PRICING } from "./projectEstimator";
 import { withoutTodos } from "@/lib/todoPlaceholders";
 
 // Página local `/desarrollo-software-bogota` — SOLO en español, a propósito:
@@ -7,20 +8,46 @@ import { withoutTodos } from "@/lib/todoPlaceholders";
 // los documentos legales). Desde la home en /en y /fr se enlaza a la misma
 // página con la insignia ES.
 //
-// Todo el copy vive en `locales/es/bogota.json`; este módulo solo lo tipa y,
-// sobre todo, aplica la regla de los marcadores `{{TODO: …}}` (ver
-// lib/todoPlaceholders.ts): precios y tiempos son datos de negocio que no se
-// pueden inventar, así que cada fila/pregunta que contiene un marcador se
-// omite en producción. Por eso un marcador ocupa SIEMPRE su propio elemento.
+// Todo el copy vive en `locales/es/bogota.json`; este módulo lo tipa y resuelve
+// los PRECIOS Y PLAZOS desde el cotizador público (`PRICING` en
+// projectEstimator.ts): una sola fuente de verdad, así la página y el
+// cotizador nunca muestran cifras distintas. En el JSON los valores se
+// escriben como tokens (`{price.web}`, `{priceShort.web}`, `{weeks.web}`).
+// La regla de los marcadores `{{TODO: …}}` (lib/todoPlaceholders.ts) sigue
+// aplicando a las preguntas por si se agrega alguno.
 
-export interface BogotaFact {
+export interface BogotaStat {
+  value: string;
+  unit?: string;
   label: string;
   text: string;
+}
+
+export interface BogotaClock {
+  city: string;
+  tz: string;
+  home: boolean;
 }
 
 export interface BogotaPillar {
   title: string;
   text: string;
+}
+
+export interface BogotaAboutPillar extends BogotaPillar {
+  /** Qué visual lleva la tarjeta: ownership | direct | local | timezone. */
+  key: string;
+}
+
+/** Un tipo de proyecto con su precio base y plazo, resueltos desde el cotizador. */
+export interface BogotaPlan {
+  id: string;
+  label: string;
+  text: string;
+  /** Precio base formateado, p. ej. "$4.500.000 COP". */
+  price: string;
+  priceCop: number;
+  weeks: number;
 }
 
 export interface BogotaServiceItem {
@@ -41,11 +68,6 @@ export interface BogotaStep {
   text: string;
 }
 
-export interface BogotaRow {
-  label: string;
-  value: string;
-}
-
 export interface BogotaFaqItem {
   id: string;
   question: string;
@@ -61,11 +83,27 @@ export interface BogotaContent {
     lead: string;
     ctaPrimary: string;
     ctaSecondary: string;
-    factsLabel: string;
-    facts: BogotaFact[];
+    badge: string;
+    globeLabel: string;
+    clocksLabel: string;
+    clocks: BogotaClock[];
   };
+  stats: { label: string; items: BogotaStat[] };
   tocLabel: string;
-  about: { id: string; tocLabel: string; heading: string; paragraphs: string[]; pillars: BogotaPillar[] };
+  about: {
+    id: string;
+    tocLabel: string;
+    heading: string;
+    paragraphs: string[];
+    pillars: BogotaAboutPillar[];
+    visuals: {
+      repoLines: string[];
+      directLabel: string;
+      directPeople: { initial: string; name: string }[];
+      localChips: string[];
+    };
+  };
+  testimonials: { eyebrow: string; heading: string };
   services: {
     id: string;
     tocLabel: string;
@@ -73,6 +111,7 @@ export interface BogotaContent {
     intro: string;
     items: BogotaServiceItem[];
     allLabel: string;
+    viewLabel: string;
   };
   cases: {
     id: string;
@@ -82,6 +121,7 @@ export interface BogotaContent {
     caseLabel: string;
     items: BogotaCaseItem[];
     allLabel: string;
+    viewLabel: string;
   };
   process: {
     id: string;
@@ -98,18 +138,23 @@ export interface BogotaContent {
     intro: string;
     principles: BogotaPillar[];
     closing: string;
+    mockupLabel: string;
   };
   pricing: {
     id: string;
     tocLabel: string;
     heading: string;
     intro: string;
+    launchNote: string;
+    plansHeading: string;
+    fromLabel: string;
+    baseNote: string;
+    plans: BogotaPlan[];
     factorsHeading: string;
     factors: string[];
-    rangesHeading: string;
-    rows: BogotaRow[];
     paymentNote: string;
     estimatorText: string;
+    estimatorCta: string;
   };
   timelines: {
     id: string;
@@ -117,28 +162,67 @@ export interface BogotaContent {
     heading: string;
     intro: string;
     rangesHeading: string;
-    rows: BogotaRow[];
+    weeksUnit: string;
     note: string;
   };
   faq: { id: string; tocLabel: string; heading: string; items: BogotaFaqItem[] };
   cta: { heading: string; body: string; primary: string; secondary: string };
 }
 
-/** Contenido tal cual está en el JSON (con marcadores). Solo para pruebas y scripts. */
-export const rawBogotaContent: BogotaContent = bogotaDataEs;
+type RawBogotaPlan = Omit<BogotaPlan, "price" | "priceCop" | "weeks">;
+
+/** Forma del JSON: igual que `BogotaContent`, pero con los planes sin precio ni plazo (salen del cotizador). */
+type RawBogotaContent = Omit<BogotaContent, "pricing"> & {
+  pricing: Omit<BogotaContent["pricing"], "plans"> & { plans: RawBogotaPlan[] };
+};
+
+const raw: RawBogotaContent = bogotaDataEs;
+
+function formatCop(amount: number): string {
+  return `$${amount.toLocaleString("es-CO")} COP`;
+}
+
+/** "$4,5 M COP" — para el meta description, donde cada carácter cuenta. */
+function formatCopShort(amount: number): string {
+  const millions = (amount / 1_000_000).toLocaleString("es-CO", { maximumFractionDigits: 1 });
+  return `$${millions} M COP`;
+}
+
+/** Reemplaza `{price.x}`, `{priceShort.x}` y `{weeks.x}` con las cifras del cotizador. */
+export function fillPricingTokens(text: string): string {
+  return text.replace(/\{(price|priceShort|weeks)\.([a-z]+)\}/g, (match, kind: string, id: string) => {
+    const entry = PRICING[id];
+    if (!entry) return match;
+    if (kind === "price") return formatCop(entry.priceCop);
+    if (kind === "priceShort") return formatCopShort(entry.priceCop);
+    return String(entry.baseWeeks);
+  });
+}
+
+function resolvePlans(plans: RawBogotaPlan[]): BogotaPlan[] {
+  return plans.map((plan) => {
+    const entry = PRICING[plan.id];
+    if (!entry) throw new Error(`bogota.json: el plan "${plan.id}" no existe en PRICING (projectEstimator.ts)`);
+    return { ...plan, price: formatCop(entry.priceCop), priceCop: entry.priceCop, weeks: entry.baseWeeks };
+  });
+}
+
+/** Contenido tal cual está en el JSON, con los planes ya resueltos. Solo para pruebas y scripts. */
+export const rawBogotaContent: BogotaContent = {
+  ...raw,
+  meta: { ...raw.meta, description: fillPricingTokens(raw.meta.description) },
+  pricing: { ...raw.pricing, plans: resolvePlans(raw.pricing.plans) },
+  faq: {
+    ...raw.faq,
+    items: raw.faq.items.map((item) => ({ ...item, answer: fillPricingTokens(item.answer) })),
+  },
+};
 
 /**
- * Contenido listo para publicar: sin las filas/preguntas con marcador
- * `{{TODO}}` (salvo en desarrollo o con NEXT_PUBLIC_SHOW_TODO_PLACEHOLDERS).
- * Los marcadores solo pueden vivir en `pricing.rows`, `timelines.rows` y
- * `faq.items` — `bogota.test.ts` falla si aparece uno en otro lugar.
+ * Contenido listo para publicar: sin las preguntas con marcador `{{TODO}}`
+ * (salvo en desarrollo o con NEXT_PUBLIC_SHOW_TODO_PLACEHOLDERS).
  */
 export function getBogotaContent(): BogotaContent {
-  const raw = rawBogotaContent;
-  return {
-    ...raw,
-    pricing: { ...raw.pricing, rows: withoutTodos(raw.pricing.rows) },
-    timelines: { ...raw.timelines, rows: withoutTodos(raw.timelines.rows) },
-    faq: { ...raw.faq, items: withoutTodos(raw.faq.items) },
-  };
+  const content = rawBogotaContent;
+  return { ...content, faq: { ...content.faq, items: withoutTodos(content.faq.items) } };
 }

@@ -1,6 +1,6 @@
 {
-  "badge": "Portafolio & Casos Reales",
-  "title": "Portafolio",
+  "badge": "Portafolio y casos reales",
+  "title": "Software que ya está en producción",
   "description": "Proyectos desarrollados para resolver problemas operativos concretos y acelerar ventas reales.",
   "viewAll": "Ver todos los proyectos",
   "featuredBadge": "Caso Destacado",
@@ -10,7 +10,7 @@
     "countLabel": "casos de estudio",
     "stackLabel": "Tecnologías en estos casos",
     "empty": "Pronto publicaremos nuevos casos de estudio.",
-    "ctaTitle": "¿Tiene un proyecto similar en mente?",
+    "ctaTitle": "¿Tienes un proyecto similar en mente?",
     "ctaButton": "Hablar con un ingeniero"
   },
   "detail": {
@@ -41,16 +41,17 @@
     ],
     "nextCase": "Siguiente caso",
     "viewAllCases": "Ver todos los casos",
-    "ctaTitle": "¿Tiene un proyecto similar en mente?",
+    "ctaTitle": "¿Tienes un proyecto similar en mente?",
     "ctaButton": "Hablar con un ingeniero",
-    "captureAlt": "{title} — captura {index}",
+    "captureAlt": "{title}, captura {index}",
     "lightbox": {
       "dialog": "Galería de imágenes",
       "close": "Cerrar",
       "prev": "Imagen anterior",
       "next": "Imagen siguiente",
       "zoomIn": "Acercar",
-      "zoomOut": "Alejar"
+      "zoomOut": "Alejar",
+      "position": "Imagen {index} de {total}"
     },
     "related": {
       "title": "Para profundizar",

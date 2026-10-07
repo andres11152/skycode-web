@@ -95,14 +95,14 @@
     },
     {
       "slug": "cda-revifull",
-      "title": "CDA Revifull · Online Appointment & Inspection Booking",
+      "title": "CDA Revifull · Institutional Site & Online Booking",
       "client": "CDA Revifull S.A.S. · Automotive Diagnostic Center",
-      "description": "Fast online booking platform for mandatory vehicle and motorcycle technical inspections in Bogotá, with automated reminders and instant WhatsApp support.",
+      "description": "Institutional site for a vehicle inspection center in Bogotá (cars and motorcycles), with online booking built on the Amelia plugin, plus the marketing integrations to measure campaigns.",
       "tags": [
-        "Online Booking",
+        "Institutional Site",
         "Automotive",
-        "WhatsApp API",
-        "Next.js"
+        "WhatsApp",
+        "WordPress"
       ],
       "iconName": "Car",
       "link": "https://cdarevifull.com/",

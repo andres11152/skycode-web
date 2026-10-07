@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { ArrowsClockwise, Warning } from "@phosphor-icons/react";
-import { Geist_Mono, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { getErrorsContent } from "@/content/errors";
 import { defaultLocale, isLocale, localeHomePath } from "@/lib/i18n";
 import { logError } from "@/lib/logger";
@@ -14,18 +14,9 @@ import "./globals.css";
 // prioridad alta) terminaba en la ruta crítica del LCP de cada página sin
 // que ninguna la usara. Con `display: "swap"` la página de error igual las
 // descarga al pintarse; solo deja de pagarlas el resto del sitio.
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-heading",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  display: "swap",
-  preload: false,
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
+const geist = Geist({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   display: "swap",
   preload: false,
 });
@@ -57,7 +48,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   return (
     <html
       lang={locale}
-      className={`${spaceGrotesk.variable} ${plusJakartaSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex items-center justify-center bg-background px-6">
         <div className="max-w-md text-center">

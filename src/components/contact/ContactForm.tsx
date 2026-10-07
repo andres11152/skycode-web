@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckIcon } from "@/components/icons/UiIcons";
 import { useEffect, useId, useState } from "react";
 import { Plus, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/Button";
@@ -20,7 +21,20 @@ import { clearContactDraft, readContactDraft, saveContactDraft } from "@/lib/con
 
 
 export const baseFieldClasses =
-  "h-11 rounded-lg border bg-background px-4 text-sm outline-none transition-all duration-200 focus:ring-2";
+  "h-11 w-full rounded-lg border bg-background px-4 text-sm outline-none transition-[border-color,box-shadow] duration-200 focus:ring-2";
+/**
+ * Palomita que aparece (pop de 150 ms) a la derecha del campo cuando su valor ya es válido.
+ * Decorativa: el estado de validez ya lo anuncian `aria-invalid` y los mensajes de error.
+ */
+function ValidMark({ show }: { show: boolean }) {
+  if (!show) return null;
+  return (
+    <span aria-hidden="true" className="animate-pop-in pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-foreground/70">
+      <CheckIcon className="h-4 w-4" />
+    </span>
+  );
+}
+
 export const labelClasses = "text-sm font-medium text-foreground/80";
 
 export function isValidRealEmail(emailStr: string): boolean {
@@ -268,6 +282,7 @@ export function ContactForm({
             <label htmlFor={`${idPrefix}-name`} className={labelClasses}>
               {contactData.placeholders.name} <span className="text-accent-strong">*</span>
             </label>
+            <div className="relative">
             <input
               id={`${idPrefix}-name`}
               aria-invalid={touched.name && !isNameValid ? true : undefined}
@@ -280,7 +295,7 @@ export function ContactForm({
               autoComplete="name"
               required
               placeholder={contactData.placeholders.namePlaceholder}
-              className={`${baseFieldClasses} ${
+              className={`${baseFieldClasses} pr-10 ${
                 touched.name && !isNameValid
                   ? "border-red-500/80 focus:border-red-500 focus:ring-red-500/20"
                   : isNameValid
@@ -288,6 +303,8 @@ export function ContactForm({
                   : "border-foreground/10 focus:border-accent focus:ring-accent/30"
               }`}
             />
+              <ValidMark show={isNameValid} />
+            </div>
             {touched.name && !isNameValid && (
               <FieldError id={`${idPrefix}-name-error`}>{contactData.validation.nameError}</FieldError>
             )}
@@ -298,6 +315,7 @@ export function ContactForm({
             <label htmlFor={`${idPrefix}-email`} className={labelClasses}>
               {contactData.placeholders.email} <span className="text-accent-strong">*</span>
             </label>
+            <div className="relative">
             <input
               id={`${idPrefix}-email`}
               aria-invalid={touched.email && !isEmailValid ? true : undefined}
@@ -310,7 +328,7 @@ export function ContactForm({
               autoComplete="email"
               required
               placeholder={contactData.placeholders.emailPlaceholder}
-              className={`${baseFieldClasses} ${
+              className={`${baseFieldClasses} pr-10 ${
                 touched.email && !isEmailValid
                   ? "border-red-500/80 focus:border-red-500 focus:ring-red-500/20"
                   : isEmailValid
@@ -318,6 +336,8 @@ export function ContactForm({
                   : "border-foreground/10 focus:border-accent focus:ring-accent/30"
               }`}
             />
+              <ValidMark show={isEmailValid} />
+            </div>
             {touched.email && !isEmailValid && (
               <FieldError id={`${idPrefix}-email-error`}>{contactData.validation.emailError}</FieldError>
             )}

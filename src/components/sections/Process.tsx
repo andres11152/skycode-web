@@ -1,71 +1,53 @@
-"use client";
-
-import Link from "next/link";
-import { m as motion, useReducedMotion } from "framer-motion";
-import { getProcessContent } from "@/content/process";
-import { bogotaPagePath } from "@/lib/bogotaPaths";
-import { defaultLocale, type Locale } from "@/lib/i18n";
-import { EsBadge } from "@/components/ui/EsBadge";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import type { CSSProperties } from "react";
+import { RevealText } from "@/components/ui/RevealText";
+import { BogotaLink } from "@/components/bogota/BogotaLink";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
+import { getProcessContent } from "@/content/process";
+import { defaultLocale, type Locale } from "@/lib/i18n";
 
+/**
+ * Proceso en cuatro pasos: columnas numeradas bajo una línea que se dibuja con
+ * el scroll (CSS puro, `.scroll-progress-x`). Antes eran cuatro tarjetas con un
+ * cuadro azul numerado, una flecha entre ellas y un título que repetía el
+ * número ("01" y "1. Charlamos…"). Server Component sin Framer Motion.
+ */
 export function Process({ locale = defaultLocale }: { locale?: Locale }) {
-  const reduced = Boolean(useReducedMotion());
   const processData = getProcessContent(locale);
 
   return (
-    <section aria-label={processData.sectionAria} id="proceso" className="scroll-mt-24 px-6 py-20 sm:py-24 lg:py-28 bg-foreground/[0.01]">
+    <section id="proceso" aria-labelledby="process-title" className="scroll-mt-24 px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12 max-w-2xl">
-          <SectionEyebrow className="mb-3">{processData.badge}</SectionEyebrow>
-          <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            {processData.title}
+        <div className="max-w-3xl">
+          <SectionEyebrow className="reveal-blur mb-4">{processData.badge}</SectionEyebrow>
+          <h2
+            id="process-title"
+            className="text-4xl font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl"
+          >
+            <RevealText text={processData.title} />
           </h2>
-          <p className="mt-3 text-base text-foreground/80">{processData.description}</p>
+          <p style={{ "--i": 3 } as CSSProperties} className="reveal-blur mt-5 text-lg leading-relaxed text-foreground/80">{processData.description}</p>
         </div>
 
-        <ol className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {processData.steps.map((step, index) => (
-            <motion.li
-              key={step.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: reduced ? 0 : index * 0.1 }}
-              className="h-full"
-            >
-              <SpotlightCard className="h-full rounded-xl border border-foreground/10 bg-background/60 p-6 backdrop-blur-md transition-all hover:border-accent/30 hover:shadow-[0_10px_30px_rgba(0,137,205,0.08)]">
-                <div className="flex flex-col justify-between h-full gap-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-strong text-white font-mono text-sm font-bold shadow-md shadow-accent/20">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      {index < processData.steps.length - 1 && (
-                        <span className="text-xs font-mono font-bold text-accent/40 hidden lg:inline">→</span>
-                      )}
-                    </div>
+        <div className="relative mt-16">
+          <span aria-hidden="true" className="absolute top-0 left-0 h-px w-full bg-foreground/15" />
+          <span
+            aria-hidden="true"
+            className="scroll-progress-x absolute top-0 left-0 h-px w-full bg-foreground motion-reduce:hidden"
+          />
+          <ol className="grid gap-10 pt-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            {processData.steps.map((step, index) => (
+              <li key={step.title} style={{ "--i": index } as CSSProperties} className="scroll-reveal relative flex flex-col gap-3">
+                {/* Marcador sobre la línea: se enciende cuando el paso entra en pantalla. */}
+                <span aria-hidden="true" className="dot-on absolute -top-[2.35rem] left-0 h-2.5 w-2.5 rounded-full bg-foreground" />
+                <span className="font-mono text-sm text-foreground/70">{String(index + 1).padStart(2, "0")}</span>
+                <h3 className="text-xl font-semibold tracking-tight text-balance text-foreground">{step.title}</h3>
+                <p className="text-base leading-relaxed text-foreground/80">{step.description}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
 
-                    <h3 className="text-base font-bold tracking-tight text-foreground">{step.title}</h3>
-                    <p className="mt-2 text-xs leading-relaxed text-foreground/80">{step.description}</p>
-                  </div>
-                </div>
-              </SpotlightCard>
-            </motion.li>
-          ))}
-        </ol>
-
-        {/* Enlace de texto a la página local de Bogotá (solo en español: en /en y /fr lleva la insignia ES). */}
-        <p className="mt-10 max-w-2xl text-base leading-relaxed text-foreground/80">
-          {processData.localPage.text}{" "}
-          <Link
-            href={bogotaPagePath}
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-sm font-medium text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            {processData.localPage.linkLabel}
-            {locale !== "es" && <EsBadge />}
-          </Link>
-        </p>
+        <BogotaLink locale={locale} className="mt-14" />
       </div>
     </section>
   );

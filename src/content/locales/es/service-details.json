@@ -426,7 +426,7 @@
     "useCases": [
       "Empresas que manejan datos personales de clientes y necesitan alinearse con la Ley 1581 o el RGPD.",
       "Plataformas que van a pasar por una auditoría o una due diligence de un cliente o inversionista.",
-      "Sistemas heredados que deben modernizarse sin exponer información sensible — ver [migración de sistemas legacy](/servicios/migracion-datos-legacy)."
+      "Sistemas heredados que deben modernizarse sin exponer información sensible: ver [migración de sistemas legacy](/servicios/migracion-datos-legacy)."
     ],
     "faqHeading": "Preguntas frecuentes sobre seguridad y protección de datos",
     "faqs": [
@@ -552,7 +552,7 @@
   "migracion-datos-legacy": {
     "intro": [
       "Un sistema legado no es solo software viejo: es el que sigue sosteniendo la facturación, el inventario o la operación diaria, pero ya no se puede cambiar sin miedo. Nuestro servicio de migración de sistemas legacy lo reemplaza módulo por módulo, con el sistema anterior funcionando en paralelo hasta que el nuevo demuestra que procesa lo mismo, con los mismos resultados.",
-      "No hacemos migraciones \"Big Bang\" de fin de semana. Usamos el patrón Strangler Fig, sincronización de datos entre ambos sistemas y reconciliación automática antes de cada corte — lo explicamos con detalle en nuestra [guía de migración de sistemas legados sin interrupción](/blog/migracion-sistemas-legados-sin-interrupcion)."
+      "No hacemos migraciones \"Big Bang\" de fin de semana. Usamos el patrón Strangler Fig, sincronización de datos entre ambos sistemas y reconciliación automática antes de cada corte, lo explicamos con detalle en nuestra [guía de migración de sistemas legados sin interrupción](/blog/migracion-sistemas-legados-sin-interrupcion)."
     ],
     "challenge": {
       "heading": "Señales de que tu sistema ya es un legado",
@@ -602,7 +602,7 @@
       "ERP o software de gestión hecho a medida hace 10-15 años, sin documentación y con una sola persona que entiende el código.",
       "Operación que vive en planillas de Excel, archivos XML o Access dispersos y necesita una base de datos única con permisos y trazabilidad.",
       "Aplicaciones de escritorio (Visual Basic, Delphi, PHP antiguo) que deben pasar a web o a la nube sin detener la facturación.",
-      "Bases de datos que no cumplen con la protección de datos exigida hoy (Ley 1581, RGPD) y necesitan cifrado, control de acceso y auditoría — ver nuestro servicio de [seguridad y cumplimiento](/servicios/seguridad-cumplimiento).",
+      "Bases de datos que no cumplen con la protección de datos exigida hoy (Ley 1581, RGPD) y necesitan cifrado, control de acceso y auditoría: ver nuestro servicio de [seguridad y cumplimiento](/servicios/seguridad-cumplimiento).",
       "Sistemas que hay que retirar sin migrar todo el histórico: se migra solo lo activo y el resto queda archivado en modo consulta."
     ],
     "faqHeading": "Preguntas frecuentes sobre la migración de sistemas legacy",

@@ -1,25 +1,21 @@
 {
   "sectionAria": "Why choose us",
   "badge": "Why Skycode",
-  "title": "Production-grade infrastructure. Deliveries without surprises.",
+  "title": "Production-grade infrastructure and predictable deliveries.",
   "description": "Systems that handle real business volume, with architectures proven in production across more than 10,000 active users. Every delivery includes technical documentation, automated tests and a real 90-day warranty.",
   "techLabel": "Our technology stack",
-  "videoAria": "Sample video of our work",
   "items": [
     {
-      "iconName": "UsersThree",
       "title": "Senior engineers on every project",
-      "description": "No interns or hidden sub-contractors. The team that scopes your project is the team that builds it — backed by a specialist network in cloud, security and QA as your project demands."
+      "description": "No interns or hidden sub-contractors. The team that scopes your project is the team that builds it, backed by a specialist network in cloud, security and QA as your project demands."
     },
     {
-      "iconName": "SealCheck",
       "title": "Post-delivery warranty",
       "description": "We don't disappear after delivery. Any issue in the first three months of production is resolved at no extra cost. Preventive support SLA available."
     },
     {
-      "iconName": "LockKey",
       "title": "Privacy by design",
-      "description": "OWASP architecture, RBAC, sensitive data encryption and immutable audit logs. Not a patch after an incident — the standard on every project we ship."
+      "description": "OWASP architecture, RBAC, sensitive data encryption and immutable audit logs. It is the standard on every project we ship, not a patch added after an incident."
     }
   ],
   "teamCta": "Meet our team"

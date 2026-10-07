@@ -2,6 +2,7 @@
 
 import { ChatCircle, Envelope } from "@phosphor-icons/react";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { RevealText } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getContactContent } from "@/content/contact";
 import { getUiContent } from "@/content/ui";
@@ -101,9 +102,9 @@ export function Contact({
             </h2>
           ) : (
             <>
-              <SectionEyebrow className="mb-3">{contactData.badge}</SectionEyebrow>
-              <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                {contactData.title}
+              <SectionEyebrow className="reveal-blur mb-3">{contactData.badge}</SectionEyebrow>
+              <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
+                <RevealText text={contactData.title} />
               </h2>
               <p className="mt-3 text-foreground/80">
                 {contactData.description}
@@ -122,7 +123,7 @@ export function Contact({
                     target={href.startsWith("http") ? "_blank" : undefined}
                     rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                     className={cn(
-                      "inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/10 bg-background/50 px-4 py-2.5 text-xs sm:text-sm font-semibold text-foreground/80 outline-none transition-all duration-300 backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background shadow-sm hover:shadow-md hover:-translate-y-0.5",
+                      "inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/10 bg-background/50 px-4 py-2.5 text-xs sm:text-sm font-semibold text-foreground/80 outline-none transition duration-300 backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background shadow-sm hover:shadow-md hover:-translate-y-0.5",
                       hoverClass
                     )}
                   >

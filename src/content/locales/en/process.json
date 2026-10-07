@@ -2,11 +2,11 @@
   "badge": "Our Process",
   "sectionAria": "Our work process",
   "title": "How we work",
-  "description": "A clear process, no surprises, from the first diagnostic to final delivery.",
+  "description": "A clear process from the first diagnostic to final delivery, with no technical jargon in between.",
   "steps": [
     {
       "title": "Architecture diagnostic",
-      "description": "We assess your current system or the one you need to build, and deliver the technical architecture and a formal proposal — no cost, no commitment."
+      "description": "We assess your current system or the one you need to build, and deliver the technical architecture and a formal proposal, no cost, no commitment."
     },
     {
       "title": "Proposal and scope",
@@ -18,7 +18,7 @@
     },
     {
       "title": "Delivery and transfer",
-      "description": "Formal, complete transfer of repositories and credentials — the code is 100% yours from day one."
+      "description": "Formal, complete transfer of repositories and credentials. The code is 100% yours from day one."
     }
   ],
   "localPage": {

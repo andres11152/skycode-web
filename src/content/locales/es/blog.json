@@ -1,10 +1,10 @@
 {
   "meta": {
-    "indexTitle": "Blog Técnico de Desarrollo de Software",
+    "indexTitle": "Blog técnico de desarrollo de software",
     "indexDescription": "Guías sobre arquitectura de software, APIs, migración de sistemas legados, seguridad OWASP y cumplimiento de la Ley 1581 y el RGPD.",
     "badge": "Blog técnico",
     "heading": "Recursos técnicos",
-    "intro": "Arquitectura, seguridad y buenas prácticas — escrito por el equipo que construye el software, sin relleno genérico.",
+    "intro": "Arquitectura, seguridad y buenas prácticas escritas por el equipo que construye el software, sin relleno genérico.",
     "readingTimeSuffix": "min de lectura",
     "breadcrumbAria": "Ruta de navegación",
     "breadcrumbHome": "Inicio",

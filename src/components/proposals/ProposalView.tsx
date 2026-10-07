@@ -186,7 +186,7 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
             <button
               onClick={() => respond("accept")}
               disabled={isSubmitting || !canAccept}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-sm font-bold text-white shadow-lg hover:brightness-90 transition-all disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-sm font-bold text-white shadow-lg hover:brightness-90 transition disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
             >
               <CheckCircle size={16} />
               <span>Aceptar y Firmar</span>

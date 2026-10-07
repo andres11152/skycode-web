@@ -426,7 +426,7 @@
     "useCases": [
       "Companies that handle customers' personal data and need to align with Law 1581 or the GDPR.",
       "Platforms about to go through an audit or due diligence by a client or investor.",
-      "Legacy systems that need to be modernized without exposing sensitive information — see [legacy system migration](/en/servicios/migracion-datos-legacy)."
+      "Legacy systems that need to be modernized without exposing sensitive information: see [legacy system migration](/en/servicios/migracion-datos-legacy)."
     ],
     "faqHeading": "Security and data protection FAQ",
     "faqs": [
@@ -552,7 +552,7 @@
   "migracion-datos-legacy": {
     "intro": [
       "A legacy system isn't just old software: it's the one still running your billing, inventory or daily operations, yet nobody dares to change it. Our legacy software migration service replaces it module by module, with the old system running in parallel until the new one proves it processes the same transactions with the same results.",
-      "We don't do weekend \"big bang\" cutovers. We use the Strangler Fig pattern, data synchronization between both systems and automated reconciliation before every cutover — all explained in our [guide to legacy system migration without downtime](/en/blog/migracion-sistemas-legados-sin-interrupcion)."
+      "We don't do weekend \"big bang\" cutovers. We use the Strangler Fig pattern, data synchronization between both systems and automated reconciliation before every cutover, all explained in our [guide to legacy system migration without downtime](/en/blog/migracion-sistemas-legados-sin-interrupcion)."
     ],
     "challenge": {
       "heading": "Signs your system has already become legacy",
@@ -578,7 +578,7 @@
       },
       {
         "title": "Per-module decision: migrate, retain or retire",
-        "text": "Not everything deserves a rewrite. Each module is classified as rehost, refactor, replace with SaaS, wrap behind an API or retire — so the budget goes where the legacy system actually slows the business down."
+        "text": "Not everything deserves a rewrite. Each module is classified as rehost, refactor, replace with SaaS, wrap behind an API or retire, so the budget goes where the legacy system actually slows the business down."
       },
       {
         "title": "Target architecture and routing layer",
@@ -594,7 +594,7 @@
       },
       {
         "title": "Cutover, monitoring and decommissioning",
-        "text": "Traffic moves gradually and reversibly, we monitor errors and performance, and only at the end do we decommission the old system — keeping a read-only archive of the historical data you're legally required to retain."
+        "text": "Traffic moves gradually and reversibly, we monitor errors and performance, and only at the end do we decommission the old system, keeping a read-only archive of the historical data you're legally required to retain."
       }
     ],
     "useCasesHeading": "Typical legacy modernization projects",
@@ -602,7 +602,7 @@
       "A custom ERP or line-of-business app built 10-15 years ago, undocumented, with a single person who understands the code.",
       "Operations running on scattered Excel spreadsheets, XML files or Access databases that need a single database with permissions and audit trails.",
       "Desktop applications (Visual Basic, Delphi, legacy PHP) that must move to the web or the cloud without stopping invoicing.",
-      "Databases that don't meet today's data protection requirements (GDPR, CCPA) and need encryption, access control and auditing — see our [security and compliance](/en/servicios/seguridad-cumplimiento) service.",
+      "Databases that don't meet today's data protection requirements (GDPR, CCPA) and need encryption, access control and auditing: see our [security and compliance](/en/servicios/seguridad-cumplimiento) service.",
       "Systems that must be retired without migrating the full history: only active data moves, the rest stays in a read-only archive."
     ],
     "faqHeading": "Legacy system migration FAQ",
@@ -613,7 +613,7 @@
       },
       {
         "question": "Can we migrate without downtime?",
-        "answer": "Yes — that's the whole point of a phased migration. The legacy system keeps running while the new one takes over module by module, with data synchronized between them. Each cutover is gradual and can be rolled back if something fails."
+        "answer": "Yes, that's the whole point of a phased migration. The legacy system keeps running while the new one takes over module by module, with data synchronized between them. Each cutover is gradual and can be rolled back if something fails."
       },
       {
         "question": "What happens to our historical data?",

@@ -52,7 +52,7 @@ async function makeTestImage(width: number, height: number, format: "png" | "jpe
 }
 
 describe("processAndUploadPortfolioImage", () => {
-  it("genera y sube las 3 variantes (sm/md/lg) en WebP", async () => {
+  it("genera y sube sm/md/lg en WebP, más xl solo si la fuente supera lg", async () => {
     fakeBucket.clear();
     const buffer = await makeTestImage(2000, 1125);
 
@@ -61,8 +61,31 @@ describe("processAndUploadPortfolioImage", () => {
     expect(result.variants.sm).toBe(`https://media.test.local/${result.storageKey}-sm.webp`);
     expect(result.variants.md).toBe(`https://media.test.local/${result.storageKey}-md.webp`);
     expect(result.variants.lg).toBe(`https://media.test.local/${result.storageKey}-lg.webp`);
-    expect(fakeBucket.size).toBe(3);
+    // Fuente de 2000px > 1600px (lg): también hay variante xl de 2400 objetivo (sin agrandar, queda en 2000).
+    expect(result.variants.xl).toBe(`https://media.test.local/${result.storageKey}-xl.webp`);
+    expect(fakeBucket.size).toBe(4);
     expect(fakeBucket.get(`${result.storageKey}-lg.webp`)?.contentType).toBe("image/webp");
+    const xlMeta = await sharp(fakeBucket.get(`${result.storageKey}-xl.webp`)!.body).metadata();
+    expect(xlMeta.width).toBe(2000);
+  });
+
+  it("no sube xl cuando la fuente no supera lg (sería un duplicado de lg)", async () => {
+    fakeBucket.clear();
+    const result = await processAndUploadPortfolioImage(await makeTestImage(1600, 900));
+    expect(result.variants.xl).toBeUndefined();
+    expect(fakeBucket.size).toBe(3);
+  });
+
+  it("devuelve un marcador de posición diminuto y el color medio de la imagen", async () => {
+    fakeBucket.clear();
+    // La imagen sintética es de color uniforme rgb(10, 120, 200) = #0a78c8.
+    const { placeholder } = await processAndUploadPortfolioImage(await makeTestImage(1000, 600));
+    expect(placeholder.blurDataURL).toMatch(/^data:image\/webp;base64,[A-Za-z0-9+/=]+$/);
+    expect(placeholder.blurDataURL.length).toBeLessThan(1200);
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(placeholder.color.slice(i, i + 2), 16));
+    expect(Math.abs(r - 10)).toBeLessThanOrEqual(4);
+    expect(Math.abs(g - 120)).toBeLessThanOrEqual(4);
+    expect(Math.abs(b - 200)).toBeLessThanOrEqual(4);
   });
 
   it("las dimensiones devueltas son las de la variante lg real, no el ancho objetivo nominal", async () => {
@@ -124,6 +147,14 @@ describe("deletePortfolioImageFiles", () => {
     const { storageKey } = await processAndUploadPortfolioImage(buffer);
     expect(fakeBucket.size).toBe(3);
 
+    await deletePortfolioImageFiles(storageKey);
+    expect(fakeBucket.size).toBe(0);
+  });
+
+  it("también borra la variante xl cuando existe", async () => {
+    fakeBucket.clear();
+    const { storageKey } = await processAndUploadPortfolioImage(await makeTestImage(2000, 1000));
+    expect(fakeBucket.size).toBe(4);
     await deletePortfolioImageFiles(storageKey);
     expect(fakeBucket.size).toBe(0);
   });

@@ -95,14 +95,14 @@
     },
     {
       "slug": "cda-revifull",
-      "title": "CDA Revifull · Plataforma de Agendamiento en Línea",
+      "title": "CDA Revifull · Sitio Institucional y Agendamiento en Línea",
       "client": "CDA Revifull S.A.S. · Centro de Diagnóstico Automotor",
-      "description": "Portal de agendamiento rápido para revisión técnico-mecánica de vehículos y motos en Bogotá, con recordatorios automáticos y cotización directa por WhatsApp.",
+      "description": "Sitio institucional para un CDA en Bogotá (revisión técnico-mecánica de carros y motos), con agendamiento en línea sobre el plugin Amelia, y las integraciones de marketing para medir campañas.",
       "tags": [
-        "Agendamiento Web",
+        "Sitio Institucional",
         "Sector Automotriz",
-        "WhatsApp API",
-        "Next.js"
+        "WhatsApp",
+        "WordPress"
       ],
       "iconName": "Car",
       "link": "https://cdarevifull.com/",

@@ -33,7 +33,7 @@
       },
       {
         "question": "Pouvez-vous reprendre un système développé par un autre prestataire ?",
-        "answer": "Oui. Nous commençons par un audit du code et des données pour décider ce qui se conserve, ce qui se refactorise et ce qu'il vaut mieux remplacer. Si le système est devenu un héritage difficile à maintenir, nous le migrons par phases sans arrêter l'activité — voir [migration de systèmes legacy](/fr/servicios/migracion-datos-legacy)."
+        "answer": "Oui. Nous commençons par un audit du code et des données pour décider ce qui se conserve, ce qui se refactorise et ce qu'il vaut mieux remplacer. Si le système est devenu un héritage difficile à maintenir, nous le migrons par phases sans arrêter l'activité, voir [migration de systèmes legacy](/fr/servicios/migracion-datos-legacy)."
       },
       {
         "question": "Travaillez-vous avec notre équipe technique interne ?",

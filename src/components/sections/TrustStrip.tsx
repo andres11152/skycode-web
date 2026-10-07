@@ -1,99 +1,45 @@
+import type { CSSProperties } from "react";
 import { getTrustContent } from "@/content/trust";
 import { defaultLocale, type Locale } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 
-const OwaspIcon = () => (
-  <svg className="w-4 h-4 text-current transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="none" strokeWidth="2">
-    <defs>
-      <linearGradient id="owaspGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#0089CD" />
-        <stop offset="100%" stopColor="#006998" />
-      </linearGradient>
-    </defs>
-    <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="url(#owaspGrad)" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M2 17l10 5 10-5" stroke="#0089CD" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M2 12l10 5 10-5" stroke="#006998" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="12" cy="7" r="1.5" fill="#006998" />
-  </svg>
-);
+// Columnas en escritorio según cuántos ítems haya: una grilla fija de 4 dejaba el quinto ítem solo en una segunda fila.
+const DESKTOP_COLUMNS: Record<number, string> = {
+  3: "lg:grid-cols-3",
+  4: "lg:grid-cols-4",
+  5: "lg:grid-cols-5",
+  6: "lg:grid-cols-6",
+};
 
-const ComplianceIcon = () => (
-  <svg className="w-4 h-4 text-current transition-transform duration-500 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" strokeWidth="2">
-    <defs>
-      <linearGradient id="compGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#006998" />
-        <stop offset="100%" stopColor="#0089CD" />
-      </linearGradient>
-    </defs>
-    <circle cx="12" cy="12" r="8" stroke="url(#compGrad)" strokeDasharray="3 2" />
-    <path d="M12 6v12M6 12h12" stroke="#0089CD" strokeLinecap="round" />
-    <rect x="10" y="10" width="4" height="4" rx="1" fill="#006998" />
-  </svg>
-);
-
-const DocIcon = () => (
-  <svg className="w-4 h-4 text-current transition-transform duration-300 group-hover:-translate-y-0.5" viewBox="0 0 24 24" fill="none" strokeWidth="2">
-    <defs>
-      <linearGradient id="docGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#0089CD" />
-        <stop offset="100%" stopColor="#006998" />
-      </linearGradient>
-    </defs>
-    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="#0089CD" strokeLinecap="round" />
-    <path d="M6 2h14v20H6.5A2.5 2.5 0 0 1 4 19.5V4.5A2.5 2.5 0 0 1 6 2z" stroke="url(#docGrad)" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M9 7h6M9 11h6" stroke="#0089CD" strokeLinecap="round" />
-  </svg>
-);
-
-const TransferIcon = () => (
-  <svg className="w-4 h-4 text-current transition-transform duration-300 group-hover:scale-105" viewBox="0 0 24 24" fill="none" strokeWidth="2">
-    <defs>
-      <linearGradient id="transGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#006998" />
-        <stop offset="100%" stopColor="#0089CD" />
-      </linearGradient>
-    </defs>
-    <path d="M16 18l6-6-6-6M8 6l-6 6 6 6" stroke="url(#transGrad)" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M12 4v2M12 16v2" stroke="#0089CD" strokeLinecap="round" />
-    <circle cx="12" cy="11" r="2" fill="#006998" />
-  </svg>
-);
-
-const icons = [OwaspIcon, ComplianceIcon, DocIcon, TransferIcon];
-
+/**
+ * Franja oscura con las cuatro capacidades propias (OWASP, protección de datos,
+ * documentación, código transferible). Estática y sin íconos: antes era un
+ * marquee infinito de 4 ítems repetidos 4 veces, con un pictograma de degradado
+ * azul por ítem — movimiento y decoración para decir cuatro frases. Numeradas
+ * en mono y separadas por filetes, se leen de una vez.
+ */
 export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
   const trustData = getTrustContent(locale);
-  const items = trustData.items.map((item, index) => ({ ...item, icon: icons[index] || icons[0] }));
-  const marqueeItems = [...items, ...items, ...items, ...items];
 
   return (
-    <div
-      role="group"
-      aria-label={trustData.ariaLabel}
-      className="marquee-pause relative w-full overflow-hidden border-y border-background/10 bg-foreground py-5"
-    >
-      {/* Desvanecimiento de bordes con gradiente para una estética premium */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-foreground to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-foreground to-transparent" />
-
-      <div className="flex w-max">
-        <div className="animate-marquee flex items-center gap-16 pr-16">
-          {marqueeItems.map(({ icon: Icon, label }, index) => (
-            <div
-              key={`${label}-${index}`}
-              // Solo la primera pasada (índices 0..items.length-1) es contenido
-              // real para lectores de pantalla — las copias 2ª/3ª/4ª existen
-              // solo para el bucle visual continuo del marquee.
-              aria-hidden={index >= items.length}
-              className="group flex shrink-0 items-center gap-3 text-sm font-semibold tracking-wide text-background/80 transition-colors duration-200 hover:text-accent"
-            >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-background/10 text-background/60 transition-colors duration-300 group-hover:bg-accent/15 group-hover:text-accent">
-                <Icon />
-              </span>
-              <span>{label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div role="group" aria-label={trustData.ariaLabel} className="w-full border-y border-background/10 bg-foreground">
+      <ul
+        className={cn(
+          "mx-auto grid max-w-6xl divide-y divide-background/10 px-6 sm:grid-cols-2 sm:divide-y-0 lg:divide-x",
+          DESKTOP_COLUMNS[trustData.items.length] ?? "lg:grid-cols-4",
+        )}
+      >
+        {trustData.items.map((item, index) => (
+          <li
+            key={item.label}
+            style={{ "--i": index } as CSSProperties}
+            className="reveal-blur flex items-baseline gap-4 py-5 text-sm leading-snug text-background/80 sm:py-6 sm:last:odd:col-span-2 lg:px-6 lg:first:pl-0 lg:last:pr-0 lg:last:odd:col-span-1"
+          >
+            <span className="font-mono text-xs text-background/60">{String(index + 1).padStart(2, "0")}</span>
+            <span>{item.label}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

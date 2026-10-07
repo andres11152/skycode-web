@@ -15,6 +15,7 @@ import { localeHomePath } from "@/lib/i18n";
 import { blogIndexPath } from "@/lib/blogPaths";
 import { faqPath } from "@/lib/faqPaths";
 import { portfolioIndexPath } from "@/lib/portfolioPaths";
+import { LinkPending } from "@/components/ui/LinkPending";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { DURATION, EASE_OUT, SPRING_SNAPPY } from "@/lib/animations";
@@ -81,7 +82,7 @@ export function Navbar() {
     <header className="fixed inset-x-0 top-4 z-50 px-4 sm:px-6 lg:px-8">
       <div
         className={cn(
-          "mx-auto flex items-center justify-between gap-2 rounded-full transition-all duration-300 ease-out",
+          "mx-auto flex items-center justify-between gap-2 rounded-full transition-[max-width,padding,background-color,border-color,box-shadow] duration-300 ease-out",
           scrolled ? cn("max-w-4xl py-2 pl-3 pr-2", GLASS) : "max-w-7xl bg-transparent py-1",
         )}
       >
@@ -112,7 +113,7 @@ export function Navbar() {
         {/* Desktop Links — su propia tarjeta de vidrio cuando flota sola, se funde con el contenedor al hacer scroll */}
         <ul
           className={cn(
-            "hidden items-center gap-1 rounded-full transition-all duration-300 ease-out sm:flex",
+            "hidden items-center gap-1 rounded-full transition-[padding,background-color,border-color,box-shadow] duration-300 ease-out sm:flex",
             scrolled ? "bg-transparent p-0 shadow-none" : cn("p-1.5", GLASS),
           )}
         >
@@ -141,6 +142,7 @@ export function Navbar() {
                 )}
                 {link.label}
                 {link.esOnly && <EsBadge />}
+                <LinkPending />
               </Link>
             </li>
           ))}
@@ -207,7 +209,7 @@ export function Navbar() {
                       onClick={() => setIsOpen(false)}
                       aria-current={isActive(link.href) ? "page" : undefined}
                       className={cn(
-                        "flex min-h-11 items-center gap-1.5 rounded-xl px-4 py-3 text-sm font-medium text-foreground outline-none transition-colors hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-accent",
+                        "relative flex min-h-11 items-center gap-1.5 rounded-xl px-4 py-3 text-sm font-medium text-foreground outline-none transition-colors hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-accent",
                         isActive(link.href) && "bg-foreground/[0.07] font-semibold",
                       )}
                     >
@@ -217,6 +219,7 @@ export function Navbar() {
                           ES
                         </span>
                       )}
+                      <LinkPending />
                     </Link>
                   </li>
                 ))}

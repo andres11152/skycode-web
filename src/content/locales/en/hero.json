@@ -6,41 +6,58 @@
   "titleAccent": "You own 100% of the code",
   "titleAfter": "",
   "subtitle": "We build scale-ready enterprise platforms with pristine documentation and total intellectual property transfer. Your software, with zero technical dependency on our team once the project ships.",
+  "subtitleShort": "Scale-ready platforms with clear documentation and 100% of the code transferred to you.",
   "description": "Protect the continuity and security of your digital operation. We design to international security standards (OWASP) and the data protection frameworks applicable in your country, delivering rigorous technical documentation so your team keeps full control without depending on third parties.",
   "ctaPrimary": {
     "label": "Free audit",
     "href": "#contacto",
-    "ariaLabel": "Schedule a free architecture audit: go to the contact form"
+    "ariaLabel": "Free audit: schedule a free architecture audit via the contact form"
   },
   "ctaSecondary": {
     "label": "View portfolio",
     "href": "/en/portfolio",
-    "ariaLabel": "View project portfolio"
+    "ariaLabel": "View portfolio: real projects and case studies"
   },
-  "codeMockup": {
-    "comment": "// validates, authenticates, and documents"
-  },
+  "localLink": "Engineering team based in Bogotá, Colombia",
   "guarantees": [
     "100% proprietary code",
     "90-day stability warranty",
     "Direct engineer communication"
   ],
-  "stats": [
-    {
-      "value": "+10K",
-      "label": "active users across delivered systems"
+  "portalMockup": {
+    "caption": "Client portal · sample view",
+    "url": "portal.your-company.com",
+    "project": "Management platform",
+    "projectMeta": "Sprint 3 of 5",
+    "deliverablesLabel": "Deliverables",
+    "sprints": [
+      {
+        "name": "Authentication and roles",
+        "status": "Approved",
+        "state": "done",
+        "progress": 100
+      },
+      {
+        "name": "Reporting dashboard",
+        "status": "In progress",
+        "state": "active",
+        "progress": 60
+      },
+      {
+        "name": "Payments integration",
+        "status": "Pending",
+        "state": "todo",
+        "progress": 0
+      }
+    ],
+    "invoice": {
+      "label": "Invoice",
+      "number": "SKY-0014",
+      "status": "Paid"
     },
-    {
-      "value": "+30",
-      "label": "projects in production"
-    },
-    {
-      "value": "99.9%",
-      "label": "average uptime in production"
-    },
-    {
-      "value": "90d",
-      "label": "technical warranty included"
+    "comment": {
+      "label": "SkyCode team",
+      "text": "The reporting dashboard is ready for your review in the private environment."
     }
-  ]
+  }
 }

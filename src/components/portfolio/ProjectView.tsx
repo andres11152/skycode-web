@@ -1,19 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useCallback, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowSquareOut, CheckCircle, CornersOut } from "@phosphor-icons/react";
 import { m as motion, useReducedMotion } from "framer-motion";
+import { InlineText } from "@/components/blog/InlineText";
 import { Button } from "@/components/ui/Button";
-import { Lightbox } from "@/components/ui/Lightbox";
 import { ProjectCover } from "@/components/ui/ProjectCover";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { CaptureSlide } from "@/components/portfolio/CaptureSlide";
 import { CaseVisual } from "@/components/portfolio/CaseVisual";
 import { GalleryRail } from "@/components/portfolio/GalleryRail";
 import { NextCase, type NextCaseData } from "@/components/portfolio/NextCase";
 import { TechIcon } from "@/components/portfolio/TechIcon";
 import { fadeUp } from "@/lib/animations";
+import { preloadNextImage } from "@/lib/preloadImage";
 import { cn } from "@/lib/utils";
 import {
   getPortfolioIcon,
@@ -27,6 +29,11 @@ import { portfolioIndexPath } from "@/lib/portfolioPaths";
 import { bogotaPagePath } from "@/lib/bogotaPaths";
 import { localeHomePath, t, type Locale } from "@/lib/i18n";
 import { textOrNull, withoutTodos } from "@/lib/todoPlaceholders";
+
+// El visor (gestos, zoom, portal) se descarga solo al acercarse a una captura o abrirla: la página
+// no paga ese JS si nadie lo usa. `loadLightbox` se reutiliza para precargar por intención.
+const loadLightbox = () => import("@/components/ui/Lightbox").then((module) => module.Lightbox);
+const Lightbox = dynamic(loadLightbox, { ssr: false });
 
 const WRAP = "mx-auto w-full max-w-6xl px-6";
 const FOCUS =
@@ -54,31 +61,39 @@ export function ProjectView({
   const reduced = Boolean(useReducedMotion());
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  // Se monta al primer uso y se queda montado: así la salida animada del visor sí se ve.
+  const [lightboxMounted, setLightboxMounted] = useState(false);
 
   const galleryImages = project.images;
   const hostname = getProjectHostname(project);
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
+    setLightboxMounted(true);
     setLightboxOpen(true);
   };
 
-  // El lienzo del Lightbox ya define un tamaño grande y consistente (ver
-  // Lightbox.tsx): cada slide solo lo llena con `object-contain`, sin forzar
-  // una relación de aspecto que haría letterboxing exagerado al hacer zoom.
+  const prefetchLightbox = () => {
+    void loadLightbox();
+  };
+
+  // Calienta la imagen contigua (la URL optimizada exacta que pedirá el visor).
+  const preloadSlide = useCallback(
+    (slideIndex: number) => {
+      const image = galleryImages[slideIndex];
+      if (image) preloadNextImage(image.variants.lg, "92vw");
+    },
+    [galleryImages],
+  );
+
+  // El lienzo del Lightbox ya define un tamaño grande y consistente (ver Lightbox.tsx): cada slide
+  // solo lo llena con `object-contain`, sin forzar una relación de aspecto que haría letterboxing
+  // exagerado al hacer zoom. Cada slide es en capas (ver CaptureSlide) para no mostrar nunca un hueco.
+  const captionFor = (image: (typeof galleryImages)[number], index: number) =>
+    image.alt || t(copy.captureAlt, { title: project.title, index: String(index + 1) });
   const slides =
     galleryImages.length > 0
-      ? galleryImages.map((image, index) => (
-          <div key={image.id} className="relative h-full w-full">
-            <Image
-              src={image.variants.lg}
-              alt={image.alt || t(copy.captureAlt, { title: project.title, index: String(index + 1) })}
-              fill
-              sizes="90vw"
-              className="object-contain"
-            />
-          </div>
-        ))
+      ? galleryImages.map((image, index) => <CaptureSlide key={image.id} image={image} alt={captionFor(image, index)} />)
       : [
           <ProjectCover
             key="cover"
@@ -163,6 +178,8 @@ export function ProjectView({
           <CaseVisual
             slug={project.slug}
             imageSrc={project.coverImage?.variants.lg ?? null}
+            blurDataURL={project.coverImage?.blurDataURL}
+            color={project.coverImage?.color}
             alt={project.coverImage?.alt || project.title}
             industryIcon={project.industryIcon}
             url={hostname}
@@ -173,6 +190,8 @@ export function ProjectView({
           <button
             type="button"
             onClick={() => openLightbox(0)}
+            onPointerEnter={prefetchLightbox}
+            onFocus={prefetchLightbox}
             aria-label={copy.expandImage}
             className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-foreground/60 text-background outline-none backdrop-blur-sm transition-colors hover:bg-foreground/75 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
           >
@@ -264,12 +283,14 @@ export function ProjectView({
                       className="list-disc space-y-2 pl-5 text-base leading-relaxed text-foreground/80 marker:text-foreground/40 sm:text-lg"
                     >
                       {block.items.map((item, itemIndex) => (
-                        <li key={itemIndex}>{item}</li>
+                        <li key={itemIndex}>
+                          <InlineText text={item} />
+                        </li>
                       ))}
                     </ul>
                   ) : (
                     <p key={blockIndex} className="text-base leading-relaxed text-foreground/80 sm:text-lg">
-                      {block.text}
+                      <InlineText text={block.text} />
                     </p>
                   ),
                 )}
@@ -340,6 +361,7 @@ export function ProjectView({
             nextLabel={copy.galleryNext}
             expandLabel={copy.expandImage}
             onOpen={openLightbox}
+            onIntent={prefetchLightbox}
           />
         </motion.section>
       )}
@@ -441,14 +463,18 @@ export function ProjectView({
         </div>
       </section>
 
-      <Lightbox
-        open={lightboxOpen}
-        onClose={() => setLightboxOpen(false)}
-        slides={slides}
-        index={lightboxIndex}
-        onIndexChange={setLightboxIndex}
-        labels={copy.lightbox}
-      />
+      {lightboxMounted && (
+        <Lightbox
+          open={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+          slides={slides}
+          index={lightboxIndex}
+          onIndexChange={setLightboxIndex}
+          labels={copy.lightbox}
+          captions={galleryImages.map(captionFor)}
+          onPreload={preloadSlide}
+        />
+      )}
     </main>
   );
 }

@@ -172,7 +172,7 @@ export function LoginView() {
                     value={totpCode}
                     onChange={(e) => setTotpCode(e.target.value)}
                     placeholder="123456"
-                    className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 px-4 text-center text-lg tracking-[0.3em] text-background placeholder:text-background/40 outline-none focus:border-accent focus:ring-1 focus:ring-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground transition-all font-mono"
+                    className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 px-4 text-center text-lg tracking-[0.3em] text-background placeholder:text-background/40 outline-none focus:border-accent focus:ring-1 focus:ring-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground transition font-mono"
                   />
                 </div>
 
@@ -181,7 +181,7 @@ export function LoginView() {
                 <button
                   type="submit"
                   disabled={loading || totpCode.trim().length === 0}
-                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 active:scale-[0.98] motion-reduce:active:scale-100 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 active:scale-[0.98] motion-reduce:active:scale-100 transition disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                 >
                   {loading ? (
                     <span>Verificando…</span>
@@ -228,7 +228,7 @@ export function LoginView() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="ejemplo@skycode.agency"
-                      className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 pl-10 pr-4 text-xs text-background placeholder:text-background/60 outline-none focus:border-accent focus:ring-1 focus:ring-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground transition-all font-mono"
+                      className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 pl-10 pr-4 text-xs text-background placeholder:text-background/60 outline-none focus:border-accent focus:ring-1 focus:ring-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground transition font-mono"
                       autoComplete="username"
                     />
                   </div>
@@ -255,7 +255,7 @@ export function LoginView() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 pl-10 pr-10 text-xs text-background placeholder:text-background/60 outline-none focus:border-accent focus:ring-1 focus:ring-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground transition-all font-mono"
+                      className="w-full rounded-xl border border-background/15 bg-background/10 py-2.5 pl-10 pr-10 text-xs text-background placeholder:text-background/60 outline-none focus:border-accent focus:ring-1 focus:ring-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground transition font-mono"
                       autoComplete="current-password"
                     />
                     <button
@@ -274,7 +274,7 @@ export function LoginView() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 active:scale-[0.98] motion-reduce:active:scale-100 transition-all disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 active:scale-[0.98] motion-reduce:active:scale-100 transition disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                 >
                   {loading ? (
                     <span>Verificando credenciales...</span>

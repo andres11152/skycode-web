@@ -1,3 +1,4 @@
+import { BogotaLink } from "@/components/bogota/BogotaLink";
 import Link from "next/link";
 import { CheckCircle } from "@phosphor-icons/react/ssr";
 import { Button } from "@/components/ui/Button";
@@ -223,6 +224,13 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
           </dl>
         </div>
       </section>
+
+      {/* Entrada a la página local de Bogotá: enlace de texto, sin competir con el CTA de cierre. */}
+      <div className="border-t border-foreground/10 px-6 py-8">
+        <div className="mx-auto max-w-6xl">
+          <BogotaLink locale={locale} />
+        </div>
+      </div>
 
       {/* Cierre — banda oscura (la sección anterior es clara). */}
       <section aria-labelledby="services-cta-title" className="bg-foreground px-6 py-24 text-background sm:py-28">

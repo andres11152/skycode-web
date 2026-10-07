@@ -8,7 +8,7 @@
   },
   "globalError": {
     "title": "Une erreur est survenue",
-    "description": "Une erreur inattendue s'est produite lors du chargement du site. Veuillez réessayer — si le problème persiste, contactez-nous sur WhatsApp.",
+    "description": "Une erreur inattendue s'est produite lors du chargement du site. Veuillez réessayer, si le problème persiste, contactez-nous sur WhatsApp.",
     "ctaRetry": "Réessayer",
     "ctaHome": "Retour à l'accueil"
   }

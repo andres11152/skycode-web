@@ -3,6 +3,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { BogotaView } from "@/components/bogota/BogotaView";
 import { rawBogotaContent } from "@/content/bogota";
+import { PRICING } from "@/content/projectEstimator";
 import { getServiceBySlug } from "@/content/services";
 import { bogotaPagePath } from "@/lib/bogotaPaths";
 import { stripInlineLinks, parseInlineLinks } from "@/lib/inlineLinks";
@@ -55,24 +56,30 @@ describe("contenido de /desarrollo-software-bogota", () => {
     expect(words).toBeGreaterThanOrEqual(MIN_WORDS);
   });
 
-  it("los marcadores TODO solo viven en filas de precios/tiempos y preguntas, cada uno en su propio elemento", () => {
+  it("ya no quedan marcadores TODO: precios y plazos salen del cotizador", () => {
     const strings: { path: string; text: string }[] = [];
     walk(rawBogotaContent, "", strings);
-    const withMarker = strings.filter((entry) => entry.text.includes(TODO_MARKER));
-    expect(withMarker.length).toBeGreaterThan(0);
-    for (const entry of withMarker) {
-      expect(entry.path).toMatch(/^(pricing\.rows\[\d+\]\.value|timelines\.rows\[\d+\]\.value|faq\.items\[\d+\]\.answer)$/);
-      // El valor es SOLO el marcador (no va mezclado con una frase que sí debe publicarse).
-      expect(entry.text).toMatch(/^\{\{TODO: [^}]+\}\}$/);
-    }
+    expect(strings.filter((entry) => entry.text.includes(TODO_MARKER))).toEqual([]);
+    // Ningún token sin resolver llega al contenido.
+    expect(strings.filter((entry) => /\{(price|priceShort|weeks)\./.test(entry.text))).toEqual([]);
   });
 
-  it("los marcadores siguen el formato exigido (rango de precio en COP / tiempo típico)", () => {
-    const strings: { path: string; text: string }[] = [];
-    walk(rawBogotaContent, "", strings);
-    for (const entry of strings.filter((item) => item.text.includes(TODO_MARKER))) {
-      expect(entry.text).toMatch(/^\{\{TODO: (rango de precio en COP de|tiempo típico de) .+\}\}$/);
+  it("cada plan toma precio y semanas de PRICING (una sola fuente de verdad con el cotizador)", () => {
+    expect(rawBogotaContent.pricing.plans.length).toBeGreaterThanOrEqual(5);
+    for (const plan of rawBogotaContent.pricing.plans) {
+      const source = PRICING[plan.id];
+      expect(source, plan.id).toBeDefined();
+      expect(plan.priceCop).toBe(source.priceCop);
+      expect(plan.weeks).toBe(source.baseWeeks);
+      expect(plan.price).toContain("COP");
     }
+    expect(new Set(rawBogotaContent.pricing.plans.map((plan) => plan.id)).size).toBe(rawBogotaContent.pricing.plans.length);
+  });
+
+  it("la respuesta de precio y la descripción meta citan las cifras reales del cotizador", () => {
+    const cost = rawBogotaContent.faq.items.find((item) => item.id === "cuanto-cuesta");
+    expect(cost?.answer).toContain(rawBogotaContent.pricing.plans.find((plan) => plan.id === "web")?.price);
+    expect(rawBogotaContent.meta.description).toContain("$4,5 M COP");
   });
 
   it("los enlaces internos de servicios y casos apuntan a páginas que existen", () => {
@@ -130,8 +137,9 @@ describe("contenido de /desarrollo-software-bogota", () => {
     for (const id of ids) expect(id).toMatch(/^[a-z0-9-]+$/);
   });
 
-  it("la FAQ real (sin marcadores) tiene entre 6 y 8 preguntas", () => {
+  it("la FAQ tiene entre 6 y 8 preguntas, todas con respuesta publicable", () => {
     const real = rawBogotaContent.faq.items.filter((item) => !hasTodo(item));
+    expect(real).toHaveLength(rawBogotaContent.faq.items.length);
     expect(real.length).toBeGreaterThanOrEqual(6);
     expect(rawBogotaContent.faq.items.length).toBeLessThanOrEqual(8);
   });
@@ -156,7 +164,13 @@ describe("render de /desarrollo-software-bogota", () => {
     for (const item of rawBogotaContent.services.items) expect(html).toContain(`href="/servicios/${item.slug}"`);
     for (const item of rawBogotaContent.cases.items) expect(html).toContain(`href="/portafolio/${item.slug}"`);
     expect(html).toContain('href="/#contacto"');
+    expect(html).toContain('href="/cotizador"');
     expect(html).toContain("https://wa.me/");
+  });
+
+  it("muestra los precios base en la página renderizada", () => {
+    const html = render();
+    for (const plan of rawBogotaContent.pricing.plans) expect(html).toContain(plan.price);
   });
 
   it("no muestra marcadores TODO en producción y sigue sobrepasando las 1.200 palabras", () => {

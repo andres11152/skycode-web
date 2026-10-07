@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
@@ -10,6 +10,8 @@ import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { AttributionCapture } from "@/components/AttributionCapture";
 import { useLocale } from "@/components/LocaleProvider";
 import { ContactModalProvider } from "@/components/contact/ContactModalProvider";
+import { NavigationProgress } from "@/components/ui/NavigationProgress";
+import { PageTransition } from "@/components/ui/PageTransition";
 
 const WhatsAppButton = dynamic(
   () => import("@/components/ui/WhatsAppButton").then((mod) => mod.WhatsAppButton),
@@ -61,7 +63,9 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   // ganaba la carrera al scroll-to-hash nativo de Next — la página siempre
   // aterrizaba arriba del todo, nunca en la sección real. Bug real, no
   // hipotético. Si hay hash y el elemento existe, se salta el forzado a top.
-  useEffect(() => {
+  // `useLayoutEffect` (no `useEffect`): con la transición de página, el snapshot de la página nueva se
+  // captura justo tras el commit — si el scroll se reiniciara después, se vería un salto.
+  useLayoutEffect(() => {
     const hash = window.location.hash;
     if (hash) {
       const target = document.getElementById(hash.slice(1));
@@ -96,8 +100,9 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   return (
     <ContactModalProvider>
       <SkipLink />
+      <NavigationProgress />
       <Navbar />
-      {children}
+      <PageTransition>{children}</PageTransition>
       <Footer />
       <HtmlLangSync />
       <WhatsAppButton locale={locale} />

@@ -1,6 +1,6 @@
 {
-  "badge": "Portfolio & Case Studies",
-  "title": "Portfolio",
+  "badge": "Portfolio and case studies",
+  "title": "Software already in production",
   "description": "Real solutions engineered to solve operational bottlenecks and accelerate business growth.",
   "viewAll": "See all projects",
   "featuredBadge": "Featured Case",
@@ -43,14 +43,15 @@
     "viewAllCases": "View all cases",
     "ctaTitle": "Have a similar project in mind?",
     "ctaButton": "Talk to an engineer",
-    "captureAlt": "{title} — screenshot {index}",
+    "captureAlt": "{title}, screenshot {index}",
     "lightbox": {
       "dialog": "Image gallery",
       "close": "Close",
       "prev": "Previous image",
       "next": "Next image",
       "zoomIn": "Zoom in",
-      "zoomOut": "Zoom out"
+      "zoomOut": "Zoom out",
+      "position": "Image {index} of {total}"
     },
     "related": {
       "title": "Go deeper",

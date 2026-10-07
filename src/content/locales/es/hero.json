@@ -6,6 +6,7 @@
   "titleAccent": "El código es 100% tuyo",
   "titleAfter": "",
   "subtitle": "Desarrollamos sistemas y aplicaciones a tu medida, con entregas claras cada semana y comunicación directa con los ingenieros que programan. Sin intermediarios comerciales ni cajas negras.",
+  "subtitleShort": "Sistemas y aplicaciones a tu medida, con entregas claras cada semana y trato directo con los ingenieros.",
   "description": "Sabemos lo difícil que es confiar un proyecto tecnológico: agencias que desaparecen, retrasos eternos o código imposible de mantener. En SkyCode te entregamos el 100% de la propiedad, repositorios a tu nombre y documentación paso a paso para que tengas el control absoluto.",
   "ctaPrimary": {
     "label": "Hablemos de tu proyecto",
@@ -15,32 +16,48 @@
   "ctaSecondary": {
     "label": "Ver proyectos reales",
     "href": "/portafolio",
-    "ariaLabel": "Ver proyectos y casos reales"
+    "ariaLabel": "Ver proyectos reales del portafolio"
   },
-  "codeMockup": {
-    "comment": "// código limpio, probado y 100% tuyo"
-  },
+  "localLink": "Equipo con base en Bogotá, Colombia",
   "guarantees": [
     "Código 100% de tu propiedad",
     "90 días de garantía técnica",
     "Trato directo con ingenieros"
   ],
-  "stats": [
-    {
-      "value": "+10K",
-      "label": "usuarios activos en sistemas entregados"
+  "portalMockup": {
+    "caption": "Portal de clientes · vista de ejemplo",
+    "url": "portal.tu-empresa.com",
+    "project": "Plataforma de gestión",
+    "projectMeta": "Sprint 3 de 5",
+    "deliverablesLabel": "Entregables",
+    "sprints": [
+      {
+        "name": "Autenticación y roles",
+        "status": "Aprobado",
+        "state": "done",
+        "progress": 100
+      },
+      {
+        "name": "Panel de reportes",
+        "status": "En progreso",
+        "state": "active",
+        "progress": 60
+      },
+      {
+        "name": "Integración de pagos",
+        "status": "Pendiente",
+        "state": "todo",
+        "progress": 0
+      }
+    ],
+    "invoice": {
+      "label": "Factura",
+      "number": "SKY-0014",
+      "status": "Pagada"
     },
-    {
-      "value": "+30",
-      "label": "proyectos en producción"
-    },
-    {
-      "value": "99.9%",
-      "label": "uptime promedio en producción"
-    },
-    {
-      "value": "90d",
-      "label": "garantía técnica incluida"
+    "comment": {
+      "label": "Equipo SkyCode",
+      "text": "El panel de reportes está listo para tu revisión en el entorno privado."
     }
-  ]
+  }
 }

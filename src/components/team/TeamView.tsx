@@ -172,7 +172,7 @@ export function TeamView({
               {/* El id ancla es el destino del JSON-LD `Person.url` del
                   autor de cada post del blog (ver lib/blogMetadata.ts::authorUrl). */}
               <SpotlightCard className="h-auto sm:h-full">
-                <div className="group relative flex h-auto sm:h-full sm:min-h-[500px] sm:aspect-[3/4] flex-col overflow-hidden rounded-2xl border border-foreground/10 bg-background transition-all duration-500 hover:border-accent/35 hover:shadow-[0_24px_64px_rgba(0,137,205,0.12)]">
+                <div className="group relative flex h-auto sm:h-full sm:min-h-[500px] sm:aspect-[3/4] flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background transition duration-500 hover:border-accent/35 hover:shadow-[0_24px_64px_rgba(0,137,205,0.12)]">
 
                   {/* Foto del miembro: compacta en mobile adaptándose al contenido, full-bleed en desktop */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden sm:absolute sm:inset-0 sm:h-full sm:w-full sm:aspect-auto">
@@ -183,7 +183,7 @@ export function TeamView({
                           alt={member.name}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-cover object-top filter grayscale-[25%] contrast-[1.04] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:grayscale-0"
+                          className="object-cover object-top filter grayscale-[25%] contrast-[1.04] transition duration-700 ease-out group-hover:scale-[1.03] group-hover:grayscale-0"
                           priority={index === 0}
                         />
                         {/* Gradiente sutil superior para contraste del badge */}
@@ -224,7 +224,7 @@ export function TeamView({
                     )}
 
                     {/* Badge de rol — esquina superior derecha */}
-                    <span className="absolute top-3.5 right-3.5 z-10 rounded-full border border-foreground/15 bg-background/85 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-foreground/80 backdrop-blur-md transition-all duration-300 group-hover:border-accent/40 group-hover:text-accent">
+                    <span className="absolute top-3.5 right-3.5 z-10 rounded-full border border-foreground/15 bg-background/85 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-foreground/80 backdrop-blur-md transition duration-300 group-hover:border-accent/40 group-hover:text-accent">
                       {member.role}
                     </span>
                   </div>
@@ -240,7 +240,7 @@ export function TeamView({
                       {/* Separador animado */}
                       <div
                         aria-hidden="true"
-                        className="mt-2.5 h-0.5 w-8 rounded-full bg-accent/40 transition-all duration-500 group-hover:w-14 group-hover:bg-accent"
+                        className="mt-2.5 h-0.5 w-8 origin-left rounded-full bg-accent/40 transition-[transform,background-color] duration-500 group-hover:scale-x-[1.75] group-hover:bg-accent motion-reduce:transition-none"
                       />
 
                       {/* Descripción / Bio */}
@@ -291,7 +291,7 @@ export function TeamView({
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-60px" }}
-            className="mt-24 rounded-3xl border border-foreground/10 bg-foreground/[0.015] p-8 sm:p-12 lg:p-14"
+            className="mt-24 rounded-xl border border-foreground/10 bg-foreground/[0.015] p-8 sm:p-12 lg:p-14"
           >
             <div className="flex flex-col gap-3">
               <SectionEyebrow>{teamData.networkTitle}</SectionEyebrow>
@@ -322,7 +322,7 @@ export function TeamView({
                     <motion.div
                       key={idx}
                       variants={fadeUp(reduced)}
-                      className="group flex flex-col rounded-2xl border border-foreground/10 bg-background p-5 transition-all duration-300 hover:border-accent/35 hover:bg-accent/[0.02] hover:shadow-sm"
+                      className="group flex flex-col rounded-xl border border-foreground/10 bg-background p-5 transition duration-300 hover:border-accent/35 hover:bg-accent/[0.02] hover:shadow-sm"
                     >
                       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent transition-transform duration-300 group-hover:scale-110 group-hover:rotate-2">
                         <IconComp size={22} weight="duotone" />
@@ -348,7 +348,7 @@ export function TeamView({
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
-          className="mt-24 sm:mt-32 rounded-3xl border border-foreground/10 bg-gradient-to-b from-foreground/[0.02] via-accent/[0.02] to-accent/[0.05] p-8 sm:p-14 text-center"
+          className="mt-24 sm:mt-32 rounded-xl border border-foreground/10 bg-gradient-to-b from-foreground/[0.02] via-accent/[0.02] to-accent/[0.05] p-8 sm:p-14 text-center"
         >
           <div className="mx-auto max-w-2xl">
             <h2

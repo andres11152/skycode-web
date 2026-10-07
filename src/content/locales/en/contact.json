@@ -1,5 +1,5 @@
 {
-  "badge": "Contact & Diagnosis",
+  "badge": "Contact and diagnosis",
   "title": "Let's talk about your project",
   "description": "Stop postponing your platform's development. Tell us about your technical challenge today and get a free architecture pre-diagnosis directly from our engineering team, not an automated reply.",
   "placeholders": {
@@ -35,7 +35,7 @@
   },
   "confirmationEmail": {
     "subject": "We've received your message, {name}",
-    "preheader": "One of our engineers will review your project today — no generic bot replies.",
+    "preheader": "One of our engineers will review your project today, no generic bot replies.",
     "greeting": "Hi {name},",
     "serviceLabel": "Requested service",
     "messageLabel": "Your message",

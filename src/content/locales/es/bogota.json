@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Desarrollo de Software en Bogotá, Colombia",
-    "description": "Desarrollo de software a la medida en Bogotá: plataformas, apps, integraciones y e-commerce con código 100% tuyo, 90 días de garantía y pago 50/50."
+    "description": "Desarrollo de software a la medida en Bogotá: webs desde {priceShort.web}, apps, integraciones y e-commerce. Código 100% tuyo, 90 días de garantía y pago 50/50."
   },
   "breadcrumb": {
     "home": "Inicio",
@@ -14,27 +14,29 @@
     "lead": "SkyCode Agency es un equipo de ingeniería con base en Bogotá que construye plataformas web, aplicaciones móviles, integraciones y tiendas en línea para empresas. El código es tuyo desde el primer día, ves avances reales cada semana y hablas directo con los ingenieros que programan tu proyecto.",
     "ctaPrimary": "Hablar con un ingeniero",
     "ctaSecondary": "Escribir por WhatsApp",
-    "factsLabel": "Compromisos que ya son públicos",
-    "facts": [
+    "badge": "Equipo con base en Bogotá",
+    "globeLabel": "Globo terráqueo con Bogotá, Colombia, marcada como sede del equipo",
+    "clocksLabel": "Hora en vivo",
+    "clocks": [
       {
-        "label": "Código 100% tuyo",
-        "text": "Repositorios y accesos a tu nombre desde el primer día."
+        "city": "Bogotá",
+        "tz": "America/Bogota",
+        "home": true
       },
       {
-        "label": "90 días de garantía",
-        "text": "Correcciones técnicas sin costo después del lanzamiento."
+        "city": "Ciudad de México",
+        "tz": "America/Mexico_City",
+        "home": false
       },
       {
-        "label": "Pago 50/50",
-        "text": "50% al firmar y 50% al recibir el proyecto funcionando."
+        "city": "Nueva York",
+        "tz": "America/New_York",
+        "home": false
       },
       {
-        "label": "Avances semanales",
-        "text": "Un entorno privado para probar cada entrega."
-      },
-      {
-        "label": "Respuesta en menos de 24 h hábiles",
-        "text": "Tu consulta la revisa un ingeniero, no un bot."
+        "city": "Madrid",
+        "tz": "Europe/Madrid",
+        "home": false
       }
     ]
   },
@@ -50,21 +52,57 @@
     "pillars": [
       {
         "title": "Software que te pertenece",
-        "text": "Los repositorios, la base de datos y los despliegues quedan a tu nombre. No hay licencias por usuario ni mensualidades forzadas: si mañana decides continuar con otro equipo o con tu área interna, puedes hacerlo sin ninguna traba."
+        "text": "Los repositorios, la base de datos y los despliegues quedan a tu nombre. No hay licencias por usuario ni mensualidades forzadas: si mañana decides continuar con otro equipo o con tu área interna, puedes hacerlo sin ninguna traba.",
+        "key": "ownership"
       },
       {
         "title": "Contacto directo con ingenieros",
-        "text": "Durante el desarrollo hablas con quienes programan, sin intermediarios. Cuando nos escribes por primera vez, tu consulta la revisa directamente Andrés, César o Ximena."
+        "text": "Durante el desarrollo hablas con quienes programan, sin intermediarios. Cuando nos escribes por primera vez, tu consulta la revisa directamente Andrés, César o Ximena.",
+        "key": "direct"
       },
       {
         "title": "Contexto local",
-        "text": "Conocemos las pasarelas y herramientas que usan las empresas colombianas, como Wompi, PayU, Siigo, Alegra y WhatsApp Business, y la normativa de datos que aplica aquí, la Ley 1581, junto con marcos internacionales como el RGPD."
+        "text": "Conocemos las pasarelas y herramientas que usan las empresas colombianas, como Wompi, PayU, Siigo, Alegra y WhatsApp Business, y la normativa de datos que aplica aquí, la Ley 1581, junto con marcos internacionales como el RGPD.",
+        "key": "local"
       },
       {
         "title": "Un huso horario estable",
-        "text": "Colombia no cambia de hora durante el año, así que la diferencia con tu zona horaria es siempre la misma y las reuniones de seguimiento no se desfasan en las temporadas de cambio de horario."
+        "text": "Colombia no cambia de hora durante el año, así que la diferencia con tu zona horaria es siempre la misma y las reuniones de seguimiento no se desfasan en las temporadas de cambio de horario.",
+        "key": "timezone"
       }
-    ]
+    ],
+    "visuals": {
+      "repoLines": [
+        "owner: tu-empresa",
+        "repo: plataforma-clientes",
+        "licencia: sin cuotas por usuario",
+        "acceso: tu equipo, desde el día 1"
+      ],
+      "directLabel": "Quien programa, responde",
+      "directPeople": [
+        {
+          "initial": "A",
+          "name": "Andrés"
+        },
+        {
+          "initial": "C",
+          "name": "César"
+        },
+        {
+          "initial": "X",
+          "name": "Ximena"
+        }
+      ],
+      "localChips": [
+        "Wompi",
+        "PayU",
+        "Stripe",
+        "Siigo",
+        "Alegra",
+        "WhatsApp Business",
+        "SAP"
+      ]
+    }
   },
   "services": {
     "id": "servicios",
@@ -118,7 +156,8 @@
         "text": "Asistentes para WhatsApp, extracción de datos desde facturas y búsqueda semántica sobre la base de conocimiento de tu empresa."
       }
     ],
-    "allLabel": "Ver todos los servicios"
+    "allLabel": "Ver todos los servicios",
+    "viewLabel": "Ver servicio"
   },
   "cases": {
     "id": "casos",
@@ -149,7 +188,7 @@
         "slug": "cda-revifull",
         "name": "CDA Revifull",
         "sector": "Agendamiento en línea",
-        "text": "Portal de agendamiento para la revisión técnico-mecánica de vehículos y motos en Bogotá, con recordatorios automáticos y cotización directa por WhatsApp."
+        "text": "Portal de agendamiento para la revisión técnico-mecánica de vehículos y motos en Bogotá, con reserva en línea sobre el plugin Amelia."
       },
       {
         "slug": "racingbike",
@@ -158,13 +197,14 @@
         "text": "Tienda en línea de una tienda de ciclismo de Bogotá activa desde 1998: catálogo de bicicletas, componentes y accesorios con filtros por precio, marca y talla, guía para elegir la talla, pagos con PSE, tarjeta y Addi y envíos a todo el país."
       }
     ],
-    "allLabel": "Ver todo el portafolio"
+    "allLabel": "Ver todo el portafolio",
+    "viewLabel": "Ver caso completo"
   },
   "process": {
     "id": "proceso",
     "tocLabel": "Proceso de trabajo",
     "heading": "Cómo trabajamos: del diagnóstico a la transferencia",
-    "intro": "Sin sorpresas ni tecnicismos confusos: sabes qué pasa con tu dinero y con tu proyecto en cada etapa. Así es el proceso, de principio a fin.",
+    "intro": "Sabes qué pasa con tu dinero y con tu proyecto en cada etapa, sin tecnicismos de por medio. Así es el proceso, de principio a fin.",
     "steps": [
       {
         "title": "Charlamos y aterrizamos tu idea",
@@ -211,13 +251,14 @@
         "text": "Registros de auditoría sobre quién accedió a qué y quién modificó qué, para poder responder ante una consulta de un titular o ante un incidente."
       }
     ],
-    "closing": "Cumplir la norma depende también de las políticas y procedimientos de tu organización, que no son solo código. Nosotros nos ocupamos de la parte técnica y no sustituimos el concepto de un abogado. Para profundizar, lee la [guía técnica de la Ley 1581 para equipos de software](/blog/ley-1581-guia-tecnica-software) o conoce el servicio de [seguridad y protección de datos](/servicios/seguridad-cumplimiento)."
+    "closing": "Cumplir la norma depende también de las políticas y procedimientos de tu organización, que no son solo código. Nosotros nos ocupamos de la parte técnica y no sustituimos el concepto de un abogado. Para profundizar, lee la [guía técnica de la Ley 1581 para equipos de software](/blog/ley-1581-guia-tecnica-software) o conoce el servicio de [seguridad y protección de datos](/servicios/seguridad-cumplimiento).",
+    "mockupLabel": "Ejemplo ilustrativo de un registro de consentimiento"
   },
   "pricing": {
     "id": "precios",
     "tocLabel": "Precios en COP",
     "heading": "Cuánto cuesta desarrollar software a la medida en Bogotá",
-    "intro": "No publicamos una tarifa única porque dos proyectos con el mismo nombre pueden tener alcances muy distintos. Lo que sí podemos decirte con claridad es qué mueve el precio y cómo se paga.",
+    "intro": "Dos proyectos con el mismo nombre pueden tener alcances muy distintos, por eso publicamos precios base de referencia y te explicamos qué mueve el precio y cómo se paga.",
     "factorsHeading": "Qué determina el precio",
     "factors": [
       "El alcance funcional: cuántos módulos, roles de usuario y pantallas necesita la primera versión.",
@@ -227,64 +268,54 @@
       "El ritmo de entrega, que también cambia la inversión y el tiempo aproximados que calcula nuestro cotizador."
     ],
     "rangesHeading": "Rangos de referencia en pesos colombianos (COP)",
-    "rows": [
-      {
-        "label": "Sitio web corporativo o catálogo digital",
-        "value": "{{TODO: rango de precio en COP de un sitio web corporativo}}"
-      },
-      {
-        "label": "Tienda en línea (e-commerce)",
-        "value": "{{TODO: rango de precio en COP de una tienda en línea}}"
-      },
-      {
-        "label": "Software a la medida: primer módulo",
-        "value": "{{TODO: rango de precio en COP de un primer módulo de software a la medida}}"
-      },
-      {
-        "label": "Aplicación móvil para iOS y Android",
-        "value": "{{TODO: rango de precio en COP de una aplicación móvil}}"
-      },
-      {
-        "label": "Integración con pasarela de pago, ERP o WhatsApp",
-        "value": "{{TODO: rango de precio en COP de una integración con pasarela, ERP o WhatsApp}}"
-      },
-      {
-        "label": "Migración de datos desde un sistema legado",
-        "value": "{{TODO: rango de precio en COP de una migración de datos legados}}"
-      }
-    ],
     "paymentNote": "Sea cual sea el rango, la forma de pago es siempre la misma: 50% de anticipo al firmar el contrato con el cronograma acordado y 50% restante al recibir el proyecto funcionando, probado de punta a punta y con tu visto bueno final. No hay mensualidades forzadas ni licencias recurrentes.",
-    "estimatorText": "Para hacerte una idea antes de hablar con nadie, el [cotizador interactivo](/cotizador) calcula una inversión y un tiempo aproximados, en pesos colombianos o dólares, según el tipo de proyecto, los módulos y el ritmo de entrega. El presupuesto definitivo lo damos después de conversar, sin compromiso."
+    "estimatorText": "Para hacerte una idea antes de hablar con nadie, el [cotizador interactivo](/cotizador) calcula una inversión y un tiempo aproximados, en pesos colombianos o dólares, según el tipo de proyecto, los módulos y el ritmo de entrega. El presupuesto definitivo lo damos después de conversar, sin compromiso.",
+    "launchNote": "Estamos creciendo y nuestras tarifas están pensadas para que una empresa en etapa temprana pueda contratar ingeniería de verdad, con contrato, garantía y código a su nombre.",
+    "fromLabel": "Desde",
+    "baseNote": "Valores base de referencia en pesos colombianos. Los módulos adicionales (inicio de sesión con roles, pagos en línea, modo sin conexión, seguridad reforzada o asistente inteligente) y el ritmo Express se suman en el cotizador.",
+    "plansHeading": "Precios base por tipo de proyecto",
+    "estimatorCta": "Calcular mi proyecto",
+    "plans": [
+      {
+        "id": "web",
+        "label": "Sitio web corporativo o catálogo digital",
+        "text": "Rápido en celular, pensado para posicionar y para convertir visitas en cotizaciones."
+      },
+      {
+        "id": "apis",
+        "label": "Integraciones y conexión de sistemas",
+        "text": "Pasarelas de pago, facturación, ERP o WhatsApp conectados sin digitación repetida."
+      },
+      {
+        "id": "ecommerce",
+        "label": "Tienda en línea (e-commerce)",
+        "text": "Catálogo, carrito y pagos locales e internacionales listos para vender."
+      },
+      {
+        "id": "mobile",
+        "label": "Aplicación móvil para iOS y Android",
+        "text": "Una app fluida, lista para publicar en App Store y Google Play."
+      },
+      {
+        "id": "software",
+        "label": "Software a la medida o plataforma web",
+        "text": "Panel administrativo, base de datos y la lógica exacta de tu negocio."
+      },
+      {
+        "id": "ai",
+        "label": "Inteligencia artificial aplicada",
+        "text": "Asistentes, lectura automática de documentos y automatizaciones."
+      }
+    ]
   },
   "timelines": {
     "id": "tiempos",
     "tocLabel": "Tiempos típicos",
     "heading": "Tiempos típicos de desarrollo",
     "intro": "Trabajamos por fases: el primer módulo útil suele salir en semanas y no en meses, y el plazo exacto queda cerrado en el contrato después de mapear tu proceso. Con avances semanales sabes en qué punto estás en todo momento, y los cambios de alcance se hablan antes, no al final.",
-    "rangesHeading": "Plazos de referencia por tipo de proyecto",
-    "rows": [
-      {
-        "label": "Sitio web corporativo o catálogo digital",
-        "value": "{{TODO: tiempo típico de un sitio web corporativo}}"
-      },
-      {
-        "label": "Tienda en línea (e-commerce)",
-        "value": "{{TODO: tiempo típico de una tienda en línea}}"
-      },
-      {
-        "label": "Software a la medida: primer módulo en producción",
-        "value": "{{TODO: tiempo típico de un primer módulo de software a la medida}}"
-      },
-      {
-        "label": "Aplicación móvil para iOS y Android",
-        "value": "{{TODO: tiempo típico de una aplicación móvil}}"
-      },
-      {
-        "label": "Migración de datos desde un sistema legado",
-        "value": "{{TODO: tiempo típico de una migración de datos legados}}"
-      }
-    ],
-    "note": "Los plazos dependen de que las decisiones y los accesos necesarios lleguen a tiempo. Procesos de terceros, como la aprobación de una pasarela de pago o las revisiones de App Store y Google Play, pueden mover el calendario, por eso los identificamos desde el inicio."
+    "rangesHeading": "Semanas de referencia hasta el primer lanzamiento",
+    "note": "Los plazos dependen de que las decisiones y los accesos necesarios lleguen a tiempo. Procesos de terceros, como la aprobación de una pasarela de pago o las revisiones de App Store y Google Play, pueden mover el calendario, por eso los identificamos desde el inicio.",
+    "weeksUnit": "semanas"
   },
   "faq": {
     "id": "preguntas",
@@ -304,12 +335,12 @@
       {
         "id": "cuanto-cuesta",
         "question": "¿Cuánto cuesta desarrollar un software a la medida en Bogotá?",
-        "answer": "{{TODO: rango de precio en COP de un proyecto de software a la medida típico}}"
+        "answer": "Depende del alcance, pero partimos de precios base claros: un sitio web desde {price.web}, una tienda en línea desde {price.ecommerce}, una aplicación móvil desde {price.mobile} y una plataforma o software a la medida desde {price.software}. Son valores de referencia en pesos colombianos; las integraciones y los módulos adicionales se suman, y el [cotizador](/cotizador) te da una cifra aproximada en minutos. El presupuesto definitivo lo damos después de conversar, sin compromiso."
       },
       {
         "id": "cuanto-tarda",
         "question": "¿Cuánto tarda en estar listo un proyecto?",
-        "answer": "{{TODO: tiempo típico de un proyecto de software a la medida}}"
+        "answer": "Como referencia, un sitio web toma unas {weeks.web} semanas, una tienda en línea unas {weeks.ecommerce}, una aplicación móvil unas {weeks.mobile} y un software a la medida unas {weeks.software}, contando hasta el primer lanzamiento útil. Con avances semanales ves el progreso en cada etapa, y el plazo exacto queda cerrado en el contrato después de mapear tu proceso."
       },
       {
         "id": "forma-de-pago",
@@ -338,5 +369,36 @@
     "body": "Cuéntanos qué necesitas resolver. Lo revisa directamente un ingeniero y te respondemos en menos de 24 horas hábiles, con una valoración sincera de cómo encarar tu proyecto.",
     "primary": "Hablar con un ingeniero",
     "secondary": "Escribir por WhatsApp"
+  },
+  "stats": {
+    "label": "Compromisos que ya son públicos",
+    "items": [
+      {
+        "value": "100%",
+        "label": "Código tuyo",
+        "text": "Repositorios y accesos a tu nombre desde el primer día."
+      },
+      {
+        "value": "90",
+        "unit": "días",
+        "label": "de garantía",
+        "text": "Correcciones técnicas sin costo después del lanzamiento."
+      },
+      {
+        "value": "50/50",
+        "label": "Pago en dos partes",
+        "text": "50% al firmar y 50% al recibir el proyecto funcionando."
+      },
+      {
+        "value": "<24",
+        "unit": "h hábiles",
+        "label": "de respuesta",
+        "text": "Tu consulta la revisa un ingeniero, no un bot."
+      }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "Clientes",
+    "heading": "Lo que dicen quienes ya trabajaron con nosotros"
   }
 }

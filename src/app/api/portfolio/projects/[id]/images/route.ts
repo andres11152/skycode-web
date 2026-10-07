@@ -63,7 +63,13 @@ export async function POST(request: Request, { params }: RouteContext) {
     const created = await withTransaction(async (client) => {
       const result = await addPortfolioProjectImage(
         projectId,
-        { storageKey: processed.storageKey, variants: processed.variants, width: processed.width, height: processed.height },
+        {
+          storageKey: processed.storageKey,
+          variants: processed.variants,
+          placeholder: processed.placeholder,
+          width: processed.width,
+          height: processed.height,
+        },
         client
       );
 

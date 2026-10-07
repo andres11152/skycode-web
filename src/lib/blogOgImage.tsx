@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
 import { getPostBySlug } from "@/content/blog";
-import { getPostTopic, TOPIC_GLYPHS } from "@/content/blogTopics";
 import { readingTime } from "@/content/blogShared";
 import { siteName } from "@/lib/site";
 import type { Locale } from "@/lib/i18n";
@@ -10,24 +9,24 @@ export const OG_SIZE = { width: 1200, height: 630 } as const;
 
 // Los mismos colores del sistema (`globals.css`): negro/blanco y el azul de
 // marca. ImageResponse no lee variables CSS, así que van literales.
-const INK = "#0a0a0a";
-const PAPER = "#ffffff";
-const ACCENT = "#0089cd";
+export const INK = "#0a0a0a";
+export const PAPER = "#ffffff";
+export const ACCENT = "#0089cd";
 
 let headingFont: Promise<ArrayBuffer | null> | undefined;
 
 /**
- * Space Grotesk Bold — la tipografía de los títulos del sitio. `ImageResponse`
+ * Geist Bold — la tipografía del sitio. `ImageResponse`
  * solo trae una fuente regular por defecto, y un título OG sin negrita se ve
  * débil. Se pide a Google Fonts (sin User-Agent de navegador devuelve TTF,
  * que es lo que Satori acepta; WOFF2 no) y se guarda en memoria del proceso.
  * Si no hay red (build en CI, fallo puntual) devuelve `null` y la imagen se
  * dibuja con la fuente por defecto: nunca rompe la generación.
  */
-function loadHeadingFont(): Promise<ArrayBuffer | null> {
+export function loadHeadingFont(): Promise<ArrayBuffer | null> {
   headingFont ??= (async () => {
     try {
-      const css = await fetch("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700", {
+      const css = await fetch("https://fonts.googleapis.com/css2?family=Geist:wght@700", {
         signal: AbortSignal.timeout(4000),
       }).then((res) => res.text());
       const url = css.match(/src: url\((.+?)\) format\('(?:truetype|opentype)'\)/)?.[1];
@@ -53,7 +52,6 @@ function loadHeadingFont(): Promise<ArrayBuffer | null> {
  */
 export async function renderBlogOgImage(slug: string, locale: Locale): Promise<ImageResponse> {
   const post = await getPostBySlug(slug, locale);
-  const glyph = TOPIC_GLYPHS[post ? getPostTopic(post) : "code"];
   const font = await loadHeadingFont();
   const title = post?.title ?? siteName;
   // Títulos largos bajan un paso de tamaño para no pasar de 3 líneas.
@@ -69,7 +67,7 @@ export async function renderBlogOgImage(slug: string, locale: Locale): Promise<I
           position: "relative",
           background: INK,
           color: PAPER,
-          fontFamily: font ? "Space Grotesk" : "sans-serif",
+          fontFamily: font ? "Geist" : "sans-serif",
         }}
       >
         {/* Grilla */}
@@ -97,22 +95,6 @@ export async function renderBlogOgImage(slug: string, locale: Locale): Promise<I
             filter: "blur(120px)",
           }}
         />
-        {/* Glifo del tema */}
-        <svg
-          width="320"
-          height="320"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={PAPER}
-          strokeWidth="0.55"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ position: "absolute", right: 64, bottom: 72, opacity: 0.9 }}
-        >
-          {glyph.map((d) => (
-            <path key={d} d={d} />
-          ))}
-        </svg>
 
         <div
           style={{
@@ -162,7 +144,7 @@ export async function renderBlogOgImage(slug: string, locale: Locale): Promise<I
     ),
     {
       ...OG_SIZE,
-      fonts: font ? [{ name: "Space Grotesk", data: font, weight: 700, style: "normal" }] : undefined,
+      fonts: font ? [{ name: "Geist", data: font, weight: 700, style: "normal" }] : undefined,
     },
   );
 }

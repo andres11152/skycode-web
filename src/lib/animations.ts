@@ -1,12 +1,17 @@
 import type { Variants } from "framer-motion";
 
 export const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+/** Transiciones de ida y vuelta (cambio de página, paneles): arranca y frena suave. */
+export const EASE_IN_OUT = [0.65, 0, 0.35, 1] as const;
 
 // Tokens de movimiento compartidos — los mismos valores existen en CSS como
 // `--ease-out`/`--dur-fast`/`--dur-base` (theme.css), para que un hover en
 // CSS puro y una entrada con Motion se sientan del mismo sistema.
 // fast: feedback de press/hover · base: menús, popovers, banners · slow: entradas de bloque.
 export const DURATION = { fast: 0.15, base: 0.25, slow: 0.5 } as const;
+
+/** Escalonado entre hermanos, en segundos: tarjetas más ágil, bloques de texto más pausado. Espejo de `--stagger-*` en theme.css. */
+export const STAGGER = { cards: 0.06, text: 0.1 } as const;
 
 /** Respuesta inmediata con muy poco rebote: píldoras activas, selección, press. */
 export const SPRING_SNAPPY = { type: "spring", stiffness: 400, damping: 30 } as const;

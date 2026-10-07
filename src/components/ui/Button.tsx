@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/ssr";
+import { LinkPending } from "@/components/ui/LinkPending";
 import { cn } from "@/lib/utils";
 
 type ButtonBaseProps = {
@@ -83,7 +84,7 @@ export function Button({
         <ArrowRight
           aria-hidden="true"
           weight="bold"
-          className="h-4 w-4 shrink-0 transition-transform duration-200 ease-out group-hover:translate-x-1"
+          className="h-4 w-4 shrink-0 transition-transform duration-150 ease-[var(--ease-out)] group-hover:translate-x-1 motion-reduce:transition-none"
         />
       )}
     </>
@@ -104,6 +105,7 @@ export function Button({
     return (
       <Link href={href} prefetch={prefetch} className={classes} {...anchorProps}>
         {content}
+        <LinkPending />
       </Link>
     );
   }

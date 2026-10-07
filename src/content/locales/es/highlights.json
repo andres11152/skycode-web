@@ -1,23 +1,19 @@
 {
   "sectionAria": "Por qué elegirnos",
-  "badge": "Por Qué Skycode",
-  "title": "Infraestructura de producción. Entregas sin sorpresas.",
-  "description": "Sistemas que aguantan el volumen real del negocio, con arquitecturas probadas en producción para más de 10,000 usuarios activos. Cada entrega incluye documentación técnica, pruebas automatizadas y una garantía real de 90 días.",
+  "badge": "Por qué SkyCode",
+  "title": "Infraestructura de producción y entregas predecibles.",
+  "description": "Sistemas que aguantan el volumen real del negocio, con arquitecturas probadas en producción. Cada entrega incluye documentación técnica, pruebas automatizadas y una garantía real de 90 días.",
   "techLabel": "Las herramientas que dominamos",
-  "videoAria": "Video de muestra de nuestro trabajo",
   "items": [
     {
-      "iconName": "UsersThree",
       "title": "Ingenieros sénior en cada proyecto",
-      "description": "Sin practicantes ni sub-contratistas ocultos. El equipo que cotiza es el que construye — respaldado por una red de especialistas en cloud, seguridad y QA según lo demande tu proyecto."
+      "description": "Sin practicantes ni subcontratistas ocultos. El equipo que cotiza es el que construye, respaldado por especialistas en nube, seguridad y QA según lo demande tu proyecto."
     },
     {
-      "iconName": "SealCheck",
       "title": "Garantía real de 90 días",
       "description": "No nos desentendemos al entregar. Si surge alguna falla en los primeros tres meses de producción, la resolvemos sin cobrarte extra. SLA de soporte preventivo disponible."
     },
     {
-      "iconName": "LockKey",
       "title": "Seguridad y privacidad desde el día uno",
       "description": "Arquitectura OWASP, RBAC, cifrado de datos sensibles y registros de auditoría inmutables. No es un parche de última hora: es el estándar de cada proyecto que entregamos."
     }

@@ -3,12 +3,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useLocale } from "@/components/LocaleProvider";
+import { ContactModalSkeleton } from "@/components/contact/ContactFormSkeleton";
+import { LOADING_LABEL } from "@/lib/loadingLabel";
 import { OPEN_CONTACT_MODAL_EVENT } from "@/lib/contactModalEvent";
 import { isContactHref, shouldOpenContactModal } from "@/lib/contactModalTrigger";
 import type { ContactFormPrefill } from "./ContactForm";
 
 const loadModal = () => import("./ContactModal");
-const ContactModal = dynamic(loadModal, { ssr: false });
+function ModalLoading() {
+  return <ContactModalSkeleton label={LOADING_LABEL[useLocale()]} />;
+}
+// Primera apertura sin el chunk precargado: el marco del modal con el formulario en skeleton en vez de nada.
+const ContactModal = dynamic(loadModal, { ssr: false, loading: () => <ModalLoading /> });
 
 /**
  * Convierte cualquier enlace a `#contacto` del sitio público en un modal con el

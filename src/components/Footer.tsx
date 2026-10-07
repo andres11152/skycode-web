@@ -294,7 +294,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
-                    "inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/10 px-4 py-2.5 text-sm text-foreground/80 outline-none transition-all duration-300 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                    "inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/10 px-4 py-2.5 text-sm text-foreground/80 outline-none transition duration-300 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                     hoverClass
                   )}
                 >

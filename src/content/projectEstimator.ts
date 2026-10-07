@@ -22,7 +22,7 @@ const projectEstimatorByLocale = {
 
 // Precios y duración base: independientes del idioma, se combinan con el copy
 // traducido de cada locale por `id`.
-const PRICING: Record<string, { priceCop: number; priceUsd: number; baseWeeks: number }> = {
+export const PRICING: Record<string, { priceCop: number; priceUsd: number; baseWeeks: number }> = {
   software: { priceCop: 10_500_000, priceUsd: 2600, baseWeeks: 6 },
   mobile: { priceCop: 8_900_000, priceUsd: 2200, baseWeeks: 5 },
   ai: { priceCop: 11_800_000, priceUsd: 2900, baseWeeks: 6 },

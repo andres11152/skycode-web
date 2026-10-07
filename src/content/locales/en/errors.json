@@ -8,7 +8,7 @@
   },
   "globalError": {
     "title": "Something went wrong",
-    "description": "An unexpected error occurred while loading the site. Please try again — if the problem persists, reach out on WhatsApp.",
+    "description": "An unexpected error occurred while loading the site. Please try again, if the problem persists, reach out on WhatsApp.",
     "ctaRetry": "Try again",
     "ctaHome": "Back to home"
   }

@@ -1,3 +1,4 @@
+import { BogotaLink } from "@/components/bogota/BogotaLink";
 import { getServiceSeo } from "@/content/serviceSeo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -399,6 +400,13 @@ export async function ServiceView({
               </Button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Entrada a la página local de Bogotá. */}
+      <div className="border-t border-foreground/10 px-6 py-8">
+        <div className="mx-auto max-w-6xl">
+          <BogotaLink locale={locale} />
         </div>
       </div>
 

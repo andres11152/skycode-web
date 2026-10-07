@@ -27,6 +27,8 @@ export interface PortfolioLightboxCopy {
   next: string;
   zoomIn: string;
   zoomOut: string;
+  /** Anuncio para lectores de pantalla, con `{index}` y `{total}`. */
+  position: string;
 }
 
 export interface PortfolioRelatedCopy {

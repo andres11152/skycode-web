@@ -1,12 +1,13 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Etiqueta corta sobre un título de sección — resuelta con tipografía sola
- * (mono, tracking amplio, un solo color de acento), sin píldora ni punto ni
- * fondo. La versión anterior (borde + fondo + punto, repetida en cada
- * sección) es el patrón más reconocible de plantilla genérica de IA; esto es
- * lo que hacen Linear/Stripe/Vercel en su lugar. Regla única — no se
- * reinventa por sección, todas importan este componente.
+ * Etiqueta corta sobre un título de sección — tipografía sola: mono, tracking
+ * amplio y un único tono neutro (`foreground/70`, `background/70` sobre
+ * banda oscura). Sin degradado, sin brillo animado, sin color de marca: la
+ * versión anterior (texto con degradado azul y barrido de brillo, repetida
+ * en las 12 secciones) es el rastro de plantilla generada más reconocible, y
+ * además gastaba el acento, que debe quedar para 2–3 puntos de contacto.
+ * Regla única — no se reinventa por sección, todas importan este componente.
  */
 export function SectionEyebrow({
   children,
@@ -15,18 +16,14 @@ export function SectionEyebrow({
 }: {
   children: React.ReactNode;
   className?: string;
-  /** Secciones oscuras (bg-foreground) necesitan el accent claro, no accent-strong
-   * (que en fondo oscuro cae a ~3.3:1, por debajo del 4.5:1 que exige texto normal). */
+  /** Secciones oscuras (bg-foreground): el texto va en `background/70`. */
   onDark?: boolean;
 }) {
   return (
     <p
       className={cn(
-        "inline-block font-mono text-xs font-bold uppercase tracking-[0.2em]",
-        "bg-clip-text text-transparent animate-shiny-text",
-        onDark
-          ? "bg-gradient-to-r from-accent via-white to-accent"
-          : "bg-gradient-to-r from-accent-strong via-[#38bdf8] to-accent-strong",
+        "inline-block font-mono text-xs font-medium uppercase tracking-[0.2em]",
+        onDark ? "text-background/70" : "text-foreground/70",
         className,
       )}
     >

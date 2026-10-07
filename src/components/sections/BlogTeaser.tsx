@@ -8,6 +8,7 @@ import { blogIndexPath } from "@/lib/blogPaths";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { PostCard } from "@/components/blog/PostCard";
 import { Button } from "@/components/ui/Button";
+import { RevealText } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 
 /** `posts` llega ya resuelto desde el servidor (HomeSections) — `getBlogPosts` lee de Postgres desde la Fase 3, un componente cliente no puede llamarlo directo. */
@@ -16,13 +17,13 @@ export function BlogTeaser({ locale = defaultLocale, posts }: { locale?: Locale;
   const blogTeaserData = getBlogTeaserContent(locale);
 
   return (
-    <section aria-label={blogTeaserData.sectionAria} className="scroll-mt-24 px-6 py-20 sm:py-24 lg:py-28">
+    <section id="blog" aria-label={blogTeaserData.sectionAria} className="scroll-mt-24 px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
-            <SectionEyebrow className="mb-3">{blogTeaserData.badge}</SectionEyebrow>
-            <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              {blogTeaserData.title}
+            <SectionEyebrow className="reveal-blur mb-3">{blogTeaserData.badge}</SectionEyebrow>
+            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
+              <RevealText text={blogTeaserData.title} />
             </h2>
             <p className="mt-3 text-foreground/80">
               {blogTeaserData.description}
@@ -31,7 +32,7 @@ export function BlogTeaser({ locale = defaultLocale, posts }: { locale?: Locale;
           <Button
             href={blogIndexPath(locale)}
             variant="secondary"
-            size="sm"
+            size="md"
           >
             {blogTeaserData.viewAll}
           </Button>
@@ -51,16 +52,6 @@ export function BlogTeaser({ locale = defaultLocale, posts }: { locale?: Locale;
           ))}
         </motion.div>
 
-        {/* Botón para ver todos los artículos del blog */}
-        <div className="mt-12 flex justify-center">
-          <Button
-            href={blogIndexPath(locale)}
-            variant="secondary"
-            size="lg"
-          >
-            {blogTeaserData.viewAll}
-          </Button>
-        </div>
       </div>
     </section>
   );

@@ -129,6 +129,11 @@ const TECHNOLOGIES = [
   { slug: "tailwindcss", name: "Tailwind CSS", category: "frontend", iconSource: "simple-icons", iconRef: "tailwindcss" },
   { slug: "vite", name: "Vite", category: "frontend", iconSource: "simple-icons", iconRef: "vite" },
   { slug: "docker", name: "Docker", category: "infra", iconSource: "simple-icons", iconRef: "docker" },
+  // CDA Revifull (WordPress + Elementor Pro + ElementsKit, no un stack hecho a medida —
+  // ver la corrección en CLAUDE.md/historial de este caso: el texto original decía Next.js
+  // por error, el sitio real nunca tuvo ese stack).
+  { slug: "elementor", name: "Elementor", category: "other", iconSource: "simple-icons", iconRef: "elementor" },
+  { slug: "googleanalytics", name: "Google Analytics", category: "integration", iconSource: "simple-icons", iconRef: "googleanalytics" },
 ];
 
 // Índices de `tags[]` (mismo orden/cantidad en los 3 locales) que SÍ son
@@ -138,7 +143,7 @@ const PROJECT_CONFIG = {
   "sentry-crm": { technologySlugs: ["whatsapp", "nextdotjs", "postgresql"], capabilityTagIndexes: [0, 2], isFeatured: true },
   servifuturo: { technologySlugs: ["nextdotjs", "nodedotjs", "postgresql"], capabilityTagIndexes: [0, 1], isFeatured: false },
   "equilibrio-arquitectonico": { technologySlugs: ["nextdotjs"], capabilityTagIndexes: [0, 1, 2], isFeatured: false },
-  "cda-revifull": { technologySlugs: ["whatsapp", "nextdotjs"], capabilityTagIndexes: [0, 1], isFeatured: false },
+  "cda-revifull": { technologySlugs: ["wordpress", "elementor", "php", "googleanalytics"], capabilityTagIndexes: [0, 1], isFeatured: false },
   racingbike: { technologySlugs: ["wordpress", "woocommerce", "php", "tailwindcss", "vite", "docker"], capabilityTagIndexes: [0, 1, 2], isFeatured: false },
 };
 

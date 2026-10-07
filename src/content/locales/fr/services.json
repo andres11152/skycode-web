@@ -1,12 +1,12 @@
 {
-  "badge": "Services d'Ingénierie",
-  "title": "Ce que nous concevons pour vous",
+  "badge": "Services d'ingénierie",
+  "title": "De la conception à la passation, une seule équipe",
   "description": "Des logiciels adaptés à la réalité opérationnelle de votre entreprise : rapides, sécurisés, sans dépendance captive et dont vous détenez 100 % du code.",
   "viewAll": "Voir tous les services",
   "items": [
     {
       "slug": "desarrollo-software-medida",
-      "title": "Plateformes et Logiciels Sur Mesure",
+      "title": "Plateformes et logiciels sur mesure",
       "description": "Développement d'outils internes, portails clients et systèmes opérationnels adaptés aux flux réels de votre entreprise, conçus pour évoluer sans frais de licence par utilisateur.",
       "iconName": "Blueprint",
       "features": [
@@ -40,7 +40,7 @@
     },
     {
       "slug": "frontend-alto-rendimiento",
-      "title": "Applications Web Haute Performance",
+      "title": "Applications web haute performance",
       "description": "Développement moderne avec Next.js et React centré sur des temps de chargement ultra-courts, l'accessibilité et une architecture technique pensée pour le référencement naturel.",
       "iconName": "Lightning",
       "features": [
@@ -50,7 +50,7 @@
     },
     {
       "slug": "ecommerce-tienda-online",
-      "title": "E-Commerce et Boutiques en Ligne",
+      "title": "E-commerce et boutiques en ligne",
       "description": "Boutiques en ligne sur mesure sans commissions abusives par transaction. Conçues pour des catalogues étendus, un checkout rapide et la synchronisation des stocks et expéditions.",
       "iconName": "Storefront",
       "features": [
@@ -61,7 +61,7 @@
     },
     {
       "slug": "seguridad-cumplimiento",
-      "title": "Sécurité et Protection des Données",
+      "title": "Sécurité et protection des données",
       "description": "Protection native dès l'architecture : gestion stricte des droits d'accès, chiffrement des données sensibles et conformité avec les réglementations de confidentialité.",
       "iconName": "ShieldCheck",
       "features": [
@@ -72,7 +72,7 @@
     },
     {
       "slug": "arquitectura-documentacion",
-      "title": "Documentation et Passation Technique",
+      "title": "Documentation et passation technique",
       "description": "Livraison transparente des dépôts, variables d'environnement et schémas d'architecture afin que votre équipe puisse faire évoluer le code en toute autonomie.",
       "iconName": "Handshake",
       "features": [
@@ -82,7 +82,7 @@
     },
     {
       "slug": "migracion-datos-legacy",
-      "title": "Migration et Modernisation de Données",
+      "title": "Migration et modernisation de données",
       "description": "Extraction, nettoyage et migration de données depuis des systèmes obsolètes ou tableurs dispersés vers des bases de données modernes, sans interrompre vos opérations.",
       "iconName": "Swap",
       "features": [
@@ -93,7 +93,7 @@
     },
     {
       "slug": "inteligencia-artificial-aplicada",
-      "title": "Intelligence Artificielle Appliquée aux Métiers",
+      "title": "Intelligence artificielle appliquée aux métiers",
       "description": "Mise en place d'assistants intelligents et automatisation du traitement de documents connectés à la base de connaissances de votre entreprise, pour réduire les tâches manuelles.",
       "iconName": "Graph",
       "features": [

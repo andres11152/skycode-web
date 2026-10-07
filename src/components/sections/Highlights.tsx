@@ -1,14 +1,9 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import { m as motion, useReducedMotion } from "framer-motion";
-import { getHighlightsContent } from "@/content/highlights";
+import type { CSSProperties } from "react";
 import { Button } from "@/components/ui/Button";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { RevealText } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
-import { fadeUp, staggerContainer } from "@/lib/animations";
+import { getHighlightsContent } from "@/content/highlights";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
-import { Brain } from "@phosphor-icons/react";
 import {
   FlutterIcon,
   JavaScriptIcon,
@@ -29,207 +24,74 @@ const techStack = [
   { name: "JavaScript", Icon: JavaScriptIcon },
   { name: "Next.js", Icon: NextJsIcon },
   { name: "React", Icon: ReactIcon },
+  // React Native usa oficialmente el mismo logo átomo de React (no existe un ícono "reactnative" aparte).
+  { name: "React Native", Icon: ReactIcon },
+  { name: "Flutter", Icon: FlutterIcon },
+  { name: "Node.js / NestJS", Icon: NestJsIcon },
   { name: "Laravel", Icon: LaravelIcon },
   { name: "PHP", Icon: PhpIcon },
   { name: "WordPress", Icon: WordPressIcon },
-  // React Native usa oficialmente el mismo logo átomo de React (confirmado en
-  // simpleicons.org — no existe un ícono "reactnative" separado).
-  { name: "React Native", Icon: ReactIcon },
-  { name: "Flutter", Icon: FlutterIcon },
   { name: "Tailwind CSS", Icon: TailwindCSSIcon },
-  { name: "Nest.js / Node", Icon: NestJsIcon },
   { name: "PostgreSQL", Icon: PostgreSQLIcon },
   { name: "MongoDB", Icon: MongoDBIcon },
-  { name: "IA & Agentes", Icon: Brain },
 ];
 
-function VideoShowcase({
-  videoAria,
-}: {
-  videoAria: string;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  // El video pesa ~2.3MB — nunca se descarga hasta que la sección está a punto de
-  // entrar en pantalla, para no competir por ancho de banda con el resto del LCP.
-  const [shouldLoad, setShouldLoad] = useState(false);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") {
-      setShouldLoad(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoad(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "300px" },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={containerRef}
-      className="group relative h-full w-full overflow-hidden rounded-xl bg-foreground transition-all duration-300 hover:border-accent/30"
-    >
-      <div className="aspect-[4/3] w-full">
-        {shouldLoad && (
-          <video
-            ref={videoRef}
-            src="/videos/software-demo.mp4"
-            className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="none"
-            aria-label={videoAria}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
+/**
+ * "Por qué SkyCode": tres argumentos en columnas numeradas (sin ícono dentro de
+ * un cuadro encima de cada título — el patrón más reconocible de plantilla) y
+ * una sola franja de tecnologías en monocromo, sin cajas ni tooltips. Server
+ * Component: nada aquí necesita JS. Se quitó el video de muestra: enseñaba una
+ * aplicación de tareas genérica que no es un producto nuestro, y pesaba 2,3 MB.
+ */
 export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
-  const reduced = Boolean(useReducedMotion());
-  const highlightsData = getHighlightsContent(locale);
+  const data = getHighlightsContent(locale);
   const homePath = localeHomePath(locale);
   const prefix = homePath === "/" ? "" : homePath;
-  const [hoveredTech, setHoveredTech] = useState<string | null>(null);
 
   return (
-    <section aria-label={highlightsData.sectionAria} className="px-6 py-20 sm:py-24 lg:py-28">
+    <section id="por-que" aria-label={data.sectionAria} className="scroll-mt-24 px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
-        <motion.div
-          variants={fadeUp(reduced)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          className="mb-12 max-w-4xl"
-        >
-          <SectionEyebrow className="mb-3">{highlightsData.badge}</SectionEyebrow>
-          <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            {highlightsData.title}
+        <div className="max-w-3xl">
+          <SectionEyebrow className="reveal-blur mb-4">{data.badge}</SectionEyebrow>
+          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl">
+            <RevealText text={data.title} />
           </h2>
-          <p className="mt-3 text-base sm:text-lg font-medium text-foreground/80 leading-relaxed">
-            {highlightsData.description}
-          </p>
-        </motion.div>
+          <p style={{ "--i": 3 } as CSSProperties} className="reveal-blur mt-5 text-lg leading-relaxed text-foreground/80">{data.description}</p>
+        </div>
 
-        {/* Bento de 2 columnas: video + stack arriba (mismo peso visual), el
-            listado de diferenciadores ocupa el ancho completo debajo. */}
-        <motion.div
-          variants={staggerContainer(reduced, 0.06)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          className="grid gap-6 lg:grid-cols-2"
-        >
-          <motion.div variants={fadeUp(reduced)}>
-            <SpotlightCard className="h-full">
-              {/* Sin BorderBeam: un borde recorriendo la tarjeta en loop
-                  infinito compite por atención con todo lo demás que ya se
-                  mueve en el Hero/esta sección — auditoría visual, "restricción
-                  en movimiento" (CLAUDE.md). */}
-              <div className="relative overflow-hidden h-full rounded-xl border border-foreground/10 bg-background p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
-                <VideoShowcase videoAria={highlightsData.videoAria} />
-              </div>
-            </SpotlightCard>
-          </motion.div>
+        <ol className="mt-16 grid gap-10 sm:grid-cols-3 sm:gap-8">
+          {data.items.map((item, index) => (
+            <li key={item.title} style={{ "--i": index } as CSSProperties} className="scroll-reveal relative border-t border-foreground/20 pt-6">
+              {/* Filete que se dibuja con el scroll sobre el filete tenue de base. */}
+              <span aria-hidden="true" className="scroll-progress-x absolute -top-px left-0 h-px w-full bg-foreground motion-reduce:hidden" />
+              <span className="font-mono text-sm text-foreground/70">{String(index + 1).padStart(2, "0")}</span>
+              <h3 className="mt-4 text-xl font-semibold tracking-tight text-balance text-foreground">{item.title}</h3>
+              <p className="mt-3 text-base leading-relaxed text-foreground/80">{item.description}</p>
+            </li>
+          ))}
+        </ol>
 
-          {/* self-start: por defecto CSS Grid estira ambas celdas de la fila a
-              la altura de la más alta (el video, por su aspect-[4/3]) — esta
-              tarjeta terminaba con ~280px de relleno vacío arriba y abajo de
-              2 filas de iconos centradas dentro de una caja mucho más alta
-              que su contenido. Con self-start, la tarjeta toma su altura
-              natural y queda alineada arriba; el resto de la fila queda como
-              espacio de página normal, no como una caja vacía con borde. */}
-          <motion.div variants={fadeUp(reduced)} className="self-start">
-            <SpotlightCard>
-              <div className="rounded-xl border border-foreground/10 bg-background p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg">
-                <p className="text-sm font-medium text-foreground/60">{highlightsData.techLabel}</p>
-                {/* grid adaptable de iconos con soporte de tooltip pill estrictamente único en hover */}
-                <ul className="mt-8 grid w-fit grid-cols-4 sm:grid-cols-5 md:grid-cols-7 gap-3">
-                  {techStack.map(({ name, Icon }) => {
-                    const isHovered = hoveredTech === name;
-                    return (
-                      // <li> debe ser hijo directo de <ul> para que los
-                      // lectores de pantalla anuncien la lista correctamente.
-                      // Sin Magnetic: el ícono ya sube (`-translate-y-1` en
-                      // el `<li>`) y escala/rota (`group-hover:scale-110
-                      // group-hover:rotate-3`) — sumarle además un tirón
-                      // magnético que sigue el cursor es una tercera capa de
-                      // movimiento sobre una caja de 56px (auditoría visual).
-                      <li
-                        key={name}
-                        tabIndex={0}
-                        onMouseEnter={() => setHoveredTech(name)}
-                        onMouseLeave={() => setHoveredTech(null)}
-                        onFocus={() => setHoveredTech(name)}
-                        onBlur={() => setHoveredTech(null)}
-                        className="group relative flex h-14 w-14 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/40 hover:bg-accent/[0.06] hover:shadow-lg hover:shadow-accent/10 focus:outline-none focus:ring-2 focus:ring-accent hover:z-30 focus-visible:z-30"
-                      >
-                        <Icon
-                          className="h-7 w-7 text-foreground/75 transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-accent group-hover:rotate-3"
-                          aria-label={name}
-                        />
+        <div className="mt-20 border-t border-foreground/10 pt-10">
+          <p className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-foreground/70">{data.techLabel}</p>
+          <ul className="mt-6 flex flex-wrap gap-x-9 gap-y-5">
+            {techStack.map(({ name, Icon }, index) => (
+              <li
+                key={name}
+                style={{ "--i": index % 6 } as CSSProperties}
+                className="reveal-scale flex items-center gap-2.5 text-sm font-medium text-foreground/80 transition-[transform,color] duration-200 ease-[var(--ease-out)] hover:text-foreground motion-safe:hover:-translate-y-0.5"
+              >
+                <Icon className="h-5 w-5 text-foreground/70" aria-hidden="true" />
+                {name}
+              </li>
+            ))}
+          </ul>
+        </div>
 
-                        {/* Tooltip Pill: solo se renderiza y muestra cuando este elemento específico es el hoveredTech */}
-                        {isHovered && (
-                          <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 flex items-center z-50 whitespace-nowrap rounded-full border border-accent/30 bg-background/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-md shadow-accent/10 backdrop-blur-md animate-enter-pop origin-bottom">
-                            {name}
-                            {/* Triángulo inferior del indicador */}
-                            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-accent/40" />
-                          </span>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </SpotlightCard>
-          </motion.div>
-
-          <motion.div variants={fadeUp(reduced)} className="lg:col-span-2">
-            <SpotlightCard>
-              {/* divide-y: en mobile (una sola columna) marca cada ítem con una
-                  línea sutil en vez de tres tarjetas separadas con su propio
-                  padding — mismo contenido, la mitad del scroll. Desde sm: se
-                  vuelven 3 columnas propias, sin divisores. */}
-              <div className="grid divide-y divide-foreground/10 rounded-xl border border-foreground/10 bg-background p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-lg sm:grid-cols-3 sm:gap-6 sm:divide-y-0 sm:p-10">
-                {highlightsData.items.map((item) => (
-                  <div key={item.title} className="group flex items-start gap-4 py-6 first:pt-0 last:pb-0 sm:block sm:gap-0 sm:py-0">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-foreground/5 to-foreground/[0.01] border border-foreground/10 text-foreground/60 transition-all duration-300 group-hover:from-accent/15 group-hover:to-accent/5 group-hover:border-accent/30 group-hover:text-accent">
-                      <item.icon size={22} weight="duotone" aria-hidden="true" />
-                    </div>
-                    <div className="min-w-0 sm:mt-4">
-                      <h3 className="font-heading text-base font-bold text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-lg">
-                        {item.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-foreground/70 leading-relaxed sm:mt-1.5">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Botón para conocer al equipo técnico */}
-              <div className="mt-6 flex justify-center border-t border-foreground/10 pt-6 sm:justify-start">
-                <Button href={`${prefix}/equipo`} variant="secondary" size="sm">
-                  {"teamCta" in highlightsData && typeof highlightsData.teamCta === "string"
-                    ? highlightsData.teamCta
-                    : "Conoce a nuestro equipo"}
-                </Button>
-              </div>
-            </SpotlightCard>
-          </motion.div>
-        </motion.div>
+        <div className="mt-12">
+          <Button href={`${prefix}/equipo`} variant="secondary" size="md">
+            {data.teamCta}
+          </Button>
+        </div>
       </div>
     </section>
   );

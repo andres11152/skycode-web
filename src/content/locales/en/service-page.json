@@ -33,7 +33,7 @@
       },
       {
         "question": "Can you take over a system built by another vendor?",
-        "answer": "Yes. We start with a code and data audit to decide what to keep, what to refactor and what's worth replacing. If the system has become hard-to-maintain legacy, we migrate it in phases without stopping operations — see [legacy system migration](/en/servicios/migracion-datos-legacy)."
+        "answer": "Yes. We start with a code and data audit to decide what to keep, what to refactor and what's worth replacing. If the system has become hard-to-maintain legacy, we migrate it in phases without stopping operations, see [legacy system migration](/en/servicios/migracion-datos-legacy)."
       },
       {
         "question": "Do you work alongside our in-house engineering team?",

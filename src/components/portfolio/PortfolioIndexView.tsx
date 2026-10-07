@@ -8,7 +8,7 @@ import { CaseVisual } from "@/components/portfolio/CaseVisual";
 import { TechIcon } from "@/components/portfolio/TechIcon";
 import { fadeUp, scaleUp } from "@/lib/animations";
 import { cn } from "@/lib/utils";
-import { getProjectHostname, type PortfolioProject, type PortfolioTechnology } from "@/content/portfolioShared";
+import { getProjectHostname, type PortfolioIndexItem, type PortfolioTechnology } from "@/content/portfolioShared";
 import type { PortfolioSectionCopy } from "@/content/projects";
 import { portfolioCasePath } from "@/lib/portfolioPaths";
 import { localeHomePath, type Locale } from "@/lib/i18n";
@@ -25,22 +25,6 @@ const STRETCH_DARK =
 
 const VIEWPORT = { once: true, margin: "-80px" } as const;
 
-/** Tecnologías únicas de todos los casos, las más repetidas primero (datos reales, nada inventado). */
-function topTechnologies(projects: PortfolioProject[], limit: number): PortfolioTechnology[] {
-  const counts = new Map<number, { technology: PortfolioTechnology; count: number }>();
-  for (const project of projects) {
-    for (const technology of project.technologies) {
-      const entry = counts.get(technology.id);
-      if (entry) entry.count += 1;
-      else counts.set(technology.id, { technology, count: 1 });
-    }
-  }
-  return [...counts.values()]
-    .sort((a, b) => b.count - a.count)
-    .slice(0, limit)
-    .map((entry) => entry.technology);
-}
-
 function pad(n: number): string {
   return String(n).padStart(2, "0");
 }
@@ -50,7 +34,7 @@ function FeaturedCase({
   copy,
   locale,
 }: {
-  project: PortfolioProject;
+  project: PortfolioIndexItem;
   copy: PortfolioSectionCopy;
   locale: Locale;
 }) {
@@ -64,6 +48,8 @@ function FeaturedCase({
             <CaseVisual
               slug={project.slug}
               imageSrc={project.coverImage?.variants.lg ?? null}
+              blurDataURL={project.coverImage?.blurDataURL}
+              color={project.coverImage?.color}
               alt={project.coverImage?.alt || project.title}
               industryIcon={project.industryIcon}
               url={getProjectHostname(project)}
@@ -133,7 +119,7 @@ function CaseChapter({
   copy,
   locale,
 }: {
-  project: PortfolioProject;
+  project: PortfolioIndexItem;
   number: number;
   flip: boolean;
   reduced: boolean;
@@ -153,6 +139,8 @@ function CaseChapter({
           <CaseVisual
             slug={project.slug}
             imageSrc={project.coverImage?.variants.lg ?? null}
+            blurDataURL={project.coverImage?.blurDataURL}
+            color={project.coverImage?.color}
             alt={project.coverImage?.alt || project.title}
             industryIcon={project.industryIcon}
             url={getProjectHostname(project)}
@@ -218,17 +206,19 @@ function CaseChapter({
 export function PortfolioIndexView({
   locale,
   projects,
+  technologies,
   sectionCopy,
 }: {
   locale: Locale;
-  projects: PortfolioProject[];
+  projects: PortfolioIndexItem[];
+  /** Las más usadas entre los casos, calculadas en el servidor. */
+  technologies: PortfolioTechnology[];
   sectionCopy: PortfolioSectionCopy;
 }) {
   const reduced = Boolean(useReducedMotion());
 
   const featured = projects.find((project) => project.isFeatured) ?? projects[0];
   const rest = featured ? projects.filter((project) => project.slug !== featured.slug) : [];
-  const technologies = topTechnologies(projects, 8);
   const homeHref = localeHomePath(locale);
   const contactHref = `${homeHref === "/" ? "" : homeHref}/#contacto`;
 

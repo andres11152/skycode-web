@@ -48,8 +48,15 @@ describe("visibleCaseBlocks", () => {
     expect(visibleCaseBlocks("{{TODO: a}}\n\n- {{TODO: b}}")).toEqual([]);
   });
 
-  it("fuera de producción muestra los marcadores para poder revisarlos", () => {
+  it("en desarrollo también los omite: solo se ven si se pide a propósito", () => {
     vi.stubEnv("NODE_ENV", "development");
+    expect(visibleCaseBlocks(text)).toHaveLength(2);
+    expect(JSON.stringify(visibleCaseBlocks(text))).not.toContain("{{TODO");
+  });
+
+  it("NEXT_PUBLIC_SHOW_TODO_PLACEHOLDERS=true los muestra en desarrollo para revisarlos", () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("NEXT_PUBLIC_SHOW_TODO_PLACEHOLDERS", "true");
     expect(visibleCaseBlocks(text)).toHaveLength(3);
     expect(JSON.stringify(visibleCaseBlocks(text))).toContain("{{TODO: cifra real}}");
   });

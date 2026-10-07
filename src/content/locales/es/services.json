@@ -1,12 +1,12 @@
 {
-  "badge": "Servicios de Ingeniería",
-  "title": "Lo que construimos para ti",
+  "badge": "Servicios de ingeniería",
+  "title": "Del diseño a la transferencia, un solo equipo",
   "description": "Software diseñado para la operación real de tu empresa: rápido, seguro, sin dependencias forzadas y con código que te pertenece al 100%.",
   "viewAll": "Ver todos los servicios",
   "items": [
     {
       "slug": "desarrollo-software-medida",
-      "title": "Plataformas y Software a la Medida",
+      "title": "Plataformas y software a la medida",
       "description": "Desarrollamos herramientas internas, portales de clientes y sistemas de gestión modelados sobre los flujos exactos de tu empresa, preparados para escalar sin licencias por usuario.",
       "iconName": "Blueprint",
       "features": [
@@ -17,7 +17,7 @@
     },
     {
       "slug": "desarrollo-aplicaciones-moviles",
-      "title": "Aplicaciones Móviles (iOS & Android)",
+      "title": "Aplicaciones móviles (iOS y Android)",
       "description": "Apps ágiles para clientes o personal de campo, optimizadas para sincronizar en segundo plano y seguir funcionando con normalidad incluso sin conexión a internet.",
       "iconName": "DeviceMobile",
       "features": [
@@ -40,7 +40,7 @@
     },
     {
       "slug": "frontend-alto-rendimiento",
-      "title": "Webs y Aplicaciones Web de Alto Rendimiento",
+      "title": "Webs y aplicaciones web de alto rendimiento",
       "description": "Desarrollo moderno con Next.js y React enfocado en tiempos de carga mínimos, accesibilidad y arquitectura técnica pensada para indexación y conversión.",
       "iconName": "Lightning",
       "features": [
@@ -50,7 +50,7 @@
     },
     {
       "slug": "ecommerce-tienda-online",
-      "title": "E-Commerce y Ventas en Línea",
+      "title": "E-commerce y ventas en línea",
       "description": "Tiendas virtuales a la medida sin comisiones abusivas por venta. Diseñadas para catálogos amplios, checkout ágil y sincronización directa con inventario y envíos.",
       "iconName": "Storefront",
       "features": [
@@ -61,7 +61,7 @@
     },
     {
       "slug": "seguridad-cumplimiento",
-      "title": "Seguridad y Protección de Datos",
+      "title": "Seguridad y protección de datos",
       "description": "Implementamos controles de seguridad desde la arquitectura: control granular de accesos, cifrado de información confidencial y cumplimiento con normativas de privacidad.",
       "iconName": "ShieldCheck",
       "features": [
@@ -72,7 +72,7 @@
     },
     {
       "slug": "arquitectura-documentacion",
-      "title": "Documentación y Transferencia Técnica",
+      "title": "Documentación y transferencia técnica",
       "description": "Entrega transparente de repositorios, variables y diagramas de arquitectura para que tu equipo u otros desarrolladores puedan continuar el código con total autonomía.",
       "iconName": "Handshake",
       "features": [
@@ -82,7 +82,7 @@
     },
     {
       "slug": "migracion-datos-legacy",
-      "title": "Migración y Modernización de Datos",
+      "title": "Migración y modernización de datos",
       "description": "Extracción, saneamiento y migración desde sistemas obsoletos, archivos XML o planillas dispersas hacia bases de datos modernas, sin interrumpir tu operación activa.",
       "iconName": "Swap",
       "features": [
@@ -93,7 +93,7 @@
     },
     {
       "slug": "inteligencia-artificial-aplicada",
-      "title": "Inteligencia Artificial Aplicada al Negocio",
+      "title": "Inteligencia artificial aplicada al negocio",
       "description": "Implementamos asistentes inteligentes y automatización de documentos conectados a las bases de conocimiento de tu empresa, enfocados en ahorrar horas operativas.",
       "iconName": "Graph",
       "features": [

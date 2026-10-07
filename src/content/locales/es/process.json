@@ -1,23 +1,23 @@
 {
-  "badge": "Paso a Paso",
+  "badge": "Paso a paso",
   "sectionAria": "Nuestro proceso de trabajo",
   "title": "Cómo trabajamos contigo",
-  "description": "Cero sorpresas ni tecnicismos confusos. Sabes exactamente qué pasa con tu dinero y con tu proyecto en cada etapa.",
+  "description": "Sabes qué pasa con tu dinero y con tu proyecto en cada etapa, sin tecnicismos de por medio.",
   "steps": [
     {
-      "title": "1. Charlamos y aterrizamos tu idea",
+      "title": "Charlamos y aterrizamos tu idea",
       "description": "Nos cuentas qué necesitas resolver y evaluamos la viabilidad técnica. Te damos un plan claro y un presupuesto honesto, sin compromisos."
     },
     {
-      "title": "2. Hoja de ruta clara y 50% inicial",
+      "title": "Hoja de ruta clara y 50% inicial",
       "description": "Definimos fechas exactas y firmamos contrato. Iniciamos el desarrollo con el 50% de anticipo y repositorios a tu nombre desde el primer día."
     },
     {
-      "title": "3. Avances reales cada semana",
+      "title": "Avances reales cada semana",
       "description": "Nada de esperar meses a ciegas. Tienes un enlace privado donde pruebas cada pantalla y función a medida que las vamos construyendo."
     },
     {
-      "title": "4. Lanzamiento y 50% final",
+      "title": "Lanzamiento y 50% final",
       "description": "El saldo restante se abona únicamente cuando todo esté probado, funcionando en tus servidores y tú nos des el visto bueno definitivo."
     }
   ],

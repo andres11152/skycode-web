@@ -2,9 +2,9 @@
   "navLabel": "Cotizador",
   "breadcrumbAria": "Ruta de navegación",
   "sectionAria": "Cotizador interactivo de proyectos",
-  "badge": "Presupuesto Transparente",
+  "badge": "Presupuesto transparente",
   "title": "Calcula el costo y tiempo de tu proyecto",
-  "subtitle": "Elige lo que necesitas para hacerte una idea realista de tiempos e inversión. Sin números inflados ni sorpresas.",
+  "subtitle": "Elige lo que necesitas para hacerte una idea realista de tiempos e inversión. Precios base reales, los mismos que ves en el sitio.",
   "currency": {
     "copLabel": "COP (Pesos colombianos)",
     "usdLabel": "USD (Dólares)"
@@ -18,7 +18,7 @@
     {
       "id": "software",
       "iconName": "Blueprint",
-      "title": "Software a la Medida / Plataforma Web",
+      "title": "Software a la medida o plataforma web",
       "desc": "Panel administrativo, base de datos y la lógica exacta que necesita tu negocio."
     },
     {
@@ -30,25 +30,25 @@
     {
       "id": "ai",
       "iconName": "Graph",
-      "title": "Inteligencia Artificial Aplicada",
+      "title": "Inteligencia artificial aplicada",
       "desc": "Asistentes inteligentes, lectura automática de documentos y automatizaciones."
     },
     {
       "id": "apis",
       "iconName": "TreeStructure",
-      "title": "Integraciones & Conexión de Sistemas",
+      "title": "Integraciones y conexión de sistemas",
       "desc": "Conectar tus sistemas actuales con pasarelas de pago, facturación o WhatsApp."
     },
     {
       "id": "web",
       "iconName": "Lightning",
-      "title": "Página Web o Portal Ultra-Rápido",
+      "title": "Página web o portal ultrarrápido",
       "desc": "Sitio web veloz, optimizado para celulares y diseñado para conseguir clientes."
     },
     {
       "id": "ecommerce",
       "iconName": "Storefront",
-      "title": "Ecommerce / Tienda en Línea",
+      "title": "Ecommerce o tienda en línea",
       "desc": "Catálogo de productos, carrito de compras y pagos en línea listos para vender desde el primer día."
     }
   ],
@@ -78,7 +78,7 @@
   "pace": {
     "standardTitle": "Ritmo normal (Paso firme)",
     "standardDesc": "Desarrollo continuo y ordenado semana a semana.",
-    "expressTitle": "Prioritario Express (-25% de tiempo)",
+    "expressTitle": "Prioritario express (-25% de tiempo)",
     "expressDesc": "Dedicación acelerada si necesitas salir al mercado cuanto antes."
   },
   "summary": {
@@ -94,7 +94,7 @@
     "warrantyLabel": "Garantía incluida:",
     "warrantyValue": "90 días de soporte y correcciones",
     "ctaLabel": "Quiero revisar este estimado con ustedes",
-    "disclaimer": "*Este cálculo es una guía inicial. Nos sentamos contigo a revisar los detalles para darte un presupuesto exacto y definitivo."
+    "disclaimer": "Este cálculo es una guía inicial. Nos sentamos contigo a revisar los detalles para darte un presupuesto exacto y definitivo."
   },
   "whatsappMessageTemplate": "¡Hola equipo SkyCode! Estuve usando el cotizador en su web para un proyecto de {type}:\n- Adicionales: {addons}\n- Ritmo: {pace}\n- Estimado: {total} (~{weeks} semanas).\n\nMe gustaría charlar con ustedes para ver cómo podemos aterrizarlo.",
   "noAddonsLabel": "Ninguno",
@@ -114,9 +114,9 @@
   },
   "quoteEmail": {
     "subject": "Tu cotización de SkyCode: {type}",
-    "preheader": "Aquí está el desglose completo de tu proyecto — precio, tiempo y qué incluye.",
+    "preheader": "Aquí está el desglose completo de tu proyecto: precio, tiempo y qué incluye.",
     "greeting": "Hola,",
-    "intro": "Aquí está la cotización que generaste en nuestra calculadora. Es una guía inicial — nos sentamos contigo a revisar los detalles para un presupuesto exacto y definitivo.",
+    "intro": "Aquí está la cotización que generaste en nuestra calculadora. Es una guía inicial. Nos sentamos contigo a revisar los detalles para un presupuesto exacto y definitivo.",
     "typeLabel": "Tipo de proyecto",
     "addonsLabel": "Módulos incluidos",
     "paceLabel": "Ritmo de entrega",
@@ -127,6 +127,6 @@
   },
   "teaserCta": "Calcular mi proyecto",
   "h1": "Cotizador de desarrollo de software: calcula costo y tiempo",
-  "seoTitle": "Cotizador de Desarrollo de Software",
+  "seoTitle": "Cotizador de desarrollo de software",
   "seoDescription": "Calcula el costo y el tiempo de tu proyecto de software: elige tipo, funciones y ritmo y obtén un estimado en COP o USD. Sin compromiso."
 }

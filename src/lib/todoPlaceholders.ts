@@ -7,8 +7,9 @@
 //     párrafo, viñeta, pregunta, métrica o bloque entero) — por eso cada
 //     marcador debe ocupar su propio elemento, nunca ir en mitad de una frase
 //     que sí debe publicarse.
-//   - En desarrollo (o con NEXT_PUBLIC_SHOW_TODO_PLACEHOLDERS=true) se muestra
-//     tal cual, para revisarlo en pantalla.
+//   - También se omite en desarrollo: una página con `{{TODO: …}}` a la vista
+//     parece un borrador de plantilla. Solo se muestra si se pide a propósito
+//     con NEXT_PUBLIC_SHOW_TODO_PLACEHOLDERS=true, para revisarlo en pantalla.
 //   - `npm run seo:check` falla si un marcador llega al HTML servido.
 //   - `npm run seo:todos` lista todos los pendientes del repo.
 //
@@ -17,7 +18,7 @@
 export const TODO_MARKER = "{{TODO";
 
 export function showTodoPlaceholders(): boolean {
-  return process.env.NODE_ENV !== "production" || process.env.NEXT_PUBLIC_SHOW_TODO_PLACEHOLDERS === "true";
+  return process.env.NEXT_PUBLIC_SHOW_TODO_PLACEHOLDERS === "true";
 }
 
 /** `true` si el valor (cadena, arreglo u objeto, a cualquier profundidad) contiene un marcador. */

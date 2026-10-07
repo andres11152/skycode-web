@@ -6,41 +6,58 @@
   "titleAccent": "Le code est 100 % à vous",
   "titleAfter": "",
   "subtitle": "Nous développons des plateformes d'entreprise prêtes pour l'échelle, avec une documentation impeccable et un transfert complet de propriété intellectuelle. Votre logiciel, sans dépendance technique envers notre équipe une fois le projet livré.",
+  "subtitleShort": "Des plateformes prêtes pour l'échelle, avec une documentation claire et 100 % du code transféré.",
   "description": "Garantissez la continuité et la sécurité de votre activité numérique. Nous concevons selon les normes de sécurité internationales (OWASP) et la réglementation de protection des données applicable dans votre pays, en livrant une documentation technique rigoureuse afin que votre équipe garde le contrôle total sans dépendre de tiers.",
   "ctaPrimary": {
     "label": "Diagnostic gratuit",
     "href": "#contacto",
-    "ariaLabel": "Planifier un diagnostic d'architecture gratuit : aller au formulaire de contact"
+    "ariaLabel": "Diagnostic gratuit : planifier un diagnostic d'architecture via le formulaire de contact"
   },
   "ctaSecondary": {
     "label": "Voir le portfolio",
     "href": "/fr/portfolio",
     "ariaLabel": "Voir le portfolio de projets"
   },
-  "codeMockup": {
-    "comment": "// valide, authentifie et documente"
-  },
+  "localLink": "Équipe d'ingénieurs basée à Bogotá, Colombie",
   "guarantees": [
     "Code 100 % propriétaire",
     "90 jours de garantie",
     "Contact direct ingénieurs"
   ],
-  "stats": [
-    {
-      "value": "+10K",
-      "label": "utilisateurs actifs dans les systèmes livrés"
+  "portalMockup": {
+    "caption": "Portail client · vue d'exemple",
+    "url": "portail.votre-entreprise.com",
+    "project": "Plateforme de gestion",
+    "projectMeta": "Sprint 3 sur 5",
+    "deliverablesLabel": "Livrables",
+    "sprints": [
+      {
+        "name": "Authentification et rôles",
+        "status": "Approuvé",
+        "state": "done",
+        "progress": 100
+      },
+      {
+        "name": "Tableau de bord de rapports",
+        "status": "En cours",
+        "state": "active",
+        "progress": 60
+      },
+      {
+        "name": "Intégration des paiements",
+        "status": "En attente",
+        "state": "todo",
+        "progress": 0
+      }
+    ],
+    "invoice": {
+      "label": "Facture",
+      "number": "SKY-0014",
+      "status": "Payée"
     },
-    {
-      "value": "+30",
-      "label": "projets en production"
-    },
-    {
-      "value": "99.9%",
-      "label": "disponibilité moyenne en production"
-    },
-    {
-      "value": "90j",
-      "label": "garantie technique incluse"
+    "comment": {
+      "label": "Équipe SkyCode",
+      "text": "Le tableau de bord de rapports est prêt pour votre revue dans l'environnement privé."
     }
-  ]
+  }
 }

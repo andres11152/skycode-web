@@ -13,32 +13,32 @@
   "networkItems": [
     {
       "iconName": "Cloud",
-      "label": "Infraestructura Cloud & DevOps",
+      "label": "Infraestructura cloud y DevOps",
       "description": "CI/CD automatizado, Terraform, AWS, GCP y despliegues sin caída."
     },
     {
       "iconName": "TestTube",
-      "label": "QA & Testing Automático",
+      "label": "QA y pruebas automáticas",
       "description": "Pruebas E2E, suites de regresión y validación de carga para alta concurrencia."
     },
     {
       "iconName": "ShieldCheck",
-      "label": "Seguridad OWASP & Pentesting",
+      "label": "Seguridad OWASP y pentesting",
       "description": "Auditorías de vulnerabilidades, hardening de servidores y cifrado de datos."
     },
     {
       "iconName": "Brain",
-      "label": "IA & Agentes Autónomos",
+      "label": "IA y agentes autónomos",
       "description": "Workflows LLM, RAG sobre datos de empresa y pipelines de automatización."
     },
     {
       "iconName": "PenNib",
-      "label": "Diseño UI/UX Avanzado",
+      "label": "Diseño UI/UX avanzado",
       "description": "Sistemas de diseño a medida, microinteracciones y prototipado de alta fidelidad."
     },
     {
       "iconName": "Plugs",
-      "label": "Integraciones ERP & Pagos",
+      "label": "Integraciones ERP y pagos",
       "description": "Pasarelas transaccionales, sincronización contable y webhooks resilientes."
     }
   ],
@@ -61,7 +61,7 @@
     }
   ],
   "closingTitle": "¿Quieres trabajar directamente con este equipo?",
-  "closingDescription": "Agenda una llamada de 15 min para contarnos tu proyecto — hablarás directamente con quien va a construirlo, sin intermediarios comerciales ni cajas negras.",
+  "closingDescription": "Agenda una llamada de 15 min para contarnos tu proyecto. Hablarás directamente con quien va a construirlo, sin intermediarios comerciales ni cajas negras.",
   "ctaLabel": "Hablemos de tu proyecto",
   "ctaSecondary": {
     "label": "Ver proyectos reales",
