@@ -136,7 +136,7 @@ export function Modal({
       {open && (
         <motion.div
           ref={overlayRef}
-          className="fixed inset-0 z-[70] flex items-end justify-center bg-foreground/60 backdrop-blur-sm sm:items-center sm:p-4"
+          className="fixed inset-0 z-[70] flex items-end justify-center bg-inverse/60 backdrop-blur-sm sm:items-center sm:p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: DURATION.fast } }}
@@ -157,7 +157,7 @@ export function Modal({
             aria-labelledby={title ? titleId : undefined}
             aria-describedby={description ? descriptionId : undefined}
             className={cn(
-              "relative flex max-h-[88dvh] w-full flex-col overflow-hidden lg:flex-row rounded-t-xl border border-foreground/10 bg-background text-foreground shadow-2xl shadow-black/30 sm:max-h-[85dvh] sm:rounded-xl",
+              "relative flex max-h-[88dvh] w-full flex-col overflow-hidden lg:flex-row rounded-t-xl border border-foreground/10 bg-surface-raised text-foreground shadow-2xl shadow-black/30 sm:max-h-[85dvh] sm:rounded-xl",
               SIZE_CLASSES[size],
               className,
             )}
@@ -202,7 +202,7 @@ export function Modal({
               {children}
             </div>
             {footer && (
-              <div className="shrink-0 border-t border-foreground/10 bg-background px-6 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-8">
+              <div className="shrink-0 border-t border-foreground/10 bg-surface-raised px-6 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-8">
                 {footer}
               </div>
             )}

@@ -280,7 +280,7 @@ export function ContactForm({
           {/* Nombre completo */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor={`${idPrefix}-name`} className={labelClasses}>
-              {contactData.placeholders.name} <span className="text-accent-strong">*</span>
+              {contactData.placeholders.name} <span className="text-accent-text">*</span>
             </label>
             <div className="relative">
             <input
@@ -313,7 +313,7 @@ export function ContactForm({
           {/* Correo electrónico */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor={`${idPrefix}-email`} className={labelClasses}>
-              {contactData.placeholders.email} <span className="text-accent-strong">*</span>
+              {contactData.placeholders.email} <span className="text-accent-text">*</span>
             </label>
             <div className="relative">
             <input
@@ -424,7 +424,7 @@ export function ContactForm({
           {/* Mensaje */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor={`${idPrefix}-message`} className={labelClasses}>
-              {contactData.placeholders.message} <span className="text-accent-strong">*</span>
+              {contactData.placeholders.message} <span className="text-accent-text">*</span>
             </label>
             <textarea
               id={`${idPrefix}-message`}
@@ -475,7 +475,7 @@ export function ContactForm({
                   href={contactData.habeasData.linkUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold underline hover:text-accent-strong transition-colors"
+                  className="font-semibold underline hover:text-accent-text transition-colors"
                 >
                   {contactData.habeasData.linkText}
                 </a>
@@ -505,7 +505,7 @@ export function ContactForm({
           <div
             className={cn(
               "mt-1 flex flex-col gap-2",
-              isModal && "sticky bottom-0 z-10 -mx-6 -mb-6 border-t border-foreground/10 bg-background px-6 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:-mx-8 sm:-mb-8 sm:px-8",
+              isModal && "sticky bottom-0 z-10 -mx-6 -mb-6 border-t border-foreground/10 bg-surface-raised px-6 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:-mx-8 sm:-mb-8 sm:px-8",
               shaking && "animate-shake",
             )}
             onAnimationEnd={(e) => {

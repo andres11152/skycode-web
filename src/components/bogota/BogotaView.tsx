@@ -33,12 +33,12 @@ const FOCUS =
 // ::after cubre la tarjeta entera; el anillo de foco se dibuja en ese ::after.
 const STRETCHED =
   "outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-accent focus-visible:after:ring-offset-2 focus-visible:after:ring-offset-background";
-const CARD = "lift relative rounded-xl border border-foreground/10 bg-background p-6 hover:border-foreground/25";
+const CARD = "lift relative rounded-xl border border-foreground/10 bg-surface-raised p-6 hover:border-foreground/25";
 /** Índice entre hermanos para el escalonado de los `reveal-*` (ver globals.css). */
 const stagger = (index: number) => ({ "--i": index }) as CSSProperties;
 const GLASS = "border border-foreground/10 bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl";
 const SECONDARY_ON_DARK =
-  "border-background/25 text-background hover:border-background/40 hover:bg-background/10 focus-visible:ring-offset-foreground";
+  "border-on-inverse/25 text-on-inverse hover:border-on-inverse/40 hover:bg-on-inverse/10 focus-visible:ring-offset-inverse";
 
 type Tone = "light" | "tint" | "dark";
 
@@ -66,7 +66,7 @@ function Band({
       aria-labelledby={headingId}
       className={cn(
         "scroll-mt-24 px-6 py-20 sm:py-28",
-        dark && "bg-foreground text-background",
+        dark && "bg-inverse text-on-inverse",
         tone === "tint" && "border-y border-foreground/10 bg-foreground/[0.03]",
         className,
       )}
@@ -79,7 +79,7 @@ function Band({
             </div>
           )}
           {/* El titular sube palabra por palabra. `aria-label` dice el texto una sola vez; las palabras partidas van aria-hidden. */}
-          <h2 id={headingId} aria-label={heading} className={cn(H2, dark ? "text-background" : "text-foreground")}>
+          <h2 id={headingId} aria-label={heading} className={cn(H2, dark ? "text-on-inverse" : "text-foreground")}>
             <RevealWords text={heading} />
           </h2>
         </div>
@@ -127,7 +127,7 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
         {/* Grilla fina + resplandor de marca: estáticos, el movimiento vive en el globo. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(10,10,10,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(10,10,10,0.05)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_at_70%_40%,black_20%,transparent_72%)]"
+          className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,color-mix(in_srgb,var(--foreground)_5%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_srgb,var(--foreground)_5%,transparent)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_at_70%_40%,black_20%,transparent_72%)]"
         />
         <div
           aria-hidden="true"
@@ -201,24 +201,24 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
       </section>
 
       {/* ───────────── Compromisos (oscura) ───────────── */}
-      <section aria-label={stats.label} className="bg-foreground px-6 py-16 text-background sm:py-20">
+      <section aria-label={stats.label} className="bg-inverse px-6 py-16 text-on-inverse sm:py-20">
         <div className="mx-auto max-w-6xl">
           <SectionEyebrow onDark>{stats.label}</SectionEyebrow>
-          <ul className="mt-10 grid gap-px overflow-hidden rounded-xl border border-background/10 bg-background/10 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-10 grid gap-px overflow-hidden rounded-xl border border-on-inverse/10 bg-on-inverse/10 sm:grid-cols-2 lg:grid-cols-4">
             {stats.items.map((item, index) => (
-              <li key={item.label} className="reveal-scale flex flex-col gap-3 bg-foreground p-6 sm:p-8" style={stagger(index)}>
-                <p className="flex items-baseline gap-2 font-bold tracking-tight text-background">
+              <li key={item.label} className="reveal-scale flex flex-col gap-3 bg-inverse p-6 sm:p-8" style={stagger(index)}>
+                <p className="flex items-baseline gap-2 font-bold tracking-tight text-on-inverse">
                   {/* La cifra sube desde detrás de una máscara (el texto sigue en el HTML). */}
                   <span className="word-mask text-5xl sm:text-6xl">
                     <span className="word-inner" style={{ "--w": index * 2 } as CSSProperties}>
                       {item.value}
                     </span>
                   </span>
-                  {item.unit && <span className="text-lg text-background/70">{item.unit}</span>}
+                  {item.unit && <span className="text-lg text-on-inverse/70">{item.unit}</span>}
                 </p>
                 <div>
-                  <p className="text-base font-semibold text-background">{item.label}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-background/80">{item.text}</p>
+                  <p className="text-base font-semibold text-on-inverse">{item.label}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-on-inverse/80">{item.text}</p>
                 </div>
               </li>
             ))}
@@ -256,7 +256,7 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
 
       {/* ───────────── Servicios (oscura) ───────────── */}
       <Band id={services.id} tone="dark" heading={services.heading}>
-        <p className={cn(BODY, "max-w-3xl text-background/80")}>
+        <p className={cn(BODY, "max-w-3xl text-on-inverse/80")}>
           <InlineText text={services.intro} />
         </p>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -266,7 +266,7 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
               <li key={item.slug} className="reveal-scale" style={stagger(index % 3)}>
                 {/* Las tarjetas se quedan claras sobre la banda negra (mismo criterio que la home). */}
                 <SpotlightCard className="h-full rounded-xl">
-                  <div className="group/card relative flex h-full flex-col gap-4 rounded-xl bg-background p-6 text-foreground">
+                  <div className="group/card relative flex h-full flex-col gap-4 rounded-xl bg-surface-raised p-6 text-foreground">
                     {Icon && (
                       <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.03] transition-[scale,border-color] duration-300 group-hover/card:border-foreground/30 motion-safe:group-hover/card:scale-110 motion-reduce:transition-none">
                         <Icon size={22} weight="duotone" className="text-accent" aria-hidden="true" />
@@ -375,7 +375,7 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
         <ul className="grid gap-4 md:grid-cols-2">
           {testimonials.map((item, index) => (
             <li key={`${item.company}-${item.name}`} className="reveal-up" style={stagger(index)}>
-              <figure className="flex h-full flex-col justify-between gap-8 rounded-xl bg-background p-8 text-foreground">
+              <figure className="flex h-full flex-col justify-between gap-8 rounded-xl bg-surface-raised p-8 text-foreground">
                 <blockquote className="text-base leading-relaxed text-foreground/80 sm:text-lg sm:leading-relaxed">
                   “{item.quote}”
                 </blockquote>
@@ -491,7 +491,7 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
                   className="reveal-left flex items-start gap-2.5 text-base leading-relaxed text-foreground/80"
                   style={stagger(index)}
                 >
-                  <CheckCircle size={18} weight="duotone" className="dot-on mt-1 shrink-0 text-accent-strong" aria-hidden="true" />
+                  <CheckCircle size={18} weight="duotone" className="dot-on mt-1 shrink-0 text-accent-text" aria-hidden="true" />
                   <span>{factor}</span>
                 </li>
               ))}
@@ -544,10 +544,10 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
       )}
 
       {/* ───────────── Cierre (oscura) ───────────── */}
-      <section aria-labelledby="bogota-cta-titulo" className="relative overflow-hidden bg-foreground">
+      <section aria-labelledby="bogota-cta-titulo" className="relative overflow-hidden bg-inverse">
         <div
           aria-hidden="true"
-          className="parallax absolute -top-24 -right-16 h-80 w-80 rounded-full bg-background/[0.07] blur-[110px]"
+          className="parallax absolute -top-24 -right-16 h-80 w-80 rounded-full bg-on-inverse/[0.07] blur-[110px]"
           style={{ "--py-from": "-20%", "--py-to": "30%" } as CSSProperties}
         />
         <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16 sm:py-24 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
@@ -555,14 +555,14 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
             <h2
               id="bogota-cta-titulo"
               aria-label={cta.heading}
-              className="text-3xl font-bold tracking-tight text-balance text-background sm:text-4xl"
+              className="text-3xl font-bold tracking-tight text-balance text-on-inverse sm:text-4xl"
             >
               <RevealWords text={cta.heading} />
             </h2>
-            <p className="reveal-up mt-4 text-lg leading-relaxed text-background/80">{cta.body}</p>
+            <p className="reveal-up mt-4 text-lg leading-relaxed text-on-inverse/80">{cta.body}</p>
           </div>
           <div className="reveal-right flex flex-wrap items-center gap-3">
-            <Button href={CONTACT_HREF} variant="accent" size="lg" className="focus-visible:ring-offset-foreground">
+            <Button href={CONTACT_HREF} variant="accent" size="lg" className="focus-visible:ring-offset-inverse">
               {cta.primary}
             </Button>
             <Button

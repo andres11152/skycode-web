@@ -37,7 +37,7 @@ export function NextCase({ next, label, locale }: { next: NextCaseData; label: s
         <div className="flex flex-col lg:col-span-6">
           <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-foreground/70">{label}</p>
           <p className="mt-6 text-xs font-medium uppercase tracking-wide text-foreground/70">{next.clientLabel}</p>
-          <h2 className="mt-2 text-4xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-5xl lg:text-6xl">
+          <h2 className="mt-2 text-4xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text sm:text-5xl lg:text-6xl">
             {next.title}
           </h2>
           <span

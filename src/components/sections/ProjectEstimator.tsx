@@ -171,7 +171,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
               onClick={() => setCurrency("COP")}
               className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-colors ${
                 currency === "COP"
-                  ? "bg-accent-strong text-white shadow-sm"
+                  ? "bg-accent-strong text-accent-foreground shadow-sm"
                   : "text-foreground/70 hover:text-foreground"
               }`}
             >
@@ -181,7 +181,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
               onClick={() => setCurrency("USD")}
               className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-colors ${
                 currency === "USD"
-                  ? "bg-accent-strong text-white shadow-sm"
+                  ? "bg-accent-strong text-accent-foreground shadow-sm"
                   : "text-foreground/70 hover:text-foreground"
               }`}
             >
@@ -197,7 +197,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
             {/* 1. Tipo de Proyecto */}
             <div>
               <h3 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-4 flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-white">1</span>
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-accent-foreground">1</span>
                 {content.steps.type}
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -218,14 +218,14 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                       onClick={() => setSelectedType(type.id)}
                       className={`group relative flex w-full cursor-pointer flex-col justify-between rounded-xl border p-4 text-left outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] motion-reduce:active:scale-100 ${
                         isSelected
-                          ? "border-accent bg-accent/10 shadow-[0_0_20px_rgba(0,137,205,0.15)]"
+                          ? "border-accent bg-accent/10 shadow-[0_0_20px_color-mix(in_srgb,var(--accent)_15%,transparent)]"
                           : "border-foreground/10 bg-background/50 hover:border-foreground/20"
                       }`}
                     >
                       <span className="block">
                         <span className="mb-2 flex items-center justify-between">
                           <span className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-200 ${
-                            isSelected ? "bg-accent-strong text-white" : "bg-foreground/5 text-foreground/70"
+                            isSelected ? "bg-accent-strong text-accent-foreground" : "bg-foreground/5 text-foreground/70"
                           }`}>
                             <Icon size={18} />
                           </span>
@@ -236,7 +236,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                       </span>
 
                       <span className="mt-3 block border-t border-foreground/5 pt-2 text-[11px]">
-                        <span className="font-mono font-bold text-accent-strong">
+                        <span className="font-mono font-bold text-accent-text">
                           {content.fromLabel} {formatPrice(displayPrice)}
                         </span>
                       </span>
@@ -249,7 +249,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
             {/* 2. Módulos Adicionales */}
             <div>
               <h3 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-4 flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-white">2</span>
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-accent-foreground">2</span>
                 {content.steps.addons}
               </h3>
               <div className="grid gap-2.5">
@@ -271,7 +271,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                     >
                       <span className="flex items-center gap-3">
                         <span className={`flex h-4 w-4 items-center justify-center rounded border transition-colors duration-200 ${
-                          isChecked ? "border-accent bg-accent-strong text-white" : "border-foreground/30"
+                          isChecked ? "border-accent bg-accent-strong text-accent-foreground" : "border-foreground/30"
                         }`}>
                           {isChecked && <CheckCircle size={12} className="animate-pop-in" />}
                         </span>
@@ -287,7 +287,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
             {/* 3. Urgencia */}
             <div>
               <h3 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-3 flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-white">3</span>
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-accent-foreground">3</span>
                 {content.steps.pace}
               </h3>
               <div className="grid grid-cols-2 gap-3">
@@ -314,7 +314,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                       : "border-foreground/10 bg-background/40 text-foreground/70"
                   }`}
                 >
-                  <div className="font-bold mb-0.5 text-accent-strong flex items-center gap-1">
+                  <div className="font-bold mb-0.5 text-accent-text flex items-center gap-1">
                     <Lightning size={12} /> {content.pace.expressTitle}
                   </div>
                   <div className="text-[11px] text-foreground/60">{content.pace.expressDesc}</div>
@@ -329,19 +329,19 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                 infinito alrededor de la tarjeta de precio compite con el
                 número que cambia en vivo (NumberFlow) — demasiado
                 movimiento en el mismo punto. */}
-            <SpotlightCard className="relative overflow-hidden rounded-xl border border-foreground/15 bg-foreground/95 p-6 text-background shadow-2xl">
-              <div className="flex items-center justify-between border-b border-background/10 pb-4 mb-4">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-background/60">
+            <SpotlightCard className="relative overflow-hidden rounded-xl border border-foreground/15 bg-inverse/95 p-6 text-on-inverse shadow-2xl">
+              <div className="flex items-center justify-between border-b border-on-inverse/10 pb-4 mb-4">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-on-inverse/60">
                   {content.summary.title}
                 </span>
-                <span className="rounded-full bg-background/10 px-2.5 py-0.5 text-[10px] font-bold text-background">
+                <span className="rounded-full bg-on-inverse/10 px-2.5 py-0.5 text-[10px] font-bold text-on-inverse">
                   {currency}
                 </span>
               </div>
 
               {/* Price Display */}
               <div className="space-y-1 mb-6">
-                <div className="flex items-center justify-between text-[11px] text-background/60">
+                <div className="flex items-center justify-between text-[11px] text-on-inverse/60">
                   <span>{content.summary.investmentLabel}</span>
                   <span className="text-accent font-bold text-[10px] flex items-center gap-1">
                     <Tag size={10} /> {content.summary.competitiveRateLabel}
@@ -363,9 +363,9 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                     transformTiming={{ duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
                     spinTiming={{ duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
                   />
-                  <span className="text-sm font-semibold text-background/70">{currency}</span>
+                  <span className="text-sm font-semibold text-on-inverse/70">{currency}</span>
                 </div>
-                <div className="text-[10px] text-background/50">
+                <div className="text-[10px] text-on-inverse/50">
                   {currency === "COP"
                     ? `(~ $${Math.round(displayPrice / 4100).toLocaleString("en-US")} USD aprox)`
                     : `(~ $${(displayPrice * 4100).toLocaleString("es-CO")} COP aprox)`}
@@ -373,12 +373,12 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
               </div>
 
               {/* Time & Details */}
-              <div className="space-y-3 border-t border-background/10 pt-4 text-xs font-mono">
-                <div className="flex items-center justify-between text-background/80">
-                  <span className="flex items-center gap-1.5 text-background/60">
+              <div className="space-y-3 border-t border-on-inverse/10 pt-4 text-xs font-mono">
+                <div className="flex items-center justify-between text-on-inverse/80">
+                  <span className="flex items-center gap-1.5 text-on-inverse/60">
                     <Clock size={14} className="text-accent" /> {content.summary.timeLabel}
                   </span>
-                  <span className="font-bold text-background flex items-center gap-1">
+                  <span className="font-bold text-on-inverse flex items-center gap-1">
                     <NumberFlow
                       value={displayWeeks}
                       transformTiming={{ duration: 500, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
@@ -386,17 +386,17 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                     <span>{content.summary.weeksSuffix}</span>
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-background/80">
-                  <span className="text-background/60">{content.summary.ipLabel}</span>
-                  <span className="text-background font-bold">{content.summary.ipValue}</span>
+                <div className="flex items-center justify-between text-on-inverse/80">
+                  <span className="text-on-inverse/60">{content.summary.ipLabel}</span>
+                  <span className="text-on-inverse font-bold">{content.summary.ipValue}</span>
                 </div>
-                <div className="flex items-center justify-between text-background/80">
-                  <span className="text-background/60">{content.summary.paymentLabel}</span>
-                  <span className="text-background font-bold">{content.summary.paymentValue}</span>
+                <div className="flex items-center justify-between text-on-inverse/80">
+                  <span className="text-on-inverse/60">{content.summary.paymentLabel}</span>
+                  <span className="text-on-inverse font-bold">{content.summary.paymentValue}</span>
                 </div>
-                <div className="flex items-center justify-between text-background/80">
-                  <span className="text-background/60">{content.summary.warrantyLabel}</span>
-                  <span className="text-background font-bold">{content.summary.warrantyValue}</span>
+                <div className="flex items-center justify-between text-on-inverse/80">
+                  <span className="text-on-inverse/60">{content.summary.warrantyLabel}</span>
+                  <span className="text-on-inverse font-bold">{content.summary.warrantyValue}</span>
                 </div>
               </div>
 
@@ -404,7 +404,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
               <Magnetic strength={0.25} range={60}>
                 <button
                   onClick={handlePreFillContact}
-                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-white shadow-lg hover:brightness-90 active:scale-[0.98] motion-reduce:active:scale-100 transition-[filter,transform] duration-200"
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-xs font-bold text-accent-foreground shadow-lg hover:brightness-90 active:scale-[0.98] motion-reduce:active:scale-100 transition-[filter,transform] duration-200"
                 >
                   <span>{content.summary.ctaLabel}</span>
                   <ArrowRight size={14} />
@@ -432,12 +432,12 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                         value={captureEmail}
                         onChange={(e) => setCaptureEmail(e.target.value)}
                         placeholder={content.emailCapture.placeholder}
-                        className="h-11 flex-1 min-w-0 rounded-lg border border-background/15 bg-background/10 px-3 text-xs text-background placeholder:text-background/40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                        className="h-11 flex-1 min-w-0 rounded-lg border border-on-inverse/15 bg-on-inverse/10 px-3 text-xs text-on-inverse placeholder:text-on-inverse/40 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse"
                       />
                       <button
                         type="submit"
                         disabled={captureStatus === "sending" || !captureConsent}
-                        className="flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-background/10 px-3.5 text-xs font-bold text-background transition-colors hover:bg-background/20 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                        className="flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-on-inverse/10 px-3.5 text-xs font-bold text-on-inverse transition-colors hover:bg-on-inverse/20 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse"
                       >
                         {captureStatus === "sending" ? (
                           <Spinner size={13} className="motion-safe:animate-spin" />
@@ -449,13 +449,13 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                     {/* Autorización de tratamiento de datos (Ley 1581) —
                         mismo requisito que la casilla grande de
                         Contact.tsx, adaptada a este mini-formulario. */}
-                    <label className="flex items-start gap-2 text-[10px] leading-relaxed text-background/60">
+                    <label className="flex items-start gap-2 text-[10px] leading-relaxed text-on-inverse/60">
                       <input
                         type="checkbox"
                         checked={captureConsent}
                         onChange={(e) => setCaptureConsent(e.target.checked)}
                         required
-                        className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-background/30 bg-background/10 text-accent outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                        className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-on-inverse/30 bg-on-inverse/10 text-accent outline-none focus-visible:ring-2 focus-visible:ring-accent"
                       />
                       <span>
                         {content.emailCapture.consent.label}{" "}
@@ -463,7 +463,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                           href={content.emailCapture.consent.linkUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="underline hover:text-background"
+                          className="underline hover:text-on-inverse"
                         >
                           {content.emailCapture.consent.linkText}
                         </a>
@@ -479,7 +479,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   <button
                     type="button"
                     onClick={() => setShowEmailCapture(true)}
-                    className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg text-[11px] font-semibold text-background/60 transition-colors hover:text-background outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                    className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg text-[11px] font-semibold text-on-inverse/60 transition-colors hover:text-on-inverse outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse"
                   >
                     <EnvelopeSimple size={13} />
                     <span>{content.emailCapture.toggleLabel}</span>
@@ -487,7 +487,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                 )}
               </div>
 
-              <p className="mt-3 text-center text-[10px] text-background/50">{content.summary.disclaimer}</p>
+              <p className="mt-3 text-center text-[10px] text-on-inverse/50">{content.summary.disclaimer}</p>
             </SpotlightCard>
           </div>
         </div>

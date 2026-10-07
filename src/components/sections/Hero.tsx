@@ -33,7 +33,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           ResizeObserver), un movimiento más compitiendo con el resto de la página. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(10,10,10,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(10,10,10,0.05)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_70%_60%_at_65%_35%,black,transparent)]"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,color-mix(in_srgb,var(--foreground)_5%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_srgb,var(--foreground)_5%,transparent)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_70%_60%_at_65%_35%,black,transparent)]"
       />
       {/* Resplandor de marca con `radial-gradient`, no con `blur-[110px]`: un desenfoque de 110 px sobre un
           bloque de 520x420 se rasteriza en CPU en los dispositivos lentos y retrasaba el primer pintado del

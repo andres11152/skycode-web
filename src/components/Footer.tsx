@@ -5,7 +5,7 @@ import { getCookieBannerContent } from "@/content/cookieBanner";
 import { useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
+import { ThemedLogo } from "@/components/ui/ThemedLogo";
 import { Phone } from "@phosphor-icons/react";
 import { MailIcon } from "@/components/icons/UiIcons";
 import { CopyButton } from "@/components/ui/CopyButton";
@@ -145,8 +145,8 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
               aria-label={footerData.logoAria}
               className="flex h-14 items-start outline-none transition-transform duration-300 ease-out hover:scale-105 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
             >
-              <Image
-                src="/logo-full.png"
+              <ThemedLogo
+                variant="full"
                 alt="SkyCode Agency"
                 width={260}
                 height={170}
@@ -304,7 +304,7 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
               <li key={value} className="flex items-center gap-1">
                 <a
                   href={href}
-                  className="inline-flex min-h-11 items-center gap-2 rounded text-sm font-medium text-foreground outline-none transition-colors hover:text-accent-strong focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="inline-flex min-h-11 items-center gap-2 rounded text-sm font-medium text-foreground outline-none transition-colors hover:text-accent-text focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <Icon size={16} aria-hidden="true" />
                   {value}

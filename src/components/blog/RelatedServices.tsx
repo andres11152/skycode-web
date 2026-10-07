@@ -52,14 +52,14 @@ export function RelatedServices({
             >
               <span
                 aria-hidden="true"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-background text-foreground/70 transition-colors duration-200 group-hover:border-accent/30 group-hover:text-accent-strong"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-background text-foreground/70 transition-colors duration-200 group-hover:border-accent/30 group-hover:text-accent-text"
               >
                 <service.coverIcon size={22} weight="duotone" />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-lg font-bold tracking-tight text-balance text-foreground">{service.title}</span>
                 <span className="mt-1.5 block text-base leading-relaxed text-foreground/80 line-clamp-2">{service.description}</span>
-                <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-colors duration-200 group-hover:text-accent-strong">
+                <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-colors duration-200 group-hover:text-accent-text">
                   {ctaLabel}
                   <ArrowRight
                     size={16}

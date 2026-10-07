@@ -21,14 +21,14 @@ export function ClosingStatementFallback() {
   const contactHref = `${homePath === "/" ? "" : homePath}/#contacto`;
 
   return (
-    <section aria-label={data.sectionAria} className="relative h-[175vh] bg-foreground motion-reduce:h-auto motion-reduce:py-28">
+    <section aria-label={data.sectionAria} className="relative h-[175vh] bg-inverse motion-reduce:h-auto motion-reduce:py-28">
       <div className="relative sticky top-0 flex h-screen flex-col items-start justify-center gap-10 overflow-hidden px-6 motion-reduce:static motion-reduce:h-auto motion-reduce:py-4">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-start gap-8">
           <SectionEyebrow onDark>{data.eyebrow}</SectionEyebrow>
-          <p className="text-3xl leading-snug font-bold tracking-tight text-balance text-background/40 motion-reduce:text-background sm:text-5xl">
+          <p className="text-3xl leading-snug font-bold tracking-tight text-balance text-on-inverse/40 motion-reduce:text-on-inverse sm:text-5xl">
             {data.statement}
           </p>
-          <Button href={contactHref} variant="accent" size="lg" className="focus-visible:ring-offset-foreground">
+          <Button href={contactHref} variant="accent" size="lg" className="focus-visible:ring-offset-inverse">
             {data.cta}
           </Button>
         </div>

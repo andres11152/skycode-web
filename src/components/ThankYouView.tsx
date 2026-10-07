@@ -70,7 +70,7 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
       >
         <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-[0_0_40px_rgba(16,185,129,0.25)]">
           <CheckCircle size={42} className="stroke-[2.2]" />
-          <div className="absolute -top-1 -left-1 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-white shadow-md">
+          <div className="absolute -top-1 -left-1 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-md">
             <ShieldCheck size={16} />
           </div>
         </div>
@@ -94,7 +94,7 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
         <div className="mt-7 flex w-full flex-col gap-3 sm:flex-row">
           <Link
             href={localeHomePath(locale)}
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent-strong px-5 text-sm font-bold text-white outline-none transition hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent-strong px-5 text-sm font-bold text-accent-foreground outline-none transition hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             {uiData.backToHome}
           </Link>

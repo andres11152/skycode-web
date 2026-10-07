@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Etiqueta corta sobre un título de sección — tipografía sola: mono, tracking
- * amplio y un único tono neutro (`foreground/70`, `background/70` sobre
+ * amplio y un único tono neutro (`foreground/70`, `on-inverse/70` sobre
  * banda oscura). Sin degradado, sin brillo animado, sin color de marca: la
  * versión anterior (texto con degradado azul y barrido de brillo, repetida
  * en las 12 secciones) es el rastro de plantilla generada más reconocible, y
@@ -16,14 +16,14 @@ export function SectionEyebrow({
 }: {
   children: React.ReactNode;
   className?: string;
-  /** Secciones oscuras (bg-foreground): el texto va en `background/70`. */
+  /** Secciones oscuras (bg-inverse): el texto va en `on-inverse/70`. */
   onDark?: boolean;
 }) {
   return (
     <p
       className={cn(
         "inline-block font-mono text-xs font-medium uppercase tracking-[0.2em]",
-        onDark ? "text-background/70" : "text-foreground/70",
+        onDark ? "text-on-inverse/70" : "text-foreground/70",
         className,
       )}
     >

@@ -21,7 +21,7 @@ const FOCUS_LIGHT =
 const STRETCH_LIGHT =
   "outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-accent focus-visible:after:ring-offset-2 focus-visible:after:ring-offset-background";
 const STRETCH_DARK =
-  "outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-accent focus-visible:after:ring-offset-2 focus-visible:after:ring-offset-foreground";
+  "outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-accent focus-visible:after:ring-offset-2 focus-visible:after:ring-offset-inverse";
 
 const VIEWPORT = { once: true, margin: "-80px" } as const;
 
@@ -39,9 +39,9 @@ function FeaturedCase({
   locale: Locale;
 }) {
   return (
-    // Banda oscura (bg-foreground): una de las secciones invertidas del sitio.
+    // Banda oscura (bg-inverse): una de las secciones invertidas del sitio.
     // No hay otra oscura contigua en esta página — el resto de capítulos son claros.
-    <section aria-label={copy.featuredBadge} className="mt-14 bg-foreground sm:mt-20">
+    <section aria-label={copy.featuredBadge} className="mt-14 bg-inverse sm:mt-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="group relative grid gap-10 rounded-xl py-14 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-16 lg:py-24">
           <div className="lg:col-span-7">
@@ -62,29 +62,29 @@ function FeaturedCase({
 
           <div className="flex flex-col lg:col-span-5">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-sm text-background/70">{pad(1)}</span>
-              <span aria-hidden="true" className="h-px w-8 bg-background/25" />
+              <span className="font-mono text-sm text-on-inverse/70">{pad(1)}</span>
+              <span aria-hidden="true" className="h-px w-8 bg-on-inverse/25" />
               <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent">
                 {copy.featuredBadge}
               </span>
             </div>
 
-            <p className="mt-6 text-xs font-medium uppercase tracking-wide text-background/70">
+            <p className="mt-6 text-xs font-medium uppercase tracking-wide text-on-inverse/70">
               {project.clientLabel}
             </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-balance text-background sm:text-4xl">
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-balance text-on-inverse sm:text-4xl">
               <Link href={portfolioCasePath(locale, project.slug)} className={STRETCH_DARK}>
                 {project.title}
               </Link>
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-background/80 sm:text-lg">{project.summary}</p>
+            <p className="mt-4 text-base leading-relaxed text-on-inverse/80 sm:text-lg">{project.summary}</p>
 
             {project.capabilities.length > 0 && (
               <ul className="mt-6 flex flex-wrap gap-2">
                 {project.capabilities.map((capability) => (
                   <li
                     key={capability}
-                    className="rounded-full border border-background/15 px-3 py-1 text-xs text-background/80"
+                    className="rounded-full border border-on-inverse/15 px-3 py-1 text-xs text-on-inverse/80"
                   >
                     {capability}
                   </li>
@@ -92,11 +92,11 @@ function FeaturedCase({
               </ul>
             )}
 
-            <span aria-hidden="true" className="mt-8 inline-flex items-center gap-3 text-sm font-semibold text-background">
+            <span aria-hidden="true" className="mt-8 inline-flex items-center gap-3 text-sm font-semibold text-on-inverse">
               {copy.viewCaseStudy}
               <span
                 aria-hidden="true"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-background/25 transition-colors duration-200 group-hover:border-background group-hover:bg-background group-hover:text-foreground"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-on-inverse/25 transition-colors duration-200 group-hover:border-on-inverse group-hover:bg-on-inverse group-hover:text-inverse"
               >
                 <ArrowUpRight
                   size={18}
@@ -165,7 +165,7 @@ function CaseChapter({
             </span>
           </div>
 
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text sm:text-4xl">
             <Link href={portfolioCasePath(locale, project.slug)} className={STRETCH_LIGHT}>
               {project.title}
             </Link>

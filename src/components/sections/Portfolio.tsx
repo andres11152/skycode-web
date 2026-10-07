@@ -69,13 +69,13 @@ function FeaturedCase({
         <div className="flex items-center gap-3">
           <span className="font-mono text-sm text-foreground/60">{pad(1)}</span>
           <span aria-hidden="true" className="h-px w-8 bg-foreground/20" />
-          <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-strong">
+          <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-text">
             {sectionCopy.featuredBadge}
           </span>
         </div>
 
         <p className="mt-5 text-xs font-medium uppercase tracking-wide text-foreground/70">{project.clientLabel}</p>
-        <h3 className="mt-2 text-2xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-3xl">
+        <h3 className="mt-2 text-2xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text sm:text-3xl">
           <Link href={portfolioCasePath(locale, project.slug)} className={STRETCH}>
             {project.title}
           </Link>
@@ -138,7 +138,7 @@ function SecondaryCase({
             {project.clientLabel.split("·")[0].trim()}
           </span>
         </div>
-        <h3 className="mt-3 text-xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-2xl">
+        <h3 className="mt-3 text-xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text sm:text-2xl">
           <Link href={portfolioCasePath(locale, project.slug)} className={STRETCH}>
             {project.title}
           </Link>

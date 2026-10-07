@@ -42,7 +42,7 @@ export function SpotlightCard({ children, className, spotlightSize = 280 }: Spot
 
   const reduced = useReducedMotion();
   const canHover = usePointerFine();
-  const spotlightBg = useMotionTemplate`radial-gradient(${spotlightSize}px circle at ${mouseX}px ${mouseY}px, rgba(0, 137, 205, 0.12), transparent 70%)`;
+  const spotlightBg = useMotionTemplate`radial-gradient(${spotlightSize}px circle at ${mouseX}px ${mouseY}px, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%)`;
 
   if (reduced || !canHover) {
     return (

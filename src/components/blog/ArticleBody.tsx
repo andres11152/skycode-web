@@ -75,10 +75,10 @@ export function ArticleBody({
             );
           case "code":
             return (
-              <div key={index} className="overflow-hidden rounded-xl bg-foreground">
+              <div key={index} className="overflow-hidden rounded-xl bg-inverse">
                 {/* Cabecera con el lenguaje y el botón de copiar (siempre visible: en táctil no hay hover). */}
-                <div className="flex h-11 items-center justify-between border-b border-background/10 pr-1.5 pl-5">
-                  <span className="font-mono text-xs font-medium tracking-[0.15em] text-background/70 uppercase">
+                <div className="flex h-11 items-center justify-between border-b border-on-inverse/10 pr-1.5 pl-5">
+                  <span className="font-mono text-xs font-medium tracking-[0.15em] text-on-inverse/70 uppercase">
                     {block.language}
                   </span>
                   {copyCodeLabel && copiedCodeLabel && (
@@ -86,11 +86,11 @@ export function ArticleBody({
                       value={block.code}
                       label={copyCodeLabel}
                       copiedLabel={copiedCodeLabel}
-                      className="text-background/70 hover:bg-background/10 hover:text-background focus-visible:ring-offset-foreground"
+                      className="text-on-inverse/70 hover:bg-on-inverse/10 hover:text-on-inverse focus-visible:ring-offset-inverse"
                     />
                   )}
                 </div>
-                <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed text-background/90">
+                <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed text-on-inverse/90">
                   <code>{block.code}</code>
                 </pre>
               </div>

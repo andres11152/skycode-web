@@ -52,7 +52,7 @@ export function RssSubscribe({
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
-        className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full border border-background/25 px-9 py-3.5 text-base font-semibold text-background outline-none transition-[background-color,border-color,transform] duration-200 ease-[var(--ease-out)] hover:border-background/40 hover:bg-background/10 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground active:scale-[0.97] motion-reduce:active:scale-100"
+        className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full border border-on-inverse/25 px-9 py-3.5 text-base font-semibold text-on-inverse outline-none transition-[background-color,border-color,transform] duration-200 ease-[var(--ease-out)] hover:border-on-inverse/40 hover:bg-on-inverse/10 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse active:scale-[0.97] motion-reduce:active:scale-100"
       >
         <RssSimple size={18} aria-hidden="true" />
         {labels.cta}
@@ -63,13 +63,13 @@ export function RssSubscribe({
       <Modal open={open} onClose={() => setOpen(false)} title={labels.title} closeLabel={labels.close} className="text-foreground">
         <p className="text-sm leading-relaxed text-foreground/80">{labels.description}</p>
 
-        <div className="mt-4 flex items-center gap-2 rounded-xl bg-foreground py-1 pr-1 pl-4">
-          <code className="min-w-0 flex-1 py-2 font-mono text-[13px] leading-snug break-all text-background select-all">{feedUrl}</code>
+        <div className="mt-4 flex items-center gap-2 rounded-xl bg-inverse py-1 pr-1 pl-4">
+          <code className="min-w-0 flex-1 py-2 font-mono text-[13px] leading-snug break-all text-on-inverse select-all">{feedUrl}</code>
           <CopyButton
             value={feedUrl}
             label={labels.copy}
             copiedLabel={labels.copied}
-            className="text-background/80 hover:bg-background/10 hover:text-background focus-visible:ring-offset-foreground"
+            className="text-on-inverse/80 hover:bg-on-inverse/10 hover:text-on-inverse focus-visible:ring-offset-inverse"
           />
         </div>
 

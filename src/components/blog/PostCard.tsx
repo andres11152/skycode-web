@@ -50,7 +50,7 @@ export function PostCard({
         </div>
         <Heading
           className={cn(
-            "mt-3 font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong",
+            "mt-3 font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text",
             headingLevel === "h2" ? "text-2xl" : "text-xl",
           )}
         >

@@ -57,7 +57,7 @@ export function CopyButton({ value, label, copiedLabel, className }: CopyButtonP
           className={cn(iconBase, copied ? "scale-50 opacity-0" : "scale-100 opacity-100")}
         />
         <CheckIcon
-          className={cn(iconBase, "text-accent-strong", copied ? "scale-100 opacity-100" : "scale-50 opacity-0")}
+          className={cn(iconBase, "text-accent-text", copied ? "scale-100 opacity-100" : "scale-50 opacity-0")}
         />
       </button>
       <span role="status" className="sr-only">

@@ -59,11 +59,11 @@ export function ContactSectionSkeleton({ label }: { label: string }) {
 /** Marco del modal de contacto con el formulario en skeleton, para la primera apertura (el chunk aún no llegó). */
 export function ContactModalSkeleton({ label }: { label: string }) {
   return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-foreground/50 backdrop-blur-sm sm:items-center sm:p-6">
+    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-inverse/50 backdrop-blur-sm sm:items-center sm:p-6">
       <div
         role="status"
         aria-busy="true"
-        className="w-full max-w-2xl rounded-t-xl bg-background p-6 sm:rounded-xl sm:p-8"
+        className="w-full max-w-2xl rounded-t-xl bg-surface-raised p-6 sm:rounded-xl sm:p-8"
       >
         <span className="sr-only">{label}</span>
         <div aria-hidden="true" className="mb-6 flex flex-col gap-3">

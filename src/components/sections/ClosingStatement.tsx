@@ -50,7 +50,7 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
     <section
       aria-label={closingData.sectionAria}
       ref={containerRef}
-      className={cn("relative bg-foreground", reduced ? "py-28" : "h-[175vh]")}
+      className={cn("relative bg-inverse", reduced ? "py-28" : "h-[175vh]")}
     >
       <div
         className={cn(
@@ -67,11 +67,11 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
           <SectionEyebrow onDark>{closingData.eyebrow}</SectionEyebrow>
 
           {reduced ? (
-            <p className="text-3xl font-bold leading-snug tracking-tight text-balance text-background sm:text-5xl">
+            <p className="text-3xl font-bold leading-snug tracking-tight text-balance text-on-inverse sm:text-5xl">
               {closingData.statement}
             </p>
           ) : (
-            <p className="text-3xl font-bold leading-snug tracking-tight text-balance text-background sm:text-5xl">
+            <p className="text-3xl font-bold leading-snug tracking-tight text-balance text-on-inverse sm:text-5xl">
               {words.map((word, index) => (
                 <RevealWord
                   key={`${word}-${index}`}
@@ -89,7 +89,7 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
               href={contactHref}
               variant="accent"
               size="lg"
-              className="focus-visible:ring-offset-foreground"
+              className="focus-visible:ring-offset-inverse"
             >
               {closingData.cta}
             </Button>

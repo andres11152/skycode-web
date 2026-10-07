@@ -36,7 +36,7 @@ export function ServiceCaseCard({
       href={portfolioCasePath(locale, project.slug)}
       className="group scroll-reveal flex h-full flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background outline-none transition-colors duration-200 hover:border-foreground/20 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-foreground/10 bg-foreground">
+      <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-foreground/10 bg-inverse">
         {project.coverImage ? (
           // alt vacío: el título del caso ya nombra el enlace, la portada es decorativa.
           <Image
@@ -47,7 +47,7 @@ export function ServiceCaseCard({
             className="object-cover object-top transition-transform duration-500 ease-[var(--ease-out)] group-hover:scale-[1.03] motion-reduce:transform-none"
           />
         ) : (
-          <div aria-hidden="true" className="flex h-full items-center justify-center text-background/70">
+          <div aria-hidden="true" className="flex h-full items-center justify-center text-on-inverse/70">
             {/* createElement: el ícono sale de un mapa estático (PORTFOLIO_ICON_MAP), no se crea en el render. */}
             {createElement(getPortfolioIcon(project.industryIcon), { size: 40, weight: "duotone" })}
           </div>
@@ -60,7 +60,7 @@ export function ServiceCaseCard({
           <ArrowUpRight
             size={18}
             aria-hidden="true"
-            className="mt-1 shrink-0 text-foreground/60 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-strong motion-reduce:transform-none"
+            className="mt-1 shrink-0 text-foreground/60 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-text motion-reduce:transform-none"
           />
         </Heading>
         <p className="text-sm leading-relaxed text-foreground/80 line-clamp-3">{project.summary}</p>

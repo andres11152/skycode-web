@@ -38,7 +38,7 @@ export function PostRow({
             {readingTime(post)} {readingTimeSuffix}
           </span>
         </div>
-        <h3 className="mt-2 text-xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-2xl">
+        <h3 className="mt-2 text-xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text sm:text-2xl">
           {post.title}
         </h3>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/80 line-clamp-2">{post.description}</p>
@@ -47,7 +47,7 @@ export function PostRow({
       <ArrowUpRight
         size={22}
         aria-hidden="true"
-        className="hidden shrink-0 text-foreground/60 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-strong motion-reduce:transform-none sm:block"
+        className="hidden shrink-0 text-foreground/60 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-text motion-reduce:transform-none sm:block"
       />
     </Link>
   );

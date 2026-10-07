@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { loginAs, TestClient } from "./helpers/client";
 import { createTestUser, resetTestDb } from "../src/lib/testHelpers/db";
+import { THEME_INIT_SCRIPT } from "../src/lib/theme";
 
 beforeEach(async () => {
   await resetTestDb();
@@ -16,10 +17,18 @@ function nonceOf(csp: string): string {
   return match![1];
 }
 
-/** Atributos nonce de los <script> ejecutables del HTML (no los JSON-LD, que no ejecutan). */
+/**
+ * Atributos nonce de los <script> ejecutables del HTML (no los JSON-LD, que no ejecutan).
+ * Excepción: el script anti-destello del tema (lib/theme.ts, solo con el modo oscuro
+ * encendido) no lleva nonce a propósito — la CSP estricta lo autoriza por su hash SHA-256,
+ * así que se descarta SOLO si su contenido es exactamente ese texto.
+ */
 function scriptNonces(html: string): string[] {
-  const tags = html.match(/<script\b[^>]*>/g) ?? [];
-  return tags.filter((t) => !/type="application\/(ld\+)?json"/.test(t)).map((t) => t.match(/nonce="([^"]*)"/)?.[1] ?? "");
+  const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+  return scripts
+    .filter(([, attrs]) => !/type="application\/(ld\+)?json"/.test(attrs))
+    .filter(([, attrs, body]) => !(body === THEME_INIT_SCRIPT && !/\bsrc=/.test(attrs)))
+    .map(([, attrs]) => attrs.match(/nonce="([^"]*)"/)?.[1] ?? "");
 }
 
 describe("CSP estricta (nonce) en las superficies de sesión y credenciales", () => {

@@ -7,17 +7,17 @@ const stagger = (index: number) => ({ "--i": index }) as CSSProperties;
 /**
  * Visuales decorativos de la página local. Todos son `aria-hidden`: el mensaje
  * ya está en el texto de la tarjeta. Mismo lenguaje que el `CodeMockup` del
- * Hero: superficie oscura (`bg-foreground`) y acento solo en un detalle.
+ * Hero: superficie oscura (`bg-inverse`) y acento solo en un detalle.
  */
 
 /** Terminal con las líneas de propiedad del repositorio. */
 export function RepoMockup({ lines }: { lines: string[] }) {
   return (
-    <div aria-hidden="true" className="overflow-hidden rounded-xl bg-foreground">
-      <div className="flex items-center gap-1.5 border-b border-background/10 px-4 py-2.5">
-        <span className="h-2 w-2 rounded-full bg-background/20" />
-        <span className="h-2 w-2 rounded-full bg-background/20" />
-        <span className="h-2 w-2 rounded-full bg-background/20" />
+    <div aria-hidden="true" className="overflow-hidden rounded-xl bg-inverse">
+      <div className="flex items-center gap-1.5 border-b border-on-inverse/10 px-4 py-2.5">
+        <span className="h-2 w-2 rounded-full bg-on-inverse/20" />
+        <span className="h-2 w-2 rounded-full bg-on-inverse/20" />
+        <span className="h-2 w-2 rounded-full bg-on-inverse/20" />
       </div>
       <ul className="flex flex-col gap-1.5 p-4 font-mono text-xs leading-relaxed">
         {lines.map((line, index) => {
@@ -25,8 +25,8 @@ export function RepoMockup({ lines }: { lines: string[] }) {
           return (
             <li key={line} className="reveal-left truncate" style={stagger(index)}>
               <span className="text-accent">{key}</span>
-              <span className="text-background/60">: </span>
-              <span className="text-background/80">{rest.join(": ")}</span>
+              <span className="text-on-inverse/60">: </span>
+              <span className="text-on-inverse/80">{rest.join(": ")}</span>
             </li>
           );
         })}
@@ -49,7 +49,7 @@ export function PeopleVisual({ people, label }: { people: { initial: string; nam
           <span
             key={person.name}
             style={{ ...stagger(index), "--k": index } as CSSProperties}
-            className="reveal-scale flex h-11 w-11 items-center justify-center rounded-full border-2 border-background bg-foreground font-mono text-sm font-bold text-background motion-safe:transition-[translate] motion-safe:duration-300 motion-safe:ease-out motion-safe:group-hover/people:translate-x-[calc(var(--k)*8px)]"
+            className="reveal-scale flex h-11 w-11 items-center justify-center rounded-full border-2 border-surface-raised bg-foreground font-mono text-sm font-bold text-background motion-safe:transition-[translate] motion-safe:duration-300 motion-safe:ease-out motion-safe:group-hover/people:translate-x-[calc(var(--k)*8px)]"
           >
             {person.initial}
           </span>
@@ -92,28 +92,28 @@ export function ConsentMockup({ label, className }: { label: string; className?:
     ["ip", '"190.xxx.xxx.xx"'],
   ];
   return (
-    <figure className={cn("overflow-hidden rounded-xl bg-foreground", className)}>
-      <div aria-hidden="true" className="flex items-center gap-1.5 border-b border-background/10 px-4 py-2.5">
-        <span className="h-2 w-2 rounded-full bg-background/20" />
-        <span className="h-2 w-2 rounded-full bg-background/20" />
-        <span className="h-2 w-2 rounded-full bg-background/20" />
-        <span className="ml-3 font-mono text-xs text-background/60">consent_log.json</span>
+    <figure className={cn("overflow-hidden rounded-xl bg-inverse", className)}>
+      <div aria-hidden="true" className="flex items-center gap-1.5 border-b border-on-inverse/10 px-4 py-2.5">
+        <span className="h-2 w-2 rounded-full bg-on-inverse/20" />
+        <span className="h-2 w-2 rounded-full bg-on-inverse/20" />
+        <span className="h-2 w-2 rounded-full bg-on-inverse/20" />
+        <span className="ml-3 font-mono text-xs text-on-inverse/60">consent_log.json</span>
       </div>
       <pre aria-hidden="true" className="overflow-x-auto p-5 font-mono text-xs leading-relaxed sm:text-sm">
         <code>
-          <span className="text-background/60">{"{"}</span>
+          <span className="text-on-inverse/60">{"{"}</span>
           {rows.map(([key, value, highlight], index) => (
             <span key={key} className="reveal-left block pl-4" style={stagger(index)}>
               <span className="text-accent">{key}</span>
-              <span className="text-background/60">: </span>
-              <span className={highlight ? "text-accent" : "text-background/80"}>{value}</span>
-              <span className="text-background/60">,</span>
+              <span className="text-on-inverse/60">: </span>
+              <span className={highlight ? "text-accent" : "text-on-inverse/80"}>{value}</span>
+              <span className="text-on-inverse/60">,</span>
             </span>
           ))}
-          <span className="text-background/60">{"}"}</span>
+          <span className="text-on-inverse/60">{"}"}</span>
         </code>
       </pre>
-      <figcaption className="border-t border-background/10 px-5 py-3 text-xs text-background/70">{label}</figcaption>
+      <figcaption className="border-t border-on-inverse/10 px-5 py-3 text-xs text-on-inverse/70">{label}</figcaption>
     </figure>
   );
 }

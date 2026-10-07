@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
 import { List, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/components/LocaleProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { ThemedLogo } from "@/components/ui/ThemedLogo";
 import { EsBadge } from "@/components/ui/EsBadge";
 import { getNavContent } from "@/content/nav";
 import { localeHomePath } from "@/lib/i18n";
@@ -25,7 +26,7 @@ import { DURATION, EASE_OUT, SPRING_SNAPPY } from "@/lib/animations";
 // 70% dejaba pasar tanto negro que la Navbar se leía como una barra gris
 // sucia en vez de un panel blanco (bug real, visto en auditoría visual).
 const GLASS = "bg-background/85 shadow-lg shadow-black/5 backdrop-blur-xl";
-const MOBILE_GLASS = "border border-foreground/15 bg-background/95 shadow-2xl shadow-black/30 backdrop-blur-2xl";
+const MOBILE_GLASS = "border border-foreground/15 bg-surface-raised/95 shadow-2xl shadow-black/30 backdrop-blur-2xl";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -100,8 +101,8 @@ export function Navbar() {
             <span
               className="flex h-8 items-center rounded-full transition-transform duration-300 ease-out group-hover:scale-110"
             >
-              <Image
-                src="/logo-mark.png"
+              <ThemedLogo
+                variant="mark"
                 alt=""
                 width={110}
                 height={63}
@@ -154,6 +155,7 @@ export function Navbar() {
         <div className="flex items-center gap-1.5">
 
           <LanguageSwitcher locale={locale} className="flex items-center" />
+          <ThemeToggle />
 
           {/* Desktop Contact button — sin halo/pulso: es el único CTA de
               acento visible en todo momento en la página, no necesita
@@ -227,6 +229,7 @@ export function Navbar() {
                   </li>
                 ))}
               </ul>
+              <ThemeToggle variant="segmented" />
               <Button
                 href={contactHref}
                 prefetch={homePrefetch}

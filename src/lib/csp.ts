@@ -21,6 +21,8 @@
 //    sin sesión ni datos sensibles, y las plantillas escapan todo (React) — el
 //    riesgo residual es bajo frente al costo en rendimiento y SEO.
 
+import { THEME_SCRIPT_SHA256 } from "./theme";
+
 const IS_DEV = process.env.NODE_ENV === "development";
 
 // gtag.js (Google Ads) se sirve desde googletagmanager.com y necesita poder
@@ -126,7 +128,13 @@ export function buildLaxCsp(): string {
  *   Los elementos `<style>` sí exigen nonce.
  */
 export function buildStrictCsp(nonce: string): string {
-  const scriptSrc = ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", ...(IS_DEV ? ["'unsafe-eval'"] : [])];
+  // El script anti-destello del tema (lib/theme.ts) está en el <head> del layout raíz, que
+  // es compartido y estático: no puede llevar el nonce de cada request. Se autoriza por su
+  // hash SHA-256 — solo ESE texto exacto corre, no cualquier inline. `'strict-dynamic'`
+  // ignora las listas de hosts pero SÍ respeta nonces y hashes.
+  // NUNCA añadir este hash a la política laxa: un hash o nonce en script-src hace que el
+  // navegador ignore `'unsafe-inline'`, y Next.js necesita inline para hidratar.
+  const scriptSrc = ["'self'", `'nonce-${nonce}'`, `'${THEME_SCRIPT_SHA256}'`, "'strict-dynamic'", ...(IS_DEV ? ["'unsafe-eval'"] : [])];
   return [
     ...common(),
     `script-src ${scriptSrc.join(" ")}`,

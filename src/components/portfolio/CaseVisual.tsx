@@ -127,7 +127,7 @@ export function CaseVisual({
     <div
       className={cn(
         "overflow-hidden rounded-xl border",
-        onDark ? "border-background/15" : "border-foreground/10",
+        onDark ? "border-on-inverse/15" : "border-foreground/10",
         className,
       )}
     >
@@ -138,7 +138,7 @@ export function CaseVisual({
               "relative w-full overflow-hidden",
               aspectClassName,
               // Skeleton detrás de la captura mientras llega; al cargar queda el fondo plano.
-              imageSrc && !showLoaded ? cn("skeleton", onDark && "skeleton-dark") : onDark ? "bg-background/10" : "bg-foreground/10",
+              imageSrc && !showLoaded ? cn("skeleton", onDark && "skeleton-dark") : onDark ? "bg-on-inverse/10" : "bg-foreground/10",
             )}
             style={color && imageSrc ? { backgroundColor: color } : undefined}
           >

@@ -77,7 +77,7 @@ export function CookieBanner() {
             // Sale en ~70% de lo que tarda en entrar (regla de CLAUDE.md).
             exit={{ ...hidden, transition: { duration: DURATION.fast, ease: EASE_OUT } }}
             transition={{ duration: DURATION.base, ease: EASE_OUT }}
-            className="fixed inset-x-0 bottom-0 z-[65] border-t border-foreground/10 bg-background/95 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl"
+            className="fixed inset-x-0 bottom-0 z-[65] border-t border-foreground/10 bg-surface-raised/95 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl"
           >
             {/* Compacto en mobile a propósito: una versión anterior apilada
                 ocupaba ~22% del viewport de un teléfono y tapaba los CTA del

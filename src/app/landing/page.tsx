@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { ThemedLogo } from "@/components/ui/ThemedLogo";
 import { Buildings, Code, ShieldCheck } from "@phosphor-icons/react/ssr";
 import { Contact } from "@/components/sections/Contact";
 import { siteName } from "@/lib/site";
@@ -49,8 +49,8 @@ export default function LandingPage() {
 
       <header className="mx-auto mb-8 flex w-full max-w-6xl items-center sm:mb-10">
         <span aria-label={siteName} className="inline-flex items-center">
-          <Image
-            src="/logo-mark.png"
+          <ThemedLogo
+            variant="mark"
             alt={siteName}
             width={110}
             height={63}
@@ -63,7 +63,7 @@ export default function LandingPage() {
 
       <main className="mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-start lg:gap-16">
         <div className="flex flex-col gap-6 text-left">
-          <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-strong">
+          <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-text">
             Empresa de desarrollo de software en Colombia
           </p>
 
@@ -91,7 +91,7 @@ export default function LandingPage() {
             key={title}
             className="rounded-xl border border-foreground/10 bg-background/50 p-5 shadow-sm"
           >
-            <span className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-foreground/10 bg-accent/10 text-accent-strong">
+            <span className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-foreground/10 bg-accent/10 text-accent-text">
               <Icon size={20} aria-hidden="true" />
             </span>
             <p className="text-sm font-semibold text-foreground">{title}</p>
@@ -107,7 +107,7 @@ export default function LandingPage() {
             href="/politica-privacidad"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium underline underline-offset-2 hover:text-accent-strong"
+            className="font-medium underline underline-offset-2 hover:text-accent-text"
           >
             Política de privacidad
           </a>

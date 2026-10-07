@@ -77,7 +77,7 @@ export function LanguageSwitcher({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={hidden}
             transition={{ duration: DURATION.fast, ease: EASE_OUT }}
-            className="absolute right-0 top-12 z-50 min-w-[170px] origin-top-right overflow-hidden rounded-xl border border-foreground/15 bg-background/95 p-1.5 shadow-2xl backdrop-blur-2xl shadow-black/20"
+            className="absolute right-0 top-12 z-50 min-w-[170px] origin-top-right overflow-hidden rounded-xl border border-foreground/15 bg-surface-raised/95 p-1.5 shadow-2xl backdrop-blur-2xl shadow-black/20"
           >
             {locales.map((loc) => {
               const isCurrent = loc === locale;
@@ -93,7 +93,7 @@ export function LanguageSwitcher({
                     className={cn(
                       "group flex min-h-10 items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent",
                       isCurrent
-                        ? "bg-accent/10 text-accent-strong font-semibold"
+                        ? "bg-accent/10 text-accent-text font-semibold"
                         : "text-foreground/80 hover:bg-foreground/5 hover:text-foreground",
                     )}
                   >
@@ -101,14 +101,14 @@ export function LanguageSwitcher({
                       className={cn(
                         "rounded px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase transition-colors",
                         isCurrent
-                          ? "bg-accent/20 text-accent-strong"
+                          ? "bg-accent/20 text-accent-text"
                           : "bg-foreground/5 text-foreground/50 group-hover:bg-foreground/10 group-hover:text-foreground/80",
                       )}
                     >
                       {LOCALE_CODE[loc]}
                     </span>
                     <span className="font-medium">{localeNames[loc]}</span>
-                    {isCurrent && <CheckIcon size={14} className="ml-auto text-accent-strong" />}
+                    {isCurrent && <CheckIcon size={14} className="ml-auto text-accent-text" />}
                   </Link>
                 </li>
               );

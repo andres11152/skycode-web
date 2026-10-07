@@ -18,6 +18,19 @@
   --accent-strong: #006998;
   --accent-foreground: #ffffff;
   --accent-secondary: #ffd100;
+  /* Tokens semánticos del modo oscuro (ver "Modo oscuro" más abajo). En claro
+     reproducen EXACTAMENTE lo que el sitio ya hacía, así que añadirlos no cambia
+     ningún píxel:
+       inverse / on-inverse  banda de contraste (antes bg-foreground + text-background)
+       accent-text           acento usado COMO TEXTO (antes text-accent-strong)
+       surface-raised        tarjeta/popover sobre el fondo
+       surface-sunken        banda "tint" y pozos (antes foreground al 3%) */
+  --inverse: #0a0a0a;
+  --on-inverse: #ffffff;
+  --accent-text: #006998;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f7f7f7;
+  color-scheme: light;
   /* Tokens de estado: SOLO dashboard y portal; el sitio público sigue con
      foreground/background/accent. Ver components/dashboard/statusMeta.ts. */
   --success: #166534;
@@ -35,6 +48,70 @@
   --stagger-text: 100ms;
 }
 
+/*
+ * Modo oscuro — SOLO activo si <html> lleva `data-dark-ready` (lo pone el layout
+ * raíz cuando ENABLE_DARK_MODE está encendido, ver lib/theme.ts). Sin ese atributo
+ * estas reglas no seleccionan nada y el sitio es el claro de siempre.
+ *
+ * Dos disparadores con el MISMO contenido (CSS plano no permite compartir un bloque
+ * entre una media query y un selector; `themeContrast.test.ts` verifica que sean
+ * idénticos y que cada par de colores cumpla WCAG):
+ *   1. Elección explícita:  [data-theme="dark"]
+ *   2. "Sistema" (sin JS):  prefers-color-scheme: dark, salvo que se haya elegido claro.
+ *
+ * Decisiones de diseño (no "invertir colores"):
+ *  - Fondo #0a0a0b y texto #ededed, NO blanco puro: el blanco sobre negro "vibra"
+ *    y cansa. La jerarquía sigue siendo foreground con opacidad (/80 ≈ 10.9:1).
+ *  - Las bandas de contraste (--inverse) no se vuelven blancas: se hunden a #050506
+ *    y marcan el ritmo por profundidad, como Linear/Vercel.
+ *  - El acento como TEXTO se aclara (--accent-text); como RELLENO de botón no cambia
+ *    (blanco sobre #006998 = ~6:1 en los dos temas).
+ */
+:root[data-dark-ready][data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0a0a0b;
+  --foreground: #ededed;
+  --inverse: #050506;
+  --on-inverse: #ededed;
+  --accent-text: #4cb6ea;
+  --surface-raised: #111113;
+  --surface-sunken: #060607;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-dark-ready]:not([data-theme="light"]) {
+    color-scheme: dark;
+    --background: #0a0a0b;
+    --foreground: #ededed;
+    --inverse: #050506;
+    --on-inverse: #ededed;
+    --accent-text: #4cb6ea;
+    --surface-raised: #111113;
+    --surface-sunken: #060607;
+  }
+}
+
+/* Utilidades para alternar un par de recursos claro/oscuro (p. ej. el logo, cuyas letras son
+   negras) sin JavaScript. `.show-on-dark` nace oculto; los dos disparadores son los mismos de
+   los tokens de arriba. Sin `data-dark-ready` ninguna regla aplica y solo se ve la versión clara. */
+.show-on-dark {
+  display: none;
+}
+:root[data-dark-ready][data-theme="dark"] .hide-on-dark {
+  display: none;
+}
+:root[data-dark-ready][data-theme="dark"] .show-on-dark {
+  display: revert;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-dark-ready]:not([data-theme="light"]) .hide-on-dark {
+    display: none;
+  }
+  :root[data-dark-ready]:not([data-theme="light"]) .show-on-dark {
+    display: revert;
+  }
+}
+
 @theme inline {
   /* Usado por el badge de estado del CodeMockup del Hero (hidden xs:flex) —
      sin esta declaración, Tailwind nunca genera la variante `xs:` y la clase
@@ -46,6 +123,11 @@
   --color-accent-strong: var(--accent-strong);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-secondary: var(--accent-secondary);
+  --color-inverse: var(--inverse);
+  --color-on-inverse: var(--on-inverse);
+  --color-accent-text: var(--accent-text);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);

@@ -30,28 +30,28 @@ export function WhatsAppButton({
         <div
           role="dialog"
           aria-label={uiData.whatsappHeading}
-          className="mb-3 w-80 rounded-xl border border-foreground/15 bg-foreground/95 p-4 text-background shadow-2xl backdrop-blur-xl animate-enter-pop origin-bottom-right"
+          className="mb-3 w-80 rounded-xl border border-foreground/15 bg-inverse/95 p-4 text-on-inverse shadow-2xl backdrop-blur-xl animate-enter-pop origin-bottom-right"
         >
-          <div className="flex items-center justify-between border-b border-background/10 pb-3 mb-3">
+          <div className="flex items-center justify-between border-b border-on-inverse/10 pb-3 mb-3">
             <div className="flex items-center gap-2.5">
-              <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-background text-foreground">
+              <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-on-inverse text-inverse">
                 <ChatCircle size={20} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-background leading-tight">{uiData.whatsappHeading}</h4>
-                <span className="text-[10px] text-background/60 font-mono">{uiData.whatsappSchedule}</span>
+                <h4 className="text-xs font-bold text-on-inverse leading-tight">{uiData.whatsappHeading}</h4>
+                <span className="text-[10px] text-on-inverse/60 font-mono">{uiData.whatsappSchedule}</span>
               </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="rounded-full p-1 text-background/60 hover:bg-background/10 hover:text-background transition-colors"
+              className="rounded-full p-1 text-on-inverse/60 hover:bg-on-inverse/10 hover:text-on-inverse transition-colors"
               aria-label={uiData.whatsappClose}
             >
               <X size={16} />
             </button>
           </div>
 
-          <div className="rounded-xl bg-background/10 p-3 text-xs leading-relaxed text-background/90 mb-4 font-sans">
+          <div className="rounded-xl bg-on-inverse/10 p-3 text-xs leading-relaxed text-on-inverse/90 mb-4 font-sans">
             {uiData.whatsappPreview}
           </div>
 
@@ -59,7 +59,7 @@ export function WhatsAppButton({
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-background px-4 py-2.5 text-xs font-bold text-foreground outline-none transition-[filter,transform] hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground active:scale-[0.97] motion-reduce:active:scale-100"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-on-inverse px-4 py-2.5 text-xs font-bold text-inverse outline-none transition-[filter,transform] hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse active:scale-[0.97] motion-reduce:active:scale-100"
           >
             <span>{uiData.whatsappOpenChat}</span>
             <PaperPlaneTilt size={14} />

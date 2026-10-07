@@ -11,5 +11,10 @@
   "openMenu": "Abrir menú de navegación",
   "closeMenu": "Cerrar menú de navegación",
   "logoAria": "SkyCode Agency, ir al inicio",
-  "cotizador": "Cotizador"
+  "cotizador": "Cotizador",
+  "themeLabel": "Tema",
+  "themeSystem": "Sistema",
+  "themeLight": "Claro",
+  "themeDark": "Oscuro",
+  "themeCycleAria": "Cambiar tema (actual: {current})"
 }

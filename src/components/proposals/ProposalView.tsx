@@ -46,21 +46,21 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
   const canAccept = signerName.trim().length >= 2 && consent;
 
   return (
-    <div className="min-h-screen bg-foreground text-background px-4 py-16">
+    <div className="min-h-screen bg-inverse text-on-inverse px-4 py-16">
       <div className="mx-auto max-w-2xl space-y-8">
         <div className="text-center">
           <Link href="/" className="inline-block mb-6 hover:opacity-80 transition-opacity">
             <Image src="/logo-mark.png" alt="SKYCODE Logo" width={140} height={80} className="h-10 w-auto mx-auto" />
           </Link>
-          <span className="text-[10px] font-mono uppercase tracking-wider text-background/50">Propuesta Comercial</span>
-          <h1 className="text-2xl font-bold tracking-tight text-background mt-1">{proposal.title}</h1>
-          <p className="mt-1 text-xs text-background/60">Para {proposal.client_name}</p>
+          <span className="text-[10px] font-mono uppercase tracking-wider text-on-inverse/50">Propuesta Comercial</span>
+          <h1 className="text-2xl font-bold tracking-tight text-on-inverse mt-1">{proposal.title}</h1>
+          <p className="mt-1 text-xs text-on-inverse/60">Para {proposal.client_name}</p>
         </div>
 
-        <div className="rounded-xl border border-background/15 bg-background/5 p-6 space-y-6">
+        <div className="rounded-xl border border-on-inverse/15 bg-on-inverse/5 p-6 space-y-6">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-background/10 font-mono uppercase text-[10px] text-background/50">
+              <thead className="border-b border-on-inverse/10 font-mono uppercase text-[10px] text-on-inverse/50">
                 <tr>
                   <th className="pb-2">Partida</th>
                   <th className="pb-2 text-center">Cant.</th>
@@ -68,15 +68,15 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
                   <th className="pb-2 text-right">Subtotal</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-background/10">
+              <tbody className="divide-y divide-on-inverse/10">
                 {proposal.items.map((item, i) => (
                   <tr key={item.id ?? i}>
-                    <td className="py-2.5 text-background/90">{item.description}</td>
-                    <td className="py-2.5 text-center font-mono text-background/70">{item.quantity}</td>
-                    <td className="py-2.5 text-right font-mono text-background/70">
+                    <td className="py-2.5 text-on-inverse/90">{item.description}</td>
+                    <td className="py-2.5 text-center font-mono text-on-inverse/70">{item.quantity}</td>
+                    <td className="py-2.5 text-right font-mono text-on-inverse/70">
                       {formatMoney(item.unit_price, proposal.currency)}
                     </td>
-                    <td className="py-2.5 text-right font-mono text-background/90">
+                    <td className="py-2.5 text-right font-mono text-on-inverse/90">
                       {formatMoney(item.quantity * item.unit_price, proposal.currency)}
                     </td>
                   </tr>
@@ -85,31 +85,31 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
             </table>
           </div>
 
-          <div className="border-t border-background/10 pt-4 space-y-1.5 text-xs font-mono">
-            <div className="flex justify-between text-background/60">
+          <div className="border-t border-on-inverse/10 pt-4 space-y-1.5 text-xs font-mono">
+            <div className="flex justify-between text-on-inverse/60">
               <span>Subtotal</span>
               <span>{formatMoney(proposal.subtotal, proposal.currency)}</span>
             </div>
             {proposal.tax_rate > 0 && (
-              <div className="flex justify-between text-background/60">
+              <div className="flex justify-between text-on-inverse/60">
                 <span>Impuesto ({proposal.tax_rate}%)</span>
                 <span>{formatMoney(proposal.total - proposal.subtotal, proposal.currency)}</span>
               </div>
             )}
-            <div className="flex justify-between text-base font-bold text-background pt-1.5 border-t border-background/10">
+            <div className="flex justify-between text-base font-bold text-on-inverse pt-1.5 border-t border-on-inverse/10">
               <span>Total</span>
               <span className="text-green-400">{formatMoney(proposal.total, proposal.currency)}</span>
             </div>
           </div>
 
           {proposal.notes && (
-            <div className="border-t border-background/10 pt-4 text-xs text-background/70 whitespace-pre-wrap">
+            <div className="border-t border-on-inverse/10 pt-4 text-xs text-on-inverse/70 whitespace-pre-wrap">
               {proposal.notes}
             </div>
           )}
 
           {proposal.valid_until && canRespond && (
-            <p className="text-[11px] text-background/50 flex items-center gap-1.5">
+            <p className="text-[11px] text-on-inverse/50 flex items-center gap-1.5">
               <Clock size={12} />
               Vigente hasta {new Date(proposal.valid_until).toLocaleDateString("es-CO")}
             </p>
@@ -143,16 +143,16 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
           </div>
         )}
         {status === "expired" && (
-          <div className="flex items-center justify-center gap-2 rounded-xl border border-background/20 bg-background/5 p-4 text-sm font-semibold text-background/60">
+          <div className="flex items-center justify-center gap-2 rounded-xl border border-on-inverse/20 bg-on-inverse/5 p-4 text-sm font-semibold text-on-inverse/60">
             <Warning size={18} />
             <span>Esta propuesta ya expiró — contáctanos si sigue interesado.</span>
           </div>
         )}
 
         {canRespond && (
-          <div className="rounded-xl border border-background/15 bg-background/5 p-5 space-y-4">
+          <div className="rounded-xl border border-on-inverse/15 bg-on-inverse/5 p-5 space-y-4">
             <div>
-              <label htmlFor={signerNameId} className="block text-xs font-semibold text-background/80 mb-1.5">
+              <label htmlFor={signerNameId} className="block text-xs font-semibold text-on-inverse/80 mb-1.5">
                 Nombre completo (para firmar electrónicamente)
               </label>
               <input
@@ -162,15 +162,15 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
                 onChange={(e) => setSignerName(e.target.value)}
                 placeholder="Ej. Juan Pérez"
                 autoComplete="name"
-                className="w-full rounded-xl border border-background/20 bg-background/10 py-2.5 px-4 text-sm text-background placeholder:text-background/40 outline-none focus:border-accent"
+                className="w-full rounded-xl border border-on-inverse/20 bg-on-inverse/10 py-2.5 px-4 text-sm text-on-inverse placeholder:text-on-inverse/40 outline-none focus:border-accent"
               />
             </div>
-            <label className="flex items-start gap-2.5 text-xs text-background/70 leading-relaxed cursor-pointer">
+            <label className="flex items-start gap-2.5 text-xs text-on-inverse/70 leading-relaxed cursor-pointer">
               <input
                 type="checkbox"
                 checked={consent}
                 onChange={(e) => setConsent(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 rounded border-background/30 bg-background/10 accent-accent"
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-on-inverse/30 bg-on-inverse/10 accent-accent"
               />
               <span>
                 Declaro que soy {signerName.trim() || "la persona indicada arriba"} y que, al marcar esta casilla y
@@ -186,7 +186,7 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
             <button
               onClick={() => respond("accept")}
               disabled={isSubmitting || !canAccept}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-sm font-bold text-white shadow-lg hover:brightness-90 transition disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-accent-strong px-4 py-3 text-sm font-bold text-accent-foreground shadow-lg hover:brightness-90 transition disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse"
             >
               <CheckCircle size={16} />
               <span>Aceptar y Firmar</span>
@@ -194,7 +194,7 @@ export function ProposalView({ proposal }: { proposal: Proposal }) {
             <button
               onClick={() => respond("reject")}
               disabled={isSubmitting}
-              className="rounded-xl border border-background/20 px-4 py-3 text-sm font-medium text-background/80 hover:bg-background/10 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+              className="rounded-xl border border-on-inverse/20 px-4 py-3 text-sm font-medium text-on-inverse/80 hover:bg-on-inverse/10 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse"
             >
               Rechazar
             </button>

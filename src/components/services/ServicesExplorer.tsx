@@ -88,7 +88,7 @@ export function ServicesExplorer({
                   aria-hidden="true"
                   className={cn(
                     "pt-1 font-mono text-sm font-medium text-foreground/60 transition-colors duration-200 sm:pt-0",
-                    isActive && "text-accent-strong",
+                    isActive && "text-accent-text",
                   )}
                 >
                   {String(index + 1).padStart(2, "0")}
@@ -107,8 +107,8 @@ export function ServicesExplorer({
                   size={20}
                   aria-hidden="true"
                   className={cn(
-                    "mt-1 shrink-0 text-foreground/60 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-strong motion-reduce:transform-none sm:mt-0",
-                    isActive && "text-accent-strong",
+                    "mt-1 shrink-0 text-foreground/60 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-text motion-reduce:transform-none sm:mt-0",
+                    isActive && "text-accent-text",
                   )}
                 />
               </Link>
@@ -146,7 +146,7 @@ export function ServicesExplorer({
                 <ul className="flex flex-col gap-2.5">
                   {active.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2.5 text-sm text-foreground/80">
-                      <CheckCircle size={16} weight="duotone" className="mt-0.5 shrink-0 text-accent-strong" aria-hidden="true" />
+                      <CheckCircle size={16} weight="duotone" className="mt-0.5 shrink-0 text-accent-text" aria-hidden="true" />
                       <span>{feature}</span>
                     </li>
                   ))}
@@ -154,7 +154,7 @@ export function ServicesExplorer({
 
                 <Link
                   href={`${prefix}/servicios/${active.slug}`}
-                  className="group inline-flex min-h-11 items-center gap-2 self-start rounded-full text-sm font-semibold text-foreground outline-none hover:text-accent-strong focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="group inline-flex min-h-11 items-center gap-2 self-start rounded-full text-sm font-semibold text-foreground outline-none hover:text-accent-text focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {copy.openService}
                   <span className="sr-only">: {active.title}</span>

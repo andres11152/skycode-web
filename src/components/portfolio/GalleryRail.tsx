@@ -143,7 +143,7 @@ export function GalleryRail({
             />
             <span
               aria-hidden="true"
-              className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-foreground/60 text-background opacity-0 backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+              className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-inverse/60 text-on-inverse opacity-0 backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
             >
               <CornersOut size={16} />
             </span>

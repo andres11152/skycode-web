@@ -54,8 +54,8 @@ export function LiveClocks({
             key={clock.tz}
             // Capa de tinte sobre blanco: un `bg-foreground/[0.03]` solo quedaría translúcido sobre el gris de la rejilla.
             className={cn(
-              "flex flex-col gap-1 bg-background p-4",
-              clock.home && "bg-[linear-gradient(rgba(10,10,10,0.04),rgba(10,10,10,0.04))]",
+              "flex flex-col gap-1 bg-surface-raised p-4",
+              clock.home && "bg-[linear-gradient(color-mix(in_srgb,var(--foreground)_4%,transparent),color-mix(in_srgb,var(--foreground)_4%,transparent))]",
             )}
           >
             <span className="flex items-center gap-2 text-sm font-medium text-foreground/80">

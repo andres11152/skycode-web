@@ -193,7 +193,7 @@ export function ProjectView({
             onPointerEnter={prefetchLightbox}
             onFocus={prefetchLightbox}
             aria-label={copy.expandImage}
-            className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-foreground/60 text-background outline-none backdrop-blur-sm transition-colors hover:bg-foreground/75 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+            className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-inverse/60 text-on-inverse outline-none backdrop-blur-sm transition-colors hover:bg-inverse/75 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse"
           >
             <CornersOut size={18} />
           </button>
@@ -308,7 +308,7 @@ export function ProjectView({
 
       {/* Métricas: banda oscura de énfasis. Las galería/siguiente caso que la rodean son claras. */}
       {metrics.length > 0 && (
-        <section aria-label={copy.metrics} className="mt-16 bg-foreground sm:mt-24">
+        <section aria-label={copy.metrics} className="mt-16 bg-inverse sm:mt-24">
           <div className={cn(WRAP, "py-16 sm:py-24")}>
             <h2 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent">{copy.metrics}</h2>
             <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
@@ -319,10 +319,10 @@ export function ProjectView({
                   initial="hidden"
                   whileInView="visible"
                   viewport={VIEWPORT}
-                  className="flex flex-col-reverse justify-end border-l border-background/15 pl-5"
+                  className="flex flex-col-reverse justify-end border-l border-on-inverse/15 pl-5"
                 >
-                  <dt className="mt-2 text-sm leading-snug text-background/80">{metric.label}</dt>
-                  <dd className="text-4xl font-bold tracking-tight text-background sm:text-5xl">{metric.value}</dd>
+                  <dt className="mt-2 text-sm leading-snug text-on-inverse/80">{metric.label}</dt>
+                  <dd className="text-4xl font-bold tracking-tight text-on-inverse sm:text-5xl">{metric.value}</dd>
                 </motion.div>
               ))}
             </dl>

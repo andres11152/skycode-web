@@ -78,12 +78,12 @@ export function FaqAccordionItem({
           "focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         )}
       >
-        <h3 className="text-base font-semibold text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-lg">
+        <h3 className="text-base font-semibold text-foreground transition-colors duration-200 group-hover:text-accent-text sm:text-lg">
           {highlight ?? item.question}
         </h3>
         <span
           aria-hidden="true"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors duration-200 group-hover:bg-accent-strong group-hover:text-white"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors duration-200 group-hover:bg-accent-strong group-hover:text-accent-foreground"
         >
           <Plus
             size={16}

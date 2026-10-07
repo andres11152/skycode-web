@@ -20,7 +20,7 @@ import { localeHomePath, t, type Locale } from "@/lib/i18n";
 
 /** Receta de `Button variant="secondary"` invertida para las bandas oscuras. */
 const SECONDARY_ON_DARK =
-  "border-background/25 text-background hover:border-background/40 hover:bg-background/10 focus-visible:ring-offset-foreground";
+  "border-on-inverse/25 text-on-inverse hover:border-on-inverse/40 hover:bg-on-inverse/10 focus-visible:ring-offset-inverse";
 
 /**
  * `/servicios` — Server Component a propósito: la única isla cliente es
@@ -129,7 +129,7 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
               <ul className="flex flex-col gap-3">
                 {trustItems.map((item) => (
                   <li key={item.label} className="flex items-start gap-2.5 text-sm text-foreground/80">
-                    <CheckCircle size={16} weight="duotone" className="mt-0.5 shrink-0 text-accent-strong" aria-hidden="true" />
+                    <CheckCircle size={16} weight="duotone" className="mt-0.5 shrink-0 text-accent-text" aria-hidden="true" />
                     <span>{item.label}</span>
                   </li>
                 ))}
@@ -176,7 +176,7 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
       <section
         id="proceso"
         aria-labelledby="services-process-title"
-        className="scroll-mt-24 bg-foreground px-6 py-24 text-background sm:py-32"
+        className="scroll-mt-24 bg-inverse px-6 py-24 text-on-inverse sm:py-32"
       >
         <div className="mx-auto max-w-6xl">
           <div className="max-w-2xl">
@@ -184,21 +184,21 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
             <h2 id="services-process-title" className="mt-4 text-4xl font-bold tracking-tight text-balance sm:text-5xl">
               {processData.title}
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-background/80">{processData.description}</p>
+            <p className="mt-4 text-lg leading-relaxed text-on-inverse/80">{processData.description}</p>
           </div>
 
           <div className="relative mt-16">
-            <div aria-hidden="true" className="absolute inset-x-0 top-4 hidden h-px bg-background/15 lg:block">
+            <div aria-hidden="true" className="absolute inset-x-0 top-4 hidden h-px bg-on-inverse/15 lg:block">
               <div className="scroll-progress-x h-full w-full bg-accent" />
             </div>
             <ol className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
               {processData.steps.map((step, index) => (
                 <li key={step.title} className="scroll-reveal relative flex flex-col gap-3">
-                  <span className="relative flex h-8 w-8 items-center justify-center rounded-full border border-background/20 bg-foreground font-mono text-xs font-bold text-background">
+                  <span className="relative flex h-8 w-8 items-center justify-center rounded-full border border-on-inverse/20 bg-inverse font-mono text-xs font-bold text-on-inverse">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <h3 className="mt-3 text-lg font-bold tracking-tight">{step.title.replace(/^\d+\.\s*/, "")}</h3>
-                  <p className="text-sm leading-relaxed text-background/80">{step.description}</p>
+                  <p className="text-sm leading-relaxed text-on-inverse/80">{step.description}</p>
                 </li>
               ))}
             </ol>
@@ -274,16 +274,16 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
       </div>
 
       {/* Cierre — banda oscura (la sección anterior es clara). */}
-      <section aria-labelledby="services-cta-title" className="bg-foreground px-6 py-24 text-background sm:py-28">
+      <section aria-labelledby="services-cta-title" className="bg-inverse px-6 py-24 text-on-inverse sm:py-28">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-10 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
             <h2 id="services-cta-title" className="text-4xl font-bold tracking-tight text-balance sm:text-5xl">
               {copy.ctaTitle}
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-background/80">{copy.ctaDescription}</p>
+            <p className="mt-4 text-lg leading-relaxed text-on-inverse/80">{copy.ctaDescription}</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button href={contactHref} variant="accent" size="lg" className="focus-visible:ring-offset-foreground">
+            <Button href={contactHref} variant="accent" size="lg" className="focus-visible:ring-offset-inverse">
               {pageCopy.ctaButton}
             </Button>
             <Button href={estimatorHref} variant="secondary" size="lg" showFlowArrows={false} className={SECONDARY_ON_DARK}>

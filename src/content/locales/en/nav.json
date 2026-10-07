@@ -11,5 +11,10 @@
   "openMenu": "Open navigation menu",
   "closeMenu": "Close navigation menu",
   "logoAria": "SkyCode Agency, go to homepage",
-  "cotizador": "Estimator"
+  "cotizador": "Estimator",
+  "themeLabel": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeCycleAria": "Change theme (current: {current})"
 }

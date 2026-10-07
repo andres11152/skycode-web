@@ -126,7 +126,7 @@ const slideVariants = {
 };
 
 const CONTROL =
-  "flex items-center justify-center rounded-full border border-background/20 bg-foreground/85 text-background shadow-lg backdrop-blur-md outline-none transition hover:bg-foreground active:scale-95 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-foreground";
+  "flex items-center justify-center rounded-full border border-on-inverse/20 bg-inverse/85 text-on-inverse shadow-lg backdrop-blur-md outline-none transition hover:bg-inverse active:scale-95 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse";
 
 /**
  * Visor de imágenes a pantalla completa.
@@ -487,7 +487,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange, labels =
           {/* El fondo se atenúa mientras se arrastra hacia abajo para cerrar. */}
           <motion.div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-foreground/95 backdrop-blur-sm"
+            className="pointer-events-none absolute inset-0 bg-inverse/95 backdrop-blur-sm"
             style={{ opacity: backdropOpacity }}
           />
 
@@ -530,7 +530,7 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange, labels =
                 onPointerUp={onPointerUp}
                 onPointerCancel={onPointerCancel}
                 className={cn(
-                  "absolute inset-0 touch-none select-none overflow-hidden rounded-xl bg-foreground/40",
+                  "absolute inset-0 touch-none select-none overflow-hidden rounded-xl bg-inverse/40",
                   zoomed ? "cursor-grab active:cursor-grabbing" : "cursor-zoom-in",
                 )}
               >
@@ -555,30 +555,30 @@ export function Lightbox({ open, onClose, slides, index, onIndexChange, labels =
             </motion.div>
 
             {hasMultiple && (
-              <div className="pointer-events-none absolute bottom-4 left-4 z-20 hidden select-none rounded-full border border-background/20 bg-foreground/85 px-3.5 py-1.5 font-mono text-xs font-medium text-background/90 shadow-lg backdrop-blur-md sm:block">
+              <div className="pointer-events-none absolute bottom-4 left-4 z-20 hidden select-none rounded-full border border-on-inverse/20 bg-inverse/85 px-3.5 py-1.5 font-mono text-xs font-medium text-on-inverse/90 shadow-lg backdrop-blur-md sm:block">
                 {index + 1} / {total}
               </div>
             )}
 
             {/* En móvil: cápsula inferior con anterior, contador y siguiente. */}
             {hasMultiple && (
-              <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full border border-background/20 bg-foreground/85 p-1 text-background shadow-xl backdrop-blur-md sm:hidden">
+              <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full border border-on-inverse/20 bg-inverse/85 p-1 text-on-inverse shadow-xl backdrop-blur-md sm:hidden">
                 <button
                   type="button"
                   onClick={() => goBy(-1)}
                   aria-label={labels.prev}
-                  className="flex h-11 w-11 items-center justify-center rounded-full text-background outline-none transition hover:bg-background/20 active:scale-90 focus-visible:ring-2 focus-visible:ring-accent"
+                  className="flex h-11 w-11 items-center justify-center rounded-full text-on-inverse outline-none transition hover:bg-on-inverse/20 active:scale-90 focus-visible:ring-2 focus-visible:ring-accent"
                 >
                   <CaretLeft size={20} weight="bold" />
                 </button>
-                <div className="select-none px-2 font-mono text-xs font-medium text-background/90">
+                <div className="select-none px-2 font-mono text-xs font-medium text-on-inverse/90">
                   {index + 1} / {total}
                 </div>
                 <button
                   type="button"
                   onClick={() => goBy(1)}
                   aria-label={labels.next}
-                  className="flex h-11 w-11 items-center justify-center rounded-full text-background outline-none transition hover:bg-background/20 active:scale-90 focus-visible:ring-2 focus-visible:ring-accent"
+                  className="flex h-11 w-11 items-center justify-center rounded-full text-on-inverse outline-none transition hover:bg-on-inverse/20 active:scale-90 focus-visible:ring-2 focus-visible:ring-accent"
                 >
                   <CaretRight size={20} weight="bold" />
                 </button>

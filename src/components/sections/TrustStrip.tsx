@@ -22,10 +22,10 @@ export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
   const trustData = getTrustContent(locale);
 
   return (
-    <div role="group" aria-label={trustData.ariaLabel} className="w-full border-y border-background/10 bg-foreground">
+    <div role="group" aria-label={trustData.ariaLabel} className="w-full border-y border-on-inverse/10 bg-inverse">
       <ul
         className={cn(
-          "mx-auto grid max-w-6xl divide-y divide-background/10 px-6 sm:grid-cols-2 sm:divide-y-0 lg:divide-x",
+          "mx-auto grid max-w-6xl divide-y divide-on-inverse/10 px-6 sm:grid-cols-2 sm:divide-y-0 lg:divide-x",
           DESKTOP_COLUMNS[trustData.items.length] ?? "lg:grid-cols-4",
         )}
       >
@@ -33,9 +33,9 @@ export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
           <li
             key={item.label}
             style={{ "--i": index } as CSSProperties}
-            className="reveal-up flex items-baseline gap-4 py-5 text-sm leading-snug text-background/80 sm:py-6 sm:last:odd:col-span-2 lg:px-6 lg:first:pl-0 lg:last:pr-0 lg:last:odd:col-span-1"
+            className="reveal-up flex items-baseline gap-4 py-5 text-sm leading-snug text-on-inverse/80 sm:py-6 sm:last:odd:col-span-2 lg:px-6 lg:first:pl-0 lg:last:pr-0 lg:last:odd:col-span-1"
           >
-            <span className="font-mono text-xs text-background/60">{String(index + 1).padStart(2, "0")}</span>
+            <span className="font-mono text-xs text-on-inverse/60">{String(index + 1).padStart(2, "0")}</span>
             <span>{item.label}</span>
           </li>
         ))}

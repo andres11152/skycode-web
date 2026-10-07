@@ -61,6 +61,15 @@ export const STORAGE_INVENTORY: readonly StorageEntry[] = [
     firstParty: true,
   },
   {
+    name: "skycode-theme",
+    kind: "localStorage",
+    category: "necessary",
+    purpose:
+      "Recuerda si eligió el modo claro o el oscuro. Solo se guarda si usted lo elige con el selector de tema; con la opción \"Sistema\" no se guarda nada.",
+    duration: "Hasta que la borre",
+    firstParty: true,
+  },
+  {
     name: "skycode-geo-country",
     kind: "cookie",
     category: "preferences",

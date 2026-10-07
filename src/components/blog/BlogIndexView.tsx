@@ -67,7 +67,7 @@ export function BlogIndexView({
                 <p className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-foreground/70">
                   {meta.featuredLabel}
                 </p>
-                <h2 className="text-3xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-4xl">
+                <h2 className="text-3xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text sm:text-4xl">
                   {featured.title}
                 </h2>
                 <p className="text-lg leading-relaxed text-foreground/80 line-clamp-4">{featured.description}</p>
@@ -79,7 +79,7 @@ export function BlogIndexView({
                     {readingTime(featured)} {meta.readingTimeSuffix}
                   </span>
                 </div>
-                <span className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-foreground transition-colors duration-200 group-hover:text-accent-strong">
+                <span className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-foreground transition-colors duration-200 group-hover:text-accent-text">
                   {meta.featuredCta}
                   <ArrowRight
                     size={16}
@@ -127,13 +127,13 @@ export function BlogIndexView({
         </section>
       )}
 
-      <section aria-labelledby="blog-rss" className="bg-foreground px-6 py-20 text-background sm:py-24">
+      <section aria-labelledby="blog-rss" className="bg-inverse px-6 py-20 text-on-inverse sm:py-24">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
           <div className="max-w-xl">
             <h2 id="blog-rss" className="text-3xl font-bold tracking-tight text-balance sm:text-4xl">
               {meta.rssTitle}
             </h2>
-            <p className="mt-3 text-lg leading-relaxed text-background/80">{meta.rssDescription}</p>
+            <p className="mt-3 text-lg leading-relaxed text-on-inverse/80">{meta.rssDescription}</p>
           </div>
           <RssSubscribe
             feedUrl={`${siteUrl}${rssFeedPath(locale)}`}

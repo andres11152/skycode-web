@@ -148,7 +148,7 @@ function CategoryRow({
               aria-hidden="true"
               className={cn(
                 "relative h-6 w-11 rounded-full bg-foreground/25 transition-colors duration-150 ease-out",
-                "after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:bg-background after:shadow-sm after:transition-transform after:duration-150 after:ease-out",
+                "after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:bg-on-inverse after:shadow-sm after:transition-transform after:duration-150 after:ease-out",
                 "peer-checked:bg-accent-strong peer-checked:after:translate-x-5",
                 "peer-disabled:opacity-60",
                 "peer-focus-visible:ring-2 peer-focus-visible:ring-accent peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background",

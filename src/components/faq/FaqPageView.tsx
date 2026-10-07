@@ -18,7 +18,7 @@ import type { FaqCategory, FaqPageCopy } from "@/content/faq";
 const FOCUS =
   "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 const SECONDARY_ON_DARK =
-  "border-background/25 text-background hover:border-background/40 hover:bg-background/10 focus-visible:ring-offset-foreground";
+  "border-on-inverse/25 text-on-inverse hover:border-on-inverse/40 hover:bg-on-inverse/10 focus-visible:ring-offset-inverse";
 
 /** Minúsculas y sin tildes: "garantia" encuentra "garantía", "securite" encuentra "sécurité". */
 function normalize(value: string): string {
@@ -349,21 +349,21 @@ export function FaqPageView({
         </div>
       </div>
 
-      {/* Cierre: banda oscura (bg-foreground), la única de la página. */}
-      <section aria-label={copy.ctaTitle} className="mt-20 bg-foreground sm:mt-28">
+      {/* Cierre: banda oscura (bg-inverse), la única de la página. */}
+      <section aria-label={copy.ctaTitle} className="mt-20 bg-inverse sm:mt-28">
         <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16 sm:py-24 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
           <div className="max-w-xl">
-            <h2 className="text-3xl font-bold tracking-tight text-balance text-background sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-balance text-on-inverse sm:text-4xl">
               {copy.ctaTitle}
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-background/80">{copy.ctaBody}</p>
+            <p className="mt-4 text-lg leading-relaxed text-on-inverse/80">{copy.ctaBody}</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <Button
               href={`${prefix}/#contacto`}
               variant="accent"
               size="lg"
-              className="focus-visible:ring-offset-foreground"
+              className="focus-visible:ring-offset-inverse"
             >
               {copy.ctaPrimary}
             </Button>

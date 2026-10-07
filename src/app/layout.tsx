@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { LazyMotionProvider } from "@/components/LazyMotionProvider";
 import { LocaleProvider } from "@/components/LocaleProvider";
+import { ThemeSync } from "@/components/ThemeSync";
 import { getServicesContent, services } from "@/content/services";
 import { locales, type Locale } from "@/lib/i18n";
 import type { FooterServiceLinks } from "@/components/Footer";
@@ -19,6 +20,7 @@ import {
   whatsappHref,
 } from "@/lib/site";
 import { bogotaGeo, organizationSameAs } from "@/lib/organizationProfiles";
+import { ENABLE_DARK_MODE, THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 const { homeTitle } = getSiteText("es");
@@ -45,6 +47,17 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+
+// Color de la barra del navegador móvil según el esquema del sistema. Solo con el modo
+// oscuro encendido: apagado, no se declara nada (comportamiento actual).
+export const viewport: Viewport = ENABLE_DARK_MODE
+  ? {
+      themeColor: [
+        { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+        { media: "(prefers-color-scheme: dark)", color: "#0a0a0b" },
+      ],
+    }
+  : {};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -245,14 +258,26 @@ export default function RootLayout({
     <html
       lang="es"
       className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
+      // `data-dark-ready` habilita el CSS oscuro de theme.css (ver lib/theme.ts); apagado, no hay atributo.
+      data-dark-ready={ENABLE_DARK_MODE ? "" : undefined}
+      // El script del <head> fija `data-theme` antes de hidratar: sin esto React avisa de un
+      // desajuste de atributos en <html>. Solo afecta a este elemento, no a sus hijos.
+      suppressHydrationWarning
     >
       <head>
+        {ENABLE_DARK_MODE ? (
+          // Bloqueante a propósito: debe correr ANTES de pintar para evitar el destello de tema.
+          // Texto fijo y mínimo autorizado por hash en la CSP estricta (lib/csp.ts).
+          <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        ) : null}
         <OrganizationJsonLd />
         <SiteNavigationJsonLd />
       </head>
       <body className="min-h-full flex flex-col">
         <LazyMotionProvider>
           <LocaleProvider>
+            {/* Fuera de ConditionalLayout: ahí el panel/login hacen `return` anticipado y no lo montarían. */}
+            <ThemeSync />
             <ConditionalLayout serviceLinks={SERVICE_LINKS}>{children}</ConditionalLayout>
           </LocaleProvider>
         </LazyMotionProvider>

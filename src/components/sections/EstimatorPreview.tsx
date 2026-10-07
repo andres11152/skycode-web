@@ -142,14 +142,14 @@ export function EstimatorPreview({
         })}
       </div>
 
-      <div className="flex flex-col items-start gap-3 rounded-b-xl bg-foreground p-6 text-background sm:flex-row sm:items-end sm:justify-between sm:gap-6 sm:p-8">
+      <div className="flex flex-col items-start gap-3 rounded-b-xl bg-inverse p-6 text-on-inverse sm:flex-row sm:items-end sm:justify-between sm:gap-6 sm:p-8">
         <div>
-          <p className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-background/70">{copy.fromLabel}</p>
+          <p className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-on-inverse/70">{copy.fromLabel}</p>
           <p aria-live="polite" className="mt-2 text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">
             <AnimatedNumber animated={animated} value={selected.price} locales={numberLocale} format={format} prefix="$" suffix={` ${currency}`} />
           </p>
         </div>
-        <p className="pb-1 font-mono text-sm whitespace-nowrap text-background/80 sm:text-right">
+        <p className="pb-1 font-mono text-sm whitespace-nowrap text-on-inverse/80 sm:text-right">
           <AnimatedNumber animated={animated} value={selected.weeks} /> {copy.weeksSuffix}
         </p>
       </div>

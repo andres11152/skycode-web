@@ -31,7 +31,7 @@ export function ProjectCover({
 
   if (imageSrc) {
     return (
-      <div className={cn("group/cover relative overflow-hidden bg-foreground rounded-xl border border-foreground/10", className)}>
+      <div className={cn("group/cover relative overflow-hidden bg-inverse rounded-xl border border-foreground/10", className)}>
         <Image
           src={imageSrc}
           alt="Vista previa del proyecto"
@@ -42,14 +42,14 @@ export function ProjectCover({
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover/cover:opacity-30"
+          className="absolute inset-0 bg-gradient-to-t from-inverse/40 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover/cover:opacity-30"
         />
       </div>
     );
   }
 
   return (
-    <div className={cn("group/cover relative overflow-hidden bg-foreground", className)}>
+    <div className={cn("group/cover relative overflow-hidden bg-inverse", className)}>
       <GridPattern
         width={36}
         height={36}
@@ -65,7 +65,7 @@ export function ProjectCover({
           whileHover={reduced ? undefined : { scale: 1.08, rotate: 3 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           className={cn(
-            "flex h-16 w-16 items-center justify-center rounded-xl border border-background/15 bg-background/10 text-background/90 shadow-[0_0_30px_rgba(0,137,205,0.15)] backdrop-blur-sm",
+            "flex h-16 w-16 items-center justify-center rounded-xl border border-on-inverse/15 bg-on-inverse/10 text-on-inverse/90 shadow-[0_0_30px_rgba(0,137,205,0.15)] backdrop-blur-sm",
             iconClassName,
           )}
         >

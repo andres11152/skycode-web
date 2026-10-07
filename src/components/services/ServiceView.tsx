@@ -130,7 +130,7 @@ export async function ServiceView({
                 <MorphTransition name={`service-icon-${service.slug}`}>
                   <span
                     aria-hidden="true"
-                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-accent/30 bg-background text-accent-strong"
+                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-accent/30 bg-background text-accent-text"
                   >
                     <service.coverIcon size={30} weight="duotone" />
                   </span>
@@ -224,7 +224,7 @@ export async function ServiceView({
                     <ul className="flex flex-col gap-3">
                       {details.useCases.map((useCase) => (
                         <li key={useCase} className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/80">
-                          <CheckCircle size={18} weight="duotone" className="mt-1 shrink-0 text-accent-strong" aria-hidden="true" />
+                          <CheckCircle size={18} weight="duotone" className="mt-1 shrink-0 text-accent-text" aria-hidden="true" />
                           <span>
                             <InlineText text={useCase} />
                           </span>
@@ -243,7 +243,7 @@ export async function ServiceView({
               <ul className="grid gap-px overflow-hidden rounded-xl border border-foreground/10 bg-foreground/10">
                 {service.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3 bg-background p-5 text-sm leading-relaxed text-foreground/80 sm:last:odd:col-span-2">
-                    <CheckCircle size={18} weight="duotone" className="shrink-0 text-accent-strong" aria-hidden="true" />
+                    <CheckCircle size={18} weight="duotone" className="shrink-0 text-accent-text" aria-hidden="true" />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -389,7 +389,7 @@ export async function ServiceView({
                           href={link.href}
                           className="group flex flex-col gap-2 rounded-xl border border-foreground/10 p-6 outline-none transition-colors hover:border-foreground/20 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
-                          <span className="flex items-center justify-between gap-3 text-base font-semibold text-foreground group-hover:text-accent-strong">
+                          <span className="flex items-center justify-between gap-3 text-base font-semibold text-foreground group-hover:text-accent-text">
                             {link.label}
                             <ArrowRight
                               size={16}
@@ -458,13 +458,13 @@ export async function ServiceView({
             <div className="flex min-w-0 items-center gap-5 sm:gap-6">
               <span
                 aria-hidden="true"
-                className="hidden h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-background text-foreground/70 transition-colors duration-200 group-hover:border-accent/30 group-hover:text-accent-strong sm:flex"
+                className="hidden h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-background text-foreground/70 transition-colors duration-200 group-hover:border-accent/30 group-hover:text-accent-text sm:flex"
               >
                 <nextService.coverIcon size={30} weight="duotone" />
               </span>
               <div className="min-w-0">
                 <p className={LABEL}>{pageCopy.nextServiceLabel}</p>
-                <p className="mt-2 text-2xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong sm:text-4xl">
+                <p className="mt-2 text-2xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text sm:text-4xl">
                   {nextService.title}
                 </p>
               </div>

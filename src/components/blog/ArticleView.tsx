@@ -178,7 +178,7 @@ export function ArticleView({
                       <p className="mt-3 text-base leading-relaxed text-foreground/80 line-clamp-4">{author.description}</p>
                       <Link
                         href={authorPath(locale, author.slug)}
-                        className={cn("mt-4 inline-flex min-h-11 items-center gap-2 rounded-full text-sm font-semibold text-foreground hover:text-accent-strong", LINK_FOCUS)}
+                        className={cn("mt-4 inline-flex min-h-11 items-center gap-2 rounded-full text-sm font-semibold text-foreground hover:text-accent-text", LINK_FOCUS)}
                       >
                         {meta.authorProfile}
                         <ArrowRight size={16} aria-hidden="true" />
@@ -214,7 +214,7 @@ export function ArticleView({
                       <ArrowLeft size={14} aria-hidden="true" className="transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transform-none" />
                       {meta.prevLabel}
                     </span>
-                    <span className="text-lg font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong">{previous.title}</span>
+                    <span className="text-lg font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text">{previous.title}</span>
                   </Link>
                 ) : (
                   <span aria-hidden="true" className="hidden bg-background sm:block" />
@@ -225,7 +225,7 @@ export function ArticleView({
                       {meta.nextLabel}
                       <ArrowRight size={14} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transform-none" />
                     </span>
-                    <span className="text-lg font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-strong">{next.title}</span>
+                    <span className="text-lg font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text">{next.title}</span>
                   </Link>
                 )}
               </nav>
@@ -234,19 +234,19 @@ export function ArticleView({
         </section>
       )}
 
-      <section aria-labelledby="article-cta" className="bg-foreground px-6 py-20 text-background sm:py-24">
+      <section aria-labelledby="article-cta" className="bg-inverse px-6 py-20 text-on-inverse sm:py-24">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
             <h2 id="article-cta" className="text-3xl font-bold tracking-tight text-balance sm:text-4xl">
               {meta.ctaQuestion}
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-background/80">{meta.ctaDescription}</p>
+            <p className="mt-4 text-lg leading-relaxed text-on-inverse/80">{meta.ctaDescription}</p>
           </div>
           <Button
             href={contactHref}
             variant="accent"
             size="lg"
-            className="focus-visible:ring-offset-foreground"
+            className="focus-visible:ring-offset-inverse"
             data-contact-service={primaryServiceSlug}
           >
             {meta.ctaButton}

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
+import { readAppliedTheme, subscribeAppliedTheme } from "@/lib/themeStore";
 
 // Bogotá y los destinos desde los que ya se trabaja o se atiende. Son
 // coordenadas geográficas (lat, lon), no copy.
@@ -16,6 +17,26 @@ const DESTINATIONS: [number, number][] = [
 
 // Color de marca (#0089cd) en el espacio 0–1 que usa cobe.
 const BRAND: [number, number, number] = [0, 0.537, 0.804];
+
+// Paleta del globo por tema. cobe dibuja el planeta y los puntos con estos valores (0–1), no con CSS.
+// En oscuro el planeta se hunde a casi el color del fondo y los puntos de tierra pasan a un gris
+// claro; los marcadores de destino (casi negros en claro) pasan a claros para no desaparecer.
+const GLOBE_THEME = {
+  light: {
+    dark: 0,
+    baseColor: [1, 1, 1] as [number, number, number],
+    glowColor: [0.94, 0.96, 0.98] as [number, number, number],
+    destination: [0.04, 0.04, 0.04] as [number, number, number],
+    mapBrightness: 5,
+  },
+  dark: {
+    dark: 1,
+    baseColor: [0.42, 0.46, 0.54] as [number, number, number],
+    glowColor: [0.05, 0.11, 0.18] as [number, number, number],
+    destination: [0.93, 0.93, 0.93] as [number, number, number],
+    mapBrightness: 7,
+  },
+} as const;
 
 // phi en el que Bogotá queda casi de frente (centrada sería ≈6.0, de la proyección de cobe) y el
 // vaivén alrededor de ese punto: Bogotá y los arcos siempre quedan a la vista.
@@ -41,6 +62,10 @@ export function BogotaGlobe({ label, className }: { label: string; className?: s
   const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [ready, setReady] = useState(false);
+  // Tema aplicado ahora: al cambiar, el efecto destruye y recrea el globo con la otra paleta.
+  const appliedTheme = useSyncExternalStore(subscribeAppliedTheme, readAppliedTheme, () => "light" as const);
+  // Tras el primer arranque, un cambio de tema recrea el globo al instante (sin repetir la espera de reposo).
+  const hasStartedRef = useRef(false);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -68,6 +93,7 @@ export function BogotaGlobe({ label, className }: { label: string; className?: s
       try {
         const { default: createGlobe } = await import("cobe");
         if (cancelled) return;
+        const palette = GLOBE_THEME[appliedTheme];
         const size = Math.min(wrapper.clientWidth, 640);
         const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
         const globe = createGlobe(canvas, {
@@ -76,16 +102,16 @@ export function BogotaGlobe({ label, className }: { label: string; className?: s
           height: size * dpr,
           phi: PHI_FRONT,
           theta: 0.28,
-          dark: 0,
+          dark: palette.dark,
           diffuse: 1.25,
           mapSamples: 12000,
-          mapBrightness: 5,
-          baseColor: [1, 1, 1],
+          mapBrightness: palette.mapBrightness,
+          baseColor: palette.baseColor,
           markerColor: BRAND,
-          glowColor: [0.94, 0.96, 0.98],
+          glowColor: palette.glowColor,
           markers: [
             { location: BOGOTA, size: 0.09, color: BRAND },
-            ...DESTINATIONS.map((location) => ({ location, size: 0.035, color: [0.04, 0.04, 0.04] as [number, number, number] })),
+            ...DESTINATIONS.map((location) => ({ location, size: 0.035, color: palette.destination })),
           ],
           arcs: DESTINATIONS.map((to) => ({ from: BOGOTA, to })),
           arcColor: BRAND,
@@ -95,6 +121,7 @@ export function BogotaGlobe({ label, className }: { label: string; className?: s
         });
         destroy = globe.destroy;
         update = globe.update;
+        hasStartedRef.current = true;
         setReady(true);
         if (!reduced) frame = requestAnimationFrame(tick);
       } catch {
@@ -110,7 +137,8 @@ export function BogotaGlobe({ label, className }: { label: string; className?: s
           else void start();
         }, START_DELAY_MS);
       };
-      if (document.readyState === "complete") run();
+      if (hasStartedRef.current) void start();
+      else if (document.readyState === "complete") run();
       else window.addEventListener("load", run, { once: true });
     };
 
@@ -135,7 +163,7 @@ export function BogotaGlobe({ label, className }: { label: string; className?: s
       cancelAnimationFrame(frame);
       destroy?.();
     };
-  }, []);
+  }, [appliedTheme]);
 
   return (
     <div ref={wrapperRef} className={cn("relative mx-auto aspect-square w-full max-w-[34rem]", className)}>
@@ -143,7 +171,7 @@ export function BogotaGlobe({ label, className }: { label: string; className?: s
       <div
         aria-hidden="true"
         className={cn(
-          "absolute inset-[6%] rounded-full border border-foreground/10 bg-[radial-gradient(circle_at_35%_30%,#ffffff_0%,#f1f5f9_55%,#e2e8f0_100%)] transition-opacity duration-700 motion-reduce:transition-none",
+          "absolute inset-[6%] rounded-full border border-foreground/10 bg-[radial-gradient(circle_at_35%_30%,var(--surface-raised)_0%,var(--surface-sunken)_100%)] transition-opacity duration-700 motion-reduce:transition-none",
           ready && "opacity-0",
         )}
       />

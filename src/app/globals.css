@@ -253,22 +253,22 @@
 .skeleton {
   position: relative;
   overflow: hidden;
-  background: rgb(10 10 10 / 0.06);
+  background: color-mix(in srgb, var(--foreground) 6%, transparent);
 }
 .skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.65), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--background) 65%, transparent), transparent);
   animation: skeleton-sweep 1.5s var(--ease-in-out) infinite;
 }
-/* Sobre banda oscura (bg-foreground). */
+/* Sobre banda de contraste (bg-inverse). */
 .skeleton-dark {
-  background: rgb(255 255 255 / 0.08);
+  background: color-mix(in srgb, var(--on-inverse) 8%, transparent);
 }
 .skeleton-dark::after {
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.14), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--on-inverse) 14%, transparent), transparent);
 }
 @keyframes skeleton-sweep {
   to {
@@ -362,6 +362,31 @@
     animation: assemble-fill 700ms var(--ease-out) both;
     animation-delay: calc(var(--d, 0) * 1ms);
   }
+}
+
+/* Cambio de tema: el tema nuevo se revela como un círculo que crece desde el botón (ver
+   lib/themeStore.ts, que fija --theme-x/-y/-r y la clase mientras dura). Va más específico que
+   la regla de PageTransition (`animation: none` en root), así que no la pisa fuera de este caso.
+   `clip-path` en un pseudo-elemento de transición de vista se compone como una sola capa. */
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0 at var(--theme-x, 50%) var(--theme-y, 50%));
+  }
+  to {
+    clip-path: circle(var(--theme-r, 150vmax) at var(--theme-x, 50%) var(--theme-y, 50%));
+  }
+}
+html.theme-switching::view-transition-old(root),
+html.theme-switching::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation: none;
+}
+html.theme-switching::view-transition-old(root) {
+  z-index: 1;
+}
+html.theme-switching::view-transition-new(root) {
+  z-index: 2;
+  animation: theme-reveal 650ms var(--ease-out) both;
 }
 
 /* Transición de página: lo que sale se desvanece rápido y lo que entra sube 8 px. El Navbar,
