@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { verifyCronSecret } from "@/lib/cronAuth";
 import { fetchSearchAnalyticsSafe } from "@/lib/googleSearchConsole";
 import { upsertGscMetrics } from "@/lib/queries/seoMetrics";
+import { runAndStoreSeoHealth } from "@/lib/queries/seoHealth";
 import { logError } from "@/lib/logger";
 
 /**
@@ -19,6 +20,9 @@ import { logError } from "@/lib/logger";
  * captura esas correcciones sin duplicar filas ni necesitar lógica de
  * "reintentar solo lo que falló".
  */
+// La auditoría de salud técnica recorre todo el sitemap (ver seo-health).
+export const maxDuration = 300;
+
 export async function POST(request: Request) {
   const authError = verifyCronSecret(request);
   if (authError) return authError;
@@ -46,5 +50,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: "Fallo al ingerir métricas de Search Console." }, { status: 500 });
   }
 
-  return NextResponse.json({ success: true, rowsUpserted: upserted });
+  // Salud técnica: se audita el sitio publicado en la misma corrida diaria,
+  // para no exigir un segundo Render Cron Job. De mejor esfuerzo: un fallo
+  // aquí no debe invalidar la ingesta de Search Console que ya se guardó.
+  let health: { runId: number; canonicalErrors: number; pagesWithErrors: number } | null = null;
+  try {
+    const { runId, report } = await runAndStoreSeoHealth();
+    health = { runId, canonicalErrors: report.totals.canonicalErrors, pagesWithErrors: report.totals.withErrors };
+  } catch (error) {
+    logError("❌ [Cron SEO Pulse] la auditoría de salud técnica falló", error);
+  }
+
+  return NextResponse.json({ success: true, rowsUpserted: upserted, health });
 }

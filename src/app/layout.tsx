@@ -16,6 +16,7 @@ import {
   titleSuffix,
   whatsappHref,
 } from "@/lib/site";
+import { bogotaGeo, organizationSameAs } from "@/lib/organizationProfiles";
 import "./globals.css";
 
 const { homeTitle } = getSiteText("es");
@@ -123,13 +124,12 @@ function OrganizationJsonLd() {
     address: {
       "@type": "PostalAddress",
       "addressLocality": "Bogotá",
+      "addressRegion": "Bogotá D.C.",
       "addressCountry": "CO",
     },
+    geo: bogotaGeo,
     areaServed: ["CO", "MX", "CL", "PE", "EC", "PA", "AR", "UY", "US", "FR"],
-    sameAs: [
-      "https://facebook.com/skycodeagency/",
-      "https://instagram.com/skycode.agency/",
-    ],
+    sameAs: organizationSameAs,
     // Dos puntos de contacto declarados por separado, no uno con dos
     // canales: Schema.org modela cada canal como su propio ContactPoint.
     // El de WhatsApp existe para que el número quede asociado a la entidad

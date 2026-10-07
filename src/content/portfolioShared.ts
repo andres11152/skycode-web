@@ -1,6 +1,7 @@
 import { Buildings, Car, FlowArrow, Globe, Graph, House, Rocket, ShieldCheck, ShoppingCart, Truck } from "@phosphor-icons/react/ssr";
 import type { Icon } from "@phosphor-icons/react";
 import type { Locale } from "@/lib/i18n";
+import { textOrNull, withoutTodos } from "@/lib/todoPlaceholders";
 
 // Tipos + funciones puras del portafolio (sin ningún import de lib/db.ts
 // ni de lib/queries/portfolio.ts) — mismo criterio de separación que
@@ -92,6 +93,19 @@ export interface PortfolioProject {
   challenge: string;
   solution: string;
   results: string;
+  /**
+   * Capítulos del caso completo (migración 0041). Texto por idioma con el
+   * formato de `parseCaseText()`; `""` cuando no hay nada cargado (la vista
+   * oculta el capítulo entero). Pueden contener marcadores `{{TODO: …}}`:
+   * la vista pública los omite en producción, ver `lib/todoPlaceholders.ts`.
+   */
+  clientContext: string;
+  architecture: string;
+  process: string;
+  /** Testimonio en tres campos separados: cada uno se omite por su lado si falta o trae un marcador. */
+  testimonialQuote: string;
+  testimonialAuthor: string;
+  testimonialRole: string;
   capabilities: string[];
   technologies: PortfolioTechnology[];
   images: PortfolioImage[];
@@ -134,4 +148,86 @@ export function getProjectHostname(project: Pick<PortfolioProject, "slug" | "liv
 
 export function getPortfolioIcon(name: string): Icon {
   return PORTFOLIO_ICON_MAP[name] ?? Buildings;
+}
+
+export type CaseTextBlock = { type: "paragraph"; text: string } | { type: "list"; items: string[] };
+
+/**
+ * Convierte el texto de un capítulo del caso (campo de una sola caja en el
+ * panel) en bloques: párrafos separados por una línea en blanco y listas
+ * donde TODAS las líneas del bloque empiezan con `- `. Cada bloque (y cada
+ * viñeta) es un elemento independiente a propósito: la vista pública omite
+ * por separado los que contienen un marcador `{{TODO: …}}`, así que un dato
+ * pendiente nunca arrastra a los párrafos reales que lo rodean. Puro: lo
+ * usan la vista cliente, el editor y las pruebas.
+ */
+export function parseCaseText(text: string | null | undefined): CaseTextBlock[] {
+  if (!text) return [];
+  return text
+    .replace(/\r\n/g, "\n")
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter((block) => block.length > 0)
+    .map((block): CaseTextBlock => {
+      const lines = block.split("\n").map((line) => line.trim()).filter((line) => line.length > 0);
+      if (lines.length > 0 && lines.every((line) => line.startsWith("- "))) {
+        return { type: "list", items: lines.map((line) => line.slice(2).trim()).filter((item) => item.length > 0) };
+      }
+      return { type: "paragraph", text: lines.join(" ") };
+    });
+}
+
+/** Palabras del texto de un capítulo sin marcadores `{{TODO}}` (lo que realmente ve el visitante). */
+export function countCaseWords(text: string | null | undefined): number {
+  return parseCaseText(text)
+    .flatMap((block) => (block.type === "list" ? block.items : [block.text]))
+    .filter((chunk) => !chunk.includes("{{TODO"))
+    .reduce((total, chunk) => total + chunk.split(/\s+/).filter(Boolean).length, 0);
+}
+
+/**
+ * Bloques de un capítulo tal como los ve el visitante: sin los párrafos ni
+ * viñetas que contienen un marcador `{{TODO: …}}` (en desarrollo se muestran
+ * para poder revisarlos). Una lista cuyas viñetas se omiten todas desaparece.
+ */
+/** El mismo texto de capítulo sin los párrafos/viñetas con marcador `{{TODO}}` (en producción), listo para volver a `parseCaseText`. */
+export function stripCaseTodos(text: string | null | undefined): string {
+  return visibleCaseBlocks(text)
+    .map((block) => (block.type === "list" ? block.items.map((item) => `- ${item}`).join("\n") : block.text))
+    .join("\n\n");
+}
+
+/**
+ * Caso listo para la página pública: sin ningún marcador `{{TODO}}`. La vista
+ * ya los oculta al pintar, pero `ProjectView` es un componente cliente y sus
+ * props viajan en la carga RSC del HTML — sin esta limpieza el marcador
+ * quedaba visible en el código fuente de la página aunque no se viera.
+ */
+export function toPublicProject(project: PortfolioProject): PortfolioProject {
+  return {
+    ...project,
+    challenge: stripCaseTodos(project.challenge),
+    solution: stripCaseTodos(project.solution),
+    results: stripCaseTodos(project.results),
+    clientContext: stripCaseTodos(project.clientContext),
+    architecture: stripCaseTodos(project.architecture),
+    process: stripCaseTodos(project.process),
+    testimonialQuote: textOrNull(project.testimonialQuote) ?? "",
+    testimonialAuthor: textOrNull(project.testimonialAuthor) ?? "",
+    testimonialRole: textOrNull(project.testimonialRole) ?? "",
+    metrics: withoutTodos(project.metrics),
+  };
+}
+
+export function visibleCaseBlocks(text: string | null | undefined): CaseTextBlock[] {
+  const blocks = parseCaseText(text).map((block): CaseTextBlock =>
+    block.type === "list" ? { type: "list", items: withoutTodos(block.items) } : block
+  );
+  return withoutTodos(blocks.filter((block) => !(block.type === "list" && block.items.length === 0)));
+}
+
+/** Enlaces internos del caso, ya resueltos en el servidor (ver PortfolioCasePage). */
+export interface CaseRelatedLinks {
+  services: { slug: string; title: string; href: string }[];
+  posts: { slug: string; title: string; href: string }[];
 }

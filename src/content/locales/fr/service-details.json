@@ -68,7 +68,18 @@
         "href": "/fr/blog/outsourcing-software-latam-propiedad-codigo",
         "description": "Ce qu'il faut exiger dans le contrat et dans les dépôts pour que le logiciel vous appartienne vraiment."
       }
-    ]
+    ],
+    "colombia": {
+      "heading": "Développement de logiciels sur mesure en Colombie",
+      "paragraphs": [
+        "Depuis Bogotá, nous travaillons avec des entreprises de toute la Colombie dont l'activité repose encore sur des tableurs, des échanges de courriels et des outils génériques devenus trop étroits. Comme l'équipe partage votre fuseau horaire, les ateliers de cartographie des processus et les démos hebdomadaires se planifient sans décalage, et nous répondons à vos questions en moins de 24 heures ouvrées.",
+        "Le logiciel est conçu dès le premier jour avec le contexte local en tête : si vous traitez des données personnelles de clients ou de salariés, les droits par rôle, l'historique des modifications et les parcours pour répondre aux demandes des personnes concernées sont construits en phase avec la loi colombienne 1581 (Habeas Data). Les connexions avec ce que vous utilisez déjà sur place, comme les passerelles de paiement ou les outils comptables, sont prévues dès la cartographie initiale. Le paiement est réparti 50/50, les dépôts sont à votre nom dès le premier commit et vous bénéficiez de 90 jours de garantie technique."
+      ],
+      "facts": [
+        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de software a la medida}}",
+        "Délai habituel : {{TODO: tiempo típico de software a la medida}}"
+      ]
+    }
   },
   "desarrollo-aplicaciones-moviles": {
     "intro": [
@@ -130,7 +141,18 @@
         "question": "Qui est propriétaire de l'application sur les stores ?",
         "answer": "Vous. Nous publions sur vos comptes développeur Apple et Google, et nous vous remettons le code ainsi que le guide pour publier de nouvelles versions."
       }
-    ]
+    ],
+    "colombia": {
+      "heading": "Développement d'applications mobiles en Colombie",
+      "paragraphs": [
+        "En Colombie, une application métier s'utilise dans des conditions très éloignées d'une démo : techniciens dans des zones à couverture irrégulière, commerciaux en tournée entre les villes, clients qui l'ouvrent sur un téléphone d'entrée ou de milieu de gamme. Nous partons donc du contexte d'usage et décidons ce qui doit fonctionner hors connexion. Nous développons avec React Native, une seule base de code pour iOS et Android : chaque fonctionnalité est développée et testée une seule fois.",
+        "Nous accompagnons des entreprises de tout le pays en visioconférence et envoyons chaque semaine des versions de test installables pour que vos équipes de terrain les essaient en conditions réelles. Nous publions sur l'App Store et Google Play avec vos propres comptes développeur. Si l'application conserve des données personnelles de clients ou de collaborateurs, nous appliquons les principes de la loi colombienne 1581 (Habeas Data) : consentement, finalité définie et accès limité par rôle. Après le lancement, vous disposez de 90 jours de garantie technique."
+      ],
+      "facts": [
+        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de aplicaciones móviles}}",
+        "Délai habituel : {{TODO: tiempo típico de aplicaciones móviles}}"
+      ]
+    }
   },
   "apis-integraciones": {
     "intro": [
@@ -201,7 +223,18 @@
         "href": "/fr/blog/buenas-practicas-apis-rest",
         "description": "Versionnage, idempotence, gestion des erreurs et autres choix qui évitent les pannes."
       }
-    ]
+    ],
+    "colombia": {
+      "heading": "Développement d'intégrations et d'API en Colombie",
+      "paragraphs": [
+        "Les intégrations courantes dans les entreprises colombiennes tournent autour des mêmes points : passerelles de paiement comme Wompi, PayU ou Mercado Pago, logiciels comptables comme Siigo ou Alegra, ERP comme SAP et l'API WhatsApp Cloud pour les notifications et le service client. Depuis Bogotá, nous relions ces systèmes à votre plateforme pour des entreprises de tout le pays : un paiement approuvé, une facture ou une commande circulent seuls, sans que personne les recopie d'un écran à l'autre.",
+        "Chaque intégration est conçue pour échouer sans dégât : idempotence, nouvelles tentatives à délai progressif, signature des webhooks vérifiée et journal de chaque événement. Ces flux transportant des données clients, nous appliquons les principes de la loi colombienne 1581 (Habeas Data) : seul le nécessaire circule, avec des identifiants chiffrés et des droits minimaux par intégration. Les identifiants et les accès restent sous vos comptes, et vous suivez l'avancement dans un environnement de test chaque semaine."
+      ],
+      "facts": [
+        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de integraciones y APIs}}",
+        "Délai habituel : {{TODO: tiempo típico de integraciones y APIs}}"
+      ]
+    }
   },
   "frontend-alto-rendimiento": {
     "intro": [
@@ -264,7 +297,18 @@
         "question": "Pourrai-je modifier le contenu sans développeur ?",
         "answer": "Oui. Lorsque le projet le nécessite, nous intégrons un back-office de contenu pour que votre équipe publie et modifie sans toucher au code."
       }
-    ]
+    ],
+    "colombia": {
+      "heading": "Développement web haute performance en Colombie",
+      "paragraphs": [
+        "Pour une entreprise colombienne, le site est souvent la première vitrine face à des clients qui arrivent depuis leur téléphone. Depuis Bogotá, nous développons des sites et des applications web avec Next.js et React, pensés dès l'architecture pour charger vite, rester accessibles et bien se positionner sur Google. Nous mesurons avec Lighthouse et les Core Web Vitals sur la version publiée, pas sur un environnement de développement qui donne des chiffres trompeurs.",
+        "Nous travaillons avec des entreprises de tout le pays. Si votre site est déjà bien positionné, la refonte est planifiée pour conserver les URL qui amènent aujourd'hui des visiteurs ou pour configurer des redirections permanentes, et si vous vendez hors de Colombie, nous préparons des versions linguistiques bien indexées. Les formulaires qui collectent des données de visiteurs affichent l'autorisation de traitement et la politique, comme l'exige la loi colombienne 1581 (Habeas Data). Le code et les dépôts sont à votre nom, et vous recevez un point d'avancement chaque semaine."
+      ],
+      "facts": [
+        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de webs y aplicaciones web de alto rendimiento}}",
+        "Délai habituel : {{TODO: tiempo típico de webs y aplicaciones web de alto rendimiento}}"
+      ]
+    }
   },
   "ecommerce-tienda-online": {
     "intro": [
@@ -325,7 +369,18 @@
         "question": "Puis-je migrer mes produits et mes clients depuis ma boutique actuelle ?",
         "answer": "Oui. Nous reprenons le catalogue, les clients et l'historique des commandes, et configurons des redirections pour ne pas perdre le référencement des fiches produit."
       }
-    ]
+    ],
+    "colombia": {
+      "heading": "Développement e-commerce et boutiques en ligne en Colombie",
+      "paragraphs": [
+        "En Colombie, une boutique en ligne se joue au moment du paiement : quels moyens de paiement elle propose, à quelle vitesse elle confirme le règlement et comment elle se connecte aux stocks et aux expéditions. Depuis Bogotá, nous construisons des boutiques sur mesure pour des entreprises de tout le pays, avec des passerelles comme Wompi, PayU, Mercado Pago ou Stripe, une confirmation de paiement vérifiée côté serveur et un stock synchronisé avec votre système ou votre entrepôt, sans commission par vente d'une plateforme tierce.",
+        "Si vous vendez aujourd'hui sur une plateforme générique, nous migrons catalogue, clients et historique de commandes, et nous configurons des redirections pour que vos fiches produit gardent leur référencement. Une boutique conservant des données personnelles d'acheteurs, l'inscription et le paiement sont conçus avec une autorisation de traitement et des parcours pour répondre aux demandes des personnes concernées, conformément à la loi colombienne 1581 (Habeas Data). Le paiement est réparti 50/50, le code est 100 % à vous et vous bénéficiez de 90 jours de garantie technique."
+      ],
+      "facts": [
+        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de e-commerce y tiendas en línea}}",
+        "Délai habituel : {{TODO: tiempo típico de e-commerce y tiendas en línea}}"
+      ]
+    }
   },
   "seguridad-cumplimiento": {
     "intro": [
@@ -395,7 +450,18 @@
         "href": "/fr/blog/ley-1581-guia-tecnica-software",
         "description": "Les exigences de la loi traduites en décisions de développement concrètes."
       }
-    ]
+    ],
+    "colombia": {
+      "heading": "Sécurité et conformité à la loi 1581 en Colombie",
+      "paragraphs": [
+        "La loi colombienne 1581 de 2012 (Habeas Data) impose à toute personne qui traite des données personnelles en Colombie d'obtenir une autorisation, de limiter la finalité et de répondre aux demandes des personnes concernées ; la Surintendance de l'Industrie et du Commerce veille à son application. Depuis Bogotá, nous aidons des entreprises de tout le pays à traduire ces principes en mesures techniques concrètes : contrôle d'accès par rôle, chiffrement, journal d'audit et parcours pour traiter les demandes d'accès, de rectification et de suppression.",
+        "Si votre entreprise sert aussi des utilisateurs en Europe, nous alignons les contrôles sur le RGPD, qui partage des principes comme le consentement, la minimisation et les droits des personnes, et nous prenons l'OWASP Top 10 comme référence pour auditer le code. L'audit fonctionne de la même façon sur des systèmes que nous n'avons pas construits. Nous ne sommes pas un organisme de certification : nous livrons les mesures mises en place et leur documentation comme preuve lors d'un audit ou d'une demande officielle. Nous travaillons avec un point d'avancement hebdomadaire et répondons en moins de 24 heures ouvrées."
+      ],
+      "facts": [
+        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de seguridad y cumplimiento}}",
+        "Délai habituel : {{TODO: tiempo típico de seguridad y cumplimiento}}"
+      ]
+    }
   },
   "arquitectura-documentacion": {
     "intro": [
@@ -470,7 +536,18 @@
         "href": "/fr/blog/deuda-tecnica-como-detectarla",
         "description": "Pourquoi un système sans documentation accumule plus vite de la dette technique."
       }
-    ]
+    ],
+    "colombia": {
+      "heading": "Documentation et passation technique de logiciels en Colombie",
+      "paragraphs": [
+        "Cas fréquent avec les systèmes hérités : le domaine, le dépôt ou le serveur du logiciel sont au nom d'un prestataire ou d'un développeur qui ne travaille plus avec l'entreprise. Depuis Bogotá, nous aidons des entreprises de tout le pays à dresser cet inventaire, à transférer chaque actif vers des comptes que votre entreprise contrôle et à documenter la construction du système, sans interrompre ce qui tourne déjà en production.",
+        "Le résultat est un système que votre équipe, ou tout autre prestataire, peut maintenir : schémas d'architecture, inventaire des services et des variables d'environnement, déploiements automatisés et guides d'exploitation dans le dépôt lui-même. Si votre entreprise répond de données personnelles au titre de la loi colombienne 1581 (Habeas Data), savoir où elles se trouvent, qui y accède et comment les restaurer fait aussi partie de l'inventaire. Nous animons des séances de passation en visioconférence avec votre équipe technique jusqu'à ce qu'elle soit autonome, et nous répondons en moins de 24 heures ouvrées."
+      ],
+      "facts": [
+        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de documentación y transferencia técnica}}",
+        "Délai habituel : {{TODO: tiempo típico de documentación y transferencia técnica}}"
+      ]
+    }
   },
   "migracion-datos-legacy": {
     "intro": [
@@ -563,7 +640,18 @@
         "href": "/fr/blog/deuda-tecnica-como-detectarla",
         "description": "Les signes que votre système actuel est déjà en train de devenir un système legacy."
       }
-    ]
+    ],
+    "colombia": {
+      "heading": "Migration et modernisation de systèmes legacy en Colombie",
+      "paragraphs": [
+        "De nombreuses entreprises colombiennes fonctionnent encore sur un ERP sur mesure vieux de plus de dix ans, une application de bureau ou des classeurs Excel qui portent la facturation et les stocks. Depuis Bogotá, nous migrons ces systèmes par phases pour des entreprises de tout le pays : l'ancien système continue de tourner en parallèle pendant que le nouveau prend le relais module par module, avec des données synchronisées et une réconciliation avant chaque bascule, sans arrêt le week-end.",
+        "Une migration est aussi un sujet de données personnelles : avant de déplacer quoi que ce soit, nous auditons les informations sensibles existantes et leur emplacement, et la nouvelle base est livrée avec chiffrement, contrôle d'accès et audit alignés sur la loi colombienne 1581 (Habeas Data). Les enregistrements que la loi oblige à conserver pour des raisons comptables ou fiscales peuvent rester dans une archive en lecture seule, sans être chargés dans le nouveau système. Le code et les scripts de migration vous appartiennent dès le premier jour, et vous bénéficiez de 90 jours de garantie technique après la bascule finale."
+      ],
+      "facts": [
+        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de migración de datos y sistemas legacy}}",
+        "Délai habituel : {{TODO: tiempo típico de migración de datos y sistemas legacy}}"
+      ]
+    }
   },
   "inteligencia-artificial-aplicada": {
     "intro": [
@@ -626,6 +714,17 @@
         "question": "Mes données doivent-elles être organisées avant de commencer ?",
         "answer": "Pas forcément. Préparer et structurer l'information fait partie du travail. La preuve de concept révèle rapidement si la qualité des données est suffisante ou s'il faut d'abord les retravailler."
       }
-    ]
+    ],
+    "colombia": {
+      "heading": "Développement d'intelligence artificielle appliquée en Colombie",
+      "paragraphs": [
+        "L'intelligence artificielle utile dans une entreprise colombienne résout une tâche précise : répondre sur WhatsApp avec les informations réelles de l'entreprise, extraire les données de factures et de bons de commande scannés, ou chercher dans les manuels et les politiques internes. Depuis Bogotá, nous accompagnons des entreprises de tout le pays et commençons toujours par un cas d'usage restreint, avec un indicateur clair et une preuve de concept sur vos propres documents avant d'investir dans la version complète.",
+        "Les données qui alimentent un modèle contiennent souvent des informations sur les clients ; nous appliquons donc la loi colombienne 1581 (Habeas Data) dès la conception : seul le strict nécessaire est transmis au modèle, nous utilisons des fournisseurs et des réglages qui n'entraînent pas leurs modèles sur les données reçues par API, et nous documentons les informations qui quittent votre infrastructure. Aux points critiques, une personne relit et valide ce que propose l'IA. Vous voyez des résultats dans un environnement de test chaque semaine et nous répondons en moins de 24 heures ouvrées."
+      ],
+      "facts": [
+        "Investissement indicatif (COP) : {{TODO: rango de precio en COP de inteligencia artificial aplicada}}",
+        "Délai habituel : {{TODO: tiempo típico de inteligencia artificial aplicada}}"
+      ]
+    }
   }
 }

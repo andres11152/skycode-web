@@ -56,16 +56,8 @@ export function getPostTopic(post: Pick<BlogPost, "slug" | "tags" | "title">): B
   return TOPIC_KEYWORDS.find(([pattern]) => pattern.test(haystack))?.[1] ?? "code";
 }
 
-/**
- * Servicio de `content/services.ts` que respalda el tema de cada post — solo
- * donde la relación es real. Un post sin servicio claro (ej. el de costos
- * de nube, que no corresponde a ninguno de los 9) no muestra la tarjeta en
- * vez de forzar una. Mismo criterio que `SERVICE_PROJECT_SLUGS`.
- */
-export const POST_SERVICE_SLUGS: Record<string, string> = {
-  "ley-1581-guia-tecnica-software": "seguridad-cumplimiento",
-  "deuda-tecnica-como-detectarla": "migracion-datos-legacy",
-  "buenas-practicas-apis-rest": "apis-integraciones",
-  "outsourcing-software-latam-propiedad-codigo": "arquitectura-documentacion",
-  "migracion-sistemas-legados-sin-interrupcion": "migracion-datos-legacy",
-};
+// El servicio (o servicios) que respalda cada post vive en
+// `content/relatedContent.ts` (`getRelatedServiceSlugsForPost`): una sola
+// tabla de la que se deriva también el bloque inverso de cada servicio.
+// Antes había aquí un `POST_SERVICE_SLUGS` con un único servicio por post;
+// se eliminó para que las dos tablas no se contradigan.

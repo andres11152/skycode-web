@@ -37,6 +37,7 @@ import { randomUUID } from "node:crypto";
 import sharp from "sharp";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
+import { revalidatePublicSite } from "./lib/revalidatePublic.mjs";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
 
@@ -111,7 +112,7 @@ function loadProjects(locale) {
   return raw.items;
 }
 
-// Catálogo de tecnologías reales usadas por estos 5 casos — el resto de
+// Catálogo de tecnologías reales usadas por estos casos — el resto de
 // cada `tags[]` original (capacidades de negocio, no stack técnico) se
 // migra a `capabilities`, ver PROJECT_CONFIG abajo. slugs verificados
 // contra node_modules/simple-icons/icons/ antes de escribir esto.
@@ -120,6 +121,14 @@ const TECHNOLOGIES = [
   { slug: "postgresql", name: "PostgreSQL", category: "database", iconSource: "simple-icons", iconRef: "postgresql" },
   { slug: "nodedotjs", name: "Node.js", category: "backend", iconSource: "simple-icons", iconRef: "nodedotjs" },
   { slug: "whatsapp", name: "WhatsApp", category: "integration", iconSource: "simple-icons", iconRef: "whatsapp" },
+  // Racing Bike 1998 (stack documentado en su README: WordPress + WooCommerce, tema Sage 11 con
+  // Blade/Acorn, Tailwind CSS v4, Vite, Docker). Mismos slug/categoría que seed-portfolio-technologies.mjs.
+  { slug: "wordpress", name: "WordPress", category: "other", iconSource: "simple-icons", iconRef: "wordpress" },
+  { slug: "woocommerce", name: "WooCommerce", category: "other", iconSource: "simple-icons", iconRef: "woocommerce" },
+  { slug: "php", name: "PHP", category: "backend", iconSource: "simple-icons", iconRef: "php" },
+  { slug: "tailwindcss", name: "Tailwind CSS", category: "frontend", iconSource: "simple-icons", iconRef: "tailwindcss" },
+  { slug: "vite", name: "Vite", category: "frontend", iconSource: "simple-icons", iconRef: "vite" },
+  { slug: "docker", name: "Docker", category: "infra", iconSource: "simple-icons", iconRef: "docker" },
 ];
 
 // Índices de `tags[]` (mismo orden/cantidad en los 3 locales) que SÍ son
@@ -130,7 +139,7 @@ const PROJECT_CONFIG = {
   servifuturo: { technologySlugs: ["nextdotjs", "nodedotjs", "postgresql"], capabilityTagIndexes: [0, 1], isFeatured: false },
   "equilibrio-arquitectonico": { technologySlugs: ["nextdotjs"], capabilityTagIndexes: [0, 1, 2], isFeatured: false },
   "cda-revifull": { technologySlugs: ["whatsapp", "nextdotjs"], capabilityTagIndexes: [0, 1], isFeatured: false },
-  moncyre: { technologySlugs: ["nextdotjs"], capabilityTagIndexes: [0, 1, 2], isFeatured: false },
+  racingbike: { technologySlugs: ["wordpress", "woocommerce", "php", "tailwindcss", "vite", "docker"], capabilityTagIndexes: [0, 1, 2], isFeatured: false },
 };
 
 const pool = new Pool({
@@ -262,3 +271,6 @@ try {
 } finally {
   await pool.end();
 }
+
+// Los cambios de este script no pasan por un Route Handler del sitio: se pide invalidar la caché pública.
+if (!process.argv.includes("--dry-run") && !process.exitCode) await revalidatePublicSite();

@@ -19,10 +19,14 @@
     "liveSite": "Sitio en vivo",
     "visitSite": "Visitar sitio",
     "stack": "Stack tecnológico",
-    "challenge": "El reto",
+    "context": "Contexto del cliente",
+    "challenge": "El problema",
     "solution": "La solución",
+    "architecture": "Arquitectura y stack",
+    "process": "Proceso y tiempos",
     "results": "Los resultados",
     "metrics": "Resultados en cifras",
+    "testimonial": "Lo que dice el cliente",
     "gallery": "Capturas de la plataforma",
     "galleryPrev": "Capturas anteriores",
     "galleryNext": "Capturas siguientes",
@@ -47,6 +51,14 @@
       "next": "Imagen siguiente",
       "zoomIn": "Acercar",
       "zoomOut": "Alejar"
+    },
+    "related": {
+      "title": "Para profundizar",
+      "service": "Servicio aplicado en este caso",
+      "services": "Servicios aplicados en este caso",
+      "posts": "Artículos relacionados",
+      "bogotaLead": "Trabajamos desde Bogotá, Colombia.",
+      "bogotaLabel": "Desarrollo de software en Bogotá"
     }
   },
   "breadcrumb": {
@@ -55,6 +67,7 @@
     "portfolio": "Portafolio"
   },
   "meta": {
-    "indexTitle": "Casos de éxito de software a medida"
+    "indexTitle": "Casos de éxito de software a medida",
+    "caseTitleSuffix": "Caso de estudio"
   }
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TeamView } from "@/components/team/TeamView";
+import { TeamJsonLd } from "@/components/team/TeamJsonLd";
 import { buildTeamMetadata } from "@/lib/teamMetadata";
 import { getPublishedTeamProfiles } from "@/lib/queries/teamProfiles";
 
@@ -12,5 +13,10 @@ export const metadata: Metadata = buildTeamMetadata("fr");
 
 export default async function TeamPageFr() {
   const members = await getPublishedTeamProfiles("fr");
-  return <TeamView locale="fr" members={members} />;
+  return (
+    <>
+      <TeamJsonLd members={members} locale="fr" />
+      <TeamView locale="fr" members={members} />
+    </>
+  );
 }

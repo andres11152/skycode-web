@@ -37,6 +37,7 @@ const TECHNOLOGIES = [
   { slug: "astro", name: "Astro", category: "frontend" },
   { slug: "remix", name: "Remix", category: "frontend" },
   { slug: "tailwindcss", name: "Tailwind CSS", category: "frontend" },
+  { slug: "vite", name: "Vite", category: "frontend" },
   { slug: "html5", name: "HTML5", category: "frontend" },
   { slug: "css", name: "CSS", category: "frontend" },
 

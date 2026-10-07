@@ -1,0 +1,342 @@
+{
+  "meta": {
+    "title": "Desarrollo de Software en Bogotá, Colombia",
+    "description": "Desarrollo de software a la medida en Bogotá: plataformas, apps, integraciones y e-commerce con código 100% tuyo, 90 días de garantía y pago 50/50."
+  },
+  "breadcrumb": {
+    "home": "Inicio",
+    "aria": "Ruta de navegación",
+    "current": "Desarrollo de software en Bogotá"
+  },
+  "hero": {
+    "eyebrow": "Software a la medida · Bogotá, Colombia",
+    "h1": "Desarrollo de software a la medida en Bogotá",
+    "lead": "SkyCode Agency es un equipo de ingeniería con base en Bogotá que construye plataformas web, aplicaciones móviles, integraciones y tiendas en línea para empresas. El código es tuyo desde el primer día, ves avances reales cada semana y hablas directo con los ingenieros que programan tu proyecto.",
+    "ctaPrimary": "Hablar con un ingeniero",
+    "ctaSecondary": "Escribir por WhatsApp",
+    "factsLabel": "Compromisos que ya son públicos",
+    "facts": [
+      {
+        "label": "Código 100% tuyo",
+        "text": "Repositorios y accesos a tu nombre desde el primer día."
+      },
+      {
+        "label": "90 días de garantía",
+        "text": "Correcciones técnicas sin costo después del lanzamiento."
+      },
+      {
+        "label": "Pago 50/50",
+        "text": "50% al firmar y 50% al recibir el proyecto funcionando."
+      },
+      {
+        "label": "Avances semanales",
+        "text": "Un entorno privado para probar cada entrega."
+      },
+      {
+        "label": "Respuesta en menos de 24 h hábiles",
+        "text": "Tu consulta la revisa un ingeniero, no un bot."
+      }
+    ]
+  },
+  "tocLabel": "En esta página",
+  "about": {
+    "id": "que-hacemos",
+    "tocLabel": "Qué hacemos",
+    "heading": "Qué hacemos: ingeniería de software para la operación real de tu empresa",
+    "paragraphs": [
+      "Diseñamos y desarrollamos software a partir de cómo trabaja de verdad tu empresa: los flujos, las aprobaciones, los reportes y los sistemas que ya usas. No partimos de una plantilla ni de un producto genérico al que haya que adaptarse. Partimos de tu proceso y construimos encima la herramienta que lo hace más rápido, más seguro y más fácil de auditar.",
+      "Trabajamos con empresas de Bogotá y de otras ciudades y países. Operamos desde Colombia con empresas internacionales y atendemos en español, inglés y francés. Para quien busca una empresa de desarrollo de software en Bogotá, eso significa un equipo con base en la ciudad, que habla tu idioma y conoce tu contexto de negocio, y que aplica las mismas prácticas de ingeniería con las que trabaja para clientes de fuera del país."
+    ],
+    "pillars": [
+      {
+        "title": "Software que te pertenece",
+        "text": "Los repositorios, la base de datos y los despliegues quedan a tu nombre. No hay licencias por usuario ni mensualidades forzadas: si mañana decides continuar con otro equipo o con tu área interna, puedes hacerlo sin ninguna traba."
+      },
+      {
+        "title": "Contacto directo con ingenieros",
+        "text": "Durante el desarrollo hablas con quienes programan, sin intermediarios. Cuando nos escribes por primera vez, tu consulta la revisa directamente Andrés, César o Ximena."
+      },
+      {
+        "title": "Contexto local",
+        "text": "Conocemos las pasarelas y herramientas que usan las empresas colombianas, como Wompi, PayU, Siigo, Alegra y WhatsApp Business, y la normativa de datos que aplica aquí, la Ley 1581, junto con marcos internacionales como el RGPD."
+      },
+      {
+        "title": "Un huso horario estable",
+        "text": "Colombia no cambia de hora durante el año, así que la diferencia con tu zona horaria es siempre la misma y las reuniones de seguimiento no se desfasan en las temporadas de cambio de horario."
+      }
+    ]
+  },
+  "services": {
+    "id": "servicios",
+    "tocLabel": "Servicios",
+    "heading": "Servicios de desarrollo de software que ofrecemos en Bogotá",
+    "intro": "Cubrimos el ciclo completo, desde el diseño de la arquitectura hasta la publicación y la transferencia. Cada servicio tiene su propia página con alcance, entregables y preguntas frecuentes; aquí tienes un resumen de cómo los aplicamos.",
+    "items": [
+      {
+        "slug": "desarrollo-software-medida",
+        "anchor": "Software y plataformas a la medida",
+        "text": "CRM, portales de clientes, sistemas de gestión y herramientas internas modeladas sobre tus procesos, sin licencias por usuario."
+      },
+      {
+        "slug": "desarrollo-aplicaciones-moviles",
+        "anchor": "Aplicaciones móviles para iOS y Android",
+        "text": "Apps con React Native y modo offline para clientes o personal de campo, con publicación en App Store y Google Play."
+      },
+      {
+        "slug": "apis-integraciones",
+        "anchor": "Integraciones y APIs con pasarelas, ERP y WhatsApp",
+        "text": "Conectamos tu software con Wompi, PayU, Stripe, Siigo, Alegra, SAP y la API de WhatsApp para eliminar la digitación repetida."
+      },
+      {
+        "slug": "frontend-alto-rendimiento",
+        "anchor": "Sitios y aplicaciones web de alto rendimiento",
+        "text": "Next.js y React con tiempos de carga mínimos, accesibilidad y una arquitectura técnica pensada para posicionar en buscadores."
+      },
+      {
+        "slug": "ecommerce-tienda-online",
+        "anchor": "Tiendas en línea y e-commerce a la medida",
+        "text": "Catálogo con variantes y stock, checkout ágil con pasarelas locales e internacionales y envíos integrados, sin comisiones abusivas por venta."
+      },
+      {
+        "slug": "seguridad-cumplimiento",
+        "anchor": "Seguridad y cumplimiento de protección de datos",
+        "text": "Cifrado, control de accesos por rol, auditorías preventivas según OWASP y cumplimiento de la Ley 1581 y del RGPD."
+      },
+      {
+        "slug": "arquitectura-documentacion",
+        "anchor": "Documentación y transferencia técnica",
+        "text": "Repositorios, variables de entorno y diagramas de arquitectura para que cualquier equipo pueda continuar el código."
+      },
+      {
+        "slug": "migracion-datos-legacy",
+        "anchor": "Migración y modernización de sistemas legados",
+        "text": "Migración por fases desde sistemas obsoletos, archivos XML o planillas dispersas, sin interrumpir tu operación."
+      },
+      {
+        "slug": "inteligencia-artificial-aplicada",
+        "anchor": "Inteligencia artificial aplicada al negocio",
+        "text": "Asistentes para WhatsApp, extracción de datos desde facturas y búsqueda semántica sobre la base de conocimiento de tu empresa."
+      }
+    ],
+    "allLabel": "Ver todos los servicios"
+  },
+  "cases": {
+    "id": "casos",
+    "tocLabel": "Casos reales",
+    "heading": "Casos reales: software que ya está en operación",
+    "intro": "Estos cinco proyectos están publicados en nuestro portafolio, con capturas y detalle técnico. Aquí los resumimos solo con lo que ya es público, para que puedas evaluar el tipo de trabajo antes de escribirnos.",
+    "caseLabel": "Caso",
+    "items": [
+      {
+        "slug": "sentry-crm",
+        "name": "Sentry CRM",
+        "sector": "CRM omnicanal con inteligencia artificial",
+        "text": "Plataforma multi-inquilino que centraliza las conversaciones de WhatsApp Business, delega respuestas a asistentes con IA y muestra el embudo de ventas en tiempo real sin salir del chat. Combina desarrollo a la medida, integración con la WhatsApp Cloud API e inteligencia artificial aplicada, sobre Next.js y PostgreSQL."
+      },
+      {
+        "slug": "servifuturo",
+        "name": "ServiFuturo",
+        "sector": "Logística y transporte corporativo",
+        "text": "Sistema de despacho y monitoreo para transporte empresarial: seguimiento en vivo, liquidación automática de planillas, control de conductores y trazabilidad para auditorías. Un ejemplo de software a la medida para una operación logística."
+      },
+      {
+        "slug": "equilibrio-arquitectonico",
+        "name": "Equilibrio Arquitectónico",
+        "sector": "Sitio web y catálogo digital",
+        "text": "Portal corporativo para proyectos residenciales y comerciales en vidrio y aluminio, optimizado para captar cotizaciones directas y posicionar en Google. Un ejemplo de web de alto rendimiento con foco en SEO."
+      },
+      {
+        "slug": "cda-revifull",
+        "name": "CDA Revifull",
+        "sector": "Agendamiento en línea",
+        "text": "Portal de agendamiento para la revisión técnico-mecánica de vehículos y motos en Bogotá, con recordatorios automáticos y cotización directa por WhatsApp."
+      },
+      {
+        "slug": "racingbike",
+        "name": "Racing Bike 1998",
+        "sector": "E-commerce de ciclismo en Bogotá",
+        "text": "Tienda en línea de una tienda de ciclismo de Bogotá activa desde 1998: catálogo de bicicletas, componentes y accesorios con filtros por precio, marca y talla, guía para elegir la talla, pagos con PSE, tarjeta y Addi y envíos a todo el país."
+      }
+    ],
+    "allLabel": "Ver todo el portafolio"
+  },
+  "process": {
+    "id": "proceso",
+    "tocLabel": "Proceso de trabajo",
+    "heading": "Cómo trabajamos: del diagnóstico a la transferencia",
+    "intro": "Sin sorpresas ni tecnicismos confusos: sabes qué pasa con tu dinero y con tu proyecto en cada etapa. Así es el proceso, de principio a fin.",
+    "steps": [
+      {
+        "title": "Charlamos y aterrizamos tu idea",
+        "text": "Nos cuentas qué necesitas resolver y evaluamos la viabilidad técnica. Recibes un plan claro y un presupuesto honesto, sin compromiso."
+      },
+      {
+        "title": "Hoja de ruta, contrato y 50% inicial",
+        "text": "Definimos fechas exactas y firmamos contrato. Iniciamos el desarrollo con el 50% de anticipo y con los repositorios a tu nombre desde el primer día."
+      },
+      {
+        "title": "Avances reales cada semana en un entorno privado",
+        "text": "Cada semana tienes un enlace privado donde pruebas lo construido y das retroalimentación directa a los ingenieros. Así corriges el rumbo cuando es barato hacerlo y no al final del proyecto."
+      },
+      {
+        "title": "Lanzamiento, 50% final y transferencia",
+        "text": "El saldo se abona solo cuando todo está probado, funcionando en tus servidores y con tu visto bueno definitivo. Entregamos repositorios, variables de entorno y diagramas de arquitectura para que tu equipo continúe con autonomía."
+      }
+    ],
+    "closing": [
+      "Después del lanzamiento tienes 90 días de garantía de estabilidad técnica: si aparece un error o algo no se comporta como se acordó, lo corregimos sin costo adicional. Si quieres acompañamiento más allá de ese periodo, puedes contratar un mantenimiento con SLA a la medida; es opcional y lo decides tú.",
+      "Los clientes también cuentan con un portal donde ven el avance de sus proyectos y entregables (y pueden aprobarlos o dejar comentarios), consultan y descargan facturas y documentos, y abren solicitudes de soporte. El detalle de esta metodología está en la página de [documentación y transferencia técnica](/servicios/arquitectura-documentacion)."
+    ]
+  },
+  "compliance": {
+    "id": "ley-1581",
+    "tocLabel": "Ley 1581",
+    "heading": "Cumplimiento de la Ley 1581 y protección de datos personales",
+    "intro": "Si tu software guarda datos de personas, ya sean clientes, empleados o usuarios, en Colombia aplica la Ley 1581 de 2012 de protección de datos personales, cuya autoridad es la Superintendencia de Industria y Comercio. Si además atiendes a personas en Europa, el RGPD suma obligaciones parecidas. No es un trámite posterior al desarrollo: lo resolvemos desde la arquitectura.",
+    "principles": [
+      {
+        "title": "Autorización y finalidad",
+        "text": "El tratamiento de datos parte de una autorización previa y se limita a la finalidad informada. En el software eso se traduce en formularios con aceptación expresa y en conservar constancia de lo que cada persona aceptó."
+      },
+      {
+        "title": "Derechos del titular",
+        "text": "Las personas pueden conocer, actualizar, rectificar y suprimir sus datos. Diseñamos los procesos y las pantallas para atender esas solicitudes sin depender de consultas manuales a la base de datos."
+      },
+      {
+        "title": "Seguridad y confidencialidad",
+        "text": "Cifrado de datos sensibles en reposo y en tránsito, control de acceso por roles y auditorías preventivas de las vulnerabilidades más comunes según OWASP."
+      },
+      {
+        "title": "Trazabilidad",
+        "text": "Registros de auditoría sobre quién accedió a qué y quién modificó qué, para poder responder ante una consulta de un titular o ante un incidente."
+      }
+    ],
+    "closing": "Cumplir la norma depende también de las políticas y procedimientos de tu organización, que no son solo código. Nosotros nos ocupamos de la parte técnica y no sustituimos el concepto de un abogado. Para profundizar, lee la [guía técnica de la Ley 1581 para equipos de software](/blog/ley-1581-guia-tecnica-software) o conoce el servicio de [seguridad y protección de datos](/servicios/seguridad-cumplimiento)."
+  },
+  "pricing": {
+    "id": "precios",
+    "tocLabel": "Precios en COP",
+    "heading": "Cuánto cuesta desarrollar software a la medida en Bogotá",
+    "intro": "No publicamos una tarifa única porque dos proyectos con el mismo nombre pueden tener alcances muy distintos. Lo que sí podemos decirte con claridad es qué mueve el precio y cómo se paga.",
+    "factorsHeading": "Qué determina el precio",
+    "factors": [
+      "El alcance funcional: cuántos módulos, roles de usuario y pantallas necesita la primera versión.",
+      "Las integraciones: cada conexión con una pasarela de pago, un ERP, un sistema contable o WhatsApp suma trabajo de desarrollo y de pruebas.",
+      "El tipo de plataforma: una web, una aplicación móvil para iOS y Android, o una combinación de ambas.",
+      "La migración de datos: llevar información histórica desde planillas o sistemas antiguos exige limpieza y validación.",
+      "El ritmo de entrega, que también cambia la inversión y el tiempo aproximados que calcula nuestro cotizador."
+    ],
+    "rangesHeading": "Rangos de referencia en pesos colombianos (COP)",
+    "rows": [
+      {
+        "label": "Sitio web corporativo o catálogo digital",
+        "value": "{{TODO: rango de precio en COP de un sitio web corporativo}}"
+      },
+      {
+        "label": "Tienda en línea (e-commerce)",
+        "value": "{{TODO: rango de precio en COP de una tienda en línea}}"
+      },
+      {
+        "label": "Software a la medida: primer módulo",
+        "value": "{{TODO: rango de precio en COP de un primer módulo de software a la medida}}"
+      },
+      {
+        "label": "Aplicación móvil para iOS y Android",
+        "value": "{{TODO: rango de precio en COP de una aplicación móvil}}"
+      },
+      {
+        "label": "Integración con pasarela de pago, ERP o WhatsApp",
+        "value": "{{TODO: rango de precio en COP de una integración con pasarela, ERP o WhatsApp}}"
+      },
+      {
+        "label": "Migración de datos desde un sistema legado",
+        "value": "{{TODO: rango de precio en COP de una migración de datos legados}}"
+      }
+    ],
+    "paymentNote": "Sea cual sea el rango, la forma de pago es siempre la misma: 50% de anticipo al firmar el contrato con el cronograma acordado y 50% restante al recibir el proyecto funcionando, probado de punta a punta y con tu visto bueno final. No hay mensualidades forzadas ni licencias recurrentes.",
+    "estimatorText": "Para hacerte una idea antes de hablar con nadie, el [cotizador interactivo](/cotizador) calcula una inversión y un tiempo aproximados, en pesos colombianos o dólares, según el tipo de proyecto, los módulos y el ritmo de entrega. El presupuesto definitivo lo damos después de conversar, sin compromiso."
+  },
+  "timelines": {
+    "id": "tiempos",
+    "tocLabel": "Tiempos típicos",
+    "heading": "Tiempos típicos de desarrollo",
+    "intro": "Trabajamos por fases: el primer módulo útil suele salir en semanas y no en meses, y el plazo exacto queda cerrado en el contrato después de mapear tu proceso. Con avances semanales sabes en qué punto estás en todo momento, y los cambios de alcance se hablan antes, no al final.",
+    "rangesHeading": "Plazos de referencia por tipo de proyecto",
+    "rows": [
+      {
+        "label": "Sitio web corporativo o catálogo digital",
+        "value": "{{TODO: tiempo típico de un sitio web corporativo}}"
+      },
+      {
+        "label": "Tienda en línea (e-commerce)",
+        "value": "{{TODO: tiempo típico de una tienda en línea}}"
+      },
+      {
+        "label": "Software a la medida: primer módulo en producción",
+        "value": "{{TODO: tiempo típico de un primer módulo de software a la medida}}"
+      },
+      {
+        "label": "Aplicación móvil para iOS y Android",
+        "value": "{{TODO: tiempo típico de una aplicación móvil}}"
+      },
+      {
+        "label": "Migración de datos desde un sistema legado",
+        "value": "{{TODO: tiempo típico de una migración de datos legados}}"
+      }
+    ],
+    "note": "Los plazos dependen de que las decisiones y los accesos necesarios lleguen a tiempo. Procesos de terceros, como la aprobación de una pasarela de pago o las revisiones de App Store y Google Play, pueden mover el calendario, por eso los identificamos desde el inicio."
+  },
+  "faq": {
+    "id": "preguntas",
+    "tocLabel": "Preguntas frecuentes",
+    "heading": "Preguntas frecuentes sobre desarrollo de software en Bogotá",
+    "items": [
+      {
+        "id": "equipo-bogota",
+        "question": "¿Dónde está el equipo y cómo trabajamos juntos?",
+        "answer": "El equipo tiene base en Bogotá. Trabajamos con empresas de la ciudad, de otras regiones de Colombia y de otros países, con el mismo método: hablas directo con los ingenieros, recibes avances semanales en un entorno privado y sigues tus proyectos, facturas y documentos en el portal de clientes. Si tu caso requiere una reunión presencial, cuéntalo en tu primer mensaje por el [formulario de contacto](/#contacto)."
+      },
+      {
+        "id": "codigo-tuyo",
+        "question": "¿El código del software me pertenece?",
+        "answer": "Sí, al 100% desde el primer día. Te entregamos repositorios a tu nombre y todas las credenciales de acceso, sin letras chicas ni mensualidades forzadas. Si mañana decides continuar con otro equipo o in-house, puedes hacerlo sin ninguna traba."
+      },
+      {
+        "id": "cuanto-cuesta",
+        "question": "¿Cuánto cuesta desarrollar un software a la medida en Bogotá?",
+        "answer": "{{TODO: rango de precio en COP de un proyecto de software a la medida típico}}"
+      },
+      {
+        "id": "cuanto-tarda",
+        "question": "¿Cuánto tarda en estar listo un proyecto?",
+        "answer": "{{TODO: tiempo típico de un proyecto de software a la medida}}"
+      },
+      {
+        "id": "forma-de-pago",
+        "question": "¿Cómo se paga? ¿Tengo que pagar todo por adelantado?",
+        "answer": "No. Son dos pagos: 50% de anticipo al firmar el contrato con el cronograma acordado, y el 50% restante al recibir el proyecto funcionando, probado de punta a punta y con tu visto bueno final."
+      },
+      {
+        "id": "cumple-ley-1581",
+        "question": "¿El software que desarrollan cumple la Ley 1581?",
+        "answer": "Lo diseñamos para cumplir los requisitos técnicos de la Ley 1581 y del RGPD: autorización y finalidad documentadas, cifrado de datos sensibles, control de acceso por roles y trazabilidad. Esa es la parte de ingeniería; las políticas y los procedimientos de tu organización los define tu equipo, idealmente con asesoría legal. Más detalle en [seguridad y protección de datos](/servicios/seguridad-cumplimiento)."
+      },
+      {
+        "id": "garantia-90-dias",
+        "question": "¿Qué pasa si después de lanzar algo falla?",
+        "answer": "Tienes 90 días de garantía de estabilidad técnica posterior al lanzamiento. Si surge un error o algo no se comporta como se acordó, lo corregimos sin costo adicional. Después puedes contratar, de forma opcional, un mantenimiento con SLA a la medida."
+      },
+      {
+        "id": "integraciones-locales",
+        "question": "¿Pueden integrar pasarelas de pago colombianas, Siigo, Alegra o WhatsApp?",
+        "answer": "Sí. Integramos pasarelas de pago como Wompi, PayU y Stripe, software contable y ERPs como Siigo, Alegra y SAP, y la API de WhatsApp, para que la información fluya sin trabajo manual repetitivo. Conoce el servicio de [integraciones y APIs](/servicios/apis-integraciones)."
+      }
+    ]
+  },
+  "cta": {
+    "heading": "Hablemos de tu proyecto en Bogotá",
+    "body": "Cuéntanos qué necesitas resolver. Lo revisa directamente un ingeniero y te respondemos en menos de 24 horas hábiles, con una valoración sincera de cómo encarar tu proyecto.",
+    "primary": "Hablar con un ingeniero",
+    "secondary": "Escribir por WhatsApp"
+  }
+}

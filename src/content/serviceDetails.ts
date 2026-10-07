@@ -30,6 +30,14 @@ export interface ServiceDetails {
   faqs: { question: string; answer: string }[];
   relatedHeading?: string;
   related?: { label: string; href: string; description: string }[];
+  /**
+   * Sección H2 "Desarrollo de [servicio] en Colombia" (SEO local). Texto
+   * propio de cada servicio e idioma — nunca el mismo párrafo copiado.
+   * `facts` lleva los datos de negocio pendientes (precio, plazo) como
+   * marcadores `{{TODO: …}}`, cada uno en su propia viñeta: en producción
+   * `withoutTodos()` (lib/todoPlaceholders.ts) omite la viñeta completa.
+   */
+  colombia?: { heading: string; paragraphs: string[]; facts: string[] };
 }
 
 const detailsByLocale: Record<Locale, Record<string, ServiceDetails>> = {

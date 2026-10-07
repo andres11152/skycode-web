@@ -76,7 +76,8 @@ export interface BlogMeta {
   updatedOn: string;
   authorLabel: string;
   authorProfile: string;
-  serviceLabel: string;
+  /** Título del bloque "Servicios relacionados" al pie del artículo (2–3 servicios, ver content/relatedContent.ts). */
+  servicesHeading: string;
   serviceCta: string;
   relatedHeading: string;
   prevLabel: string;

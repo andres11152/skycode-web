@@ -20,5 +20,9 @@
       "title": "Delivery and transfer",
       "description": "Formal, complete transfer of repositories and credentials — the code is 100% yours from day one."
     }
-  ]
+  ],
+  "localPage": {
+    "text": "Is your company in Bogotá, or are you looking for a team based there?",
+    "linkLabel": "See our custom software development in Bogotá"
+  }
 }

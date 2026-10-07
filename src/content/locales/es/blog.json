@@ -1,7 +1,7 @@
 {
   "meta": {
-    "indexTitle": "Blog Técnico",
-    "indexDescription": "Artículos especializados sobre arquitectura de software, seguridad informática bajo estándares OWASP y cumplimiento normativo de protección de datos (Ley 1581, RGPD y marcos equivalentes).",
+    "indexTitle": "Blog Técnico de Desarrollo de Software",
+    "indexDescription": "Guías sobre arquitectura de software, APIs, migración de sistemas legados, seguridad OWASP y cumplimiento de la Ley 1581 y el RGPD.",
     "badge": "Blog técnico",
     "heading": "Recursos técnicos",
     "intro": "Arquitectura, seguridad y buenas prácticas — escrito por el equipo que construye el software, sin relleno genérico.",
@@ -23,7 +23,7 @@
     "updatedOn": "Actualizado el {date}",
     "authorLabel": "Escrito por",
     "authorProfile": "Ver perfil del equipo",
-    "serviceLabel": "Servicio relacionado",
+    "servicesHeading": "Servicios relacionados",
     "serviceCta": "Ver el servicio",
     "relatedHeading": "Sigue leyendo",
     "prevLabel": "Artículo anterior",

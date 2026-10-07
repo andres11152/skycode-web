@@ -13,6 +13,7 @@ import { getServicesContent } from "@/content/services";
 import { useRecentArticles } from "@/lib/useRecentArticles";
 import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
 import { faqPath } from "@/lib/faqPaths";
+import { bogotaPagePath } from "@/lib/bogotaPaths";
 import { portfolioIndexPath } from "@/lib/portfolioPaths";
 import { contactEmail, contactPhone, siteName, socials, whatsappHref } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -119,6 +120,8 @@ export function Footer() {
     { label: navData.equipo, href: `${prefix}/equipo`, esOnly: false },
     { label: "Blog", href: blogIndexPath(locale), esOnly: false },
     { label: navData.faq, href: faqPath(locale), esOnly: false },
+    // Página local solo en español (ver content/bogota.ts): fuera de /, lleva la insignia ES.
+    { label: footerData.bogotaLink, href: bogotaPagePath, esOnly },
     { label: footerData.getInTouchHeading, href: `${prefix}/#contacto`, esOnly: false },
   ];
 

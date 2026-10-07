@@ -70,7 +70,7 @@ export const SERVICE_PROJECT_SLUGS: Record<string, string[]> = {
   "desarrollo-aplicaciones-moviles": [],
   "apis-integraciones": ["sentry-crm", "cda-revifull"],
   "frontend-alto-rendimiento": ["equilibrio-arquitectonico", "cda-revifull"],
-  "ecommerce-tienda-online": ["moncyre"],
+  "ecommerce-tienda-online": ["racingbike"],
   "seguridad-cumplimiento": [],
   "arquitectura-documentacion": [],
   "migracion-datos-legacy": [],

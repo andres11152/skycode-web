@@ -1,0 +1,244 @@
+{
+  "_doc": "Reglas de enlazado interno contextual del blog (ver scripts/seo-blog-internal-links.mjs). Cada post trae una lista de enlaces candidatos EN ORDEN DE PRIORIDAD. kind = service | post | case (la ruta se arma por idioma: /servicios/{slug}, /blog/{slug}, /portafolio/{slug} o /{en|fr}/portfolio/{slug}). 'always: false' = solo se inserta si el post aún no llega a minInternalLinks enlaces internos distintos; 'always: true' = enlace de valor editorial que se agrega siempre (p. ej. los entrantes al post de outsourcing). Por idioma hay dos formas: { wrap } envuelve una frase que YA existe en el texto (no agrega palabras), o { block, anchor, append } agrega una frase breve al final del párrafo cuyo texto empieza por 'block'; 'append' lleva el marcador {link}, que se reemplaza por [anchor](ruta). Solo se enlaza donde la relación es real: nada de cifras ni afirmaciones nuevas.",
+  "minInternalLinks": 2,
+  "posts": {
+    "ley-1581-guia-tecnica-software": [
+      {
+        "kind": "service",
+        "slug": "seguridad-cumplimiento",
+        "always": false,
+        "es": {
+          "wrap": "auditoría de seguridad enfocada en datos personales"
+        },
+        "en": {
+          "wrap": "security audit focused on personal data"
+        },
+        "fr": {
+          "wrap": "audit de sécurité centré sur les données personnelles"
+        }
+      },
+      {
+        "kind": "post",
+        "slug": "buenas-practicas-apis-rest",
+        "always": true,
+        "es": {
+          "block": "Un modelo RBAC bien diseñado",
+          "anchor": "arquitectura de APIs REST",
+          "append": "Resolver primero la identidad y decidir después el permiso de cada endpoint —separar autenticación y autorización— es la base técnica de este modelo, y lo desarrollamos en nuestra guía de {link}."
+        },
+        "en": {
+          "block": "A well-designed RBAC model",
+          "anchor": "REST API architecture",
+          "append": "Resolving identity first and then deciding each endpoint's permission — keeping authentication and authorization separate — is the technical foundation of this model, and we cover it in our guide to {link}."
+        },
+        "fr": {
+          "block": "Un modèle RBAC bien conçu",
+          "anchor": "l'architecture d'API REST",
+          "append": "Résoudre d'abord l'identité puis décider de la permission de chaque endpoint — séparer authentification et autorisation — est la base technique de ce modèle, et nous le détaillons dans notre guide sur {link}."
+        }
+      },
+      {
+        "kind": "post",
+        "slug": "outsourcing-software-latam-propiedad-codigo",
+        "always": true,
+        "es": {
+          "block": "Nada de esto se agrega",
+          "anchor": "outsourcing de software en Latinoamérica",
+          "append": "Cómo evaluar a un proveedor desde ese ángulo lo desarrollamos en nuestra guía de {link}."
+        },
+        "en": {
+          "block": "None of this gets added",
+          "anchor": "software outsourcing in Latin America",
+          "append": "We cover how to evaluate a vendor from that angle in our guide to {link}."
+        },
+        "fr": {
+          "block": "Rien de tout cela ne s'ajoute",
+          "anchor": "l'externalisation logicielle en Amérique latine",
+          "append": "Nous détaillons comment évaluer un prestataire sous cet angle dans notre guide sur {link}."
+        }
+      }
+    ],
+    "deuda-tecnica-como-detectarla": [
+      {
+        "kind": "service",
+        "slug": "arquitectura-documentacion",
+        "always": true,
+        "es": {
+          "wrap": "documentación técnica real"
+        },
+        "en": {
+          "wrap": "real technical documentation"
+        },
+        "fr": {
+          "wrap": "vraie documentation technique"
+        }
+      },
+      {
+        "kind": "post",
+        "slug": "outsourcing-software-latam-propiedad-codigo",
+        "always": true,
+        "es": {
+          "block": "La deuda técnica no se 'arregla'",
+          "anchor": "outsourcing de software y propiedad del código",
+          "append": "Cuando el desarrollo lo hace un proveedor externo, cómo asegurar por contrato esa propiedad y esa documentación se explica en nuestra guía de {link}."
+        },
+        "en": {
+          "block": "Technical debt doesn't get 'fixed'",
+          "anchor": "software outsourcing and code ownership",
+          "append": "When an external vendor does the development, how to secure that ownership and documentation in the contract is covered in our guide to {link}."
+        },
+        "fr": {
+          "block": "La dette technique ne se « répare »",
+          "anchor": "l'externalisation logicielle et la propriété du code",
+          "append": "Lorsque le développement est confié à un prestataire externe, la façon de garantir cette propriété et cette documentation par contrat est expliquée dans notre guide sur {link}."
+        }
+      }
+    ],
+    "buenas-practicas-apis-rest": [
+      {
+        "kind": "service",
+        "slug": "apis-integraciones",
+        "always": false,
+        "es": {
+          "block": "Ninguna de estas prácticas es exótica",
+          "anchor": "integraciones y APIs",
+          "append": "Las aplicamos en nuestro servicio de {link}."
+        },
+        "en": {
+          "block": "None of these practices are exotic",
+          "anchor": "APIs & system integrations",
+          "append": "We apply them in our {link} service."
+        },
+        "fr": {
+          "block": "Aucune de ces pratiques n'est exotique",
+          "anchor": "intégrations et API",
+          "append": "Nous les appliquons dans notre service d'{link}."
+        }
+      },
+      {
+        "kind": "post",
+        "slug": "ley-1581-guia-tecnica-software",
+        "always": true,
+        "es": {
+          "block": "Autenticación responde",
+          "anchor": "la Ley 1581 en la práctica",
+          "append": "Con datos personales, esa misma separación es la base del control de acceso por roles que describimos en nuestra guía sobre {link}."
+        },
+        "en": {
+          "block": "Authentication answers",
+          "anchor": "Colombia's Law 1581 in practice",
+          "append": "With personal data, that same separation underpins the role-based access control we describe in our guide to {link}."
+        },
+        "fr": {
+          "block": "L'authentification répond",
+          "anchor": "la loi 1581 colombienne en pratique",
+          "append": "Avec des données personnelles, cette même séparation sous-tend le contrôle d'accès par rôles que nous décrivons dans notre guide sur {link}."
+        }
+      },
+      {
+        "kind": "post",
+        "slug": "outsourcing-software-latam-propiedad-codigo",
+        "always": true,
+        "es": {
+          "block": "Un patrón que se repite en proyectos",
+          "anchor": "outsourcing de software en Latinoamérica",
+          "append": "Si estás por traspasar un proyecto de un proveedor a otro, cómo preparar esa transición se explica en nuestra guía de {link}."
+        },
+        "en": {
+          "block": "A pattern that repeats in projects",
+          "anchor": "software outsourcing in Latin America",
+          "append": "If you're about to hand a project over from one vendor to another, how to prepare that transition is explained in our guide to {link}."
+        },
+        "fr": {
+          "block": "Un schéma qui se répète dans les projets",
+          "anchor": "l'externalisation logicielle en Amérique latine",
+          "append": "Si vous êtes sur le point de confier un projet d'un prestataire à un autre, la façon de préparer cette transition est expliquée dans notre guide sur {link}."
+        }
+      }
+    ],
+    "optimizacion-costos-nube-serverless-colombia": [
+      {
+        "kind": "post",
+        "slug": "buenas-practicas-apis-rest",
+        "always": false,
+        "es": {
+          "block": "Una arquitectura serverless bien monitoreada",
+          "anchor": "buenas prácticas de APIs REST",
+          "append": "Los logs estructurados con ID de correlación que explicamos en nuestras {link} son la base de ese monitoreo."
+        },
+        "en": {
+          "block": "A well-monitored serverless architecture",
+          "anchor": "REST API best practices",
+          "append": "The structured logs with correlation IDs we explain in our {link} are the foundation of that monitoring."
+        },
+        "fr": {
+          "block": "Une architecture serverless bien surveillée",
+          "anchor": "bonnes pratiques d'API REST",
+          "append": "Les logs structurés avec identifiant de corrélation que nous expliquons dans nos {link} sont la base de cette surveillance."
+        }
+      },
+      {
+        "kind": "service",
+        "slug": "desarrollo-software-medida",
+        "always": false,
+        "es": {
+          "block": "Adoptar una estrategia serverless estructurada",
+          "anchor": "software a la medida",
+          "append": "Para llevar estas decisiones a un sistema propio, conoce nuestro servicio de {link}, con despliegue en tu propia infraestructura."
+        },
+        "en": {
+          "block": "Adopting a structured serverless strategy",
+          "anchor": "custom software",
+          "append": "To apply these decisions to a system of your own, see our {link} service, deployed on your own infrastructure."
+        },
+        "fr": {
+          "block": "Adopter une stratégie serverless structurée",
+          "anchor": "logiciels sur mesure",
+          "append": "Pour appliquer ces décisions à votre propre système, découvrez notre service de {link}, déployé sur votre propre infrastructure."
+        }
+      }
+    ],
+    "outsourcing-software-latam-propiedad-codigo": [
+      {
+        "kind": "service",
+        "slug": "arquitectura-documentacion",
+        "always": false,
+        "es": {
+          "block": "Un matiz que se pasa por alto",
+          "anchor": "documentación y transferencia técnica",
+          "append": "Verificar a nombre de quién está cada repositorio, dominio y cuenta, y transferirlos al cliente, es justo lo que hacemos en nuestro servicio de {link}."
+        },
+        "en": {
+          "block": "A nuance that gets overlooked",
+          "anchor": "documentation and technical handover",
+          "append": "Checking whose name each repository, domain and account is under, and transferring them to the client, is exactly what we do in our {link} service."
+        },
+        "fr": {
+          "block": "Une nuance souvent négligée",
+          "anchor": "documentation et passation technique",
+          "append": "Vérifier au nom de qui se trouve chaque dépôt, domaine et compte, puis les transférer au client, c'est exactement ce que nous faisons dans notre service de {link}."
+        }
+      },
+      {
+        "kind": "service",
+        "slug": "desarrollo-software-medida",
+        "always": false,
+        "es": {
+          "block": "Al elegir desarrollo de software nearshore",
+          "anchor": "desarrollo de software a la medida",
+          "append": "En nuestro servicio de {link}, el código, la base de datos y la infraestructura quedan bajo tus cuentas desde el primer commit."
+        },
+        "en": {
+          "block": "When choosing nearshore software development",
+          "anchor": "custom software development",
+          "append": "In our {link} service, the code, database and infrastructure sit under your own accounts from the first commit."
+        },
+        "fr": {
+          "block": "Lorsqu'on choisit un développement logiciel nearshore",
+          "anchor": "développement de logiciels sur mesure",
+          "append": "Dans notre service de {link}, le code, la base de données et l'infrastructure sont sous vos propres comptes dès le premier commit."
+        }
+      }
+    ]
+  }
+}

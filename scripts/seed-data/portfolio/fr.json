@@ -116,26 +116,26 @@
       ]
     },
     {
-      "slug": "moncyre",
-      "title": "Moncyre Studios · Boutique en Ligne Streetwear",
-      "client": "Moncyre Studios · Marque de Prêt-à-Porter & Chaussures",
-      "description": "E-commerce de mode avec catalogue interactif, expérience mobile ultra-rapide et intégration directe des passerelles de paiement et transporteurs nationaux.",
+      "slug": "racingbike",
+      "title": "Racing Bike 1998 · Boutique de Cyclisme en Ligne",
+      "client": "Racing Bike 1998 · Magasin de Vélos à Bogotá",
+      "description": "Boutique de cyclisme en ligne à Bogotá : catalogue filtrable, guide des tailles, paiements PSE, carte et Addi, livraison nationale.",
       "tags": [
         "E-Commerce",
-        "Mode & Chaussures",
-        "Passerelles de Paiement",
-        "Next.js"
+        "Cyclisme & Vélos",
+        "Paiements Locaux & Financement",
+        "WooCommerce"
       ],
       "iconName": "ShoppingCart",
-      "link": "https://moncyre.com/",
-      "coverImage": "/projects/moncyre/hero.webp",
+      "link": "https://racingbike.com.co/",
+      "coverImage": "/projects/racingbike/hero.webp",
       "gallery": [
-        "/projects/moncyre/hero.webp",
-        "/projects/moncyre/colecciones-drops.webp",
-        "/projects/moncyre/catalogo-productos.webp",
-        "/projects/moncyre/lookbook-estilo.webp",
-        "/projects/moncyre/detalle-producto.webp",
-        "/projects/moncyre/footer-newsletter.webp"
+        "/projects/racingbike/hero.webp",
+        "/projects/racingbike/categorias.webp",
+        "/projects/racingbike/catalogo-filtros.webp",
+        "/projects/racingbike/ficha-producto.webp",
+        "/projects/racingbike/opciones-financiacion.webp",
+        "/projects/racingbike/guia-tallas.webp"
       ]
     }
   ],

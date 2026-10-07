@@ -116,26 +116,26 @@
       ]
     },
     {
-      "slug": "moncyre",
-      "title": "Moncyre Studios · Streetwear & Apparel E-Commerce",
-      "client": "Moncyre Studios · Urban Fashion Brand",
-      "description": "E-commerce storefront for urban fashion and footwear: seamless mobile experience, dynamic product discovery, and localized payment gateway and courier integrations.",
+      "slug": "racingbike",
+      "title": "Racing Bike 1998 · Cycling E-Commerce Store",
+      "client": "Racing Bike 1998 · Bike Shop in Bogotá",
+      "description": "Cycling online store in Bogotá: filterable catalog, bike-size finder, PSE, card and Addi payments, and nationwide shipping.",
       "tags": [
         "E-Commerce",
-        "Fashion & Apparel",
-        "Payment Gateways",
-        "Next.js"
+        "Cycling & Bikes",
+        "Local Payments & Financing",
+        "WooCommerce"
       ],
       "iconName": "ShoppingCart",
-      "link": "https://moncyre.com/",
-      "coverImage": "/projects/moncyre/hero.webp",
+      "link": "https://racingbike.com.co/",
+      "coverImage": "/projects/racingbike/hero.webp",
       "gallery": [
-        "/projects/moncyre/hero.webp",
-        "/projects/moncyre/colecciones-drops.webp",
-        "/projects/moncyre/catalogo-productos.webp",
-        "/projects/moncyre/lookbook-estilo.webp",
-        "/projects/moncyre/detalle-producto.webp",
-        "/projects/moncyre/footer-newsletter.webp"
+        "/projects/racingbike/hero.webp",
+        "/projects/racingbike/categorias.webp",
+        "/projects/racingbike/catalogo-filtros.webp",
+        "/projects/racingbike/ficha-producto.webp",
+        "/projects/racingbike/opciones-financiacion.webp",
+        "/projects/racingbike/guia-tallas.webp"
       ]
     }
   ],

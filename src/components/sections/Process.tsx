@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { m as motion, useReducedMotion } from "framer-motion";
 import { getProcessContent } from "@/content/process";
+import { bogotaPagePath } from "@/lib/bogotaPaths";
 import { defaultLocale, type Locale } from "@/lib/i18n";
+import { EsBadge } from "@/components/ui/EsBadge";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 
@@ -51,6 +54,18 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
             </motion.li>
           ))}
         </ol>
+
+        {/* Enlace de texto a la página local de Bogotá (solo en español: en /en y /fr lleva la insignia ES). */}
+        <p className="mt-10 max-w-2xl text-base leading-relaxed text-foreground/80">
+          {processData.localPage.text}{" "}
+          <Link
+            href={bogotaPagePath}
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-sm font-medium text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            {processData.localPage.linkLabel}
+            {locale !== "es" && <EsBadge />}
+          </Link>
+        </p>
       </div>
     </section>
   );

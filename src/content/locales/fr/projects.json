@@ -19,10 +19,14 @@
     "liveSite": "Site en ligne",
     "visitSite": "Visiter le site",
     "stack": "Stack technique",
-    "challenge": "Le défi",
+    "context": "Contexte du client",
+    "challenge": "Le problème",
     "solution": "La solution",
+    "architecture": "Architecture et stack",
+    "process": "Processus et délais",
     "results": "Les résultats",
     "metrics": "Résultats en chiffres",
+    "testimonial": "Ce que dit le client",
     "gallery": "Captures de la plateforme",
     "galleryPrev": "Captures précédentes",
     "galleryNext": "Captures suivantes",
@@ -47,6 +51,14 @@
       "next": "Image suivante",
       "zoomIn": "Zoomer",
       "zoomOut": "Dézoomer"
+    },
+    "related": {
+      "title": "Pour aller plus loin",
+      "service": "Service appliqué dans ce cas",
+      "services": "Services appliqués dans ce cas",
+      "posts": "Articles associés",
+      "bogotaLead": "Nous travaillons depuis Bogotá, en Colombie.",
+      "bogotaLabel": "Développement logiciel à Bogotá (page en espagnol)"
     }
   },
   "breadcrumb": {
@@ -55,6 +67,7 @@
     "portfolio": "Portfolio"
   },
   "meta": {
-    "indexTitle": "Études de cas de logiciels sur mesure"
+    "indexTitle": "Études de cas de logiciels sur mesure",
+    "caseTitleSuffix": "Étude de cas"
   }
 }

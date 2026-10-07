@@ -10,6 +10,7 @@ import {
   type PortfolioProject,
   type PortfolioStatus,
   type PortfolioTechnology,
+  toPublicProject,
 } from "@/content/portfolioShared";
 
 interface QueryRunner {
@@ -37,7 +38,8 @@ function shapeMetric(row: Record<string, unknown>, locale: Locale): PortfolioMet
  * estudio individual en vez de por sección completa.
  */
 async function getTranslationRow(projectId: number, locale: Locale) {
-  const columns = "title, client_label, summary, challenge, solution, results, capabilities";
+  const columns =
+    "title, client_label, summary, challenge, solution, results, capabilities, client_context, architecture, process, testimonial_quote, testimonial_author, testimonial_role";
   const res = await query(
     `SELECT ${columns} FROM portfolio_project_translations WHERE project_id = $1 AND locale = $2;`,
     [projectId, locale]
@@ -79,7 +81,9 @@ async function assembleProject(projectRow: Record<string, unknown>, locale: Loca
     ? images.find((img) => img.id === Number(projectRow.cover_image_id)) ?? images[0] ?? null
     : images[0] ?? null;
 
-  return {
+  // `toPublicProject`: sin marcadores {{TODO}} en producción — este objeto viaja
+  // a componentes cliente y quedaría en la carga RSC del HTML (ver su doc).
+  return toPublicProject({
     slug: String(projectRow.slug),
     status: projectRow.status as PortfolioStatus,
     isFeatured: Boolean(projectRow.is_featured),
@@ -91,6 +95,12 @@ async function assembleProject(projectRow: Record<string, unknown>, locale: Loca
     challenge: String(translation.challenge ?? ""),
     solution: String(translation.solution ?? ""),
     results: String(translation.results ?? ""),
+    clientContext: String(translation.client_context ?? ""),
+    architecture: String(translation.architecture ?? ""),
+    process: String(translation.process ?? ""),
+    testimonialQuote: String(translation.testimonial_quote ?? ""),
+    testimonialAuthor: String(translation.testimonial_author ?? ""),
+    testimonialRole: String(translation.testimonial_role ?? ""),
     capabilities: Array.isArray(translation.capabilities) ? translation.capabilities : [],
     technologies: techRes.rows.map(shapeTechnology),
     images,
@@ -98,7 +108,7 @@ async function assembleProject(projectRow: Record<string, unknown>, locale: Loca
     metrics: metricsRes.rows.map((row) => shapeMetric(row, locale)),
     publishedAt: projectRow.published_at ? String(projectRow.published_at) : null,
     translated: translationResult.translated,
-  };
+  });
 }
 
 /**
@@ -234,6 +244,13 @@ export interface AdminPortfolioTranslation {
   solution: string;
   results: string;
   capabilities: string[];
+  /** Capítulos del caso completo (migración 0041); `""` si nunca se cargaron. */
+  clientContext: string;
+  architecture: string;
+  process: string;
+  testimonialQuote: string;
+  testimonialAuthor: string;
+  testimonialRole: string;
 }
 
 export interface AdminPortfolioImage {
@@ -277,7 +294,8 @@ export async function getAdminPortfolioDetail(id: number): Promise<AdminPortfoli
 
   const [translationsRes, techRes, imagesRes, metricsRes] = await Promise.all([
     query(
-      `SELECT locale, title, client_label, summary, challenge, solution, results, capabilities
+      `SELECT locale, title, client_label, summary, challenge, solution, results, capabilities,
+              client_context, architecture, process, testimonial_quote, testimonial_author, testimonial_role
        FROM portfolio_project_translations WHERE project_id = $1;`,
       [id]
     ),
@@ -307,6 +325,12 @@ export async function getAdminPortfolioDetail(id: number): Promise<AdminPortfoli
           solution: String(row.solution ?? ""),
           results: String(row.results ?? ""),
           capabilities: Array.isArray(row.capabilities) ? row.capabilities : [],
+          clientContext: String(row.client_context ?? ""),
+          architecture: String(row.architecture ?? ""),
+          process: String(row.process ?? ""),
+          testimonialQuote: String(row.testimonial_quote ?? ""),
+          testimonialAuthor: String(row.testimonial_author ?? ""),
+          testimonialRole: String(row.testimonial_role ?? ""),
         },
       ];
     })
@@ -405,6 +429,18 @@ export interface UpsertTranslationData {
   solution: string;
   results: string;
   capabilities: string[];
+  /**
+   * Capítulos de la migración 0041. Opcionales a propósito: `undefined`
+   * significa "no tocar lo que ya hay" (los llamadores anteriores a esa
+   * migración no los conocen y no deben borrarlos); un string vacío sí los
+   * vacía. El editor del panel siempre manda los seis.
+   */
+  clientContext?: string;
+  architecture?: string;
+  process?: string;
+  testimonialQuote?: string;
+  testimonialAuthor?: string;
+  testimonialRole?: string;
 }
 
 /** Guarda (crea o reemplaza) la traducción completa de un idioma — el editor manda el bloque entero de ese idioma en cada guardado, no campos sueltos. */
@@ -415,8 +451,10 @@ export async function upsertPortfolioTranslation(
   dbRunner: QueryRunner
 ): Promise<void> {
   await dbRunner.query(
-    `INSERT INTO portfolio_project_translations (project_id, locale, title, client_label, summary, challenge, solution, results, capabilities)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `INSERT INTO portfolio_project_translations
+       (project_id, locale, title, client_label, summary, challenge, solution, results, capabilities,
+        client_context, architecture, process, testimonial_quote, testimonial_author, testimonial_role)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
      ON CONFLICT (project_id, locale) DO UPDATE SET
        title = EXCLUDED.title,
        client_label = EXCLUDED.client_label,
@@ -424,8 +462,30 @@ export async function upsertPortfolioTranslation(
        challenge = EXCLUDED.challenge,
        solution = EXCLUDED.solution,
        results = EXCLUDED.results,
-       capabilities = EXCLUDED.capabilities;`,
-    [projectId, locale, data.title, data.clientLabel, data.summary, data.challenge, data.solution, data.results, data.capabilities]
+       capabilities = EXCLUDED.capabilities,
+       client_context = COALESCE(EXCLUDED.client_context, portfolio_project_translations.client_context),
+       architecture = COALESCE(EXCLUDED.architecture, portfolio_project_translations.architecture),
+       process = COALESCE(EXCLUDED.process, portfolio_project_translations.process),
+       testimonial_quote = COALESCE(EXCLUDED.testimonial_quote, portfolio_project_translations.testimonial_quote),
+       testimonial_author = COALESCE(EXCLUDED.testimonial_author, portfolio_project_translations.testimonial_author),
+       testimonial_role = COALESCE(EXCLUDED.testimonial_role, portfolio_project_translations.testimonial_role);`,
+    [
+      projectId,
+      locale,
+      data.title,
+      data.clientLabel,
+      data.summary,
+      data.challenge,
+      data.solution,
+      data.results,
+      data.capabilities,
+      data.clientContext ?? null,
+      data.architecture ?? null,
+      data.process ?? null,
+      data.testimonialQuote ?? null,
+      data.testimonialAuthor ?? null,
+      data.testimonialRole ?? null,
+    ]
   );
 }
 

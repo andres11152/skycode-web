@@ -20,5 +20,9 @@
       "title": "Livraison et transfert",
       "description": "Transfert formel et complet des dépôts et des identifiants — le code vous appartient à 100% dès le premier jour."
     }
-  ]
+  ],
+  "localPage": {
+    "text": "Votre entreprise est à Bogotá, ou vous cherchez une équipe qui y est basée ?",
+    "linkLabel": "Découvrez notre développement logiciel sur mesure à Bogotá"
+  }
 }

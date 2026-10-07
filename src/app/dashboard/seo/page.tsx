@@ -4,6 +4,8 @@ import { requireSessionOrRedirect } from "@/lib/withAuth";
 import { hasPermission } from "@/lib/rbac";
 import { getContentGaps, getSeoSummary, getTopPages, getTopQueries, hasAnyGscData } from "@/lib/queries/seoMetrics";
 import { SeoMetricsView } from "@/components/dashboard/SeoMetricsView";
+import { SeoHealthPanel } from "@/components/dashboard/SeoHealthPanel";
+import { getLatestSeoHealthRun, getSeoHealthHistory } from "@/lib/queries/seoHealth";
 
 export const metadata: Metadata = {
   title: "SEO | SKYCODE Agency",
@@ -21,6 +23,9 @@ const TOP_LIMIT = 15;
 export default async function DashboardSeoPage() {
   const session = await requireSessionOrRedirect();
   if (!hasPermission(session.role, "seo:read")) redirect("/dashboard");
+
+  const [healthRun, healthHistory] = await Promise.all([getLatestSeoHealthRun(), getSeoHealthHistory()]);
+  const healthSlot = <SeoHealthPanel run={healthRun} history={healthHistory} />;
 
   const hasData = await hasAnyGscData();
   if (!hasData) {
@@ -45,6 +50,7 @@ export default async function DashboardSeoPage() {
         contentGaps={[]}
         topPages={[]}
         windowDays={WINDOW_DAYS}
+        healthSlot={healthSlot}
       />
     );
   }
@@ -64,6 +70,7 @@ export default async function DashboardSeoPage() {
       contentGaps={contentGaps}
       topPages={topPages}
       windowDays={WINDOW_DAYS}
+      healthSlot={healthSlot}
     />
   );
 }

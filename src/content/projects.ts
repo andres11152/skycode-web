@@ -29,16 +29,32 @@ export interface PortfolioLightboxCopy {
   zoomOut: string;
 }
 
+export interface PortfolioRelatedCopy {
+  title: string;
+  service: string;
+  services: string;
+  posts: string;
+  /** Frase corta que antecede al enlace a la página local de Bogotá. */
+  bogotaLead: string;
+  /** Texto del enlace (anchor descriptivo) a la página de desarrollo de software en Bogotá. */
+  bogotaLabel: string;
+}
+
 export interface PortfolioDetailCopy {
   client: string;
   capabilities: string;
   liveSite: string;
   visitSite: string;
   stack: string;
+  context: string;
   challenge: string;
   solution: string;
+  architecture: string;
+  process: string;
   results: string;
   metrics: string;
+  testimonial: string;
+  related: PortfolioRelatedCopy;
   gallery: string;
   galleryPrev: string;
   galleryNext: string;
@@ -66,7 +82,7 @@ export interface PortfolioSectionCopy {
   index: PortfolioIndexCopy;
   detail: PortfolioDetailCopy;
   breadcrumb: { home: string; aria: string; portfolio: string };
-  meta: { indexTitle: string };
+  meta: { indexTitle: string; caseTitleSuffix: string };
 }
 
 export function getPortfolioSectionContent(locale: Locale): PortfolioSectionCopy {

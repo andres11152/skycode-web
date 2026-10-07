@@ -19,10 +19,14 @@
     "liveSite": "Live site",
     "visitSite": "Visit site",
     "stack": "Tech stack",
-    "challenge": "The challenge",
+    "context": "Client background",
+    "challenge": "The problem",
     "solution": "The solution",
+    "architecture": "Architecture and stack",
+    "process": "Process and timeline",
     "results": "The results",
     "metrics": "Results in numbers",
+    "testimonial": "What the client says",
     "gallery": "Platform screenshots",
     "galleryPrev": "Previous screenshots",
     "galleryNext": "Next screenshots",
@@ -47,6 +51,14 @@
       "next": "Next image",
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out"
+    },
+    "related": {
+      "title": "Go deeper",
+      "service": "Service applied in this case",
+      "services": "Services applied in this case",
+      "posts": "Related articles",
+      "bogotaLead": "We work from Bogotá, Colombia.",
+      "bogotaLabel": "Software development in Bogotá (page in Spanish)"
     }
   },
   "breadcrumb": {
@@ -55,6 +67,7 @@
     "portfolio": "Portfolio"
   },
   "meta": {
-    "indexTitle": "Custom Software Case Studies"
+    "indexTitle": "Custom Software Case Studies",
+    "caseTitleSuffix": "Case study"
   }
 }

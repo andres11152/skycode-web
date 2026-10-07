@@ -5,6 +5,7 @@ import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
 import { getPortfolioLocaleMapCached, getPortfolioProjectCached } from "@/lib/portfolioRequestData";
 import { localeOgLocale, locales, type Locale } from "@/lib/i18n";
 import { ogImageUrl, siteName, siteUrl } from "@/lib/site";
+import { fitTitle, truncateAtWord } from "@/lib/seoText";
 
 // Server-only (importa queries a Postgres): los componentes cliente usan
 // `lib/portfolioPaths.ts`, nunca este archivo.
@@ -64,11 +65,16 @@ export async function buildPortfolioCaseMetadata(locale: Locale, slug: string): 
   const available = localeMap.find((entry) => entry.slug === slug)?.locales ?? ["es"];
   const coverUrl = project.coverImage?.variants.lg ?? ogImageUrl;
   const path = portfolioCasePath(locale, project.slug);
+  // `<title>` ≤50 (el layout agrega " | SkyCode") y descripción ≤155: el título
+  // y el resumen completos siguen siendo el H1 y el texto visible de la página.
+  const copy = getPortfolioSectionContent(locale);
+  const seoTitle = fitTitle(project.title, 50, copy.meta.caseTitleSuffix);
+  const seoDescription = truncateAtWord(project.summary, 155);
 
   return {
     // Sin sufijo propio: el layout ya agrega " | SkyCode Agency" (antes quedaba "… | Casos de Éxito SKYCODE | SkyCode Agency").
-    title: project.title,
-    description: project.summary,
+    title: seoTitle,
+    description: seoDescription,
     // Un caso sin traducción real sirve el texto en español bajo la URL del idioma: se mantiene
     // navegable (el equipo puede revisarlo) pero fuera del índice de buscadores.
     ...(project.translated ? {} : { robots: { index: false, follow: true } }),
@@ -78,11 +84,11 @@ export async function buildPortfolioCaseMetadata(locale: Locale, slug: string): 
       locale: localeOgLocale[locale],
       url: `${siteUrl}${path}`,
       siteName,
-      title: project.title,
-      description: project.summary,
+      title: seoTitle,
+      description: seoDescription,
       images: [{ url: coverUrl, width: 1200, height: 630, alt: project.title }],
     },
-    twitter: { card: "summary_large_image", title: project.title, description: project.summary, images: [coverUrl] },
+    twitter: { card: "summary_large_image", title: seoTitle, description: seoDescription, images: [coverUrl] },
   };
 }
 

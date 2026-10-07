@@ -15,10 +15,18 @@ import { NextCase, type NextCaseData } from "@/components/portfolio/NextCase";
 import { TechIcon } from "@/components/portfolio/TechIcon";
 import { fadeUp } from "@/lib/animations";
 import { cn } from "@/lib/utils";
-import { getPortfolioIcon, getProjectHostname, type PortfolioProject } from "@/content/portfolioShared";
+import {
+  getPortfolioIcon,
+  getProjectHostname,
+  visibleCaseBlocks,
+  type CaseRelatedLinks,
+  type PortfolioProject,
+} from "@/content/portfolioShared";
 import type { PortfolioSectionCopy } from "@/content/projects";
 import { portfolioIndexPath } from "@/lib/portfolioPaths";
+import { bogotaPagePath } from "@/lib/bogotaPaths";
 import { localeHomePath, t, type Locale } from "@/lib/i18n";
+import { textOrNull, withoutTodos } from "@/lib/todoPlaceholders";
 
 const WRAP = "mx-auto w-full max-w-6xl px-6";
 const FOCUS =
@@ -30,11 +38,14 @@ export function ProjectView({
   project,
   nextProject,
   sectionCopy,
+  related,
 }: {
   locale: Locale;
   project: PortfolioProject;
   nextProject: NextCaseData | null;
   sectionCopy: PortfolioSectionCopy;
+  /** Servicios y artículos enlazados, resueltos en el servidor (ver PortfolioCasePage). */
+  related: CaseRelatedLinks;
 }) {
   const copy = sectionCopy.detail;
   const homeHref = localeHomePath(locale);
@@ -78,11 +89,46 @@ export function ProjectView({
           />,
         ];
 
+  // Capítulos del caso completo: cada uno se OCULTA si no tiene contenido
+  // visible (vacío, o solo con marcadores `{{TODO}}` en producción). El
+  // stack con íconos se muestra dentro de "Arquitectura y stack" cuando ese
+  // capítulo existe; si no, en su franja propia de más abajo.
   const chapters = [
-    { key: "challenge", label: copy.challenge, body: project.challenge },
-    { key: "solution", label: copy.solution, body: project.solution },
-    { key: "results", label: copy.results, body: project.results },
-  ].filter((chapter) => chapter.body.trim().length > 0);
+    { key: "context", label: copy.context, text: project.clientContext },
+    { key: "challenge", label: copy.challenge, text: project.challenge },
+    { key: "solution", label: copy.solution, text: project.solution },
+    { key: "architecture", label: copy.architecture, text: project.architecture },
+    { key: "process", label: copy.process, text: project.process },
+    { key: "results", label: copy.results, text: project.results },
+  ]
+    .map((chapter) => ({ ...chapter, blocks: visibleCaseBlocks(chapter.text) }))
+    .filter((chapter) => chapter.blocks.length > 0);
+
+  const stackInArchitecture = chapters.some((chapter) => chapter.key === "architecture") && project.technologies.length > 0;
+
+  const stackChips = (
+    <ul className="flex flex-wrap gap-3">
+      {project.technologies.map((technology) => (
+        <li
+          key={technology.id}
+          className="flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.02] px-3.5 py-2 text-sm font-medium text-foreground/80"
+        >
+          <TechIcon technology={technology} size={18} />
+          {technology.name}
+        </li>
+      ))}
+    </ul>
+  );
+
+  // Una métrica con marcador `{{TODO}}` (valor o etiqueta) no se publica.
+  const metrics = withoutTodos(project.metrics);
+
+  // Testimonio: solo con cita real; autor y cargo se omiten cada uno por su lado.
+  const testimonialQuote = textOrNull(project.testimonialQuote);
+  const testimonialAuthor = textOrNull(project.testimonialAuthor);
+  const testimonialRole = textOrNull(project.testimonialRole);
+
+  const bogotaLinkLang = locale === "es" ? undefined : "es";
 
   return (
     <main id="main-content" className="pt-28 sm:pt-36">
@@ -174,7 +220,7 @@ export function ProjectView({
         </dl>
       </div>
 
-      {project.technologies.length > 0 && (
+      {project.technologies.length > 0 && !stackInArchitecture && (
         <motion.section
           aria-label={copy.stack}
           variants={fadeUp(reduced)}
@@ -184,17 +230,7 @@ export function ProjectView({
           className={cn(WRAP, "mt-10")}
         >
           <h2 className="text-xs font-medium uppercase tracking-wide text-foreground/70">{copy.stack}</h2>
-          <ul className="mt-4 flex flex-wrap gap-3">
-            {project.technologies.map((technology) => (
-              <li
-                key={technology.id}
-                className="flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.02] px-3.5 py-2 text-sm font-medium text-foreground/80"
-              >
-                <TechIcon technology={technology} size={18} />
-                {technology.name}
-              </li>
-            ))}
-          </ul>
+          <div className="mt-4">{stackChips}</div>
         </motion.section>
       )}
 
@@ -220,19 +256,42 @@ export function ProjectView({
                   {chapter.label}
                 </h2>
               </div>
-              <p className="max-w-2xl text-lg leading-relaxed text-foreground/80 sm:text-xl">{chapter.body}</p>
+              <div className="max-w-2xl space-y-5">
+                {chapter.blocks.map((block, blockIndex) =>
+                  block.type === "list" ? (
+                    <ul
+                      key={blockIndex}
+                      className="list-disc space-y-2 pl-5 text-base leading-relaxed text-foreground/80 marker:text-foreground/40 sm:text-lg"
+                    >
+                      {block.items.map((item, itemIndex) => (
+                        <li key={itemIndex}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p key={blockIndex} className="text-base leading-relaxed text-foreground/80 sm:text-lg">
+                      {block.text}
+                    </p>
+                  ),
+                )}
+                {chapter.key === "architecture" && stackInArchitecture && (
+                  <div className="pt-2">
+                    <h3 className="text-xs font-medium uppercase tracking-wide text-foreground/70">{copy.stack}</h3>
+                    <div className="mt-3">{stackChips}</div>
+                  </div>
+                )}
+              </div>
             </motion.section>
           ))}
         </div>
       )}
 
       {/* Métricas: banda oscura de énfasis. Las galería/siguiente caso que la rodean son claras. */}
-      {project.metrics.length > 0 && (
+      {metrics.length > 0 && (
         <section aria-label={copy.metrics} className="mt-16 bg-foreground sm:mt-24">
           <div className={cn(WRAP, "py-16 sm:py-24")}>
             <h2 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent">{copy.metrics}</h2>
             <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
-              {project.metrics.map((metric, index) => (
+              {metrics.map((metric, index) => (
                 <motion.div
                   key={`${metric.label}-${index}`}
                   variants={fadeUp(reduced)}
@@ -247,6 +306,21 @@ export function ProjectView({
               ))}
             </dl>
           </div>
+        </section>
+      )}
+
+      {testimonialQuote && (
+        <section aria-label={copy.testimonial} className={cn(WRAP, "mt-16 sm:mt-24")}>
+          <figure className="grid gap-4 border-t border-foreground/10 pt-10 lg:grid-cols-[14rem_1fr] lg:gap-16 lg:pt-14">
+            <figcaption className="order-2 text-sm leading-relaxed text-foreground/70 lg:order-1">
+              <span className="block text-xs font-medium uppercase tracking-wide text-foreground/70">{copy.testimonial}</span>
+              {testimonialAuthor && <span className="mt-3 block text-base font-semibold text-foreground">{testimonialAuthor}</span>}
+              {testimonialRole && <span className="block">{testimonialRole}</span>}
+            </figcaption>
+            <blockquote className="order-1 max-w-2xl text-2xl font-medium leading-snug tracking-tight text-balance text-foreground sm:text-3xl lg:order-2">
+              &ldquo;{testimonialQuote}&rdquo;
+            </blockquote>
+          </figure>
         </section>
       )}
 
@@ -269,6 +343,69 @@ export function ProjectView({
           />
         </motion.section>
       )}
+
+      <section aria-label={copy.related.title} className={cn(WRAP, "mt-16 sm:mt-24")}>
+        <div className="grid gap-10 border-t border-foreground/10 pt-10 sm:grid-cols-2 lg:grid-cols-3">
+          {related.services.length > 0 && (
+            <div>
+              <h2 className="text-xs font-medium uppercase tracking-wide text-foreground/70">
+                {related.services.length === 1 ? copy.related.service : copy.related.services}
+              </h2>
+              <ul className="mt-4 space-y-2">
+                {related.services.map((service) => (
+                  <li key={service.slug}>
+                    <Link
+                      href={service.href}
+                      className={cn(
+                        "inline-flex min-h-11 items-center rounded text-base font-medium text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground",
+                        FOCUS,
+                      )}
+                    >
+                      {service.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {related.posts.length > 0 && (
+            <div>
+              <h2 className="text-xs font-medium uppercase tracking-wide text-foreground/70">{copy.related.posts}</h2>
+              <ul className="mt-4 space-y-2">
+                {related.posts.map((post) => (
+                  <li key={post.slug}>
+                    <Link
+                      href={post.href}
+                      className={cn(
+                        "inline-flex min-h-11 items-center rounded text-base font-medium text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground",
+                        FOCUS,
+                      )}
+                    >
+                      {post.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div>
+            <h2 className="text-xs font-medium uppercase tracking-wide text-foreground/70">{copy.related.title}</h2>
+            <p className="mt-4 text-base leading-relaxed text-foreground/80">
+              {copy.related.bogotaLead}{" "}
+              <Link
+                href={bogotaPagePath}
+                hrefLang={bogotaLinkLang}
+                className={cn(
+                  "rounded font-medium text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground",
+                  FOCUS,
+                )}
+              >
+                {copy.related.bogotaLabel}
+              </Link>
+            </p>
+          </div>
+        </div>
+      </section>
 
       <section aria-label={copy.approachTitle} className={cn(WRAP, "mt-16 sm:mt-24")}>
         <div className="border-y border-foreground/10 py-8">

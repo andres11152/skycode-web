@@ -23,9 +23,11 @@ interface Props {
   contentGaps: SeoQueryRow[];
   topPages: SeoPageRow[];
   windowDays: number;
+  /** Panel de "Salud técnica" (auditoría del sitemap), que se pinta bajo el encabezado aunque no haya datos de Search Console. */
+  healthSlot?: React.ReactNode;
 }
 
-export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQueries, contentGaps, topPages, windowDays }: Props) {
+export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQueries, contentGaps, topPages, windowDays, healthSlot }: Props) {
   return (
     <div className="space-y-8">
       <div>
@@ -35,6 +37,8 @@ export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQue
           <code className="mx-1 font-mono text-foreground/70">seo-pulse</code>
         </p>
       </div>
+
+      {healthSlot}
 
       {!hasData || !summary ? (
         <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5">

@@ -28,7 +28,9 @@ export type SeoIssueCode =
   | "description_too_long"
   | "h1_count"
   | "noindex_in_sitemap"
-  | "todo_placeholder";
+  | "todo_placeholder"
+  | "img_missing_alt"
+  | "lastmod_missing";
 
 export interface SeoIssue {
   code: SeoIssueCode;
@@ -79,6 +81,8 @@ export interface ParsedHtml {
   h1Count: number;
   /** Texto del primer H1 visible (sin etiquetas), útil para auditar el titular. */
   h1Text: string | null;
+  /** `<img>` sin atributo `alt` (un `alt=""` decorativo SÍ cuenta como declarado). */
+  imagesWithoutAlt: number;
   robots: string | null;
 }
 
@@ -145,6 +149,7 @@ export function parseHtml(html: string): ParsedHtml {
     canonical: canonical && canonical.trim().length > 0 ? canonical.trim() : null,
     h1Count,
     h1Text: h1Text && h1Text.length > 0 ? h1Text : null,
+    imagesWithoutAlt: findTags(stripped, "img").filter((tag) => attr(tag, "alt") === null).length,
     robots,
   };
 }
@@ -166,6 +171,18 @@ export function parseSitemapLocs(xml: string): string[] {
     urls.push(decodeEntities(match[1]));
   }
   return urls;
+}
+
+/** Entradas del sitemap con su `<lastmod>` (o `null` si la URL no lo declara). */
+export function parseSitemapEntries(xml: string): { loc: string; lastmod: string | null }[] {
+  const entries: { loc: string; lastmod: string | null }[] = [];
+  for (const block of xml.matchAll(/<url>([\s\S]*?)<\/url>/gi)) {
+    const loc = /<loc>\s*([^<\s][^<]*?)\s*<\/loc>/i.exec(block[1]);
+    if (!loc) continue;
+    const lastmod = /<lastmod>\s*([^<\s][^<]*?)\s*<\/lastmod>/i.exec(block[1]);
+    entries.push({ loc: decodeEntities(loc[1]), lastmod: lastmod ? lastmod[1] : null });
+  }
+  return entries;
 }
 
 function issue(code: SeoIssueCode, severity: SeoIssue["severity"], message: string): SeoIssue {
@@ -234,6 +251,10 @@ export function auditParsedPage(
 
   if (parsed.h1Count !== 1) {
     base.issues.push(issue("h1_count", "error", `Tiene ${parsed.h1Count} etiquetas H1 (debe haber exactamente 1)`));
+  }
+
+  if (parsed.imagesWithoutAlt > 0) {
+    base.issues.push(issue("img_missing_alt", "error", `${parsed.imagesWithoutAlt} imagen(es) sin atributo alt`));
   }
 
   // Un `{{TODO: …}}` visible en una página pública es contenido a medio escribir.
@@ -339,7 +360,9 @@ export async function runSeoHealthCheck(options: RunOptions): Promise<SeoHealthR
   if (!sitemapRes.ok) {
     throw new Error(`/sitemap.xml respondió ${sitemapRes.status} en ${baseUrl}`);
   }
-  const urls = Array.from(new Set(parseSitemapLocs(await sitemapRes.text())));
+  const sitemapXml = await sitemapRes.text();
+  const urls = Array.from(new Set(parseSitemapLocs(sitemapXml)));
+  const withoutLastmod = new Set(parseSitemapEntries(sitemapXml).filter((e) => !e.lastmod).map((e) => e.loc));
   if (urls.length === 0) throw new Error(`/sitemap.xml de ${baseUrl} no lista ninguna URL`);
 
   const pages: SeoPageResult[] = new Array(urls.length);
@@ -355,6 +378,12 @@ export async function runSeoHealthCheck(options: RunOptions): Promise<SeoHealthR
     }
   }
   await Promise.all(Array.from({ length: Math.min(concurrency, urls.length) }, worker));
+
+  for (const page of pages) {
+    if (withoutLastmod.has(page.url)) {
+      page.issues.push(issue("lastmod_missing", "warning", "La URL no declara <lastmod> en el sitemap"));
+    }
+  }
 
   flagDuplicateTitles(pages);
   return {

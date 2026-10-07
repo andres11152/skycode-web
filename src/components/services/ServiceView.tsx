@@ -1,3 +1,4 @@
+import { getServiceSeo } from "@/content/serviceSeo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle } from "@phosphor-icons/react/ssr";
@@ -7,13 +8,18 @@ import { ServiceCaseCard } from "@/components/services/ServiceCaseCard";
 import { MorphTransition } from "@/components/ui/CoverTransition";
 import { Button } from "@/components/ui/Button";
 import { InlineText } from "@/components/blog/InlineText";
+import { PostCard } from "@/components/blog/PostCard";
 import { getServicesContent, getServiceBySlug } from "@/content/services";
 import { getServiceDetails } from "@/content/serviceDetails";
 import { getServicePageContent } from "@/content/servicePage";
 import { getNavContent } from "@/content/nav";
+import { getPostBySlug } from "@/content/blog";
+import { getBlogMeta, type BlogPost } from "@/content/blogShared";
+import { getRelatedPostSlugsForService } from "@/content/relatedContent";
 import { getTrustContent } from "@/content/trust";
 import type { PortfolioProject } from "@/content/portfolioShared";
 import { defaultLocale, localeHomePath, t, type Locale } from "@/lib/i18n";
+import { withoutTodos } from "@/lib/todoPlaceholders";
 
 const H2 = "text-2xl font-bold tracking-tight text-balance text-foreground sm:text-3xl";
 const LABEL = "font-mono text-xs font-medium uppercase tracking-[0.2em] text-foreground/70";
@@ -24,7 +30,7 @@ const LABEL = "font-mono text-xs font-medium uppercase tracking-[0.2em] text-for
  * entrada en el hero a propósito (el H1 es el LCP, ver 509d3ba); lo que
  * está bajo el pliegue se revela con CSS ligado al scroll, sin JS.
  */
-export function ServiceView({
+export async function ServiceView({
   slug,
   locale = defaultLocale,
   projects = [],
@@ -61,12 +67,27 @@ export function ServiceView({
   const hasProcess = Boolean(details?.steps.length);
   const hasFaq = Boolean(details?.faqs.length);
 
+  // Sección "Desarrollo de X en Colombia": los datos de negocio pendientes
+  // ({{TODO}}) van en viñetas propias que `withoutTodos` omite en producción.
+  const colombiaParagraphs = details?.colombia ? withoutTodos(details.colombia.paragraphs) : [];
+  const colombiaFacts = details?.colombia ? withoutTodos(details.colombia.facts) : [];
+  const hasColombia = colombiaParagraphs.length > 0;
+
+  // Artículos relacionados: la relación sale de relatedContent.ts; un post
+  // sin versión publicada en este idioma simplemente se omite.
+  const relatedPosts = (
+    await Promise.all(getRelatedPostSlugsForService(service.slug).map((postSlug) => getPostBySlug(postSlug, locale)))
+  ).filter((post): post is BlogPost => post !== null);
+  const blogMeta = getBlogMeta(locale);
+
   const tocItems: PageTocItem[] = [
     hasOverview && { id: "resumen", label: copy.tocOverview },
     { id: "incluye", label: copy.tocIncludes },
     hasProcess && { id: "proceso", label: copy.tocProcess },
+    hasColombia && { id: "colombia", label: copy.tocColombia },
     projects.length > 0 && { id: "casos", label: copy.tocCases },
     hasFaq && { id: "faq", label: copy.tocFaq },
+    relatedPosts.length > 0 && { id: "articulos", label: copy.tocArticles },
   ].filter((item): item is PageTocItem => Boolean(item));
 
   return (
@@ -118,7 +139,7 @@ export function ServiceView({
                 </p>
               </div>
               <h1 className="text-3xl font-bold tracking-tight text-balance text-foreground sm:text-5xl">
-                {service.title}
+                {getServiceSeo(slug, locale)?.h1 ?? service.title}
               </h1>
               <p className="max-w-2xl text-lg leading-relaxed text-foreground/80">{service.description}</p>
               <div className="flex flex-wrap gap-3 pt-2">
@@ -275,6 +296,28 @@ export function ServiceView({
               </section>
             )}
 
+            {hasColombia && details?.colombia && (
+              <section id="colombia" aria-labelledby="service-colombia" className="flex scroll-mt-28 flex-col gap-6">
+                <h2 id="service-colombia" className={H2}>
+                  {details.colombia.heading}
+                </h2>
+                {colombiaParagraphs.map((paragraph) => (
+                  <p key={paragraph} className="text-base leading-relaxed text-foreground/80 sm:text-lg">
+                    <InlineText text={paragraph} />
+                  </p>
+                ))}
+                {colombiaFacts.length > 0 && (
+                  <ul className="flex flex-col divide-y divide-foreground/10 rounded-xl border border-foreground/10">
+                    {colombiaFacts.map((fact) => (
+                      <li key={fact} className="px-5 py-4 text-base leading-relaxed text-foreground/80">
+                        {fact}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            )}
+
             {projects.length > 0 && (
               <section id="casos" aria-labelledby="service-cases" className="flex scroll-mt-28 flex-col gap-8">
                 <h2 id="service-cases" className={H2}>
@@ -330,6 +373,21 @@ export function ServiceView({
                     </div>
                   </div>
                 )}
+              </section>
+            )}
+
+            {relatedPosts.length > 0 && (
+              <section id="articulos" aria-labelledby="service-articles" className="flex scroll-mt-28 flex-col gap-8">
+                <h2 id="service-articles" className={H2}>
+                  {copy.relatedPostsHeading}
+                </h2>
+                <ul className="grid gap-6 sm:grid-cols-2">
+                  {relatedPosts.map((post) => (
+                    <li key={post.slug}>
+                      <PostCard post={post} headingLevel="h3" readingTimeSuffix={blogMeta.readingTimeSuffix} locale={locale} />
+                    </li>
+                  ))}
+                </ul>
               </section>
             )}
 

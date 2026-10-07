@@ -35,6 +35,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
+import { revalidatePublicSite } from "./lib/revalidatePublic.mjs";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -157,3 +158,6 @@ try {
   client.release();
   await pool.end();
 }
+
+// Los cambios de este script no pasan por un Route Handler del sitio: se pide invalidar la caché pública.
+if (!process.argv.includes("--dry-run") && !process.exitCode) await revalidatePublicSite();

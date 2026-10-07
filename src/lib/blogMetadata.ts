@@ -5,6 +5,7 @@ import { rssFeedPath } from "@/lib/rss";
 import { ogImageUrl, siteUrl } from "@/lib/site";
 import type { Locale } from "@/lib/i18n";
 import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
+import { fitTitle, truncateAtWord } from "@/lib/seoText";
 
 // Server-only: `getPostBySlug`/`getBlogMeta` (vía content/blog.ts) tocan la
 // base de datos — este archivo nunca debe importarse desde un componente
@@ -72,9 +73,15 @@ export async function buildBlogPostMetadata(locale: Locale, slug: string): Promi
   // versión en español existe, para no apuntar el default a un 404.
   if (languages.es) languages["x-default"] = languages.es;
 
+  // `<title>` ≤50 (el layout agrega " | SkyCode") y descripción ≤155: red de
+  // seguridad para posts con título largo — el H1 del artículo sigue siendo
+  // `post.title` completo. Lo ideal es escribirlos ya dentro del límite.
+  const seoTitle = fitTitle(post.title, 50);
+  const seoDescription = truncateAtWord(post.description, 155);
+
   return {
-    title: post.title,
-    description: post.description,
+    title: seoTitle,
+    description: seoDescription,
     alternates: {
       canonical: blogPostPath(locale, slug),
       languages,
@@ -82,8 +89,8 @@ export async function buildBlogPostMetadata(locale: Locale, slug: string): Promi
     authors: [{ name: post.author }],
     openGraph: {
       type: "article",
-      title: post.title,
-      description: post.description,
+      title: seoTitle,
+      description: seoDescription,
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
       authors: [post.author],
@@ -93,8 +100,8 @@ export async function buildBlogPostMetadata(locale: Locale, slug: string): Promi
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
-      description: post.description,
+      title: seoTitle,
+      description: seoDescription,
     },
   };
 }

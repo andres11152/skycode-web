@@ -24,10 +24,20 @@ const TranslationSchema = z.object({
   title: z.string().trim().max(300),
   clientLabel: z.string().trim().max(300),
   summary: z.string().trim().max(1000),
-  challenge: z.string().trim().max(3000),
-  solution: z.string().trim().max(3000),
-  results: z.string().trim().max(3000),
+  challenge: z.string().trim().max(5000),
+  solution: z.string().trim().max(5000),
+  results: z.string().trim().max(5000),
   capabilities: z.array(z.string().trim().max(100)).max(12),
+  // Capítulos del caso completo (migración 0041). Opcionales: un cliente de
+  // la API anterior que no los manda no borra lo que ya hay (ver
+  // `upsertPortfolioTranslation`). Largos ampliados: un capítulo de 150–250
+  // palabras con listas pasa de 1.500 caracteres.
+  clientContext: z.string().trim().max(5000).optional(),
+  architecture: z.string().trim().max(6000).optional(),
+  process: z.string().trim().max(5000).optional(),
+  testimonialQuote: z.string().trim().max(1500).optional(),
+  testimonialAuthor: z.string().trim().max(200).optional(),
+  testimonialRole: z.string().trim().max(200).optional(),
 });
 
 /**

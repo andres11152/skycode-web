@@ -20,6 +20,9 @@
       "title": "4. Lanzamiento y 50% final",
       "description": "El saldo restante se abona únicamente cuando todo esté probado, funcionando en tus servidores y tú nos des el visto bueno definitivo."
     }
-  ]
+  ],
+  "localPage": {
+    "text": "¿Tu empresa está en Bogotá o buscas un equipo con base allí?",
+    "linkLabel": "Conoce nuestro desarrollo de software a la medida en Bogotá"
+  }
 }
-

@@ -39,11 +39,11 @@ Reto/Solución son una propuesta de redacción; los Resultados quedan en blanco 
 - **Solución (borrador):** Portal de agendamiento rápido con recordatorios automáticos y cotización directa por WhatsApp.
 - **Resultados — necesito de ti:** ¿citas agendadas en línea por mes? ¿% que llega por el portal? ¿reducción de inasistencias gracias a los recordatorios?
 
-## 5. moncyre — Tienda Online de Moda Urbana
+## 5. racingbike — Racing Bike 1998 · Tienda Online de Ciclismo
 
-- **Reto (borrador):** Vender moda y calzado en línea con una experiencia móvil rápida, un catálogo interactivo y pagos y envíos nacionales resueltos.
-- **Solución (borrador):** E-commerce a la medida con catálogo interactivo, experiencia móvil ultra-rápida e integración directa con pasarelas de pago y envíos.
-- **Resultados — necesito de ti:** ¿pedidos o ventas desde el lanzamiento? ¿tasa de conversión móvil? ¿tiempo de carga? ¿qué pasarelas y transportadoras se integraron?
+- **Reto (borrador):** Vender bicicletas, componentes y accesorios en línea a todo el país desde una tienda de Bogotá, con un catálogo técnico fácil de recorrer, ayuda para elegir talla y pagos y financiación locales.
+- **Solución (borrador):** Tienda WooCommerce con tema propio (Sage 11, Blade, Tailwind CSS v4), filtros por precio, marca y talla, guía «Encuentra tu talla», financiación con Addi y asesoría por WhatsApp.
+- **Resultados — necesito de ti:** ¿pedidos o ventas desde el lanzamiento? ¿tasa de conversión móvil? ¿tiempo de carga? ¿uso de la guía de tallas? ¿qué pasarela procesa PSE y tarjetas?
 
 ---
 

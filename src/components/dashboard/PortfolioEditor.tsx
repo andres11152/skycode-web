@@ -215,8 +215,40 @@ function GeneralTab({ project, canWrite }: { project: AdminPortfolioDetail; canW
 }
 
 function emptyTranslation(locale: Locale): AdminPortfolioTranslation {
-  return { locale, title: "", clientLabel: "", summary: "", challenge: "", solution: "", results: "", capabilities: [] };
+  return {
+    locale,
+    title: "",
+    clientLabel: "",
+    summary: "",
+    challenge: "",
+    solution: "",
+    results: "",
+    capabilities: [],
+    clientContext: "",
+    architecture: "",
+    process: "",
+    testimonialQuote: "",
+    testimonialAuthor: "",
+    testimonialRole: "",
+  };
 }
+
+/**
+ * Capítulos del caso en el orden en que aparecen en la página pública. Un
+ * capítulo vacío no se muestra en el sitio (no queda un título sin
+ * contenido). Un párrafo o viñeta con `{{TODO: …}}` tampoco se publica: sirve
+ * para marcar dónde falta un dato real sin que llegue a producción.
+ */
+const CHAPTER_FIELDS: { field: "clientContext" | "challenge" | "solution" | "architecture" | "process" | "results"; label: string; rows: number }[] = [
+  { field: "clientContext", label: "Contexto del cliente", rows: 5 },
+  { field: "challenge", label: "El problema", rows: 5 },
+  { field: "solution", label: "La solución", rows: 6 },
+  { field: "architecture", label: "Arquitectura y stack (el listado con íconos está en la pestaña Tecnologías)", rows: 6 },
+  { field: "process", label: "Proceso y tiempos", rows: 6 },
+  { field: "results", label: "Resultados (las cifras destacadas van en la pestaña Métricas)", rows: 5 },
+];
+
+const hasTodoMarker = (value: string) => value.includes("{{TODO");
 
 function ContentTab({
   projectId,
@@ -314,21 +346,64 @@ function ContentTab({
           <textarea
             id="pe-field-6" value={current.summary} onChange={(e) => update("summary", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
         </div>
-        <div>
-          <label htmlFor="pe-field-7" className={labelClasses}>El reto</label>
-          <textarea
-            id="pe-field-7" value={current.challenge} onChange={(e) => update("challenge", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
-        </div>
-        <div>
-          <label htmlFor="pe-field-8" className={labelClasses}>La solución</label>
-          <textarea
-            id="pe-field-8" value={current.solution} onChange={(e) => update("solution", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
-        </div>
-        <div>
-          <label htmlFor="pe-field-9" className={labelClasses}>Los resultados</label>
-          <textarea
-            id="pe-field-9" value={current.results} onChange={(e) => update("results", e.target.value)} disabled={!canWrite} rows={3} className={inputClasses} />
-        </div>
+        <p className="text-xs leading-relaxed text-foreground/70">
+          Cada capítulo admite varios párrafos (sepáralos con una línea en blanco) y listas (una viñeta por línea, empezando con &quot;- &quot;). Un capítulo vacío no se muestra en el sitio. Lo que aún no tenga un dato real
+          verificado se marca con <code className="rounded bg-foreground/5 px-1">{"{{TODO: qué dato falta}}"}</code> en su propio párrafo: se puede guardar, y la página pública lo omite.
+        </p>
+        {CHAPTER_FIELDS.map(({ field, label, rows }) => (
+          <div key={field}>
+            <label htmlFor={`pe-chapter-${field}`} className={labelClasses}>
+              {label}
+              {hasTodoMarker(current[field]) && (
+                <span className="ml-2 rounded-full border border-warning/25 bg-warning/10 px-2 py-0.5 text-[11px] font-semibold text-warning">Datos pendientes</span>
+              )}
+            </label>
+            <textarea
+              id={`pe-chapter-${field}`}
+              value={current[field]}
+              onChange={(e) => update(field, e.target.value)}
+              disabled={!canWrite}
+              rows={rows}
+              className={inputClasses}
+            />
+          </div>
+        ))}
+        <fieldset className="space-y-4 rounded-lg border border-foreground/10 p-4">
+          <legend className="px-1 text-xs font-semibold text-foreground/70">Testimonio (solo se publica con cita, nombre y cargo reales)</legend>
+          <div>
+            <label htmlFor="pe-testimonial-quote" className={labelClasses}>Cita del cliente</label>
+            <textarea
+              id="pe-testimonial-quote"
+              value={current.testimonialQuote}
+              onChange={(e) => update("testimonialQuote", e.target.value)}
+              disabled={!canWrite}
+              rows={3}
+              className={inputClasses}
+            />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="pe-testimonial-author" className={labelClasses}>Nombre de quien lo dice</label>
+              <input
+                id="pe-testimonial-author"
+                value={current.testimonialAuthor}
+                onChange={(e) => update("testimonialAuthor", e.target.value)}
+                disabled={!canWrite}
+                className={inputClasses}
+              />
+            </div>
+            <div>
+              <label htmlFor="pe-testimonial-role" className={labelClasses}>Cargo</label>
+              <input
+                id="pe-testimonial-role"
+                value={current.testimonialRole}
+                onChange={(e) => update("testimonialRole", e.target.value)}
+                disabled={!canWrite}
+                className={inputClasses}
+              />
+            </div>
+          </div>
+        </fieldset>
         <div>
           <label htmlFor="pe-field-10" className={labelClasses}>Capacidades, separadas por coma (ej. &quot;Catálogo Digital, SEO &amp; Rendimiento&quot;)</label>
           <input

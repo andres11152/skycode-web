@@ -3,8 +3,8 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/ssr";
 import type { BlogBlock, BlogPost } from "@/content/blogShared";
 import { getBlogMeta, readingTime } from "@/content/blogShared";
-import { POST_SERVICE_SLUGS } from "@/content/blogTopics";
-import { getServiceBySlug } from "@/content/services";
+import { getRelatedServiceSlugsForPost } from "@/content/relatedContent";
+import { getServiceBySlug, type Service } from "@/content/services";
 import { authorPath, blogIndexPath, blogPostPath } from "@/lib/blogPaths";
 import type { ArticleContext } from "@/lib/blogData";
 import { defaultLocale, localeHomePath, t, type Locale } from "@/lib/i18n";
@@ -17,6 +17,7 @@ import { ArticleBody } from "@/components/blog/ArticleBody";
 import { AuthorChip } from "@/components/blog/AuthorChip";
 import { PostCard } from "@/components/blog/PostCard";
 import { PostCover } from "@/components/blog/PostCover";
+import { RelatedServices } from "@/components/blog/RelatedServices";
 
 const LABEL = "font-mono text-xs font-medium uppercase tracking-[0.2em] text-foreground/70";
 const LINK_FOCUS =
@@ -54,7 +55,11 @@ export function ArticleView({
   const contactHref = `${prefix}/#contacto`;
 
   const { author, related, previous, next } = context;
-  const service = POST_SERVICE_SLUGS[post.slug] ? getServiceBySlug(POST_SERVICE_SLUGS[post.slug], locale) : undefined;
+  // 2–3 servicios, del más al menos relevante (content/relatedContent.ts, fuente única del enlazado blog ↔ servicios).
+  const relatedServices = getRelatedServiceSlugsForPost(post.slug)
+    .map((slug) => getServiceBySlug(slug, locale))
+    .filter((service): service is Service => service !== undefined);
+  const primaryServiceSlug = relatedServices[0]?.slug;
   // "Actualizado" solo si la revisión cayó en otro día que la publicación.
   const wasUpdated = formatDate(post.updatedAt, locale) !== formatDate(post.publishedAt, locale);
 
@@ -152,30 +157,12 @@ export function ArticleView({
 
                 <ArticleBody blocks={post.content} copyCodeLabel={meta.copyCode} copiedCodeLabel={meta.copiedCode} editorial />
 
-                {service && (
-                  <Link
-                    href={`${prefix}/servicios/${service.slug}`}
-                    className={cn(
-                      "group flex flex-col gap-4 rounded-xl border border-foreground/10 bg-foreground/[0.02] p-6 transition-colors duration-200 hover:border-foreground/25 sm:p-8",
-                      LINK_FOCUS,
-                    )}
-                  >
-                    <p className={LABEL}>{meta.serviceLabel}</p>
-                    <div className="flex items-start gap-4">
-                      <span aria-hidden="true" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-background text-foreground/70 transition-colors duration-200 group-hover:border-accent/30 group-hover:text-accent-strong">
-                        <service.coverIcon size={24} weight="duotone" />
-                      </span>
-                      <div className="min-w-0">
-                        <h2 className="text-xl font-bold tracking-tight text-balance text-foreground">{service.title}</h2>
-                        <p className="mt-2 text-base leading-relaxed text-foreground/80">{service.description}</p>
-                      </div>
-                    </div>
-                    <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-colors duration-200 group-hover:text-accent-strong">
-                      {meta.serviceCta}
-                      <ArrowRight size={16} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transform-none" />
-                    </span>
-                  </Link>
-                )}
+                <RelatedServices
+                  services={relatedServices}
+                  heading={meta.servicesHeading}
+                  ctaLabel={meta.serviceCta}
+                  hrefFor={(slug) => `${prefix}/servicios/${slug}`}
+                />
 
                 {author && (
                   <section aria-label={meta.authorLabel} className="flex flex-col gap-5 border-t border-foreground/10 pt-10 sm:flex-row sm:items-start">
@@ -255,7 +242,13 @@ export function ArticleView({
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-background/80">{meta.ctaDescription}</p>
           </div>
-          <Button href={contactHref} variant="accent" size="lg" className="focus-visible:ring-offset-foreground">
+          <Button
+            href={contactHref}
+            variant="accent"
+            size="lg"
+            className="focus-visible:ring-offset-foreground"
+            data-contact-service={primaryServiceSlug}
+          >
             {meta.ctaButton}
           </Button>
         </div>

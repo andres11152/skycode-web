@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   getPublishedPortfolioProjects,
@@ -17,6 +18,7 @@ import {
   setPortfolioProjectCoverImage,
   setPortfolioProjectTechnologies,
   setPortfolioProjectMetrics,
+  updatePortfolioImageAlt,
 } from "./portfolio";
 import { createTechnology } from "./portfolioTechnologies";
 import { query, withTransaction } from "../db";
@@ -316,5 +318,169 @@ describe("panel de administración", () => {
 
   it("un id inexistente en getAdminPortfolioDetail devuelve null", async () => {
     expect(await getAdminPortfolioDetail(999999)).toBeNull();
+  });
+});
+
+describe("capítulos del caso completo (migración 0041)", () => {
+  const CHAPTERS = {
+    clientContext: "Contexto del cliente.\n\nSegundo párrafo.",
+    architecture: "Arquitectura:\n\n- Next.js\n- PostgreSQL",
+    process: "Proceso.\n\n{{TODO: plazos reales del proyecto}}",
+    testimonialQuote: "{{TODO: cita real}}",
+    testimonialAuthor: "{{TODO: nombre real}}",
+    testimonialRole: "{{TODO: cargo real}}",
+  };
+
+  it("un caso sin los campos nuevos los devuelve vacíos (el capítulo se oculta) y sigue funcionando", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    const { projectId } = await createFullProject(admin);
+    await withTransaction((c) => setPortfolioProjectStatus(projectId, "published", admin.id, c));
+
+    const project = await getPublishedPortfolioProjectBySlug("caso-prueba", "es");
+    expect(project?.clientContext).toBe("");
+    expect(project?.architecture).toBe("");
+    expect(project?.process).toBe("");
+    expect(project?.testimonialQuote).toBe("");
+    expect(project?.testimonialAuthor).toBe("");
+    expect(project?.testimonialRole).toBe("");
+    expect(project?.challenge).toBe("El reto");
+  });
+
+  it("guarda y devuelve los capítulos nuevos, incluido texto con marcadores {{TODO}}, en el panel y en el sitio público", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    const { projectId } = await createFullProject(admin);
+    await withTransaction((c) =>
+      upsertPortfolioTranslation(
+        projectId,
+        "es",
+        { title: "Caso de Prueba", clientLabel: "C", summary: "S", challenge: "R", solution: "S", results: "Res", capabilities: [], ...CHAPTERS },
+        c
+      )
+    );
+    await withTransaction((c) => setPortfolioProjectStatus(projectId, "published", admin.id, c));
+
+    const detail = await getAdminPortfolioDetail(projectId);
+    expect(detail?.translations.es).toMatchObject(CHAPTERS);
+
+    const project = await getPublishedPortfolioProjectBySlug("caso-prueba", "es");
+    expect(project).toMatchObject(CHAPTERS);
+  });
+
+  it("un guardado que no manda los campos nuevos (cliente anterior) no borra lo ya cargado; una cadena vacía sí lo vacía", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    const { projectId } = await createFullProject(admin);
+    const base = { title: "Caso de Prueba", clientLabel: "C", summary: "S", challenge: "R", solution: "S", results: "Res", capabilities: [] };
+    await withTransaction((c) => upsertPortfolioTranslation(projectId, "es", { ...base, ...CHAPTERS }, c));
+
+    await withTransaction((c) => upsertPortfolioTranslation(projectId, "es", { ...base, title: "Título nuevo" }, c));
+    let detail = await getAdminPortfolioDetail(projectId);
+    expect(detail?.translations.es?.title).toBe("Título nuevo");
+    expect(detail?.translations.es).toMatchObject(CHAPTERS);
+
+    await withTransaction((c) => upsertPortfolioTranslation(projectId, "es", { ...base, clientContext: "" }, c));
+    detail = await getAdminPortfolioDetail(projectId);
+    expect(detail?.translations.es?.clientContext).toBe("");
+    expect(detail?.translations.es?.architecture).toBe(CHAPTERS.architecture);
+  });
+
+  it("cada idioma guarda sus propios capítulos", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    const { projectId } = await createFullProject(admin);
+    const base = { title: "T", clientLabel: "C", summary: "S", challenge: "", solution: "", results: "", capabilities: [] };
+    await withTransaction((c) => upsertPortfolioTranslation(projectId, "es", { ...base, clientContext: "Contexto ES" }, c));
+    await withTransaction((c) => upsertPortfolioTranslation(projectId, "en", { ...base, clientContext: "Context EN" }, c));
+    await withTransaction((c) => setPortfolioProjectStatus(projectId, "published", admin.id, c));
+
+    expect((await getPublishedPortfolioProjectBySlug("caso-prueba", "es"))?.clientContext).toBe("Contexto ES");
+    expect((await getPublishedPortfolioProjectBySlug("caso-prueba", "en"))?.clientContext).toBe("Context EN");
+  });
+});
+
+describe("scripts/seo-case-studies.mjs (datos de los casos de SEO)", () => {
+  function runScript(...args: string[]): string {
+    return execFileSync("node", ["scripts/seo-case-studies.mjs", ...args], {
+      env: { ...process.env, DATABASE_URL: process.env.DATABASE_URL },
+      cwd: process.cwd(),
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  }
+
+  // `racingbike` tiene 6 capturas en el JSON; el caso de prueba replica el estado en que migrate-portfolio-projects.mjs lo dejó.
+  async function seedRacingBike(admin: { id: number }) {
+    const projectId = await withTransaction((c) => createPortfolioProject({ slug: "racingbike", industryIcon: "ShoppingCart" }, admin.id, c));
+    await withTransaction((c) =>
+      upsertPortfolioTranslation(
+        projectId,
+        "es",
+        { title: "Racing Bike 1998", clientLabel: "C", summary: "S", challenge: "", solution: "", results: "", capabilities: [] },
+        c
+      )
+    );
+    for (let i = 0; i < 6; i++) {
+      await withTransaction(async (c) => {
+        const { id } = await addPortfolioProjectImage(
+          projectId,
+          { storageKey: `r-${i}.webp`, variants: { sm: "s", md: "m", lg: "l" }, width: 100, height: 100 },
+          c
+        );
+        await c.query("UPDATE portfolio_project_images SET alt = $1::jsonb WHERE id = $2;", [JSON.stringify({ es: "Racing Bike 1998" }), id]);
+      });
+    }
+    return projectId;
+  }
+
+  it("carga los capítulos y el alt, y una segunda corrida no cambia nada", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    const projectId = await seedRacingBike(admin);
+
+    runScript();
+    const first = await getAdminPortfolioDetail(projectId);
+    const es = first?.translations.es;
+    expect(es?.clientContext).toContain("Racing Bike 1998 es una tienda de ciclismo");
+    expect(es?.testimonialQuote).toMatch(/^\{\{TODO: /);
+    expect(es?.results).toContain("{{TODO:");
+    expect(first?.translations.en).toBeNull(); // nunca inventa una traducción que no existe
+    expect(first?.images).toHaveLength(6);
+    expect(first?.images[0].alt.es).toContain("Portada de la tienda Racing Bike 1998");
+    expect(first?.images[0].alt.en).toBeUndefined(); // sin traducción al inglés, su alt no se toca
+
+    const second = runScript();
+    expect(second).toContain("Campos escritos: 0");
+    expect(second).toContain("Alt escritos: 0");
+  });
+
+  it("no pisa texto editado a mano (ni un alt editado) salvo con --force", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    const projectId = await seedRacingBike(admin);
+    await withTransaction((c) =>
+      upsertPortfolioTranslation(
+        projectId,
+        "es",
+        { title: "Racing Bike 1998", clientLabel: "C", summary: "S", challenge: "Reto escrito por una persona", solution: "", results: "", capabilities: [] },
+        c
+      )
+    );
+    const imageId = (await getAdminPortfolioDetail(projectId))!.images[0].id;
+    await withTransaction((c) => updatePortfolioImageAlt(imageId, { es: "Alt escrito por una persona" }, c));
+
+    runScript();
+    let detail = await getAdminPortfolioDetail(projectId);
+    expect(detail?.translations.es?.challenge).toBe("Reto escrito por una persona");
+    expect(detail?.images[0].alt.es).toBe("Alt escrito por una persona");
+    expect(detail?.translations.es?.clientContext).not.toBe(""); // lo vacío sí se completó
+
+    runScript("--force");
+    detail = await getAdminPortfolioDetail(projectId);
+    expect(detail?.translations.es?.challenge).toContain("Vender bicicletas y componentes en línea");
+    expect(detail?.images[0].alt.es).toContain("Portada de la tienda Racing Bike 1998");
+  });
+
+  it("--dry-run no escribe nada", async () => {
+    const admin = await createTestUser({ role: "admin" });
+    const projectId = await seedRacingBike(admin);
+    runScript("--dry-run");
+    const detail = await getAdminPortfolioDetail(projectId);
+    expect(detail?.translations.es?.clientContext).toBe("");
   });
 });

@@ -2,7 +2,7 @@ import type { BlogPost } from "@/content/blogShared";
 import { getBlogMeta } from "@/content/blogShared";
 import { blogIndexPath, blogPostPath, authorUrl } from "@/lib/blogPaths";
 import { localeHomePath, type Locale } from "@/lib/i18n";
-import { ogImageUrl, siteName, siteUrl } from "@/lib/site";
+import { siteName, siteUrl } from "@/lib/site";
 import { stripInlineLinks } from "@/lib/inlineLinks";
 
 /**
@@ -25,13 +25,22 @@ export function ArticleJsonLd({ post, locale }: { post: BlogPost; locale: Locale
     // funciones) — `updatedAt` es un campo real y separado en el contenido
     // ahora, ver la nota en content/blog.ts.
     dateModified: post.updatedAt,
-    author: { "@type": "Person", name: post.author, url: authorUrl(locale, post.authorSlug) },
+    // `@id` = la misma URL `/equipo#slug` que declara la entidad Person de
+    // la página de equipo (components/team/TeamJsonLd.tsx).
+    author: {
+      "@type": "Person",
+      "@id": authorUrl(locale, post.authorSlug),
+      name: post.author,
+      url: authorUrl(locale, post.authorSlug),
+    },
     publisher: {
       "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
       name: siteName,
-      logo: { "@type": "ImageObject", url: ogImageUrl },
+      logo: { "@type": "ImageObject", url: `${siteUrl}/logo-mark.png` },
     },
-    image: ogImageUrl,
+    // Imagen propia del post (opengraph-image.tsx de su ruta), no la genérica.
+    image: `${url}/opengraph-image`,
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     keywords: post.tags.join(", "),
     inLanguage: locale,

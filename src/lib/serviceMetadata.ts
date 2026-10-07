@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getServiceBySlug, getServicesContent } from "@/content/services";
+import { getServiceBySlug } from "@/content/services";
 import { getServiceSeo, getServicesIndexSeo } from "@/content/serviceSeo";
 import { ogImageUrl, siteUrl } from "@/lib/site";
 import { localeHomePath, type Locale } from "@/lib/i18n";
