@@ -56,6 +56,16 @@ const nextConfig: NextConfig = {
     // hay que agregar también ese hostname acá.
     remotePatterns: [{ protocol: "https", hostname: "*.r2.dev" }],
   },
+  // `@phosphor-icons/react` evalúa al cargar un Map con los 6 pesos de CADA ícono importado (~145 KB de
+  // JS y ~110 ms de evaluación a 6x de CPU solo en la portada). `phosphorLite` trae los mismos trazos
+  // como datos, solo los pesos usados y tree-shakeable (scripts/gen-phosphor-lite.mjs; un test compara el
+  // SVG con el original). Los tipos siguen viniendo del paquete real.
+  turbopack: {
+    resolveAlias: {
+      "@phosphor-icons/react": "./src/lib/phosphor/index.ts",
+      "@phosphor-icons/react/ssr": "./src/lib/phosphor/index.ts",
+    },
+  },
   experimental: {
     // `@phosphor-icons/react` exporta 3.000+ iconos desde un solo índice —
     // sin esto, importar 3 iconos arrastra el barrel completo al bundle.

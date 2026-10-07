@@ -27,6 +27,9 @@ const actionButton =
 export function CookieBanner() {
   const locale = useLocale();
   const cookieData = getCookieBannerContent(locale);
+  // Una frase por bloque (ver el comentario del JSX): `message` trae dos frases en es/en/fr.
+  const [messageFirst, ...messageTail] = cookieData.message.split(/(?<=[.!?])\s+/);
+  const messageRest = messageTail.join(" ");
   // `undefined` = aún no se leyó el almacenamiento (servidor/hidratación): no se muestra nada.
   const record = useConsentRecord();
   const reduced = useReducedMotion();
@@ -88,19 +91,27 @@ export function CookieBanner() {
                 >
                   <Cookie size={18} />
                 </span>
+                {/* El texto va en DOS bloques (una frase cada uno) a propósito: el LCP toma el bloque de texto
+                    más grande, y este párrafo en móvil medía casi lo mismo que el H1 (±1 %), así que a veces
+                    el banner (que aparece tras hidratar) se convertía en el LCP de la página. Con dos bloques
+                    ninguno puede superar al titular. */}
                 <p className="text-xs leading-relaxed text-foreground/80 sm:text-sm">
-                  {cookieData.message}{" "}
-                  {/* Sin prefetch: el banner está en pantalla en toda primera
-                      visita y prefetchear la política le costaba red a cada
-                      visitante para un link que casi nadie abre. */}
-                  <Link
-                    href={cookieData.linkUrl}
-                    prefetch={false}
-                    className="underline decoration-foreground/30 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground"
-                  >
-                    {cookieData.linkText}
-                  </Link>
-                  {locale !== "es" && <EsBadge className="ml-1.5" />}
+                  <span className="block">{messageFirst}</span>
+                  <span className="block">
+                    {messageRest}
+                    {messageRest ? " " : ""}
+                    {/* Sin prefetch: el banner está en pantalla en toda primera
+                        visita y prefetchear la política le costaba red a cada
+                        visitante para un link que casi nadie abre. */}
+                    <Link
+                      href={cookieData.linkUrl}
+                      prefetch={false}
+                      className="underline decoration-foreground/30 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground"
+                    >
+                      {cookieData.linkText}
+                    </Link>
+                    {locale !== "es" && <EsBadge className="ml-1.5" />}
+                  </span>
                 </p>
               </div>
               <div className="flex shrink-0 gap-2">
