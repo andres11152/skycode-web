@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { TrustStrip } from "@/components/sections/TrustStrip";
 import { Faq } from "@/components/sections/Faq";
@@ -6,19 +5,14 @@ import { Highlights } from "@/components/sections/Highlights";
 import { Process } from "@/components/sections/Process";
 import { ProjectEstimatorTeaser } from "@/components/sections/ProjectEstimatorTeaser";
 import { Services } from "@/components/sections/Services";
-import { SectionRail } from "@/components/ui/SectionRail";
+import { Portfolio } from "@/components/sections/Portfolio";
+import { BlogTeaser } from "@/components/sections/BlogTeaser";
 import { Testimonials } from "@/components/sections/Testimonials";
-import { HomeInteractiveClosing, HomeInteractiveContact } from "@/components/HomeInteractiveSections";
+import { HomeInteractiveClosing, HomeInteractiveContact, HomeSectionRail } from "@/components/HomeInteractiveSections";
 import { getBlogPosts } from "@/content/blog";
 import { getPublishedPortfolioProjects } from "@/lib/queries/portfolio";
 import type { Locale } from "@/lib/i18n";
 
-const Portfolio = dynamic(() =>
-  import("@/components/sections/Portfolio").then((m) => m.Portfolio)
-);
-const BlogTeaser = dynamic(() =>
-  import("@/components/sections/BlogTeaser").then((m) => m.BlogTeaser)
-);
 
 export async function HomeSections({ locale }: { locale: Locale }) {
   // Server Component — se resuelve al renderizar, `BlogTeaser` (cliente)
@@ -49,7 +43,7 @@ export async function HomeSections({ locale }: { locale: Locale }) {
       <Faq locale={locale} />
       <HomeInteractiveClosing locale={locale} />
       <HomeInteractiveContact locale={locale} />
-      <SectionRail locale={locale} />
+      <HomeSectionRail locale={locale} />
     </main>
   );
 }

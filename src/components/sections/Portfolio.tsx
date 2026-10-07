@@ -1,14 +1,11 @@
-"use client";
-
 import Link from "next/link";
-import { m as motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight } from "@phosphor-icons/react";
+import type { CSSProperties } from "react";
+import { ArrowUpRight } from "@phosphor-icons/react/ssr";
 import { RevealText } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { Button } from "@/components/ui/Button";
 import { EsBadge } from "@/components/ui/EsBadge";
 import { CaseVisual } from "@/components/portfolio/CaseVisual";
-import { fadeUp, staggerContainer } from "@/lib/animations";
 import { getPortfolioSectionContent, type PortfolioSectionCopy } from "@/content/projects";
 import { getUiContent } from "@/content/ui";
 import { defaultLocale, t, type Locale } from "@/lib/i18n";
@@ -164,7 +161,6 @@ export function Portfolio({
   locale?: Locale;
   projects: PortfolioProject[];
 }) {
-  const reduced = Boolean(useReducedMotion());
   const sectionCopy = getPortfolioSectionContent(locale);
   const uiData = getUiContent(locale);
 
@@ -194,33 +190,28 @@ export function Portfolio({
           </Button>
         </div>
 
-        <motion.div
-          variants={staggerContainer(reduced, 0.08)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          className="flex flex-col gap-14 lg:gap-20"
-        >
-          <motion.div variants={fadeUp(reduced)}>
+        {/* Revelado ligado al scroll en CSS (`.scroll-reveal`, escalonado con `--i`): la sección es un
+            Server Component, no hidrata Framer Motion ni deja el contenido en opacity 0 hasta hidratar. */}
+        <div className="flex flex-col gap-14 lg:gap-20">
+          <div className="scroll-reveal">
             <FeaturedCase project={featured} uiData={uiData} sectionCopy={sectionCopy} locale={locale} />
-          </motion.div>
+          </div>
 
           {secondary.length > 0 && (
             <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:gap-x-12">
               {secondary.map((project, index) => (
-                <motion.div key={project.slug} variants={fadeUp(reduced)}>
+                <div key={project.slug} style={{ "--i": index + 1 } as CSSProperties} className="scroll-reveal">
                   <SecondaryCase
                     project={project}
                     number={index + 2}
                     sectionCopy={sectionCopy}
                     locale={locale}
                   />
-                </motion.div>
+                </div>
               ))}
             </div>
           )}
-
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -1,8 +1,5 @@
-"use client";
-
-import { m as motion, useReducedMotion } from "framer-motion";
+import type { CSSProperties } from "react";
 import type { BlogPost } from "@/content/blogShared";
-import { fadeUp, staggerContainer } from "@/lib/animations";
 import { getBlogTeaserContent } from "@/content/blogTeaser";
 import { blogIndexPath } from "@/lib/blogPaths";
 import { defaultLocale, type Locale } from "@/lib/i18n";
@@ -11,9 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { RevealText } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 
-/** `posts` llega ya resuelto desde el servidor (HomeSections) — `getBlogPosts` lee de Postgres desde la Fase 3, un componente cliente no puede llamarlo directo. */
+/** `posts` llega ya resuelto desde el servidor (HomeSections): `getBlogPosts` lee de Postgres desde la Fase 3. */
 export function BlogTeaser({ locale = defaultLocale, posts }: { locale?: Locale; posts: BlogPost[] }) {
-  const reduced = Boolean(useReducedMotion());
   const blogTeaserData = getBlogTeaserContent(locale);
 
   return (
@@ -38,19 +34,14 @@ export function BlogTeaser({ locale = defaultLocale, posts }: { locale?: Locale;
           </Button>
         </div>
 
-        <motion.div
-          variants={staggerContainer(reduced, 0.06)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {posts.map((post) => (
-            <motion.article key={post.slug} variants={fadeUp(reduced)}>
+        {/* Server Component: revelado en CSS ligado al scroll (`.scroll-reveal` + `--i`), sin hidratar Framer Motion. */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post, index) => (
+            <article key={post.slug} style={{ "--i": index } as CSSProperties} className="scroll-reveal">
               <PostCard post={post} readingTimeSuffix={blogTeaserData.readingTimeSuffix} locale={locale} />
-            </motion.article>
+            </article>
           ))}
-        </motion.div>
+        </div>
 
       </div>
     </section>

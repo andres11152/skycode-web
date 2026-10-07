@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { ClosingStatementFallback } from "@/components/sections/ClosingStatementFallback";
 import { ContactSectionSkeleton } from "@/components/contact/ContactFormSkeleton";
 import { useLocale } from "@/components/LocaleProvider";
+import { LazyOnIdle, LazyOnVisible } from "@/components/ui/Lazy";
 import { LOADING_LABEL } from "@/lib/loadingLabel";
 import type { Locale } from "@/lib/i18n";
 
@@ -23,10 +24,33 @@ const Contact = dynamic(
   { ssr: false, loading: () => <ContactLoading /> }
 );
 
+// Las dos van bajo el primer pliegue: su chunk (formulario, efecto de scroll) solo se pide cuando la
+// sección está por entrar en pantalla (`LazyOnVisible`); hasta entonces se ve el mismo fallback que
+// ya trae el HTML, con la misma altura, así que no hay salto de layout.
+
 export function HomeInteractiveClosing({ locale }: { locale: Locale }) {
-  return <ClosingStatement locale={locale} />;
+  return (
+    <LazyOnVisible fallback={<ClosingStatementFallback />}>
+      <ClosingStatement locale={locale} />
+    </LazyOnVisible>
+  );
 }
 
 export function HomeInteractiveContact({ locale }: { locale: Locale }) {
-  return <Contact locale={locale} />;
+  return (
+    <LazyOnVisible fallback={<ContactLoading />}>
+      <Contact locale={locale} />
+    </LazyOnVisible>
+  );
+}
+
+const SectionRail = dynamic(() => import("@/components/ui/SectionRail").then((mod) => mod.SectionRail), { ssr: false });
+
+/** Indicador lateral de la home: solo `xl`, cuando el navegador está ocioso y sin descargarlo en móvil. */
+export function HomeSectionRail({ locale }: { locale: Locale }) {
+  return (
+    <LazyOnIdle minWidth={1280}>
+      <SectionRail locale={locale} />
+    </LazyOnIdle>
+  );
 }
