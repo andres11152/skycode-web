@@ -12,6 +12,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { ContactModalProvider } from "@/components/contact/ContactModalProvider";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
 import { PageTransition } from "@/components/ui/PageTransition";
+import { LazyOnIdle } from "@/components/ui/Lazy";
 
 const WhatsAppButton = dynamic(
   () => import("@/components/ui/WhatsAppButton").then((mod) => mod.WhatsAppButton),
@@ -105,8 +106,12 @@ export function ConditionalLayout({ children, serviceLinks }: { children: React.
       <PageTransition>{children}</PageTransition>
       <Footer serviceLinks={serviceLinks} />
       <HtmlLangSync />
-      <WhatsAppButton locale={locale} />
-      <CookieBanner />
+      {/* El botón de WhatsApp y el banner de cookies no son parte del primer pintado: se montan (y sus
+          chunks se descargan) cuando el navegador está ocioso, no durante la hidratación. */}
+      <LazyOnIdle timeout={2500}>
+        <WhatsAppButton locale={locale} />
+        <CookieBanner />
+      </LazyOnIdle>
       <AttributionCapture />
     </ContactModalProvider>
   );
