@@ -64,6 +64,13 @@ const nextConfig: NextConfig = {
     resolveAlias: {
       "@phosphor-icons/react": "./src/lib/phosphor/index.ts",
       "@phosphor-icons/react/ssr": "./src/lib/phosphor/index.ts",
+      // Next mete siempre en el chunk del framework un shim (~1,4 KB) de `trimStart`, `Array.prototype.flat/at`,
+      // `Object.fromEntries/hasOwn`, `Promise.finally`, `Symbol.description` y `URL.canParse` que Lighthouse
+      // marca como "JavaScript antiguo". Nuestro objetivo (package.json > browserslist: Chrome/Edge/Firefox 109+,
+      // Safari 16.4+) ya trae todo menos `URL.canParse`, que el cliente de producción no usa (solo el modo
+      // desarrollo de Next). Si una versión futura de Next cambia esa ruta, el alias deja de aplicar sin romper nada.
+      "../build/polyfills/polyfill-module": "./src/lib/noPolyfill.ts",
+      "next/dist/build/polyfills/polyfill-module": "./src/lib/noPolyfill.ts",
     },
   },
   experimental: {
