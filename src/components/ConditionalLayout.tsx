@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
@@ -66,7 +66,14 @@ export function ConditionalLayout({ children, serviceLinks }: { children: React.
   // hipotético. Si hay hash y el elemento existe, se salta el forzado a top.
   // `useLayoutEffect` (no `useEffect`): con la transición de página, el snapshot de la página nueva se
   // captura justo tras el commit — si el scroll se reiniciara después, se vería un salto.
+  //
+  // En la PRIMERA carga no se reinicia el scroll: el documento ya está arriba (o el navegador restaura su
+  // posición) y `window.scrollTo` obliga a calcular estilo y layout justo después de hidratar (la
+  // "redistribución forzada" que marca Lighthouse). Solo las navegaciones entre rutas lo necesitan.
+  const isFirstRender = useRef(true);
   useLayoutEffect(() => {
+    const firstRender = isFirstRender.current;
+    isFirstRender.current = false;
     const hash = window.location.hash;
     if (hash) {
       const target = document.getElementById(hash.slice(1));
@@ -75,7 +82,7 @@ export function ConditionalLayout({ children, serviceLinks }: { children: React.
         return;
       }
     }
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    if (!firstRender) window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [pathname]);
 
   if (isAppShell) {
