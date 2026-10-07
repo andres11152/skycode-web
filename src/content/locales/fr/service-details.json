@@ -28,7 +28,7 @@
       },
       {
         "title": "Périmètre par phases",
-        "text": "Nous priorisons le module qui libère le plus d'heures opérationnelles et le mettons en production en premier. Le reste est planifié en phases aux dates et au budget fermes, et non en un projet d'un an sans livraisons intermédiaires."
+        "text": "Nous priorisons le module qui libère le plus d'heures opérationnelles et le mettons en production en premier. Le reste est planifié en phases aux dates et au budget fermes, et non en un projet d'un an sans livraisons intermédiaires. Vous pouvez estimer les fourchettes d'investissement et les délais avant de nous parler dans le [simulateur de projet](/fr/cotizador)."
       },
       {
         "title": "Développement avec points d'avancement hebdomadaires",
@@ -110,7 +110,7 @@
       },
       {
         "title": "Prototype navigable",
-        "text": "Avant de coder, vous validez un prototype des parcours principaux sur votre propre téléphone. Corriger à ce stade coûte bien moins cher que sur une version déjà publiée."
+        "text": "Avant de coder, vous validez un prototype des parcours principaux sur votre propre téléphone. Corriger à ce stade coûte bien moins cher que sur une version déjà publiée. Pour avoir une référence de coût et de délai pour votre application avant le prototype, utilisez le [simulateur de projet](/fr/cotizador)."
       },
       {
         "title": "Développement avec builds de test",
@@ -329,6 +329,27 @@
         "Investissement de départ : à partir de {priceUsd.web}",
         "Délai habituel avant le premier lancement : environ {weeks.web} semaines"
       ]
+    },
+    "proof": {
+      "heading": "La preuve : nous le mesurons sur notre propre site",
+      "intro": "Avant de vous promettre de la performance, nous appliquons la même méthode à skycode.agency. Ces chiffres ont été mesurés sur la version de production (et non sur un environnement de développement) et sont documentés dans le dépôt du site.",
+      "items": [
+        {
+          "label": "Poids de la page d'accueil",
+          "value": "2,75 Mo → 390 Ko",
+          "text": "Une vidéo de 2,3 Mo concurrençait le LCP alors qu'elle était hors écran. La charger seulement à l'approche du viewport a réduit de plus de 85 % le poids total de la page d'accueil."
+        },
+        {
+          "label": "JavaScript par page",
+          "value": "≈ 250–300 Ko gzip",
+          "text": "Nous mesurons le JS de chaque type de page avant et après chaque changement. Si une amélioration visuelle ajoute plus de quelques Ko, elle passe en composant différé ou elle est abandonnée."
+        },
+        {
+          "label": "Images à la taille réelle",
+          "value": "−98 % de poids",
+          "text": "Un logo de 512 px était affiché à 42 px. Servir l'image à la taille à laquelle elle est dessinée a supprimé 98 % de ses octets sans rien changer de visible."
+        }
+      ]
     }
   },
   "ecommerce-tienda-online": {
@@ -367,7 +388,7 @@
       },
       {
         "title": "Lancement et optimisation",
-        "text": "Nous mettons en ligne avec une analytique de conversion et vous accompagnons les premières semaines pour ajuster le tunnel à partir de données réelles."
+        "text": "Nous mettons en ligne avec une analytique de conversion et vous accompagnons les premières semaines pour ajuster le tunnel à partir de données réelles. Si la vitesse de chargement du catalogue est une priorité, nous la traitons avec notre service de [développement web haute performance](/fr/servicios/frontend-alto-rendimiento)."
       }
     ],
     "useCasesHeading": "Boutiques que nous construisons souvent",

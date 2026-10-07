@@ -57,7 +57,29 @@
       }
     ],
     "ctaTitle": "Running a process that no longer scales?",
-    "ctaDescription": "Tell us what you need to solve. We reply within 24 hours with an honest technical assessment, no strings attached."
+    "ctaDescription": "Tell us what you need to solve. We reply within 24 hours with an honest technical assessment, no strings attached.",
+    "international": {
+      "heading": "Building for US and UK teams from Bogotá",
+      "intro": "Most of our work for English-speaking clients is done remotely. This is how that works in practice, in plain terms.",
+      "items": [
+        {
+          "title": "Time zone overlap",
+          "text": "Colombia is UTC−5 all year with no daylight saving, so working hours overlap fully with US Eastern and mostly with Central and Pacific. Weekly demos and quick questions happen the same day."
+        },
+        {
+          "title": "Written English by default",
+          "text": "Proposals, technical documentation, pull-request notes and weekly updates are written in English, so the people who will maintain the software can read everything we hand over."
+        },
+        {
+          "title": "A price you can plan with",
+          "text": "Reference prices are published in USD on the [project estimator](/en/cotizador) before you ever talk to us, with the scope each figure covers."
+        },
+        {
+          "title": "Code you own",
+          "text": "The repository, documentation and infrastructure access are transferred to you at delivery, so you are never locked in to us as a vendor."
+        }
+      ]
+    }
   },
   "detail": {
     "positionLabel": "Service {current} of {total}",
@@ -71,6 +93,7 @@
     "deliverablesHeading": "What you get at the end",
     "casesHeading": "Case studies where we applied it",
     "tocColombia": "In Colombia",
+    "tocProof": "Proof",
     "tocArticles": "Articles",
     "relatedPostsHeading": "Related articles",
     "casesViewCase": "View case",

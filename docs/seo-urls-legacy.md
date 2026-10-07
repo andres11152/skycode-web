@@ -91,3 +91,12 @@ outsourcing → cotizador y portafolio (los tres idiomas). El servicio de fronte
 `scripts/generate-lastmod.mjs` guarda un hash del contenido de cada detalle de servicio en `src/content/lastmod-hashes.json` y solo
 avanza la fecha de esa página cuando su hash cambia (antes los nueve compartían una fecha: tocar uno "actualizaba" los demás). Añadir
 enlaces internos a un artículo no toca su `updated_at`.
+
+## Ronda 2 — páginas rastreadas pero sin indexar
+
+- `/servicios/frontend-alto-rendimiento`: sección de evidencia (peso de la portada, JS gzip e imágenes medidos en skycode.agency; sin puntajes de Lighthouse), 1.528 palabras en `<main>`.
+- `/en/servicios` y `/fr/servicios`: bloque nativo "Building for US and UK teams from Bogotá" / "Travailler avec des équipes francophones…", `BreadcrumbList`, 1.144 palabras en `<main>` (EN).
+- Footer: enlaces de idioma rastreables (`hrefLang`). Enlaces entrantes desde header/footer: +2 páginas por URL (p. ej. `/en/portfolio` 26 → 28; `/servicios/frontend-alto-rendimiento` 31 → 33); en contenido sin cambios.
+- Sitemap: 86 `<url>` únicas, 86/86 con canonical exacto, sin redirección ni noindex (`npm run seo:canonical`). La diferencia con las 85 de Search Console es de conteo/retraso de lectura de GSC, no una URL duplicada o rota.
+- Enlaces contextuales nuevos en detalles de servicio: ecommerce → `frontend-alto-rendimiento`; software a medida y apps móviles → `/cotizador` (es/en/fr). Posts: nube → frontend + cotizador, outsourcing → cotizador (ya aplicados con `db:seo-blog-links`).
+- `lastmod`: solo se movieron los 4 servicios editados × 3 idiomas y el índice de servicios.

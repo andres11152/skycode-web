@@ -4,6 +4,7 @@ import { openCookiePreferences } from "@/lib/useConsent";
 import { getCookieBannerContent } from "@/content/cookieBanner";
 import { useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Phone } from "@phosphor-icons/react";
 import { MailIcon } from "@/components/icons/UiIcons";
@@ -20,7 +21,8 @@ import { cn } from "@/lib/utils";
 import { getFooterContent } from "@/content/footer";
 import { getNavContent } from "@/content/nav";
 import { useLocale } from "@/components/LocaleProvider";
-import { localeHomePath, t } from "@/lib/i18n";
+import { localeHomePath, localeNames, locales, t } from "@/lib/i18n";
+import { switchLocalePath } from "@/lib/localePaths";
 import { EsBadge } from "@/components/ui/EsBadge";
 
 const FOUNDED_YEAR = 2023;
@@ -100,6 +102,7 @@ function ColumnHeading({ children, esOnly }: { children: string; esOnly?: boolea
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const locale = useLocale();
+  const pathname = usePathname();
   const footerData = getFooterContent(locale);
   const navData = getNavContent(locale);
   const { services } = getServicesContent(locale);
@@ -160,6 +163,28 @@ export function Footer() {
                     </Link>
                   </li>
                 ))}
+              </ul>
+            </nav>
+
+            {/* Enlaces <a href> reales a la misma página en los otros idiomas: el selector del Navbar solo los pinta al abrirse, así que un rastreador no los veía. */}
+            <nav aria-label={footerData.languagesLabel}>
+              <ColumnHeading>{footerData.languagesLabel}</ColumnHeading>
+              <ul className="mt-4 flex flex-col gap-3">
+                {locales
+                  .filter((target) => target !== locale)
+                  .map((target) => (
+                    <li key={target}>
+                      <Link
+                        prefetch={false}
+                        href={switchLocalePath(pathname, target)}
+                        hrefLang={target}
+                        lang={target}
+                        className={linkClasses}
+                      >
+                        {localeNames[target]}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             </nav>
 

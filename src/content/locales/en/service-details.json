@@ -28,7 +28,7 @@
       },
       {
         "title": "Phased scope",
-        "text": "We prioritize the module that frees up the most operational hours and ship it to production first. The rest is planned in phases with fixed dates and budgets, not a year-long project with no interim deliveries."
+        "text": "We prioritize the module that frees up the most operational hours and ship it to production first. The rest is planned in phases with fixed dates and budgets, not a year-long project with no interim deliveries. You can estimate investment ranges and timelines before talking to us in the [project estimator](/en/cotizador)."
       },
       {
         "title": "Development with weekly progress",
@@ -110,7 +110,7 @@
       },
       {
         "title": "Clickable prototype",
-        "text": "Before writing code, you validate a prototype of the main flows on your own phone. Fixing things there is far cheaper than in a version that's already published."
+        "text": "Before writing code, you validate a prototype of the main flows on your own phone. Fixing things there is far cheaper than in a version that's already published. For a cost and timeline reference for your app before the prototype, use the [project estimator](/en/cotizador)."
       },
       {
         "title": "Development with test builds",
@@ -329,6 +329,27 @@
         "Starting investment: from {priceUsd.web}",
         "Typical time to first launch: about {weeks.web} weeks"
       ]
+    },
+    "proof": {
+      "heading": "Proof: we measure it on our own site",
+      "intro": "Before promising you performance, we apply the same method to skycode.agency. These figures were measured on the production build (not a development environment) and are documented in the site's repository.",
+      "items": [
+        {
+          "label": "Home page weight",
+          "value": "2.75 MB → 390 KB",
+          "text": "A 2.3 MB video competed with the LCP even while off screen. Loading it only when it is about to enter the viewport cut the home page's total weight by more than 85%."
+        },
+        {
+          "label": "JavaScript per page",
+          "value": "≈ 250–300 KB gzip",
+          "text": "We measure the JS of each page type before and after every change. If a visual improvement adds more than a few KB, it moves to a deferred component or gets dropped."
+        },
+        {
+          "label": "Images at real size",
+          "value": "−98% weight",
+          "text": "A 512 px logo was being shown at 42 px. Serving the image at the size it is painted removed 98% of its bytes with nothing visibly changing."
+        }
+      ]
     }
   },
   "ecommerce-tienda-online": {
@@ -367,7 +388,7 @@
       },
       {
         "title": "Launch and optimization",
-        "text": "We launch with conversion analytics and support you through the first weeks to tune the funnel with real data."
+        "text": "We launch with conversion analytics and support you through the first weeks to tune the funnel with real data. If catalog load speed is a priority, we handle it with our [high-performance web development](/en/servicios/frontend-alto-rendimiento) service."
       }
     ],
     "useCasesHeading": "Stores we often build",

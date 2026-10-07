@@ -89,20 +89,24 @@ for (const [key, files] of Object.entries(pages)) {
 // Los nueve detalles de un idioma salen de los mismos JSON (service-details, services, service-seo):
 // con la fecha del último commit de esos archivos, editar un servicio "actualizaba" los nueve. Aquí
 // cada página guarda el hash del contenido que de verdad la pinta —su bloque de service-details, su
-// ficha en services/service-seo, el copy compartido de la plantilla y la plantilla misma— y su fecha
+// ficha en services/service-seo, el copy compartido de la plantilla (sin la plantilla en sí: maquetar no es editar contenido)— y su fecha
 // solo avanza cuando ese hash cambia. Sin hash previo (primera vez) se usa la fecha de los archivos.
 const readJson = (rel) => JSON.parse(readFileSync(join(root, rel), "utf8"));
 const sha = (value) => createHash("sha256").update(typeof value === "string" ? value : JSON.stringify(value)).digest("hex").slice(0, 16);
 const previous = existsSync(hashesFile) ? JSON.parse(readFileSync(hashesFile, "utf8")) : {};
 const hashes = {};
-const templateHash = sha(readFileSync(join(root, "src/components/services/ServiceView.tsx"), "utf8"));
 for (const locale of LOCALES) {
   const details = readJson(`src/content/locales/${locale}/service-details.json`);
   const services = Object.fromEntries(readJson(`src/content/locales/${locale}/services.json`).items.map((item) => [item.slug, item]));
   const seo = readJson(`src/content/locales/${locale}/service-seo.json`).items ?? {};
   // El bloque `index` es de la página de índice, no del detalle: se excluye del copy compartido.
-  const sharedDetailCopy = Object.fromEntries(Object.entries(readJson(`src/content/locales/${locale}/service-page.json`)).filter(([key]) => key !== "index"));
-  const shared = sha([sharedDetailCopy, templateHash]);
+  // `detail.tocProof` solo rotula una sección que únicamente existe en las páginas con `proof`
+  // (ese contenido ya está en details[slug]); contarlo movería la fecha de todos los servicios.
+  // Tampoco entra la plantilla (ServiceView.tsx): un cambio de maquetación no es contenido editado.
+  const pageCopy = readJson(`src/content/locales/${locale}/service-page.json`);
+  const sharedDetail = Object.fromEntries(Object.entries(pageCopy.detail ?? {}).filter(([key]) => key !== "tocProof"));
+  const sharedDetailCopy = Object.fromEntries(Object.entries({ ...pageCopy, detail: sharedDetail }).filter(([key]) => key !== "index"));
+  const shared = sha(sharedDetailCopy);
   for (const slug of Object.keys(details)) {
     const key = `services-detail:${locale}:${slug}`;
     const hash = sha([details[slug], services[slug] ?? null, seo[slug] ?? null, shared]);

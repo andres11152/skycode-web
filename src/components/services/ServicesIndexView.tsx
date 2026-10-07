@@ -13,6 +13,7 @@ import { getNavContent } from "@/content/nav";
 import { getProcessContent } from "@/content/process";
 import { getTrustContent } from "@/content/trust";
 import type { PortfolioProject } from "@/content/portfolioShared";
+import { siteUrl } from "@/lib/site";
 import { stripInlineLinks } from "@/lib/inlineLinks";
 import { portfolioIndexPath } from "@/lib/portfolioPaths";
 import { localeHomePath, t, type Locale } from "@/lib/i18n";
@@ -52,6 +53,18 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
     .filter((item) => item.serviceTitles.length > 0)
     .slice(0, 3);
 
+  const homeUrl = locale === "es" ? siteUrl : `${siteUrl}${homePath}`;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: navData.inicio, item: homeUrl },
+      { "@type": "ListItem", position: 2, name: navData.servicios, item: `${siteUrl}${prefix}/servicios` },
+    ],
+  };
+
+  const international = "international" in copy ? copy.international : null;
+
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -65,6 +78,10 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
 
   return (
     <main id="main-content">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
+      />
       {/* Hero — sin animación de entrada: el H1 es el LCP. */}
       <section className="px-6 pt-28 pb-16 sm:pt-36 sm:pb-20">
         <div className="mx-auto max-w-6xl">
@@ -130,6 +147,29 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
           />
         </div>
       </section>
+
+      {international && (
+        <section aria-labelledby="services-international-title" className="border-t border-foreground/10 px-6 py-24 sm:py-32">
+          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-16">
+            <div className="lg:sticky lg:top-28 lg:h-fit">
+              <h2 id="services-international-title" className="text-4xl font-bold tracking-tight text-balance text-foreground sm:text-5xl">
+                {international.heading}
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-foreground/80">{international.intro}</p>
+            </div>
+            <ul className="flex flex-col divide-y divide-foreground/10 border-y border-foreground/10">
+              {international.items.map((item) => (
+                <li key={item.title} className="flex flex-col gap-2 py-6">
+                  <h3 className="text-lg font-semibold tracking-tight text-foreground">{item.title}</h3>
+                  <p className="text-base leading-relaxed text-foreground/80">
+                    <InlineText text={item.text} />
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {/* Proceso — banda oscura. La línea superior se dibuja con el scroll (CSS). */}
       <section

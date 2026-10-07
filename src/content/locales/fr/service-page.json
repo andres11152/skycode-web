@@ -57,7 +57,29 @@
       }
     ],
     "ctaTitle": "Un processus qui ne suit plus la croissance ?",
-    "ctaDescription": "Dites-nous ce que vous devez résoudre. Nous répondons en moins de 24 heures avec une évaluation technique honnête, sans engagement."
+    "ctaDescription": "Dites-nous ce que vous devez résoudre. Nous répondons en moins de 24 heures avec une évaluation technique honnête, sans engagement.",
+    "international": {
+      "heading": "Travailler avec des équipes francophones depuis Bogotá",
+      "intro": "Une grande partie de nos projets pour des clients francophones se déroule à distance. Voici, concrètement, comment cela fonctionne.",
+      "items": [
+        {
+          "title": "Décalage horaire gérable",
+          "text": "La Colombie est à UTC−5 toute l'année, sans changement d'heure : il reste une plage de travail commune avec la France chaque après-midi, utile pour les démos hebdomadaires et les arbitrages rapides."
+        },
+        {
+          "title": "Documents en français",
+          "text": "Propositions, documentation technique et points d'avancement hebdomadaires sont rédigés en français ; le code et les commentaires techniques restent en anglais, comme dans la plupart des équipes."
+        },
+        {
+          "title": "Un prix sur lequel s'appuyer",
+          "text": "Les tarifs de référence sont publiés en USD dans le [simulateur de projet](/fr/cotizador) avant tout échange, avec le périmètre couvert par chaque montant."
+        },
+        {
+          "title": "Un code qui vous appartient",
+          "text": "Dépôt, documentation et accès à l'infrastructure vous sont transférés à la livraison : vous ne dépendez jamais de nous comme prestataire."
+        }
+      ]
+    }
   },
   "detail": {
     "positionLabel": "Service {current} sur {total}",
@@ -71,6 +93,7 @@
     "deliverablesHeading": "Ce que vous recevez à la fin",
     "casesHeading": "Cas où nous l'avons appliqué",
     "tocColombia": "En Colombie",
+    "tocProof": "Preuve",
     "tocArticles": "Articles",
     "relatedPostsHeading": "Articles liés",
     "casesViewCase": "Voir le cas",

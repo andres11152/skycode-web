@@ -74,6 +74,7 @@ export async function ServiceView({
   const colombiaParagraphs = details?.colombia ? withoutTodos(details.colombia.paragraphs) : [];
   const colombiaFacts = details?.colombia ? withoutTodos(details.colombia.facts) : [];
   const hasColombia = colombiaParagraphs.length > 0;
+  const proof = details?.proof && details.proof.items.length > 0 ? details.proof : null;
 
   // Artículos relacionados: la relación sale de relatedContent.ts; un post
   // sin versión publicada en este idioma simplemente se omite.
@@ -86,6 +87,7 @@ export async function ServiceView({
     hasOverview && { id: "resumen", label: copy.tocOverview },
     { id: "incluye", label: copy.tocIncludes },
     hasProcess && { id: "proceso", label: copy.tocProcess },
+    proof && { id: "evidencia", label: copy.tocProof },
     hasColombia && { id: "colombia", label: copy.tocColombia },
     projects.length > 0 && { id: "casos", label: copy.tocCases },
     hasFaq && { id: "faq", label: copy.tocFaq },
@@ -238,7 +240,7 @@ export async function ServiceView({
               <h2 id="service-includes" className={H2}>
                 {pageCopy.includesHeading}
               </h2>
-              <ul className="grid gap-px overflow-hidden rounded-xl border border-foreground/10 bg-foreground/10 sm:grid-cols-2">
+              <ul className="grid gap-px overflow-hidden rounded-xl border border-foreground/10 bg-foreground/10">
                 {service.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3 bg-background p-5 text-sm leading-relaxed text-foreground/80 sm:last:odd:col-span-2">
                     <CheckCircle size={18} weight="duotone" className="shrink-0 text-accent-strong" aria-hidden="true" />
@@ -301,6 +303,26 @@ export async function ServiceView({
                     </li>
                   ))}
                 </ol>
+              </section>
+            )}
+
+            {proof && (
+              <section id="evidencia" aria-labelledby="service-proof" className="flex scroll-mt-28 flex-col gap-6">
+                <h2 id="service-proof" className={H2}>
+                  {proof.heading}
+                </h2>
+                <p className="text-base leading-relaxed text-foreground/80 sm:text-lg">{proof.intro}</p>
+                <dl className="grid gap-px overflow-hidden rounded-xl border border-foreground/10 bg-foreground/10">
+                  {proof.items.map((item) => (
+                    <div key={item.label} className="flex flex-col gap-2 bg-background p-5">
+                      <dt className="font-mono text-xs tracking-wide text-foreground/70 uppercase">{item.label}</dt>
+                      <dd className="flex flex-col gap-2">
+                        <span className="text-2xl font-bold tracking-tight text-foreground">{item.value}</span>
+                        <span className="text-sm leading-relaxed text-foreground/80">{item.text}</span>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               </section>
             )}
 

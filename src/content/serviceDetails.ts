@@ -39,6 +39,12 @@ export interface ServiceDetails {
    * `withoutTodos()` (lib/todoPlaceholders.ts) omite la viñeta completa.
    */
   colombia?: { heading: string; paragraphs: string[]; facts: string[] };
+  /**
+   * Evidencia de primera mano: cifras medidas en el propio sitio de SkyCode
+   * (documentadas en el repositorio), no promesas genéricas. Solo datos
+   * verificables — nunca resultados de clientes inventados.
+   */
+  proof?: { heading: string; intro: string; items: { label: string; value: string; text: string }[] };
 }
 
 const detailsByLocale: Record<Locale, Record<string, ServiceDetails>> = {

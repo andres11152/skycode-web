@@ -28,7 +28,7 @@
       },
       {
         "title": "Alcance por fases",
-        "text": "Priorizamos el módulo que más horas operativas libera y lo llevamos a producción primero. El resto se planifica en fases con fechas y presupuesto cerrados, no un proyecto de un año sin entregas intermedias."
+        "text": "Priorizamos el módulo que más horas operativas libera y lo llevamos a producción primero. El resto se planifica en fases con fechas y presupuesto cerrados, no un proyecto de un año sin entregas intermedias. Puedes estimar rangos de inversión y plazos antes de hablar con nosotros en el [cotizador de proyectos](/cotizador)."
       },
       {
         "title": "Desarrollo con avances semanales",
@@ -110,7 +110,7 @@
       },
       {
         "title": "Prototipo navegable",
-        "text": "Antes de programar, validas un prototipo con los flujos principales en tu propio teléfono. Es mucho más barato corregir ahí que en una versión ya publicada."
+        "text": "Antes de programar, validas un prototipo con los flujos principales en tu propio teléfono. Es mucho más barato corregir ahí que en una versión ya publicada. Para tener una referencia de costo y tiempo de tu app antes del prototipo, usa el [cotizador de proyectos](/cotizador)."
       },
       {
         "title": "Desarrollo con builds de prueba",
@@ -325,6 +325,27 @@
         "Inversión base de referencia: desde {price.web}",
         "Plazo típico hasta el primer lanzamiento: unas {weeks.web} semanas"
       ]
+    },
+    "proof": {
+      "heading": "Evidencia: lo medimos en nuestro propio sitio",
+      "intro": "Antes de prometerte rendimiento, aplicamos el mismo método a skycode.agency. Estas cifras se midieron sobre la versión de producción (no sobre un entorno de desarrollo) y están documentadas en el repositorio del sitio.",
+      "items": [
+        {
+          "label": "Peso de la portada",
+          "value": "2,75 MB → 390 KB",
+          "text": "Un video de 2,3 MB competía con el LCP aunque estaba fuera de pantalla. Al cargarlo solo cuando está por entrar al viewport, el peso total de la portada bajó más de 85 %."
+        },
+        {
+          "label": "JavaScript por página",
+          "value": "≈ 250–300 KB gzip",
+          "text": "Medimos el JS de cada tipo de página antes y después de cada cambio. Si una mejora visual suma más de unos pocos KB, se mueve a un componente diferido o se descarta."
+        },
+        {
+          "label": "Imágenes al tamaño real",
+          "value": "−98 % de peso",
+          "text": "Un logo de 512 px se mostraba a 42 px. Servir la imagen al tamaño en que se pinta recortó el 98 % de sus bytes sin cambiar nada visible."
+        }
+      ]
     }
   },
   "ecommerce-tienda-online": {
@@ -363,7 +384,7 @@
       },
       {
         "title": "Lanzamiento y optimización",
-        "text": "Publicamos con analítica de conversión y acompañamos las primeras semanas para ajustar el embudo con datos reales."
+        "text": "Publicamos con analítica de conversión y acompañamos las primeras semanas para ajustar el embudo con datos reales. Si la velocidad de carga del catálogo es una prioridad, la trabajamos con nuestro servicio de [desarrollo web de alto rendimiento](/servicios/frontend-alto-rendimiento)."
       }
     ],
     "useCasesHeading": "Tiendas que solemos construir",
