@@ -11,7 +11,8 @@ import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
 import { getPortfolioProjectCached } from "@/lib/portfolioRequestData";
 import { getPublishedPortfolioSlugs } from "@/lib/queries/portfolio";
 import { localeHomePath, type Locale } from "@/lib/i18n";
-import { ogImageUrl, siteName, siteUrl } from "@/lib/site";
+import { ogImageUrl, siteUrl } from "@/lib/site";
+import { organizationRef } from "@/lib/jsonLd";
 
 function CaseJsonLd({ project, locale }: { project: PortfolioProject; locale: Locale }) {
   const copy = getPortfolioSectionContent(locale);
@@ -29,7 +30,7 @@ function CaseJsonLd({ project, locale }: { project: PortfolioProject; locale: Lo
     operatingSystem: "Web",
     image: coverUrl,
     url: project.liveUrl ?? url,
-    author: { "@type": "Organization", name: siteName, url: siteUrl },
+    author: { ...organizationRef(), url: siteUrl },
   };
 
   const breadcrumbJsonLd = {

@@ -2,7 +2,8 @@ import type { BlogPost } from "@/content/blogShared";
 import { getBlogMeta } from "@/content/blogShared";
 import { blogIndexPath, blogPostPath, authorUrl } from "@/lib/blogPaths";
 import { localeHomePath, type Locale } from "@/lib/i18n";
-import { siteName, siteUrl } from "@/lib/site";
+import { siteUrl } from "@/lib/site";
+import { organizationRef, serializeJsonLd, websiteRef, type JsonLdNode } from "@/lib/jsonLd";
 import { stripInlineLinks } from "@/lib/inlineLinks";
 
 /**
@@ -14,87 +15,77 @@ export function ArticleJsonLd({ post, locale }: { post: BlogPost; locale: Locale
   const meta = getBlogMeta(locale);
   const url = `${siteUrl}${blogPostPath(locale, post.slug)}`;
   const homePath = localeHomePath(locale);
+  const articleId = `${url}#article`;
+  const breadcrumbId = `${url}#breadcrumb`;
 
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.description,
-    datePublished: post.publishedAt,
-    // Antes igual a `datePublished` siempre (el mismo campo hacía las dos
-    // funciones) — `updatedAt` es un campo real y separado en el contenido
-    // ahora, ver la nota en content/blog.ts.
-    dateModified: post.updatedAt,
-    // `@id` = la misma URL `/equipo#slug` que declara la entidad Person de
-    // la página de equipo (components/team/TeamJsonLd.tsx).
-    author: {
-      "@type": "Person",
-      "@id": authorUrl(locale, post.authorSlug),
-      name: post.author,
-      url: authorUrl(locale, post.authorSlug),
-    },
-    publisher: {
-      "@type": "Organization",
-      "@id": `${siteUrl}/#organization`,
-      name: siteName,
-      logo: { "@type": "ImageObject", url: `${siteUrl}/logo-mark.png` },
-    },
-    // Imagen propia del post (opengraph-image.tsx de su ruta), no la genérica.
-    image: `${url}/opengraph-image`,
-    mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    keywords: post.tags.join(", "),
-    inLanguage: locale,
-  };
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: meta.breadcrumbHome, item: `${siteUrl}${homePath}` },
-      { "@type": "ListItem", position: 2, name: meta.breadcrumbBlog, item: `${siteUrl}${blogIndexPath(locale)}` },
-      { "@type": "ListItem", position: 3, name: post.title, item: url },
-    ],
-  };
-
-  // FAQPage solo si el post trae bloques `faq` — sin preguntas no se emite
-  // un FAQPage vacío. El texto va sin la sintaxis de enlace interno.
   const faqItems = post.content.flatMap((block) => (block.type === "faq" ? block.items : []));
-  const faqJsonLd =
-    faqItems.length > 0
-      ? {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          inLanguage: locale,
-          mainEntity: faqItems.map((item) => ({
-            "@type": "Question",
-            name: item.question,
-            acceptedAnswer: { "@type": "Answer", text: stripInlineLinks(item.answer) },
-          })),
-        }
-      : null;
+
+  // Un solo `@graph` por artículo (WebPage, BlogPosting, BreadcrumbList y, si hay bloques `faq`,
+  // FAQPage). La organización y el sitio se referencian por `@id` (definidos en el layout raíz).
+  const graph: JsonLdNode[] = [
+    {
+      "@type": "WebPage",
+      "@id": url,
+      url,
+      name: post.title,
+      inLanguage: locale,
+      isPartOf: websiteRef(),
+      breadcrumb: { "@id": breadcrumbId },
+      mainEntity: { "@id": articleId },
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": articleId,
+      headline: post.title,
+      description: post.description,
+      datePublished: post.publishedAt,
+      // `updatedAt` es un campo real y separado de `publishedAt` (ver la nota en content/blog.ts).
+      dateModified: post.updatedAt,
+      // `@id` = la misma URL de la entidad Person del autor (components/team/TeamJsonLd.tsx).
+      author: {
+        "@type": "Person",
+        "@id": authorUrl(locale, post.authorSlug),
+        name: post.author,
+        url: authorUrl(locale, post.authorSlug),
+      },
+      publisher: { ...organizationRef(), logo: { "@type": "ImageObject", url: `${siteUrl}/logo-mark.png` } },
+      isPartOf: websiteRef(),
+      // Imagen propia del post (opengraph-image.tsx de su ruta), no la genérica.
+      image: `${url}/opengraph-image`,
+      mainEntityOfPage: { "@id": url },
+      keywords: post.tags.join(", "),
+      inLanguage: locale,
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": breadcrumbId,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: meta.breadcrumbHome, item: `${siteUrl}${homePath}` },
+        { "@type": "ListItem", position: 2, name: meta.breadcrumbBlog, item: `${siteUrl}${blogIndexPath(locale)}` },
+        { "@type": "ListItem", position: 3, name: post.title, item: url },
+      ],
+    },
+  ];
+
+  // FAQPage solo si el post trae bloques `faq` — sin preguntas no se emite uno vacío. El texto va
+  // sin la sintaxis de enlace interno.
+  if (faqItems.length > 0) {
+    graph.push({
+      "@type": "FAQPage",
+      "@id": `${url}#faq`,
+      inLanguage: locale,
+      mainEntity: faqItems.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: stripInlineLinks(item.answer) },
+      })),
+    });
+  }
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
-        }}
-      />
-      {faqJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c"),
-          }}
-        />
-      )}
-    </>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd({ "@context": "https://schema.org", "@graph": graph }) }}
+    />
   );
 }

@@ -1,7 +1,9 @@
 import { getBogotaContent } from "@/content/bogota";
 import { stripInlineLinks } from "@/lib/inlineLinks";
 import { bogotaPagePath } from "@/lib/bogotaPaths";
-import { contactEmail, contactPhone, ogImageUrl, siteName, siteUrl, socials } from "@/lib/site";
+import { contactEmail, contactPhone, ogImageUrl, siteName, siteUrl } from "@/lib/site";
+import { ORGANIZATION_ID } from "@/lib/jsonLd";
+import { organizationSameAs } from "@/lib/organizationProfiles";
 
 // Centro de Bogotá. NO hay dirección de calle ni código postal publicados:
 // no se inventan — solo ciudad, región, país y coordenadas aproximadas.
@@ -31,7 +33,7 @@ export function BogotaJsonLd() {
   const service = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    "@id": `${siteUrl}/#organization`,
+    "@id": ORGANIZATION_ID,
     name: siteName,
     url: siteUrl,
     image: ogImageUrl,
@@ -46,7 +48,7 @@ export function BogotaJsonLd() {
     },
     geo: { "@type": "GeoCoordinates", ...BOGOTA_GEO },
     areaServed: { "@type": "Country", name: "Colombia" },
-    sameAs: [socials.facebook, socials.instagram],
+    sameAs: organizationSameAs,
     mainEntityOfPage: url,
     hasOfferCatalog: {
       "@type": "OfferCatalog",

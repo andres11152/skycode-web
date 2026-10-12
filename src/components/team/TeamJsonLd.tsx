@@ -1,7 +1,7 @@
 import type { PublicTeamMember } from "@/content/teamShared";
 import { authorUrl } from "@/lib/blogPaths";
 import type { Locale } from "@/lib/i18n";
-import { siteName, siteUrl } from "@/lib/site";
+import { organizationRef } from "@/lib/jsonLd";
 import { withoutTodos } from "@/lib/todoPlaceholders";
 
 /**
@@ -26,7 +26,7 @@ export function TeamJsonLd({ members, locale }: { members: PublicTeamMember[]; l
         description: member.description,
         url: authorUrl(locale, member.slug),
         ...(member.photo ? { image: member.photo } : {}),
-        worksFor: { "@type": "Organization", "@id": `${siteUrl}/#organization`, name: siteName },
+        worksFor: organizationRef(),
         ...(sameAs.length > 0 ? { sameAs } : {}),
       };
     }),
