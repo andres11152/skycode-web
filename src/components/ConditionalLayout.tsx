@@ -8,6 +8,8 @@ import { Footer, type FooterServiceLinks } from "@/components/Footer";
 import { SkipLink } from "@/components/SkipLink";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { AttributionCapture } from "@/components/AttributionCapture";
+import { GoogleAdsTag } from "@/components/GoogleAdsTag";
+import { trackWhatsappClick } from "@/lib/landingEvents";
 import { useLocale } from "@/components/LocaleProvider";
 import { ContactModalProvider } from "@/components/contact/ContactModalProvider";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
@@ -101,7 +103,14 @@ export function ConditionalLayout({ children, serviceLinks }: { children: React.
         <WhatsAppButton
           locale={locale}
           message="Hola, vi su anuncio y quiero más información sobre desarrollo de software"
+          onChatOpen={() => trackWhatsappClick(pathname)}
         />
+        {/* Medición: el aviso de cookies, la captura del gclid/UTM y la etiqueta de Google Ads
+            (esta última solo con consentimiento). Sin esto los leads de la campaña llegaban al
+            CRM sin saber de qué anuncio venían. */}
+        <AttributionCapture />
+        <GoogleAdsTag />
+        <CookieBanner />
       </main>
     );
   }

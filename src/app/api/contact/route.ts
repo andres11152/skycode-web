@@ -5,6 +5,7 @@ import { contactEmail } from "@/lib/site";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { AttributionFieldsSchema } from "@/lib/attributionSchema";
 import { createLead } from "@/lib/queries/leads";
+import { notifyNewLead } from "@/lib/queries/notifications";
 import { logError } from "@/lib/logger";
 import { LEAD_FORM_CONTEXTS, LEAD_SERVICE_SLUGS, resolveLeadService } from "@/lib/leadServices";
 import { sendEmail } from "@/lib/email";
@@ -100,6 +101,11 @@ export async function POST(request: Request) {
         consentGivenAt: new Date(),
       });
       dbSaved = true;
+      // Aviso inmediato dentro del dashboard (campanita + push); sin esperarlo, para no
+      // alargar la respuesta del formulario. Un fallo aquí nunca afecta al envío.
+      void notifyNewLead({ name, service, source: formContext || "Formulario Web" }).catch((notifyErr) =>
+        logError("⚠️ [Contacto] No se pudo avisar al equipo del lead nuevo", notifyErr),
+      );
       console.log("🐘 [PostgreSQL] Lead guardado exitosamente en BD invencheck!");
     } catch (dbErr) {
       logError("⚠️ [PostgreSQL Lead Warning]", dbErr);

@@ -1,6 +1,7 @@
 import { query } from "../db";
 import { sendEmail } from "../email";
 import { sendPushToUser } from "../webPush";
+import { logError } from "../logger";
 import type { AppNotification } from "@/components/dashboard/types";
 
 interface NewNotification {
@@ -293,4 +294,48 @@ export async function markAllNotificationsRead(userId: number | string): Promise
     [userId]
   );
   return res.rows.length;
+}
+
+/**
+ * Avisa de inmediato (campanita + push del navegador) al equipo comercial de
+ * que entró un lead por el formulario. Antes solo llegaba un correo, que se
+ * ve cuando alguien abre su bandeja; responder en la primera hora multiplica
+ * por varias veces la probabilidad de calificar al lead, así que el aviso no
+ * puede depender de eso.
+ *
+ * A diferencia de los `notify*()` de arriba no hay dedup ni cron: se llama
+ * una sola vez, desde la ruta que acaba de crear el lead. Los destinatarios
+ * son los roles con visibilidad real sobre leads (mismo criterio que
+ * `weeklyDigest.ts`); un lead recién creado no tiene dueño todavía. Mejor
+ * esfuerzo por persona: si falla el aviso a una, las demás igual lo reciben.
+ */
+export async function notifyNewLead(lead: {
+  name: string;
+  service?: string | null;
+  source?: string | null;
+}): Promise<number> {
+  const recipients = await query(
+    `SELECT id FROM users WHERE status = 'active' AND role IN ('admin', 'sales_manager');`
+  );
+
+  const name = lead.name.replace(/\s+/g, " ").trim().slice(0, 80);
+  const details = [lead.service, lead.source].filter(Boolean).join(" · ");
+  const body = details ? `${name}. ${details}.` : `${name} dejó sus datos.`;
+
+  let notified = 0;
+  for (const row of recipients.rows) {
+    try {
+      await createNotification({
+        userId: row.id,
+        type: "lead_new",
+        title: "Lead nuevo",
+        body,
+        link: "/dashboard/leads",
+      });
+      notified += 1;
+    } catch (error) {
+      logError("⚠️ [Notificaciones] No se pudo avisar del lead nuevo", error, { userId: row.id });
+    }
+  }
+  return notified;
 }

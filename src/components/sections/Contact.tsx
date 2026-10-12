@@ -78,8 +78,11 @@ export function Contact({
   locale = defaultLocale,
   showOtherContactMethods = true,
   compact = false,
+  origin,
 }: {
   locale?: Locale;
+  /** Para landings de campaña: se guarda como origen del lead en el CRM. */
+  origin?: "Formulario Web" | "Landing Ads";
   /** Landing pages de campaña (ej. /landing) no deben ofrecer salidas del formulario. */
   showOtherContactMethods?: boolean;
   /** Para embeber el formulario dentro de otra página (ej. /landing) que ya trae su propio
@@ -136,7 +139,7 @@ export function Contact({
           )}
         </div>
 
-        <ContactForm locale={locale} />
+        <ContactForm locale={locale} origin={origin} />
       </div>
     </section>
   );

@@ -221,6 +221,14 @@ Sin esto, cualquier mejora posterior es una opinión.
 4. **Aviso inmediato al equipo:** push + campanita a admin y sales_manager por lead nuevo de la landing, con el canal que ya existe (`createNotification` → `sendPushToUser`).
 5. **Línea base de 2 a 4 semanas:** sesiones, envíos, clics a WhatsApp, leads calificados y tiempo de primera respuesta, por grupo de anuncios.
 
+**Estado (12 oct. 2026): puntos 1, 3 y 4 hechos; el 2 y el 5 siguen pendientes.**
+
+- Hecho: el banner de cookies, la captura de atribución y la etiqueta de Google Ads ahora corren en `/landing`. La captura espera al consentimiento (antes no reintentaba). El formulario manda el origen "Landing Ads". El clic a WhatsApp se registra en `landing_events`. Cada lead nuevo avisa por campanita y push a admin y comercial.
+- Cambio respecto a lo planeado en el punto 1: la atribución se sigue guardando con el mecanismo que ya existe, condicionado al consentimiento, en vez de leer la URL al enviar. Es más simple y no exige cambiar la política de privacidad. El costo: quien rechaza las cookies de medición llega sin `gclid`.
+- Falta, de tu lado: crear en Google Ads la conversión del clic a WhatsApp y poner su etiqueta en `NEXT_PUBLIC_GOOGLE_ADS_WHATSAPP_LABEL`. Sin ella, el clic se cuenta en la base pero no en Ads.
+- Falta: el punto 2 (Consent Mode v2, con revisión legal) y la línea base del punto 5.
+- Hallazgo nuevo: con la etiqueta de Google solo en `/gracias`, la conversión no se puede atribuir a un clic, porque el identificador del clic ya no está en la URL. Conviene mirar el diagnóstico de conversiones en Google Ads para confirmar que esa era la causa de las pocas conversiones.
+
 ### Fase 1: contenido real (lo que tiene que dar el negocio)
 
 Ver la sección 7. El copy final no se escribe hasta tener esto.

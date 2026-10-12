@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Script from "next/script";
 import { m as motion, useReducedMotion } from "framer-motion";
 import { ChatCircle, CheckCircle, ShieldCheck } from "@phosphor-icons/react";
 import { getContactContent } from "@/content/contact";
@@ -9,10 +8,7 @@ import { getUiContent } from "@/content/ui";
 import { whatsappHref } from "@/lib/site";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 import { fadeUp } from "@/lib/animations";
-import { useConsentRecord } from "@/lib/useConsent";
-import { isCategoryAllowed } from "@/lib/consent";
-
-const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
+import { GoogleAdsTag } from "@/components/GoogleAdsTag";
 
 /**
  * Página de destino tras un envío exitoso del formulario de contacto —
@@ -26,41 +22,9 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
   const contactData = getContactContent(locale);
   const uiData = getUiContent(locale);
   const reduced = useReducedMotion();
-  // La etiqueta de Google Ads solo se carga con consentimiento de "medición":
-  // sin él no se contacta a Google ni se guardan sus cookies (_gcl_*).
-  const consent = useConsentRecord();
-  const adsAllowed = isCategoryAllowed(consent ?? null, "measurement");
-
   return (
     <>
-      {googleAdsId && adsAllowed && (
-        // Movido aquí desde app/layout.tsx: antes se cargaba en TODAS las
-        // páginas del sitio (148KB de JS, gran parte sin usar fuera de esta
-        // página), inflando el trabajo del hilo principal justo cuando un
-        // usuario real hace su primer tap — contribuía al INP alto medido
-        // por CrUX en la home. La conversión de Google Ads "Envío de
-        // formulario para clientes potenciales" es de tipo "Carga de
-        // página" exclusivamente sobre /gracias, así que no hace falta en
-        // ninguna otra ruta. `afterInteractive` (no `lazyOnload`) se
-        // mantiene: esta página tiene poco dwell time, el tag necesita
-        // correr 'config' apenas monta, sin esperar a que el navegador
-        // quede idle.
-        <>
-          <Script
-            id="google-ads-tag"
-            strategy="afterInteractive"
-            src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
-          />
-          <Script id="google-ads-init" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${googleAdsId}');
-            `}
-          </Script>
-        </>
-      )}
+      <GoogleAdsTag />
       <section className="flex min-h-[70vh] items-center justify-center px-6 py-20">
       <motion.div
         variants={fadeUp(reduced ?? false)}

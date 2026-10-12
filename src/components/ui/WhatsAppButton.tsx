@@ -10,11 +10,14 @@ const WHATSAPP_PHONE = "573138081081"; // Número de la agencia
 export function WhatsAppButton({
   locale = defaultLocale,
   message,
+  onChatOpen,
 }: {
   locale?: Locale;
   /** Sobreescribe el mensaje precargado (ej. /landing usa un texto calibrado
    * para tráfico de Google Ads en vez del genérico de la home). */
   message?: string;
+  /** Se llama al pulsar "Abrir chat" (ej. /landing mide ese clic como conversión). */
+  onChatOpen?: () => void;
 }) {
   const uiData = getUiContent(locale);
   const [isOpen, setIsOpen] = useState(false);
@@ -59,6 +62,7 @@ export function WhatsAppButton({
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={onChatOpen}
             className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-on-inverse px-4 py-2.5 text-xs font-bold text-inverse outline-none transition-[filter,transform] hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse active:scale-[0.97] motion-reduce:active:scale-100"
           >
             <span>{uiData.whatsappOpenChat}</span>

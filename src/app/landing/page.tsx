@@ -78,7 +78,7 @@ export default function LandingPage() {
         </div>
 
         <div className="rounded-xl border border-foreground/10 bg-background/80 shadow-lg shadow-black/5 backdrop-blur-sm">
-          <Contact locale="es" showOtherContactMethods={false} compact />
+          <Contact locale="es" showOtherContactMethods={false} compact origin="Landing Ads" />
         </div>
       </main>
 

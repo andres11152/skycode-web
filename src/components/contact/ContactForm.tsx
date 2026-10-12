@@ -9,6 +9,7 @@ import { PhoneField } from "@/components/ui/PhoneField";
 import { getContactContent } from "@/content/contact";
 import { getServicesContent } from "@/content/services";
 import { defaultLocale, type Locale } from "@/lib/i18n";
+import type { LeadFormContext } from "@/lib/leadServices";
 import { cn } from "@/lib/utils";
 import { getAttribution } from "@/lib/attribution";
 import { logError } from "@/lib/logger";
@@ -82,10 +83,13 @@ export function ContactForm({
   locale = defaultLocale,
   variant = "section",
   prefill,
+  origin = "Formulario Web",
 }: {
   locale?: Locale;
   variant?: "section" | "modal";
   prefill?: ContactFormPrefill;
+  /** Desde qué página se envía, para que el CRM distinga los leads de una landing de campaña. */
+  origin?: Extract<LeadFormContext, "Formulario Web" | "Landing Ads">;
 }) {
   const isModal = variant === "modal";
   // Borrador en memoria (no en storage): sobrevive a cerrar y reabrir el modal
@@ -108,7 +112,7 @@ export function ContactForm({
   // "Cotizador" cuando el envío llegó prellenado desde ProjectEstimator —
   // permite distinguir en el CRM a quien ya vio precios de quien solo
   // escribió el formulario directo (ver lib/leadServices.ts).
-  const [formContext, setFormContext] = useState<"Formulario Web" | "Cotizador">(prefill?.fromEstimator ? "Cotizador" : "Formulario Web");
+  const [formContext, setFormContext] = useState<LeadFormContext>(prefill?.fromEstimator ? "Cotizador" : origin);
   const [showPhone, setShowPhone] = useState(variant === "section");
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
 
