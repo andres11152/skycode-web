@@ -40,7 +40,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           titular. Misma mancha (caja ampliada por el radio del desenfoque), cero filtros. */}
       <div
         aria-hidden="true"
-        className="parallax absolute -top-[110px] -right-[110px] -z-10 h-[640px] w-[740px] bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--accent)_9%,transparent),color-mix(in_srgb,var(--accent)_4%,transparent)_55%,transparent)]"
+        className="parallax absolute -top-[110px] -right-[110px] -z-10 h-[640px] w-[740px] bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--accent)_5%,transparent),color-mix(in_srgb,var(--accent)_2%,transparent)_55%,transparent)]"
       />
       <div className="relative mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-10 xl:gap-16">
         {/* min-w-0 en ambas columnas: un ítem de grid tiene `min-width: auto` y, si algo adentro no

@@ -66,7 +66,7 @@ void main() {
 
   vec3 darkColor = baseColor + glow * beam * 0.62;
   // En claro las mismas ondas tiñen el blanco hacia el azul de marca.
-  vec3 lightColor = mix(vec3(1.0), glow, beam * 0.3);
+  vec3 lightColor = mix(vec3(1.0), glow, beam * 0.12);
   gl_FragColor = vec4(mix(darkColor, lightColor, u_light), 1.0);
 }`;
 
