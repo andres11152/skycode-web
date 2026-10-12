@@ -32,7 +32,8 @@ const ContactSchema = z
       .optional()
       .nullable()
       .or(z.literal("")),
-    message: z.string().trim().min(10, "El mensaje debe tener al menos 10 caracteres.").max(5000),
+    // El formulario de las landings de campaña lo deja opcional (ver superRefine abajo).
+    message: z.string().trim().max(5000),
     // Servicio elegido en el formulario (ver lib/leadServices.ts) — enum
     // cerrado, no un string libre: un POST público no debe poder llenar
     // `leads.service` con basura arbitraria. `serviceOther` solo se usa
@@ -59,7 +60,14 @@ const ContactSchema = z
     // cumplimiento, corregido junto con la migración 0035).
     consent: z.literal(true),
   })
-  .extend(AttributionFieldsSchema.shape);
+  .extend(AttributionFieldsSchema.shape)
+  .superRefine((value, ctx) => {
+    // Un formulario más corto convierte mejor para tráfico frío de anuncios: ahí el mensaje es
+    // opcional. En el resto de formularios sigue siendo obligatorio.
+    if (value.formContext !== "Landing Ads" && value.message.length < 10) {
+      ctx.addIssue({ code: "custom", path: ["message"], message: "El mensaje debe tener al menos 10 caracteres." });
+    }
+  });
 
 export async function POST(request: Request) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
@@ -157,7 +165,7 @@ export async function POST(request: Request) {
         to: targetEmail,
         subject: `Nuevo contacto de ${name}`,
         replyTo: email,
-        text: `Nombre: ${name}\nCorreo: ${email}\nTeléfono: ${phone || "No provisto"}\nServicio solicitado: ${service || "No especificado"}\nMensaje:\n${message}`,
+        text: `Nombre: ${name}\nCorreo: ${email}\nTeléfono: ${phone || "No provisto"}\nServicio solicitado: ${service || "No especificado"}\nMensaje:\n${message || "(sin mensaje)"}`,
       };
 
       let { data, error } = await resend.emails.send(emailPayload);

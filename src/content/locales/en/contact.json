@@ -26,12 +26,19 @@
     "linkUrl": "/politica-privacidad"
   },
   "successModal": {
-    "title": "Message sent!",
-    "body": "Thanks for reaching out. We'll be in touch shortly.",
-    "statusCrm": "Status: Registered in our CRM",
-    "slaGuarantee": "Response SLA guarantee: Under 24 business hours",
+    "title": "We got your message",
+    "body": "We have your project details. Someone on the team is reading them and will write back with a concrete answer.",
+    "statusCrm": "Someone on the team reads your message",
+    "slaGuarantee": "We reply within 4 business hours",
     "understood": "Got it",
-    "whatsappCta": "Talk on WhatsApp"
+    "whatsappCta": "Message us on WhatsApp",
+    "stepsTitle": "What happens next",
+    "steps": [
+      "Andrés, César or Ximena read your message.",
+      "We reply to the email you left, within 4 business hours.",
+      "If you already know what you want, we propose scope, timeline and price. If not, we ask what is missing."
+    ],
+    "portfolioCta": "See projects in production"
   },
   "confirmationEmail": {
     "subject": "We've received your message, {name}",

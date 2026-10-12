@@ -54,6 +54,14 @@ const BANNED_PHRASES = [
   /potencia tu/i,
   /unlock the/i,
   /seamless/i,
+  // Frases de plantilla que no deben volver (la landing de campaña las usaba).
+  /sin letra pequeña/i,
+  /costos ocultos/i,
+  /hoy más que nunca/i,
+  /en un mundo (donde|en el que)/i,
+  /a la medida de tus necesidades/i,
+  /transforma tu/i,
+  /impulsa tu/i,
 ];
 
 // Nombres propios y siglas que legítimamente van en mayúscula dentro de un título.

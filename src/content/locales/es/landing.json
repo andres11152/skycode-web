@@ -1,0 +1,166 @@
+{
+  "responseTime": "menos de 4 horas hábiles",
+  "header": {
+    "whatsappCta": "Escribir por WhatsApp"
+  },
+  "variants": {
+    "general": {
+      "metaTitle": "Software a la medida con precio publicado",
+      "metaDescription": "Desarrollo de software, apps y sitios web en Bogotá. Precios en pesos, avances cada semana, 90 días de garantía y el código a tu nombre.",
+      "eyebrow": "Desarrollo de software en Bogotá",
+      "title": "Software a la medida, con el precio a la vista y el código a tu nombre",
+      "intro": "Somos un equipo pequeño en Bogotá. Hablas directo con quienes programan, ves avances funcionales cada semana y pagas la mitad al firmar y la otra mitad al recibir el proyecto funcionando.",
+      "defaultService": "",
+      "caseSlugs": ["servifuturo", "cda-revifull", "racingbike"],
+      "testimonialCompanies": ["Servifuturo", "CDA Revifull"],
+      "whatsappMessage": "Hola, vi su página de desarrollo de software y quiero cotizar un proyecto"
+    },
+    "precio": {
+      "metaTitle": "Precios de desarrollo de software en pesos",
+      "metaDescription": "Cuánto cuesta una página web, una tienda, una app o un sistema a la medida en Colombia. Precio base y plazo por tipo de proyecto.",
+      "eyebrow": "Precios de desarrollo de software",
+      "title": "Precios de desarrollo de software, publicados en pesos",
+      "intro": "Cada tipo de proyecto tiene un precio de partida y un plazo. Abajo está lo que mueve el valor final. Si tu caso es distinto, te lo cotizamos por escrito antes de que firmes nada.",
+      "defaultService": "",
+      "caseSlugs": ["equilibrio-arquitectonico", "cda-revifull", "racingbike"],
+      "testimonialCompanies": ["Equilibrio Arquitectónico", "CDA Revifull"],
+      "whatsappMessage": "Hola, vi los precios en su página y quiero cotizar un proyecto"
+    },
+    "integraciones": {
+      "metaTitle": "Integramos tu software con pagos y WhatsApp",
+      "metaDescription": "Conexión de tu sistema con pasarelas de pago, facturación, ERP y la API de WhatsApp. Precio base en pesos y 90 días de garantía.",
+      "eyebrow": "Integraciones y automatización",
+      "title": "Conectamos tu sistema con WhatsApp, pagos y facturación",
+      "intro": "Si hoy pasas datos de un programa a otro a mano, eso se puede automatizar sin reescribir lo que ya te funciona. Trabajamos con Wompi, Stripe, PayU, Siigo, Alegra y la API de WhatsApp.",
+      "defaultService": "apis-integraciones",
+      "caseSlugs": ["sentry-crm", "servifuturo", "racingbike"],
+      "testimonialCompanies": ["Sentry CRM", "Servifuturo"],
+      "whatsappMessage": "Hola, vi su página de integraciones y quiero conectar mi sistema con otras herramientas"
+    }
+  },
+  "facts": {
+    "ariaLabel": "Datos clave del servicio",
+    "from": "Desde",
+    "term": "Plazo desde",
+    "termValue": "{weeks} semanas",
+    "warranty": "Garantía",
+    "warrantyValue": "90 días"
+  },
+  "pricing": {
+    "eyebrow": "Precios",
+    "title": "Lo que cuesta cada tipo de proyecto",
+    "intro": "Son precios de partida en pesos colombianos. El total depende de los módulos que necesites y del ritmo de entrega: pagos en línea, inicio de sesión de usuarios, funcionamiento sin internet, seguridad reforzada o un asistente de IA. Antes de firmar tienes el valor completo por escrito.",
+    "caption": "Precio de partida y plazo por tipo de proyecto",
+    "columns": { "project": "Proyecto", "from": "Desde", "weeks": "Semanas" },
+    "rows": [
+      { "id": "web", "label": "Página web" },
+      { "id": "ecommerce", "label": "Tienda en línea" },
+      { "id": "mobile", "label": "App móvil, Android e iOS" },
+      { "id": "software", "label": "Software o plataforma a la medida" },
+      { "id": "apis", "label": "Integración entre sistemas" },
+      { "id": "ai", "label": "Inteligencia artificial aplicada" }
+    ],
+    "estimatorNote": "Para un total aproximado con tus módulos, usa el cotizador.",
+    "estimatorCta": "Abrir el cotizador"
+  },
+  "process": {
+    "eyebrow": "Cómo trabajamos",
+    "title": "Del primer mensaje a la entrega, en cuatro pasos",
+    "steps": [
+      {
+        "title": "Nos cuentas qué necesitas",
+        "body": "Por el formulario o por WhatsApp. Te respondemos en menos de 4 horas hábiles y quien lee tu mensaje es Andrés, César o Ximena."
+      },
+      {
+        "title": "Firmamos con precio y fechas",
+        "body": "Recibes la propuesta con el alcance, el cronograma y el valor total. Al firmar pagas el 50 % y el repositorio se crea a tu nombre."
+      },
+      {
+        "title": "Ves avances cada semana",
+        "body": "Entras a un entorno privado y pruebas el sistema funcionando. Si algo no es lo que esperabas, lo dices ahí y hablas con quien lo está programando."
+      },
+      {
+        "title": "Entregamos y respondemos 90 días",
+        "body": "Pagas el 50 % restante cuando todo está probado y funcionando. Después tienes 90 días de garantía: si aparece un error o algo no se comporta como se acordó, lo corregimos sin costo."
+      }
+    ],
+    "code": {
+      "title": "El código es tuyo",
+      "body": "El repositorio queda a tu nombre y la cesión de los derechos patrimoniales del software va escrita en el contrato. Recibes los accesos desde el primer día. Si después quieres seguir con otro equipo, puedes."
+    }
+  },
+  "cases": {
+    "eyebrow": "Proyectos en producción",
+    "title": "Lo que ya construimos",
+    "stack": "Tecnologías",
+    "link": "Ver el caso completo",
+    "linkNewTab": "se abre en una pestaña nueva"
+  },
+  "testimonials": {
+    "eyebrow": "Clientes",
+    "title": "Qué dicen quienes ya trabajaron con nosotros"
+  },
+  "team": {
+    "eyebrow": "Quién responde",
+    "title": "Tu mensaje lo lee una persona del equipo",
+    "body": "Lo revisa directamente Andrés, César o Ximena y te responde en menos de 4 horas hábiles. Durante el proyecto hablas con los ingenieros que programan, sin intermediarios."
+  },
+  "faq": {
+    "eyebrow": "Preguntas",
+    "title": "Antes de escribirnos",
+    "items": [
+      {
+        "question": "¿Cuánto cuesta y cómo se paga?",
+        "answer": "Los precios de partida están en la tabla de arriba. El pago es 50 % al firmar el contrato con el cronograma acordado y 50 % cuando recibes el proyecto funcionando, probado y con tu visto bueno."
+      },
+      {
+        "question": "¿De quién es el código?",
+        "answer": "Tuyo. El repositorio queda a tu nombre, recibes los accesos desde el primer día y la cesión de los derechos patrimoniales va escrita en el contrato. No hay mensualidades ni licencias para seguir usando el sistema."
+      },
+      {
+        "question": "¿Qué cubre la garantía?",
+        "answer": "Son 90 días desde el lanzamiento. Si aparece un error o algo no se comporta como se acordó, lo corregimos sin costo adicional."
+      },
+      {
+        "question": "¿Con quién hablo durante el proyecto?",
+        "answer": "Con los ingenieros que programan. No hay un intermediario comercial en el medio, y cada semana tienes un avance funcional en un entorno privado."
+      },
+      {
+        "question": "¿Pueden conectar lo que ya uso?",
+        "answer": "Sí. Hemos integrado pasarelas de pago como Wompi, Stripe y PayU, software contable como Siigo y Alegra, y la API de WhatsApp."
+      }
+    ]
+  },
+  "closing": {
+    "title": "Cuéntanos qué necesitas",
+    "body": "Te respondemos en menos de 4 horas hábiles, con una propuesta o con las preguntas que nos falten.",
+    "cta": "Ir al formulario"
+  },
+  "form": {
+    "title": "Pide tu propuesta",
+    "intro": "Cuatro datos y te respondemos en menos de 4 horas hábiles.",
+    "name": "Tu nombre",
+    "namePlaceholder": "Ej. Carlos Gómez o Mi Empresa S.A.S.",
+    "email": "Tu correo",
+    "emailPlaceholder": "tu-correo@empresa.com",
+    "phone": "WhatsApp (opcional)",
+    "typeLegend": "¿Qué necesitas?",
+    "typeOptions": [
+      { "label": "Página web", "service": "frontend-alto-rendimiento" },
+      { "label": "Tienda en línea", "service": "ecommerce-tienda-online" },
+      { "label": "App móvil", "service": "desarrollo-aplicaciones-moviles" },
+      { "label": "Sistema a la medida", "service": "desarrollo-software-medida" },
+      { "label": "Integración con otro sistema", "service": "apis-integraciones" },
+      { "label": "IA o chatbot", "service": "inteligencia-artificial-aplicada" },
+      { "label": "Aún no lo sé", "service": "" }
+    ],
+    "message": "Algo más que debamos saber (opcional)",
+    "messagePlaceholder": "Qué problema quieres resolver, qué usas hoy, para cuándo lo necesitas.",
+    "submit": "Pedir propuesta",
+    "sending": "Enviando"
+  },
+  "footer": {
+    "responsible": "SkyCode Agency es el nombre comercial de Andrés Felipe Betancourt Ortiz, persona natural inscrita en el RUT. Bogotá, Colombia.",
+    "privacy": "Política de privacidad"
+  }
+}

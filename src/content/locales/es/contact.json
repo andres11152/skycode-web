@@ -26,12 +26,19 @@
     "linkUrl": "/politica-privacidad"
   },
   "successModal": {
-    "title": "¡Mensaje recibido!",
-    "body": "Ya tenemos los detalles de tu proyecto. Uno de nosotros los revisará hoy mismo y te responderemos con una valoración honesta (nada de respuestas genéricas de bots).",
-    "statusCrm": "Recibido directamente por el equipo técnico",
-    "slaGuarantee": "Te respondemos en menos de 24 horas hábiles",
+    "title": "Recibimos tu mensaje",
+    "body": "Ya tenemos los datos de tu proyecto. Una persona del equipo los revisa y te escribe con una respuesta concreta.",
+    "statusCrm": "Tu mensaje lo revisa directamente el equipo",
+    "slaGuarantee": "Te respondemos en menos de 4 horas hábiles",
     "understood": "¡Listo, gracias!",
-    "whatsappCta": "Escribirnos directo a WhatsApp"
+    "whatsappCta": "Escribirnos por WhatsApp",
+    "stepsTitle": "Qué pasa ahora",
+    "steps": [
+      "Andrés, César o Ximena leen tu mensaje.",
+      "Te respondemos al correo que dejaste, en menos de 4 horas hábiles.",
+      "Si ya tienes claro qué quieres, te proponemos alcance, plazo y precio. Si no, te hacemos las preguntas que falten."
+    ],
+    "portfolioCta": "Ver proyectos en producción"
   },
   "confirmationEmail": {
     "subject": "Hemos recibido tu mensaje, {name}",

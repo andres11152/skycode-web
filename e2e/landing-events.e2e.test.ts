@@ -80,3 +80,34 @@ describe("Aviso inmediato de lead nuevo", () => {
     expect(JSON.stringify(list)).toContain("Lead nuevo");
   });
 });
+
+describe("Formulario corto de la landing en /api/contact", () => {
+  const base = {
+    name: "Mateo Prueba",
+    email: "mateo@empresa-prueba.co",
+    consent: true,
+    locale: "es",
+  };
+
+  it("acepta un envío de la landing sin mensaje y lo guarda como 'Landing Ads'", async () => {
+    const res = await new TestClient().post("/api/contact", {
+      ...base,
+      message: "",
+      formContext: "Landing Ads",
+      serviceSlug: "apis-integraciones",
+      landing_page: "/landing/integraciones",
+    });
+    expect(res.status).toBe(200);
+    const rows = await query("SELECT source, message, service, landing_page FROM leads;");
+    expect(rows.rows).toEqual([
+      { source: "Landing Ads", message: "", service: expect.any(String), landing_page: "/landing/integraciones" },
+    ]);
+  });
+
+  it("sigue exigiendo el mensaje en el formulario de la home", async () => {
+    const res = await new TestClient().post("/api/contact", { ...base, message: "", formContext: "Formulario Web" });
+    expect(res.status).toBe(400);
+    const rows = await query("SELECT count(*)::int AS n FROM leads;");
+    expect(rows.rows[0].n).toBe(0);
+  });
+});

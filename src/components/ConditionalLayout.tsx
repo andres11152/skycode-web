@@ -9,7 +9,6 @@ import { SkipLink } from "@/components/SkipLink";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { AttributionCapture } from "@/components/AttributionCapture";
 import { GoogleAdsTag } from "@/components/GoogleAdsTag";
-import { trackWhatsappClick } from "@/lib/landingEvents";
 import { useLocale } from "@/components/LocaleProvider";
 import { ContactModalProvider } from "@/components/contact/ContactModalProvider";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
@@ -53,7 +52,7 @@ export function ConditionalLayout({ children, serviceLinks }: { children: React.
   // de llenar el formulario no debe quedar sin ninguna salida de contacto).
   // No es un "app shell" (no lleva el fondo oscuro de dashboard/login), solo
   // se queda sin el chrome público normal.
-  const isCampaignLanding = pathname === "/landing";
+  const isCampaignLanding = pathname === "/landing" || pathname.startsWith("/landing/");
 
   // `html { scroll-behavior: smooth }` (globals.css) hace que el scroll-to-top
   // automático de Next en cada navegación se anime en vez de ser instantáneo —
@@ -97,14 +96,13 @@ export function ConditionalLayout({ children, serviceLinks }: { children: React.
   }
 
   if (isCampaignLanding) {
+    // Sin botón flotante de WhatsApp: la landing ya trae sus propios enlaces a WhatsApp (arriba y al
+    // cierre, con el clic medido) y un tercer botón fijo tapaba texto del formulario en móvil.
     return (
       <main className="min-h-screen">
+        {/* Mismo fondo fluido que el resto del sitio público (claro y oscuro). */}
+        <FluidFieldBackground />
         {children}
-        <WhatsAppButton
-          locale={locale}
-          message="Hola, vi su anuncio y quiero más información sobre desarrollo de software"
-          onChatOpen={() => trackWhatsappClick(pathname)}
-        />
         {/* Medición: el aviso de cookies, la captura del gclid/UTM y la etiqueta de Google Ads
             (esta última solo con consentimiento). Sin esto los leads de la campaña llegaban al
             CRM sin saber de qué anuncio venían. */}

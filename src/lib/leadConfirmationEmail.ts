@@ -75,10 +75,29 @@ export function buildLeadConfirmationEmail({ name: rawName, message: rawMessage,
     safeService
       ? `<tr><td style="padding:4px 0;font-size:12px;font-weight:700;color:#0a0a0a;width:140px;vertical-align:top;">${escapeHtml(confirmationEmail.serviceLabel)}</td><td style="padding:4px 0;font-size:13px;color:rgba(10,10,10,0.8);">${safeService}</td></tr>`
       : "",
-    `<tr><td style="padding:4px 0;font-size:12px;font-weight:700;color:#0a0a0a;width:140px;vertical-align:top;">${escapeHtml(confirmationEmail.messageLabel)}</td><td style="padding:4px 0;font-size:13px;color:rgba(10,10,10,0.8);line-height:1.5;">${safeMessage}</td></tr>`,
+    safeMessage
+      ? `<tr><td style="padding:4px 0;font-size:12px;font-weight:700;color:#0a0a0a;width:140px;vertical-align:top;">${escapeHtml(confirmationEmail.messageLabel)}</td><td style="padding:4px 0;font-size:13px;color:rgba(10,10,10,0.8);line-height:1.5;">${safeMessage}</td></tr>`
+      : "",
   ]
     .filter(Boolean)
     .join("");
+
+  // Sin servicio ni mensaje (formulario corto de una landing) no hay nada que resumir: se omite la caja.
+  const summaryBlock = summaryRows
+    ? `<tr>
+              <td style="padding:20px 40px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eef0f2;border-radius:12px;">
+                  <tr>
+                    <td style="padding:16px 20px;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                        ${summaryRows}
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>`
+    : "";
 
   const html = `<!DOCTYPE html>
 <html lang="${localeHtmlLang[locale]}">
@@ -129,19 +148,7 @@ export function buildLeadConfirmationEmail({ name: rawName, message: rawMessage,
                 </table>
               </td>
             </tr>
-            <tr>
-              <td style="padding:20px 40px 0;">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eef0f2;border-radius:12px;">
-                  <tr>
-                    <td style="padding:16px 20px;">
-                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                        ${summaryRows}
-                      </table>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
+            ${summaryBlock}
             <tr>
               <td style="padding:28px 40px 8px;">
                 <table role="presentation" cellpadding="0" cellspacing="0">
@@ -175,7 +182,7 @@ export function buildLeadConfirmationEmail({ name: rawName, message: rawMessage,
     `- ${successModal.slaGuarantee}`,
     "",
     ...(service ? [`${confirmationEmail.serviceLabel}: ${service}`] : []),
-    `${confirmationEmail.messageLabel}: ${truncate(message, MESSAGE_EXCERPT_LIMIT)}`,
+    ...(message ? [`${confirmationEmail.messageLabel}: ${truncate(message, MESSAGE_EXCERPT_LIMIT)}`] : []),
     "",
     `${successModal.whatsappCta}: ${whatsappHref}`,
     "",

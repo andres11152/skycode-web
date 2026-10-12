@@ -229,6 +229,8 @@ Sin esto, cualquier mejora posterior es una opinión.
 - Falta: el punto 2 (Consent Mode v2, con revisión legal) y la línea base del punto 5.
 - Hallazgo nuevo: con la etiqueta de Google solo en `/gracias`, la conversión no se puede atribuir a un clic, porque el identificador del clic ya no está en la URL. Conviene mirar el diagnóstico de conversiones en Google Ads para confirmar que esa era la causa de las pocas conversiones.
 
+**Estado de la Fase 2 (12 oct. 2026): hecha para tres variantes** (`/landing`, `/landing/precio`, `/landing/integraciones`), sin commit. Datos del negocio recibidos: respuesta en 4 horas hábiles, cesión del código validada, garantía de 90 días, permiso para nombrar clientes y usar capturas, y operación como persona natural con RUT (sin NIT). Decisiones que se apartan del plan: el formulario conserva el correo como obligatorio (el CRM exige correo y el correo de confirmación depende de él; WhatsApp queda como canal alterno), y se quitó el botón flotante de WhatsApp.
+
 ### Fase 1: contenido real (lo que tiene que dar el negocio)
 
 Ver la sección 7. El copy final no se escribe hasta tener esto.

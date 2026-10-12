@@ -9,7 +9,7 @@ import { PhoneField } from "@/components/ui/PhoneField";
 import { getContactContent } from "@/content/contact";
 import { getServicesContent } from "@/content/services";
 import { defaultLocale, type Locale } from "@/lib/i18n";
-import type { LeadFormContext } from "@/lib/leadServices";
+import { isValidRealEmail } from "@/lib/emailValidation";
 import { cn } from "@/lib/utils";
 import { getAttribution } from "@/lib/attribution";
 import { logError } from "@/lib/logger";
@@ -38,36 +38,7 @@ function ValidMark({ show }: { show: boolean }) {
 
 export const labelClasses = "text-sm font-medium text-foreground/80";
 
-export function isValidRealEmail(emailStr: string): boolean {
-  const trimmed = emailStr.trim().toLowerCase();
-  if (!trimmed) return false;
-
-  // RFC 5322 regex
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailRegex.test(trimmed)) return false;
-
-  // Block fake / dummy email domains
-  const fakeDomains = [
-    "test.com",
-    "asdf.com",
-    "fake.com",
-    "xxx.com",
-    "example.com",
-    "mailinator.com",
-    "tempmail.com",
-    "dispostable.com",
-    "gmai.com",
-    "hotmai.com",
-  ];
-  const parts = trimmed.split("@");
-  if (parts.length !== 2) return false;
-  const domain = parts[1];
-
-  if (fakeDomains.includes(domain)) return false;
-  if (parts[0].length < 1 || domain.length < 4 || !domain.includes(".")) return false;
-
-  return true;
-}
+export { isValidRealEmail };
 
 
 export interface ContactFormPrefill {
@@ -83,13 +54,10 @@ export function ContactForm({
   locale = defaultLocale,
   variant = "section",
   prefill,
-  origin = "Formulario Web",
 }: {
   locale?: Locale;
   variant?: "section" | "modal";
   prefill?: ContactFormPrefill;
-  /** Desde qué página se envía, para que el CRM distinga los leads de una landing de campaña. */
-  origin?: Extract<LeadFormContext, "Formulario Web" | "Landing Ads">;
 }) {
   const isModal = variant === "modal";
   // Borrador en memoria (no en storage): sobrevive a cerrar y reabrir el modal
@@ -112,7 +80,7 @@ export function ContactForm({
   // "Cotizador" cuando el envío llegó prellenado desde ProjectEstimator —
   // permite distinguir en el CRM a quien ya vio precios de quien solo
   // escribió el formulario directo (ver lib/leadServices.ts).
-  const [formContext, setFormContext] = useState<LeadFormContext>(prefill?.fromEstimator ? "Cotizador" : origin);
+  const [formContext, setFormContext] = useState<"Formulario Web" | "Cotizador">(prefill?.fromEstimator ? "Cotizador" : "Formulario Web");
   const [showPhone, setShowPhone] = useState(variant === "section");
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
 
