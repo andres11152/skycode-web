@@ -47,7 +47,7 @@ function commit(preference: ThemePreference): void {
 }
 
 type ViewTransitionDocument = Document & {
-  startViewTransition?: (update: () => void) => { finished: Promise<void> };
+  startViewTransition?: (update: () => void) => { ready: Promise<void>; finished: Promise<void> };
 };
 
 /**
@@ -61,7 +61,8 @@ export function setThemePreference(next: ThemePreference, origin?: { x: number; 
   const sameVisualTheme = resolveEffectiveTheme(next) === resolveEffectiveTheme(readThemePreference());
 
   // Si el aspecto no cambia (p. ej. de "Sistema" a la opción que ya coincide), no hay nada que revelar.
-  if (!origin || reduced || sameVisualTheme || !doc.startViewTransition) {
+  // Con la pestaña oculta tampoco: el navegador aborta la transición ("Document hidden") y nadie la vería.
+  if (!origin || reduced || sameVisualTheme || !doc.startViewTransition || document.visibilityState === "hidden") {
     commit(next);
     return;
   }
@@ -74,6 +75,10 @@ export function setThemePreference(next: ThemePreference, origin?: { x: number; 
   root.classList.add("theme-switching");
 
   const transition = doc.startViewTransition(() => commit(next));
+  // `ready` se rechaza si el navegador salta o aborta la transición (la pestaña se oculta justo después del
+  // clic, o arranca otra transición). No es un error: el tema se aplica igual desde el callback, y un rechazo
+  // sin manejar aparecía como "InvalidStateError: Transition was aborted" en la consola y en el overlay de Next.
+  transition.ready.catch(() => undefined);
   const cleanup = () => {
     root.classList.remove("theme-switching");
     root.style.removeProperty("--theme-x");
