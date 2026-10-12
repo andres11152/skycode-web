@@ -19,6 +19,7 @@
     "db:seed-portfolio-technologies": "node --env-file=.env.local scripts/seed-portfolio-technologies.mjs",
     "db:seed-team-profiles": "node --env-file=.env.local scripts/migrate-team-profiles.mjs",
     "db:seo-legacy-cluster": "node --env-file=.env.local scripts/seo-legacy-migration-cluster.mjs",
+    "db:seo-legacy-guide": "node --env-file=.env.local scripts/seo-legacy-guide-reframe.mjs",
     "db:seo-case-studies": "node --env-file=.env.local scripts/seo-case-studies.mjs",
     "db:seo-outsourcing-meta": "node --env-file=.env.local scripts/seo-outsourcing-post-meta.mjs",
     "db:seo-blog-links": "node --env-file=.env.local scripts/seo-blog-internal-links.mjs",

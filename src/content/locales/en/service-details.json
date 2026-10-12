@@ -593,8 +593,8 @@
   },
   "migracion-datos-legacy": {
     "intro": [
-      "A legacy system isn't just old software: it's the one still running your billing, inventory or daily operations, yet nobody dares to change it. Our legacy software migration service replaces it module by module, with the old system running in parallel until the new one proves it processes the same transactions with the same results.",
-      "We don't do weekend \"big bang\" cutovers. We use the Strangler Fig pattern, data synchronization between both systems and automated reconciliation before every cutover, all explained in our [guide to legacy system migration without downtime](/en/blog/migracion-sistemas-legados-sin-interrupcion)."
+      "A legacy system isn't just old software: it's the one still running your billing, inventory or daily operations, yet nobody dares to change it. Our legacy software migration services replace it module by module, with the old system running in parallel until the new one proves it processes the same transactions with the same results.",
+      "We don't do weekend \"big bang\" cutovers. We use the Strangler Fig pattern, data synchronization between both systems and automated reconciliation before every cutover, all explained in our [guide to migrating legacy systems without downtime](/en/blog/migracion-sistemas-legados-sin-interrupcion)."
     ],
     "challenge": {
       "heading": "Signs your system has already become legacy",
@@ -654,6 +654,14 @@
         "answer": "It depends on the number of modules and the state of the data. A well-scoped module with clean data can reach production in weeks; a full ERP is planned in phases over several months. Each phase ships value and is reversible, so you don't wait until the end to use the new system."
       },
       {
+        "question": "Are you a legacy software migration company or an agency?",
+        "answer": "Both labels fit. SkyCode is a software agency, and the legacy migration work is done by the engineers you talk to directly, with no sales layer in between. You get the code, the migration scripts and the documentation from day one."
+      },
+      {
+        "question": "What does a legacy software migration agency actually deliver?",
+        "answer": "A new platform in production module by module, versioned and repeatable migration scripts, a reconciliation report between the old and the new system, a read-only archive of the historical data you must retain, and documentation of the new architecture and the cutover steps."
+      },
+      {
         "question": "Can we migrate without downtime?",
         "answer": "Yes, that's the whole point of a phased migration. The legacy system keeps running while the new one takes over module by module, with data synchronized between them. Each cutover is gradual and can be rolled back if something fails."
       },
@@ -673,7 +681,7 @@
     "relatedHeading": "Keep reading",
     "related": [
       {
-        "label": "Guide: legacy system migration without downtime",
+        "label": "Guide: how to migrate legacy systems without downtime",
         "href": "/en/blog/migracion-sistemas-legados-sin-interrupcion",
         "description": "Step-by-step framework, common mistakes and how to decommission a system without migrating all its data."
       },
@@ -684,7 +692,7 @@
       }
     ],
     "colombia": {
-      "heading": "Legacy system migration and modernization",
+      "heading": "Legacy software migration company: how we work with your team",
       "paragraphs": [
         "Many companies still run on a custom ERP built over a decade ago, a desktop application or Excel workbooks that carry invoicing and inventory. We migrate those systems in phases for clients in different countries: the old system keeps running in parallel while the new one takes over module by module, with data kept in sync and a reconciliation before every cutover, with no weekend shutdowns.",
         "A migration is also a personal-data topic: before moving anything we audit what sensitive information exists and where, and the new database ships with encryption, access control and auditing aligned with the framework that applies to you, such as the GDPR or Colombia's Law 1581 (Habeas Data). Records the law requires you to keep for accounting or tax reasons can stay in a read-only archive instead of being loaded into the new system. The code and the migration scripts are yours from day one, and you get a 90-day technical warranty after the final cutover. If a module is stable and slows nobody down, we may recommend wrapping it behind an API instead of rewriting it."

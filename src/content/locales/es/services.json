@@ -82,7 +82,7 @@
     },
     {
       "slug": "migracion-datos-legacy",
-      "title": "Migración y modernización de datos",
+      "title": "Migración de sistemas legacy",
       "description": "Extracción, saneamiento y migración desde sistemas obsoletos, archivos XML o planillas dispersas hacia bases de datos modernas, sin interrumpir tu operación activa.",
       "iconName": "Swap",
       "features": [

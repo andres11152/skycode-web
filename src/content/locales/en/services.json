@@ -82,7 +82,7 @@
     },
     {
       "slug": "migracion-datos-legacy",
-      "title": "Legacy Data Migration & Modernization",
+      "title": "Legacy software migration",
       "description": "Safe extraction, cleaning, and transformation of data locked inside outdated systems, XML dumps, or legacy spreadsheets into modern cloud databases without operational downtime.",
       "iconName": "Swap",
       "features": [

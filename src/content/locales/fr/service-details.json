@@ -593,8 +593,8 @@
   },
   "migracion-datos-legacy": {
     "intro": [
-      "Un système legacy n'est pas seulement un vieux logiciel : c'est celui qui fait encore tourner la facturation, les stocks ou l'activité quotidienne, mais que plus personne n'ose modifier. Notre service de migration de systèmes legacy le remplace module par module, l'ancien système restant en service en parallèle jusqu'à ce que le nouveau prouve qu'il traite les mêmes opérations avec les mêmes résultats.",
-      "Pas de bascule « big bang » le week-end. Nous appliquons le pattern Strangler Fig, la synchronisation des données entre les deux systèmes et un rapprochement automatisé avant chaque bascule, détaillés dans notre [guide de migration d'un système legacy sans coupure](/fr/blog/migracion-sistemas-legados-sin-interrupcion)."
+      "Un système legacy n'est pas seulement un vieux logiciel : c'est celui qui fait encore tourner la facturation, les stocks ou l'activité quotidienne, mais que plus personne n'ose modifier. Notre service de migration système legacy le remplace module par module, l'ancien système restant en service en parallèle jusqu'à ce que le nouveau prouve qu'il traite les mêmes opérations avec les mêmes résultats.",
+      "Pas de bascule « big bang » le week-end. Nous appliquons le pattern Strangler Fig, la synchronisation des données entre les deux systèmes et un rapprochement automatisé avant chaque bascule, détaillés dans notre [guide pour migrer un système legacy sans interruption](/fr/blog/migracion-sistemas-legados-sin-interrupcion)."
     ],
     "challenge": {
       "heading": "Les signes que votre système est déjà devenu un système legacy",
@@ -654,6 +654,14 @@
         "answer": "Tout dépend du nombre de modules et de la qualité des données. Un module bien délimité avec des données propres peut passer en production en quelques semaines ; un ERP complet se planifie par lots sur plusieurs mois. Chaque lot apporte de la valeur et reste réversible."
       },
       {
+        "question": "Qu'est-ce que la migration de code legacy ?",
+        "answer": "C'est le portage du code d'une application ancienne (Visual Basic, Delphi, ancien PHP…) vers une pile actuelle, module par module, avec des tests de non-régression et des données synchronisées entre les deux versions. L'ancien code reste en service tant que le nouveau n'a pas prouvé qu'il produit les mêmes résultats."
+      },
+      {
+        "question": "Comment se déroule une migration système legacy sans interruption ?",
+        "answer": "En six étapes : audit du système et des données, décision module par module (migrer, conserver ou décommissionner), architecture cible avec une couche de routage, reprise des données par lots, recette avec rapprochement avant chaque bascule, puis bascule progressive et décommissionnement de l'ancien système."
+      },
+      {
         "question": "Peut-on migrer sans interruption de service ?",
         "answer": "Oui, c'est tout l'intérêt d'une migration progressive. L'ancien système continue de tourner pendant que le nouveau reprend les modules un par un, avec des données synchronisées. Chaque bascule est progressive et peut être annulée en cas de problème."
       },
@@ -673,7 +681,7 @@
     "relatedHeading": "Pour aller plus loin",
     "related": [
       {
-        "label": "Guide : migrer un système legacy sans coupure",
+        "label": "Guide : comment migrer un système legacy sans interruption",
         "href": "/fr/blog/migracion-sistemas-legados-sin-interrupcion",
         "description": "Méthode étape par étape, erreurs fréquentes et comment décommissionner un système sans reprendre toutes ses données."
       },
@@ -684,7 +692,7 @@
       }
     ],
     "colombia": {
-      "heading": "Migration et modernisation de systèmes legacy",
+      "heading": "Migration de code legacy et modernisation de systèmes",
       "paragraphs": [
         "De nombreuses entreprises fonctionnent encore sur un ERP sur mesure vieux de plus de dix ans, une application de bureau ou des classeurs Excel qui portent la facturation et les stocks. Nous travaillons à distance avec des clients de différents pays et migrons ces systèmes par phases : l'ancien système continue de tourner en parallèle pendant que le nouveau prend le relais module par module, avec des données synchronisées et une réconciliation avant chaque bascule, sans arrêt le week-end.",
         "Une migration est aussi un sujet de données personnelles : avant de déplacer quoi que ce soit, nous auditons les informations sensibles existantes et leur emplacement, et la nouvelle base est livrée avec chiffrement, contrôle d'accès et audit alignés sur le cadre qui s'applique à vous (RGPD, loi colombienne 1581, etc.). Les enregistrements que la loi oblige à conserver pour des raisons comptables ou fiscales peuvent rester dans une archive en lecture seule, sans être chargés dans le nouveau système. Le code et les scripts de migration vous appartiennent dès le premier jour, et vous bénéficiez de 90 jours de garantie technique après la bascule finale."

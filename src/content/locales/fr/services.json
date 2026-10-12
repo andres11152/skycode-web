@@ -82,7 +82,7 @@
     },
     {
       "slug": "migracion-datos-legacy",
-      "title": "Migration et modernisation de données",
+      "title": "Migration de systèmes legacy",
       "description": "Extraction, nettoyage et migration de données depuis des systèmes obsolètes ou tableurs dispersés vers des bases de données modernes, sans interrompre vos opérations.",
       "iconName": "Swap",
       "features": [

@@ -589,8 +589,8 @@
   },
   "migracion-datos-legacy": {
     "intro": [
-      "Un sistema legado no es solo software viejo: es el que sigue sosteniendo la facturación, el inventario o la operación diaria, pero ya no se puede cambiar sin miedo. Nuestro servicio de migración de sistemas legacy lo reemplaza módulo por módulo, con el sistema anterior funcionando en paralelo hasta que el nuevo demuestra que procesa lo mismo, con los mismos resultados.",
-      "No hacemos migraciones \"Big Bang\" de fin de semana. Usamos el patrón Strangler Fig, sincronización de datos entre ambos sistemas y reconciliación automática antes de cada corte, lo explicamos con detalle en nuestra [guía de migración de sistemas legados sin interrupción](/blog/migracion-sistemas-legados-sin-interrupcion)."
+      "Un sistema legado, también llamado sistema heredado o legacy, no es solo software viejo: es el que sigue sosteniendo la facturación, el inventario o la operación diaria, pero ya no se puede cambiar sin miedo. Nuestro servicio de migración de sistemas heredados lo reemplaza módulo por módulo, con el sistema anterior funcionando en paralelo hasta que el nuevo demuestra que procesa lo mismo, con los mismos resultados.",
+      "No hacemos migraciones \"Big Bang\" de fin de semana: para modernizar sistemas legacy usamos el patrón Strangler Fig, sincronización de datos entre ambos sistemas y reconciliación automática antes de cada corte. Lo explicamos paso a paso en nuestra [guía para migrar sistemas legados sin downtime](/blog/migracion-sistemas-legados-sin-interrupcion)."
     ],
     "challenge": {
       "heading": "Señales de que tu sistema ya es un legado",
@@ -650,6 +650,14 @@
         "answer": "Depende del número de módulos y del estado de los datos. Un módulo acotado con datos limpios puede salir a producción en semanas; un ERP completo se planifica por fases de varios meses. Lo importante es que cada fase entrega valor y es reversible: no hay que esperar al final para usar el sistema nuevo."
       },
       {
+        "question": "¿Qué diferencia hay entre un sistema legacy y un sistema heredado?",
+        "answer": "Ninguna en la práctica: son dos formas de nombrar lo mismo. Un sistema heredado (legacy) es el software que la empresa recibió de proyectos o equipos anteriores y que sigue siendo crítico para la operación, pero que ya no se puede cambiar con seguridad."
+      },
+      {
+        "question": "¿Cómo modernizar un sistema heredado sin reescribirlo todo?",
+        "answer": "Se moderniza por módulos. Primero se decide qué migrar, qué encapsular detrás de una API y qué retirar; después el sistema nuevo asume un módulo a la vez mientras el anterior sigue operando. Es el enfoque que describimos en la [guía para migrar sistemas legados sin downtime](/blog/migracion-sistemas-legados-sin-interrupcion)."
+      },
+      {
         "question": "¿Se puede migrar sin detener la operación?",
         "answer": "Sí, ese es el punto de migrar por fases. El sistema legado sigue funcionando mientras el nuevo asume módulo por módulo, con los datos sincronizados entre ambos. El corte de cada módulo es gradual y se puede revertir si algo falla."
       },
@@ -669,7 +677,7 @@
     "relatedHeading": "Sigue leyendo",
     "related": [
       {
-        "label": "Guía: migración de sistemas legados sin interrupción",
+        "label": "Guía: cómo migrar sistemas legados sin downtime",
         "href": "/blog/migracion-sistemas-legados-sin-interrupcion",
         "description": "Marco paso a paso, errores comunes y cómo dar de baja un sistema sin migrar todos sus datos."
       },
@@ -680,9 +688,9 @@
       }
     ],
     "colombia": {
-      "heading": "Migración y modernización de sistemas legacy",
+      "heading": "Modernización de sistemas heredados y legacy",
       "paragraphs": [
-        "Muchas empresas siguen operando sobre un ERP hecho a medida hace más de una década, una aplicación de escritorio o planillas de Excel que sostienen la facturación y el inventario. Migramos esos sistemas por fases, de forma remota y para empresas de distintos países: el sistema anterior sigue funcionando en paralelo mientras el nuevo asume módulo por módulo, con los datos sincronizados y una reconciliación antes de cada corte, sin paradas de fin de semana.",
+        "Modernizar sistemas legacy es casi siempre un proyecto de continuidad antes que de tecnología. Muchas empresas siguen operando sobre un ERP hecho a medida hace más de una década, una aplicación de escritorio o planillas de Excel que sostienen la facturación y el inventario. Migramos esos sistemas por fases, de forma remota y para empresas de distintos países: el sistema anterior sigue funcionando en paralelo mientras el nuevo asume módulo por módulo, con los datos sincronizados y una reconciliación antes de cada corte, sin paradas de fin de semana.",
         "Una migración también es un tema de datos personales: antes de mover nada auditamos qué información sensible existe y dónde, y la base nueva sale con cifrado, control de acceso y auditoría alineados con la norma de protección de datos que te aplique (RGPD, Ley 1581, entre otras). Los registros que la ley obliga a conservar por motivos contables o fiscales pueden quedar en un archivo de consulta de solo lectura, sin cargarse al sistema nuevo. El código y los scripts de migración son tuyos desde el primer día, y tienes 90 días de garantía técnica tras el corte final."
       ],
       "facts": [
