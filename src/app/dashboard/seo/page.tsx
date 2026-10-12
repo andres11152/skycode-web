@@ -6,6 +6,10 @@ import { getContentGaps, getSeoSummary, getTopPages, getTopQueries, hasAnyGscDat
 import { SeoMetricsView } from "@/components/dashboard/SeoMetricsView";
 import { SeoHealthPanel } from "@/components/dashboard/SeoHealthPanel";
 import { getLatestSeoHealthRun, getSeoHealthHistory } from "@/lib/queries/seoHealth";
+import { SeoInsightsPanel, type SeoInsights } from "@/components/dashboard/SeoInsightsPanel";
+import { getOpenSeoAlerts, getPeriodRows, loadSeoWindows } from "@/lib/queries/seoAnalysis";
+import { compareByQuery, findCannibalization, findStrikingDistance, findWrongTarget, segmentTotals } from "@/lib/seoAnalysis";
+import { listKeywordEntries } from "@/seo/keyword-map";
 
 export const metadata: Metadata = {
   title: "SEO | SKYCODE Agency",
@@ -19,6 +23,33 @@ export const metadata: Metadata = {
 // que habría que parametrizar.
 const WINDOW_DAYS = 28;
 const TOP_LIMIT = 15;
+
+/** `YYYY-MM-DD` menos `days` días (calendario, sin hora). */
+function minusDays(date: string, days: number): string {
+  const d = new Date(`${date}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() - days);
+  return d.toISOString().slice(0, 10);
+}
+
+/** Todo lo que pinta `SeoInsightsPanel`, calculado en el servidor con las funciones puras de lib/seoAnalysis.ts. */
+async function loadInsights(): Promise<SeoInsights | null> {
+  const windows = await loadSeoWindows();
+  if (!windows) return null;
+  const [alerts, monthRows] = await Promise.all([getOpenSeoAlerts(), getPeriodRows(minusDays(windows.latestDate, WINDOW_DAYS - 1), windows.latestDate)]);
+  const entries = listKeywordEntries();
+  return {
+    latestDate: windows.latestDate,
+    currentRange: `${windows.current.from} a ${windows.current.to}`,
+    previousRange: `${windows.previous.from} a ${windows.previous.to}`,
+    windowDays: WINDOW_DAYS,
+    alerts,
+    segments: segmentTotals(monthRows),
+    striking: findStrikingDistance(monthRows).slice(0, TOP_LIMIT),
+    cannibalization: findCannibalization(windows.current.rows).slice(0, TOP_LIMIT),
+    wrongTarget: findWrongTarget(windows.current.rows, entries).slice(0, TOP_LIMIT),
+    movers: compareByQuery(windows.current.rows, windows.previous.rows).slice(0, TOP_LIMIT),
+  };
+}
 
 export default async function DashboardSeoPage() {
   const session = await requireSessionOrRedirect();
@@ -55,7 +86,8 @@ export default async function DashboardSeoPage() {
     );
   }
 
-  const [summary, topQueries, contentGaps, topPages] = await Promise.all([
+  const [insights, summary, topQueries, contentGaps, topPages] = await Promise.all([
+    loadInsights(),
     getSeoSummary(WINDOW_DAYS),
     getTopQueries(WINDOW_DAYS, TOP_LIMIT),
     getContentGaps(WINDOW_DAYS, TOP_LIMIT),
@@ -71,6 +103,7 @@ export default async function DashboardSeoPage() {
       topPages={topPages}
       windowDays={WINDOW_DAYS}
       healthSlot={healthSlot}
+      insightsSlot={<SeoInsightsPanel insights={insights} />}
     />
   );
 }

@@ -25,9 +25,11 @@ interface Props {
   windowDays: number;
   /** Panel de "Salud técnica" (auditoría del sitemap), que se pinta bajo el encabezado aunque no haya datos de Search Console. */
   healthSlot?: React.ReactNode;
+  /** Alertas, marca vs no marca, distancia de ataque y cambios semanales (`SeoInsightsPanel`). Se pinta bajo los KPI. */
+  insightsSlot?: React.ReactNode;
 }
 
-export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQueries, contentGaps, topPages, windowDays, healthSlot }: Props) {
+export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQueries, contentGaps, topPages, windowDays, healthSlot, insightsSlot }: Props) {
   return (
     <div className="space-y-8">
       <div>
@@ -64,6 +66,8 @@ export function SeoMetricsView({ hasData, gscConfigured = false, summary, topQue
             <StatCard label="CTR promedio" value={formatPct(summary.avgCtr)} icon={<Target size={18} className="text-accent-strong" />} />
             <StatCard label="Posición promedio" value={formatPosition(summary.avgPosition)} icon={<Search size={18} className="text-accent-strong" />} />
           </div>
+
+          {insightsSlot}
 
           <section aria-label="Oportunidades de contenido">
             <div className="mb-3 flex items-center gap-2">

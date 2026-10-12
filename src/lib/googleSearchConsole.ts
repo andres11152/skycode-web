@@ -17,6 +17,9 @@ export interface GscRow {
   position: number;
 }
 
+const ROW_LIMIT = 25000;
+const MAX_PAGES = 20;
+
 /**
  * No usa el paquete `googleapis` (pesado, ~130 dependencias transitivas)
  * para una sola llamada — el flujo OAuth2 de cuenta de servicio
@@ -96,39 +99,49 @@ export async function fetchSearchAnalytics(startDate: string, endDate: string): 
   const accessToken = await getAccessToken();
   const endpoint = `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`;
 
-  const res = await fetch(endpoint, {
-    method: "POST",
-    signal: AbortSignal.timeout(30_000),
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      startDate,
-      endDate,
-      dimensions: ["date", "page", "query"],
-      rowLimit: 25000,
-    }),
-  });
+  // Paginado con `startRow`: una ventana de 5 días cabe en una sola respuesta, pero un RELLENO histórico (decenas
+  // de días con fecha+página+query) supera las 25.000 filas por respuesta. Tope de páginas por seguridad.
+  const rows: GscRow[] = [];
+  for (let page = 0; page < MAX_PAGES; page++) {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      signal: AbortSignal.timeout(30_000),
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        startDate,
+        endDate,
+        dimensions: ["date", "page", "query"],
+        rowLimit: ROW_LIMIT,
+        startRow: page * ROW_LIMIT,
+      }),
+    });
 
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Search Analytics API respondió ${res.status}: ${body}`);
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Search Analytics API respondió ${res.status}: ${body}`);
+    }
+
+    const data = (await res.json()) as {
+      rows?: Array<{ keys: [string, string, string]; clicks: number; impressions: number; ctr: number; position: number }>;
+    };
+    const batch = data.rows ?? [];
+    rows.push(
+      ...batch.map((row) => ({
+        date: row.keys[0],
+        page: row.keys[1],
+        query: row.keys[2],
+        clicks: row.clicks,
+        impressions: row.impressions,
+        ctr: row.ctr,
+        position: row.position,
+      }))
+    );
+    if (batch.length < ROW_LIMIT) break;
   }
-
-  const data = (await res.json()) as {
-    rows?: Array<{ keys: [string, string, string]; clicks: number; impressions: number; ctr: number; position: number }>;
-  };
-
-  return (data.rows ?? []).map((row) => ({
-    date: row.keys[0],
-    page: row.keys[1],
-    query: row.keys[2],
-    clicks: row.clicks,
-    impressions: row.impressions,
-    ctr: row.ctr,
-    position: row.position,
-  }));
+  return rows;
 }
 
 /**

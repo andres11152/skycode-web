@@ -3,6 +3,7 @@ import { verifyCronSecret } from "@/lib/cronAuth";
 import { fetchSearchAnalyticsSafe } from "@/lib/googleSearchConsole";
 import { upsertGscMetrics } from "@/lib/queries/seoMetrics";
 import { runAndStoreSeoHealth } from "@/lib/queries/seoHealth";
+import { runSeoAnalysis, type SeoAnalysisRun } from "@/lib/queries/seoAnalysis";
 import { logError } from "@/lib/logger";
 
 /**
@@ -19,9 +20,20 @@ import { logError } from "@/lib/logger";
  * idempotente (ver `upsertGscMetrics`, `ON CONFLICT` sobre fecha+página+query)
  * captura esas correcciones sin duplicar filas ni necesitar lógica de
  * "reintentar solo lo que falló".
+ *
+ * Relleno histórico: `?backfillDays=N` (hasta 480, ~16 meses, el máximo que conserva Search Console) amplía la
+ * ventana de esa corrida para cargar el pasado una vez. El comparativo semana contra semana necesita al menos 14
+ * días de historia; sin relleno, las alertas empiezan a ser útiles dos semanas después de activar el cron.
+ *
+ * Tras cargar las métricas y auditar el sitio, `runSeoAnalysis()` compara las dos últimas semanas, registra las
+ * alertas nuevas (canibalización, página equivocada, caída de posición, entrada al top 10, URL caída) en
+ * `seo_alerts` y avisa a los administradores una sola vez por problema.
  */
 // La auditoría de salud técnica recorre todo el sitemap (ver seo-health).
 export const maxDuration = 300;
+
+const DEFAULT_WINDOW_DAYS = 5;
+const MAX_BACKFILL_DAYS = 480;
 
 export async function POST(request: Request) {
   const authError = verifyCronSecret(request);
@@ -34,10 +46,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const WINDOW_DAYS = 5;
+  const backfill = Number(new URL(request.url).searchParams.get("backfillDays") ?? "");
+  const windowDays = Number.isInteger(backfill) && backfill > 0 ? Math.min(backfill, MAX_BACKFILL_DAYS) : DEFAULT_WINDOW_DAYS;
   const endDate = new Date();
   const startDate = new Date(endDate);
-  startDate.setDate(startDate.getDate() - WINDOW_DAYS);
+  startDate.setDate(startDate.getDate() - windowDays);
 
   const toIsoDate = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -61,5 +74,13 @@ export async function POST(request: Request) {
     logError("❌ [Cron SEO Pulse] la auditoría de salud técnica falló", error);
   }
 
-  return NextResponse.json({ success: true, rowsUpserted: upserted, health });
+  // Análisis semana contra semana y alertas: también de mejor esfuerzo, las métricas ya quedaron guardadas.
+  let analysis: SeoAnalysisRun | null = null;
+  try {
+    analysis = await runSeoAnalysis();
+  } catch (error) {
+    logError("❌ [Cron SEO Pulse] el análisis de alertas falló", error);
+  }
+
+  return NextResponse.json({ success: true, rowsUpserted: upserted, windowDays, health, analysis });
 }
