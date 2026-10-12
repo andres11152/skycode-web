@@ -112,3 +112,66 @@ jobs:
 
       - name: Tests E2E
         run: npm run test:e2e
+
+  # Gate de SEO: construye el sitio, lo sirve y corre `npm run seo:check` contra su sitemap. BLOQUEA el merge
+  # (marca este job como check obligatorio en la protección de la rama) si alguna URL tiene: título duplicado o de
+  # más de 60 caracteres, H1 ausente o múltiple, canonical que no apunta a sí misma, la keyword primaria del
+  # mapa de keywords (src/seo/keyword-map.ts) fuera de su título o H1, o hreflang distinto del sitemap.
+  #
+  # Los posts del blog viven en Postgres, así que se carga la base con los mismos scripts de contenido que se
+  # corren en producción (en el mismo orden): sin ellos el sitemap no traería los artículos y el gate no vería
+  # los títulos de la guía ni los slugs nativos. Los casos del portafolio no se cargan (necesitan el bucket de
+  # imágenes), así que el gate cubre todo lo demás; la auditoría diaria del cron sí recorre el sitio completo.
+  seo-gate:
+    name: Gate de SEO (seo:check sobre el build)
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: skycode_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d skycode_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Migraciones y contenido del blog
+        run: |
+          npm run test:db:migrate
+          for script in seed-articles-from-json seo-legacy-migration-cluster seo-legacy-guide-reframe seo-blog-internal-links seo-outsourcing-post-meta seo-localized-slugs; do
+            echo "== $script"
+            node --env-file=.env.test "scripts/$script.mjs"
+          done
+
+      - name: Build, servir y auditar el sitemap
+        run: |
+          set -a
+          . ./.env.test
+          set +a
+          npx next build
+          npx next start -p 3200 > next-start.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3200/login > /dev/null && break
+            sleep 1
+          done
+          BASE_URL=http://localhost:3200 npm run seo:check
+
+      - name: Log del servidor (si algo falló)
+        if: failure()
+        run: cat next-start.log || true

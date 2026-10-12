@@ -9,6 +9,12 @@
 //   - el cron diario (lib/queries/seoHealth.ts → /api/cron/seo-pulse), que
 //     guarda el resultado para /dashboard/seo.
 // Una sola lógica evita que el panel diga "todo bien" mientras el script falla.
+//
+// Además de lo estructural (canonical, título, H1…), verifica contra el MAPA DE KEYWORDS
+// (src/seo/keyword-map.ts): que la keyword primaria de cada página aparezca en su título y su H1, y que el
+// hreflang del HTML coincida con el del sitemap (autorreferencia y x-default incluidos). El mapa también es
+// un módulo sin imports del proyecto, por eso puede importarse desde aquí.
+import { containsKeyword, type KeywordExpectation } from "../seo/keyword-map.ts";
 
 export const TITLE_MAX = 60;
 export const DESCRIPTION_MAX = 160;
@@ -29,6 +35,9 @@ export type SeoIssueCode =
   | "h1_count"
   | "noindex_in_sitemap"
   | "todo_placeholder"
+  | "keyword_primary_missing"
+  | "hreflang_incomplete"
+  | "h1_duplicate"
   | "img_missing_alt"
   | "lastmod_missing";
 
@@ -84,6 +93,8 @@ export interface ParsedHtml {
   /** `<img>` sin atributo `alt` (un `alt=""` decorativo SÍ cuenta como declarado). */
   imagesWithoutAlt: number;
   robots: string | null;
+  /** `<link rel="alternate" hreflang>` declarados (idioma → URL tal como figura en el HTML). */
+  hreflangs: { hreflang: string; href: string }[];
 }
 
 function decodeEntities(value: string): string {
@@ -143,7 +154,16 @@ export function parseHtml(html: string): ParsedHtml {
   const h1Match = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(stripped);
   const h1Text = h1Match ? decodeEntities(h1Match[1].replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim() : null;
 
+  const hreflangs: { hreflang: string; href: string }[] = [];
+  for (const tag of findTags(stripped, "link")) {
+    if (attr(tag, "rel")?.toLowerCase() !== "alternate") continue;
+    const hreflang = attr(tag, "hreflang");
+    const href = attr(tag, "href");
+    if (hreflang && href) hreflangs.push({ hreflang: hreflang.toLowerCase(), href });
+  }
+
   return {
+    hreflangs,
     title: title && title.length > 0 ? title : null,
     description: description && description.trim().length > 0 ? description.trim() : null,
     canonical: canonical && canonical.trim().length > 0 ? canonical.trim() : null,
@@ -185,14 +205,81 @@ export function parseSitemapEntries(xml: string): { loc: string; lastmod: string
   return entries;
 }
 
+/** Alternativas de idioma (`<xhtml:link rel="alternate" hreflang>`) que el sitemap declara para cada URL. */
+export function parseSitemapAlternates(xml: string): Map<string, Record<string, string>> {
+  const byLoc = new Map<string, Record<string, string>>();
+  for (const block of xml.matchAll(/<url>([\s\S]*?)<\/url>/gi)) {
+    const loc = /<loc>\s*([^<\s][^<]*?)\s*<\/loc>/i.exec(block[1]);
+    if (!loc) continue;
+    const alternates: Record<string, string> = {};
+    for (const tag of block[1].matchAll(/<xhtml:link\b[^>]*>/gi)) {
+      if (attr(tag[0], "rel")?.toLowerCase() !== "alternate") continue;
+      const hreflang = attr(tag[0], "hreflang");
+      const href = attr(tag[0], "href");
+      if (hreflang && href) alternates[hreflang.toLowerCase()] = href;
+    }
+    byLoc.set(decodeEntities(loc[1]), alternates);
+  }
+  return byLoc;
+}
+
 function issue(code: SeoIssueCode, severity: SeoIssue["severity"], message: string): SeoIssue {
   return { code, severity, message };
+}
+
+/** Lo que el sitemap y el mapa de keywords esperan de UNA página (todo opcional: sin ello solo se auditan las comprobaciones estructurales). */
+export interface PageAuditContext {
+  /** Keyword primaria que debe estar en el título y el H1 (clúster dueño de esta URL en el mapa de keywords). */
+  expectation?: KeywordExpectation;
+  /** Alternativas de idioma que el sitemap declara para esta URL. */
+  sitemapAlternates?: Record<string, string>;
+  /** Todas las URLs del sitemap (para comprobar que cada hreflang apunta a una página indexable). */
+  sitemapUrls?: ReadonlySet<string>;
+}
+
+/** Ruta normalizada (sin barra final; la raíz es "/") de una URL absoluta. */
+function pathOf(url: string): string {
+  try {
+    const pathname = new URL(url).pathname;
+    return pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
+  } catch {
+    return url;
+  }
+}
+
+/** Problemas de hreflang de una página respecto de lo que declara el sitemap (lista vacía = completo). */
+export function checkHreflang(
+  pageUrl: string,
+  htmlAlternates: { hreflang: string; href: string }[],
+  context: Pick<PageAuditContext, "sitemapAlternates" | "sitemapUrls">
+): string[] {
+  const declared = context.sitemapAlternates;
+  // Sin alternativas en el sitemap (p. ej. las páginas legales, solo en español) no hay nada que cruzar.
+  if (!declared || Object.keys(declared).length === 0) return [];
+
+  const problems: string[] = [];
+  const inHtml = new Map(htmlAlternates.map((a) => [a.hreflang, a.href]));
+  const knownUrls = context.sitemapUrls ? new Set([...context.sitemapUrls].map(normalizeUrl)) : null;
+  for (const [lang, href] of Object.entries(declared)) {
+    const actual = inHtml.get(lang);
+    if (actual === undefined) problems.push(`falta hreflang="${lang}" (${href})`);
+    else if (normalizeUrl(actual) !== normalizeUrl(href)) problems.push(`hreflang="${lang}" apunta a ${actual} y el sitemap declara ${href}`);
+    if (knownUrls && !knownUrls.has(normalizeUrl(href))) problems.push(`hreflang="${lang}" apunta a una URL que no está en el sitemap (${href})`);
+  }
+  for (const lang of inHtml.keys()) {
+    if (!(lang in declared)) problems.push(`hreflang="${lang}" no figura en el sitemap`);
+  }
+  if (!htmlAlternates.some((a) => normalizeUrl(a.href) === normalizeUrl(pageUrl))) {
+    problems.push("ningún hreflang apunta a la propia página (falta la autorreferencia)");
+  }
+  return problems;
 }
 
 /** Problemas que se detectan mirando UNA página (los duplicados entre páginas se cruzan después). */
 export function auditParsedPage(
   expectedUrl: string,
-  response: { status: number | null; ttfbMs: number | null; html: string | null; error?: string; fetchedUrl?: string }
+  response: { status: number | null; ttfbMs: number | null; html: string | null; error?: string; fetchedUrl?: string },
+  context: PageAuditContext = {}
 ): SeoPageResult {
   const base: SeoPageResult = {
     url: expectedUrl,
@@ -266,6 +353,25 @@ export function auditParsedPage(
     base.issues.push(issue("noindex_in_sitemap", "error", "Está en el sitemap pero declara noindex"));
   }
 
+  // La keyword primaria del mapa debe estar en el título Y en el H1 de la página que la posee.
+  if (context.expectation) {
+    const { primaryKeyword } = context.expectation;
+    const missingIn = [
+      containsKeyword(parsed.title ?? "", primaryKeyword) ? null : "el título",
+      containsKeyword(parsed.h1Text ?? "", primaryKeyword) ? null : "el H1",
+    ].filter((place): place is string => place !== null);
+    if (missingIn.length > 0) {
+      base.issues.push(
+        issue("keyword_primary_missing", "error", `La keyword primaria "${primaryKeyword}" (${context.expectation.cluster}) no aparece en ${missingIn.join(" ni en ")}`)
+      );
+    }
+  }
+
+  const hreflangProblems = checkHreflang(expectedUrl, parsed.hreflangs, context);
+  if (hreflangProblems.length > 0) {
+    base.issues.push(issue("hreflang_incomplete", "error", `hreflang incompleto: ${hreflangProblems.slice(0, 3).join("; ")}`));
+  }
+
   return base;
 }
 
@@ -286,6 +392,26 @@ export function flagDuplicateTitles(pages: SeoPageResult[]): SeoPageResult[] {
       page.issues.push(
         issue("title_duplicate", "error", `Título duplicado con ${others.length} URL(s): ${others.slice(0, 3).join(", ")}`)
       );
+    }
+  }
+  return pages;
+}
+
+/** Avisa (no rompe) de los H1 idénticos entre URLs distintas: señal de páginas que compiten por la misma búsqueda. */
+export function flagDuplicateH1(pages: SeoPageResult[]): SeoPageResult[] {
+  const byH1 = new Map<string, SeoPageResult[]>();
+  for (const page of pages) {
+    if (!page.h1Text) continue;
+    const key = page.h1Text.toLowerCase();
+    const group = byH1.get(key);
+    if (group) group.push(page);
+    else byH1.set(key, [page]);
+  }
+  for (const group of byH1.values()) {
+    if (group.length < 2) continue;
+    for (const page of group) {
+      const others = group.filter((p) => p !== page).map((p) => p.url);
+      page.issues.push(issue("h1_duplicate", "warning", `H1 duplicado con ${others.length} URL(s): ${others.slice(0, 3).join(", ")}`));
     }
   }
   return pages;
@@ -317,13 +443,16 @@ export interface RunOptions {
   fetchImpl?: typeof fetch;
   /** Callback opcional para mostrar avance (la CLI lo usa). */
   onProgress?: (done: number, total: number) => void;
+  /** Keyword primaria esperada por ruta (del mapa de keywords): título y H1 de esas URLs deben contenerla. */
+  expectations?: readonly KeywordExpectation[];
 }
 
 async function fetchPage(
   expectedUrl: string,
   baseUrl: string,
   fetchImpl: typeof fetch,
-  timeoutMs: number
+  timeoutMs: number,
+  context: PageAuditContext
 ): Promise<SeoPageResult> {
   // El sitemap lista las URLs públicas; para auditar otro entorno se reemplaza el origen y se conserva la ruta.
   const parsed = new URL(expectedUrl);
@@ -338,10 +467,10 @@ async function fetchPage(
     const ttfbMs = Math.round(performance.now() - started);
     const html = res.status === 200 ? await res.text() : null;
     if (res.status !== 200) await res.body?.cancel();
-    return auditParsedPage(expectedUrl, { status: res.status, ttfbMs, html, fetchedUrl });
+    return auditParsedPage(expectedUrl, { status: res.status, ttfbMs, html, fetchedUrl }, context);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return auditParsedPage(expectedUrl, { status: null, ttfbMs: null, html: null, error: message, fetchedUrl });
+    return auditParsedPage(expectedUrl, { status: null, ttfbMs: null, html: null, error: message, fetchedUrl }, context);
   }
 }
 
@@ -363,6 +492,9 @@ export async function runSeoHealthCheck(options: RunOptions): Promise<SeoHealthR
   const sitemapXml = await sitemapRes.text();
   const urls = Array.from(new Set(parseSitemapLocs(sitemapXml)));
   const withoutLastmod = new Set(parseSitemapEntries(sitemapXml).filter((e) => !e.lastmod).map((e) => e.loc));
+  const alternatesByLoc = parseSitemapAlternates(sitemapXml);
+  const sitemapUrls = new Set(urls);
+  const expectationByPath = new Map((options.expectations ?? []).map((e) => [e.path, e]));
   if (urls.length === 0) throw new Error(`/sitemap.xml de ${baseUrl} no lista ninguna URL`);
 
   const pages: SeoPageResult[] = new Array(urls.length);
@@ -372,7 +504,11 @@ export async function runSeoHealthCheck(options: RunOptions): Promise<SeoHealthR
     while (true) {
       const index = next++;
       if (index >= urls.length) return;
-      pages[index] = await fetchPage(urls[index], baseUrl, fetchImpl, timeoutMs);
+      pages[index] = await fetchPage(urls[index], baseUrl, fetchImpl, timeoutMs, {
+        expectation: expectationByPath.get(pathOf(urls[index])),
+        sitemapAlternates: alternatesByLoc.get(urls[index]),
+        sitemapUrls,
+      });
       done++;
       options.onProgress?.(done, urls.length);
     }
@@ -386,6 +522,7 @@ export async function runSeoHealthCheck(options: RunOptions): Promise<SeoHealthR
   }
 
   flagDuplicateTitles(pages);
+  flagDuplicateH1(pages);
   return {
     baseUrl,
     startedAt,

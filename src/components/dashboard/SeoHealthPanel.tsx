@@ -26,11 +26,14 @@ const ISSUE_LABEL: Record<SeoIssueCode, string> = {
   todo_placeholder: "Marcador TODO",
   img_missing_alt: "Imagen sin alt",
   lastmod_missing: "Sin lastmod",
+  keyword_primary_missing: "Keyword primaria ausente",
+  hreflang_incomplete: "hreflang incompleto",
+  h1_duplicate: "H1 duplicado",
 };
 
 function issueTone(code: SeoIssueCode): BadgeTone {
   // Lo que puede sacar páginas del índice o fusionarlas con otra es lo grave.
-  return code === "canonical_mismatch" || code === "canonical_missing" || code === "fetch_error" || code === "status" || code === "noindex_in_sitemap"
+  return code === "canonical_mismatch" || code === "canonical_missing" || code === "fetch_error" || code === "status" || code === "noindex_in_sitemap" || code === "hreflang_incomplete"
     ? "danger"
     : "warning";
 }

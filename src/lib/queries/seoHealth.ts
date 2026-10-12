@@ -1,6 +1,7 @@
 import { query } from "../db";
 import { logError } from "../logger";
 import { runSeoHealthCheck, type SeoHealthReport, type SeoPageResult } from "../seoHealth";
+import { getKeywordExpectations } from "../../seo/keyword-map";
 import { createNotification } from "./notifications";
 
 // Se conservan las últimas corridas: con una diaria son ~2 meses de tendencia,
@@ -135,7 +136,7 @@ export function getSeoHealthBaseUrl(): string {
 /** Audita el sitio publicado, guarda el resultado y avisa si hay una regresión de canonical. */
 export async function runAndStoreSeoHealth(): Promise<{ runId: number; report: SeoHealthReport }> {
   const previous = await getLatestSeoHealthRun();
-  const report = await runSeoHealthCheck({ baseUrl: getSeoHealthBaseUrl() });
+  const report = await runSeoHealthCheck({ baseUrl: getSeoHealthBaseUrl(), expectations: getKeywordExpectations() });
   const runId = await saveSeoHealthReport(report);
   await notifyCanonicalRegression(report, previous ? previous.canonicalErrors : null);
   return { runId, report };

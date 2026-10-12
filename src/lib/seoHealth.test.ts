@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   auditParsedPage,
+  flagDuplicateH1,
   flagDuplicateTitles,
   normalizeUrl,
   parseHtml,
+  parseSitemapAlternates,
   parseSitemapLocs,
   runSeoHealthCheck,
   summarizeReport,
@@ -110,5 +112,91 @@ describe("runSeoHealthCheck", () => {
 describe("parseSitemapLocs", () => {
   it("lee todas las <loc>", () => {
     expect(parseSitemapLocs("<a><loc>https://a/1</loc></a><loc> https://a/2 </loc>")).toEqual(["https://a/1", "https://a/2"]);
+  });
+});
+
+describe("keyword primaria del mapa de keywords", () => {
+  const url = "https://skycode.agency/servicios/migracion-datos-legacy";
+  const expectation = { path: "/servicios/migracion-datos-legacy", cluster: "migracion-datos-legacy", locale: "es" as const, primaryKeyword: "servicios de migración de sistemas legacy" };
+  const page = (title: string, h1: string) =>
+    `<title>${title}</title><meta name="description" content="d"><link rel="canonical" href="${url}"><h1>${h1}</h1>`;
+  const codes = (html: string) => auditParsedPage(url, { status: 200, ttfbMs: 1, html }, { expectation }).issues.map((i) => i.code);
+
+  it("pasa cuando la keyword está en el título y en el H1 (sin tildes ni mayúsculas)", () => {
+    expect(codes(page("Servicios de migración de sistemas legacy | SkyCode", "Servicios de Migracion de Sistemas Legacy: sin downtime"))).not.toContain("keyword_primary_missing");
+  });
+
+  it("falla si falta en el título, en el H1 o en ambos, y dice dónde", () => {
+    for (const [title, h1, where] of [
+      ["Migración de datos | SkyCode", "Servicios de migración de sistemas legacy", "el título"],
+      ["Servicios de migración de sistemas legacy | SkyCode", "Migración y modernización de datos", "el H1"],
+      ["Otro | SkyCode", "Otro", "el título ni en el H1"],
+    ] as const) {
+      const result = auditParsedPage(url, { status: 200, ttfbMs: 1, html: page(title, h1) }, { expectation });
+      const found = result.issues.find((i) => i.code === "keyword_primary_missing");
+      expect(found?.severity).toBe("error");
+      expect(found?.message).toContain(where);
+    }
+  });
+
+  it("sin expectativa no se exige nada", () => {
+    expect(auditParsedPage(url, { status: 200, ttfbMs: 1, html: page("Otro", "Otro") }).issues.map((i) => i.code)).not.toContain("keyword_primary_missing");
+  });
+});
+
+describe("hreflang contra el sitemap", () => {
+  const url = "https://skycode.agency/servicios/migracion-datos-legacy";
+  const en = "https://skycode.agency/en/services/legacy-software-migration";
+  const sitemapAlternates = { es: url, en, "x-default": url };
+  const sitemapUrls = new Set([url, en]);
+  const base = `<title>t</title><meta name="description" content="d"><link rel="canonical" href="${url}"><h1>h</h1>`;
+  const alt = (lang: string, href: string) => `<link rel="alternate" hrefLang="${lang}" href="${href}"/>`;
+  const run = (links: string) =>
+    auditParsedPage(url, { status: 200, ttfbMs: 1, html: base + links }, { sitemapAlternates, sitemapUrls }).issues.find((i) => i.code === "hreflang_incomplete");
+
+  it("pasa si el HTML repite exactamente lo que declara el sitemap, con autorreferencia y x-default", () => {
+    expect(run(alt("es", url) + alt("en", en) + alt("x-default", url))).toBeUndefined();
+  });
+
+  it("falla si falta un idioma, difiere un destino o sobra uno", () => {
+    expect(run(alt("es", url) + alt("x-default", url))?.message).toContain('falta hreflang="en"');
+    expect(run(alt("es", url) + alt("en", "https://skycode.agency/en/servicios/x") + alt("x-default", url))?.message).toContain('hreflang="en" apunta a');
+    expect(run(alt("es", url) + alt("en", en) + alt("fr", en) + alt("x-default", url))?.message).toContain('hreflang="fr" no figura');
+  });
+
+  it("falla si ningún hreflang apunta a la propia página o si apunta a una URL fuera del sitemap", () => {
+    const noSelf = auditParsedPage(url, { status: 200, ttfbMs: 1, html: base + alt("en", en) + alt("x-default", en) }, {
+      sitemapAlternates: { en, "x-default": en },
+      sitemapUrls,
+    }).issues.find((i) => i.code === "hreflang_incomplete");
+    expect(noSelf?.message).toContain("autorreferencia");
+    const outside = auditParsedPage(url, { status: 200, ttfbMs: 1, html: base + alt("es", url) + alt("en", en) }, {
+      sitemapAlternates: { es: url, en },
+      sitemapUrls: new Set([url]),
+    }).issues.find((i) => i.code === "hreflang_incomplete");
+    expect(outside?.message).toContain("no está en el sitemap");
+  });
+
+  it("una página sin alternativas en el sitemap (legales, solo en español) no se cruza", () => {
+    expect(auditParsedPage(url, { status: 200, ttfbMs: 1, html: base }, { sitemapAlternates: {}, sitemapUrls }).issues).toEqual([]);
+  });
+});
+
+describe("parseSitemapAlternates", () => {
+  it("lee los xhtml:link de cada <url>", () => {
+    const xml = `<urlset><url><loc>https://x/a</loc><xhtml:link rel="alternate" hreflang="es" href="https://x/a"/><xhtml:link rel="alternate" hreflang="en" href="https://x/en/a"/></url><url><loc>https://x/b</loc></url></urlset>`;
+    const map = parseSitemapAlternates(xml);
+    expect(map.get("https://x/a")).toEqual({ es: "https://x/a", en: "https://x/en/a" });
+    expect(map.get("https://x/b")).toEqual({});
+  });
+});
+
+describe("flagDuplicateH1", () => {
+  it("avisa (warning, no error) de los H1 repetidos entre URLs", () => {
+    const mk = (u: string, h1Text: string) => ({ url: u, fetchedUrl: u, status: 200, ttfbMs: 1, title: "t", description: "d", canonical: u, h1Count: 1, h1Text, robots: null, issues: [] }) as Parameters<typeof flagDuplicateH1>[0][number];
+    const pages = flagDuplicateH1([mk("https://x/a", "Mismo H1"), mk("https://x/b", "mismo h1"), mk("https://x/c", "Otro")]);
+    expect(pages[0].issues[0]).toMatchObject({ code: "h1_duplicate", severity: "warning" });
+    expect(pages[1].issues).toHaveLength(1);
+    expect(pages[2].issues).toHaveLength(0);
   });
 });
