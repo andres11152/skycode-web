@@ -1,6 +1,6 @@
 {
   "index": {
-    "title": "Software Development Services in Colombia",
+    "title": "Software Development Services for Businesses",
     "description": "Custom software, mobile apps, APIs, ecommerce, security and AI for businesses. Source code 100% yours and a 90-day warranty. Get a free quote.",
     "h1": "Software development services for businesses"
   },
@@ -32,7 +32,7 @@
     },
     "seguridad-cumplimiento": {
       "title": "Software Security & Data Protection Compliance",
-      "description": "Security built into the architecture: role-based access, data encryption and GDPR plus Colombia's Habeas Data (Ley 1581) compliance, following OWASP.",
+      "description": "Security built into the architecture: role-based access, data encryption and GDPR and local data protection law compliance, following OWASP.",
       "h1": "Software security and data protection compliance"
     },
     "arquitectura-documentacion": {

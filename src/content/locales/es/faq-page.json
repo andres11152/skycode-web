@@ -63,7 +63,7 @@
         {
           "id": "presupuesto-estimado",
           "question": "¿Cómo sé cuánto costará mi proyecto antes de contratar?",
-          "answer": "Primero conversamos, evaluamos la viabilidad técnica y te damos un plan claro con un presupuesto honesto, sin compromiso. Para hacerte una idea antes de hablar con nadie, el [cotizador interactivo](/cotizador) calcula una inversión y un tiempo aproximados, en pesos colombianos o dólares, según el tipo de proyecto, los módulos y el ritmo de entrega."
+          "answer": "Primero conversamos, evaluamos la viabilidad técnica y te damos un plan claro con un presupuesto honesto, sin compromiso. Para hacerte una idea antes de hablar con nadie, el [cotizador interactivo](/cotizador) calcula una inversión y un tiempo aproximados, en dólares o pesos colombianos, según el tipo de proyecto, los módulos y el ritmo de entrega."
         }
       ]
     },
@@ -99,8 +99,8 @@
         },
         {
           "id": "empresas-internacionales",
-          "question": "¿Trabajan con empresas de fuera de Colombia?",
-          "answer": "Sí. Operamos desde Colombia con empresas internacionales, y el sitio y la atención están disponibles en español, inglés y francés. En privacidad de datos trabajamos con marcos como la Ley 1581 y el RGPD."
+          "question": "¿Trabajan con empresas de cualquier país?",
+          "answer": "Sí. Trabajamos de forma remota con empresas de distintos países, y el sitio y la atención están disponibles en español, inglés y francés. En privacidad de datos trabajamos con marcos como el RGPD y la Ley 1581, según el país de tus usuarios."
         }
       ]
     },
@@ -139,7 +139,7 @@
         {
           "id": "seguridad-datos",
           "question": "¿Cómo cuidan la seguridad y los datos de mis usuarios?",
-          "answer": "Cifrado de datos en reposo y en tránsito, control de acceso por roles y cumplimiento normativo (Ley 1581 y RGPD). La seguridad viene pensada desde la arquitectura, no como parche al final. Más en [seguridad y protección de datos](/servicios/seguridad-cumplimiento)."
+          "answer": "Cifrado de datos en reposo y en tránsito, control de acceso por roles y cumplimiento normativo (RGPD, Ley 1581 y otros marcos según tu país). La seguridad viene pensada desde la arquitectura, no como parche al final. Más en [seguridad y protección de datos](/servicios/seguridad-cumplimiento)."
         },
         {
           "id": "datos-de-contacto",

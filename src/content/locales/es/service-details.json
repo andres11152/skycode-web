@@ -70,10 +70,10 @@
       }
     ],
     "colombia": {
-      "heading": "Desarrollo de software a la medida en Colombia",
+      "heading": "Desarrollo de software a la medida para empresas",
       "paragraphs": [
-        "Desde Bogotá trabajamos con empresas de todo el país cuya operación hoy depende de planillas, correos y herramientas genéricas que ya no les alcanzan. Como el equipo comparte tu huso horario, las sesiones de mapeo del proceso y las demos semanales se agendan sin desfases, y cuando surge una duda respondemos en menos de 24 horas hábiles.",
-        "El software se diseña con el contexto local desde el primer día: si manejas datos personales de clientes o empleados, los permisos por rol, el registro de cambios y los flujos para atender solicitudes de los titulares se construyen alineados con la Ley 1581 (Habeas Data). Y las conexiones con lo que ya usas en el país, como pasarelas de pago o sistemas contables, se planifican desde el mapeo inicial. El pago se divide 50/50, los repositorios quedan a tu nombre desde el primer commit y tienes 90 días de garantía técnica. Cada fase termina con algo usable en producción, no con un documento de avance, así que el equipo empieza a ahorrar horas desde el primer módulo."
+        "Trabajamos de forma remota con empresas de distintos países cuya operación hoy depende de planillas, correos y herramientas genéricas que ya no les alcanzan. Las sesiones de mapeo del proceso y las demos semanales se agendan por videollamada, y cuando surge una duda respondemos en menos de 24 horas hábiles.",
+        "El software se diseña con tu marco normativo desde el primer día: si manejas datos personales de clientes o empleados, los permisos por rol, el registro de cambios y los flujos para atender solicitudes de los titulares se construyen alineados con la norma que te aplique según tu país (RGPD, Ley 1581, entre otras). Y las conexiones con lo que ya usas, como pasarelas de pago o sistemas contables, se planifican desde el mapeo inicial. El pago se divide 50/50, los repositorios quedan a tu nombre desde el primer commit y tienes 90 días de garantía técnica. Cada fase termina con algo usable en producción, no con un documento de avance, así que el equipo empieza a ahorrar horas desde el primer módulo."
       ],
       "facts": [
         "Inversión base de referencia: desde {price.software}",
@@ -143,10 +143,10 @@
       }
     ],
     "colombia": {
-      "heading": "Desarrollo de aplicaciones móviles en Colombia",
+      "heading": "Desarrollo de aplicaciones móviles para empresas",
       "paragraphs": [
-        "Una app de negocio en Colombia se usa en condiciones muy distintas a las de una demo: técnicos en zonas con cobertura irregular, vendedores en ruta entre ciudades, clientes que la abren desde un teléfono de gama media. Por eso, desde Bogotá, empezamos por el contexto de uso y decidimos qué debe funcionar sin conexión. Construimos con React Native, con un solo código base para iOS y Android, así que cada función se desarrolla y se prueba una sola vez.",
-        "Atendemos a empresas de todo el país por videollamada y te enviamos versiones de prueba instalables cada semana para que tu equipo de campo las use en condiciones reales. Publicamos en App Store y Google Play bajo tus cuentas de desarrollador. Si la app guarda datos personales de clientes o de tu personal, aplicamos los principios de la Ley 1581 (Habeas Data): consentimiento, finalidad definida y acceso restringido por rol. Tras el lanzamiento tienes 90 días de garantía técnica."
+        "Una app de negocio se usa en condiciones muy distintas a las de una demo: técnicos en zonas con cobertura irregular, vendedores en ruta entre ciudades, clientes que la abren desde un teléfono de gama media. Por eso empezamos por el contexto de uso y decidimos qué debe funcionar sin conexión. Construimos con React Native, con un solo código base para iOS y Android, así que cada función se desarrolla y se prueba una sola vez.",
+        "Trabajamos de forma remota con clientes de distintos países y te enviamos versiones de prueba instalables cada semana para que tu equipo de campo las use en condiciones reales. Publicamos en App Store y Google Play bajo tus cuentas de desarrollador. Si la app guarda datos personales de clientes o de tu personal, aplicamos los principios de la norma de protección de datos que te corresponda (RGPD, Ley 1581, entre otras): consentimiento, finalidad definida y acceso restringido por rol. Tras el lanzamiento tienes 90 días de garantía técnica."
       ],
       "facts": [
         "Inversión base de referencia: desde {price.mobile}",
@@ -196,8 +196,8 @@
     ],
     "useCasesHeading": "Integraciones que solemos hacer",
     "useCases": [
-      "Pasarelas de pago (Wompi, Stripe, PayU, Mercado Pago) conciliadas automáticamente con tus facturas.",
-      "Sistemas contables y ERPs (Siigo, Alegra, SAP) sincronizados con tu plataforma de ventas u operación.",
+      "Pasarelas de pago como Stripe o la que ya uses, conciliadas automáticamente con tus facturas.",
+      "Sistemas contables y ERPs que ya tengas (como SAP) sincronizados con tu plataforma de ventas u operación.",
       "WhatsApp Cloud API para notificaciones, agendamiento o atención automatizada.",
       "Una API propia para que socios, clientes o apps móviles consuman tus datos de forma segura."
     ],
@@ -225,10 +225,10 @@
       }
     ],
     "colombia": {
-      "heading": "Desarrollo de integraciones y APIs en Colombia",
+      "heading": "Desarrollo de integraciones y APIs para empresas",
       "paragraphs": [
-        "Las integraciones habituales en empresas colombianas giran alrededor de los mismos puntos: pasarelas de pago como Wompi, PayU o Mercado Pago, sistemas contables como Siigo o Alegra, ERPs como SAP y la WhatsApp Cloud API para notificaciones y atención. Desde Bogotá conectamos esos sistemas con tu plataforma para empresas de todo el país, de modo que un pago aprobado, una factura o un pedido fluyan solos y nadie tenga que copiarlos de una pantalla a otra.",
-        "Cada integración se diseña para fallar de forma segura: idempotencia, reintentos con espera progresiva, firma de webhooks verificada y registro de cada evento. Como estos flujos mueven datos de clientes, aplicamos los principios de la Ley 1581 (Habeas Data): viaja solo lo necesario, con credenciales cifradas y permisos mínimos por integración. Las credenciales y los accesos quedan bajo tus cuentas y ves el avance en un entorno de pruebas cada semana. Si el sistema que quieres conectar no tiene API, evaluamos con honestidad qué tan robusta puede ser cada alternativa."
+        "Las integraciones habituales giran alrededor de los mismos puntos: pasarelas de pago como Stripe o la que ya uses, sistemas contables o ERP que ya tengas y la WhatsApp Cloud API para notificaciones y atención. Conectamos esos sistemas con tu plataforma, trabajando de forma remota con clientes de distintos países, de modo que un pago aprobado, una factura o un pedido fluyan solos y nadie tenga que copiarlos de una pantalla a otra.",
+        "Cada integración se diseña para fallar de forma segura: idempotencia, reintentos con espera progresiva, firma de webhooks verificada y registro de cada evento. Como estos flujos mueven datos de clientes, aplicamos los principios de la norma de protección de datos que te corresponda (RGPD, Ley 1581, entre otras): viaja solo lo necesario, con credenciales cifradas y permisos mínimos por integración. Las credenciales y los accesos quedan bajo tus cuentas y ves el avance en un entorno de pruebas cada semana. Si el sistema que quieres conectar no tiene API, evaluamos con honestidad qué tan robusta puede ser cada alternativa."
       ],
       "facts": [
         "Inversión base de referencia: desde {price.apis}",
@@ -316,10 +316,10 @@
       }
     ],
     "colombia": {
-      "heading": "Desarrollo web de alto rendimiento en Colombia",
+      "heading": "Desarrollo web de alto rendimiento para empresas",
       "paragraphs": [
-        "Para una empresa colombiana el sitio suele ser la primera vitrina frente a clientes que llegan desde el celular. Desde Bogotá desarrollamos sitios y aplicaciones web con Next.js y React pensados desde la arquitectura para cargar rápido, ser accesibles y posicionarse bien en Google. Medimos con Lighthouse y las Core Web Vitals sobre la versión publicada, no sobre un entorno de desarrollo que da números engañosos.",
-        "Atendemos a empresas de todo el país. Si ya tienes un sitio posicionado, el rediseño se planifica para conservar las URLs que hoy traen visitas o configurar redirecciones permanentes, y si vendes fuera de Colombia armamos versiones por idioma bien indexadas. Los formularios que capturan datos de visitantes llevan autorización de tratamiento y política visibles, como pide la Ley 1581 (Habeas Data). El código y los repositorios quedan a tu nombre y recibes avances de forma semanal. Cuando el proyecto lo requiere, integramos un panel para que tu equipo publique y edite contenido sin depender de un desarrollador."
+        "Para una empresa el sitio suele ser la primera vitrina frente a clientes que llegan desde el celular. Desarrollamos sitios y aplicaciones web con Next.js y React pensados desde la arquitectura para cargar rápido, ser accesibles y posicionarse bien en Google. Medimos con Lighthouse y las Core Web Vitals sobre la versión publicada, no sobre un entorno de desarrollo que da números engañosos.",
+        "Trabajamos de forma remota con clientes de distintos países. Si ya tienes un sitio posicionado, el rediseño se planifica para conservar las URLs que hoy traen visitas o configurar redirecciones permanentes, y si vendes en varios mercados armamos versiones por idioma bien indexadas. Los formularios que capturan datos de visitantes llevan autorización de tratamiento y política visibles, como piden marcos como el RGPD o la Ley 1581, según el país de tus visitantes. El código y los repositorios quedan a tu nombre y recibes avances de forma semanal. Cuando el proyecto lo requiere, integramos un panel para que tu equipo publique y edite contenido sin depender de un desarrollador."
       ],
       "facts": [
         "Inversión base de referencia: desde {price.web}",
@@ -401,7 +401,7 @@
       },
       {
         "question": "¿Qué medios de pago puedo ofrecer?",
-        "answer": "Integramos pasarelas locales e internacionales como Wompi, PayU, Mercado Pago y Stripe, con tarjetas, transferencias y otros medios que cada pasarela soporte en tu país."
+        "answer": "Integramos pasarelas de pago como Stripe o la que ya uses, con tarjetas, transferencias y otros medios que cada pasarela soporte en tu país."
       },
       {
         "question": "¿Puedo migrar mis productos y clientes desde mi tienda actual?",
@@ -409,10 +409,10 @@
       }
     ],
     "colombia": {
-      "heading": "Desarrollo de e-commerce y tiendas en línea en Colombia",
+      "heading": "Desarrollo de e-commerce y tiendas en línea",
       "paragraphs": [
-        "Una tienda en línea en Colombia se juega en el checkout: qué medios de pago ofrece, qué tan rápido confirma el pago y cómo se conecta con el inventario y los envíos. Desde Bogotá construimos tiendas a la medida para empresas de todo el país, con pasarelas como Wompi, PayU, Mercado Pago o Stripe, confirmación de pago verificada en el servidor y stock sincronizado con tu sistema o bodega, sin comisiones por venta de una plataforma de terceros.",
-        "Si hoy vendes en una plataforma genérica, migramos catálogo, clientes e historial de pedidos y configuramos redirecciones para no perder el posicionamiento de tus páginas de producto. Como una tienda guarda datos personales de compradores, el registro y el checkout se diseñan con autorización de tratamiento y con flujos para atender las solicitudes de los titulares, según la Ley 1581 (Habeas Data). El pago se divide 50/50, el código es 100 % tuyo y tienes 90 días de garantía técnica."
+        "Una tienda en línea se juega en el checkout: qué medios de pago ofrece, qué tan rápido confirma el pago y cómo se conecta con el inventario y los envíos. Construimos tiendas a la medida para empresas de distintos países, con pasarelas como Stripe o la que ya uses, confirmación de pago verificada en el servidor y stock sincronizado con tu sistema o bodega, sin comisiones por venta de una plataforma de terceros.",
+        "Si hoy vendes en una plataforma genérica, migramos catálogo, clientes e historial de pedidos y configuramos redirecciones para no perder el posicionamiento de tus páginas de producto. Como una tienda guarda datos personales de compradores, el registro y el checkout se diseñan con autorización de tratamiento y con flujos para atender las solicitudes de los titulares, según la norma que aplique en tu país (RGPD, Ley 1581, entre otras). El pago se divide 50/50, el código es 100 % tuyo y tienes 90 días de garantía técnica."
       ],
       "facts": [
         "Inversión base de referencia: desde {price.ecommerce}",
@@ -422,7 +422,7 @@
   },
   "seguridad-cumplimiento": {
     "intro": [
-      "La seguridad no se agrega al final de un proyecto: se decide en la arquitectura. Implementamos control de acceso por roles, cifrado de información sensible y registro de auditoría desde el diseño, y alineamos el software con normativas de protección de datos como la Ley 1581 en Colombia y el RGPD en Europa.",
+      "La seguridad no se agrega al final de un proyecto: se decide en la arquitectura. Implementamos control de acceso por roles, cifrado de información sensible y registro de auditoría desde el diseño, y alineamos el software con normativas de protección de datos como el RGPD en Europa o la Ley 1581 en Colombia, según el país de tus usuarios.",
       "Lo explicamos en detalle en nuestra [guía técnica de la Ley 1581](/blog/ley-1581-guia-tecnica-software): qué exige la norma y cómo se traduce en decisiones concretas de software."
     ],
     "challenge": {
@@ -462,7 +462,7 @@
     ],
     "useCasesHeading": "Cuándo solemos intervenir",
     "useCases": [
-      "Empresas que manejan datos personales de clientes y necesitan alinearse con la Ley 1581 o el RGPD.",
+      "Empresas que manejan datos personales de clientes y necesitan alinearse con el RGPD, la Ley 1581 u otro marco de protección de datos.",
       "Plataformas que van a pasar por una auditoría o una due diligence de un cliente o inversionista.",
       "Sistemas heredados que deben modernizarse sin exponer información sensible: ver [migración de sistemas legacy](/servicios/migracion-datos-legacy)."
     ],
@@ -478,7 +478,7 @@
       },
       {
         "question": "¿Qué normativas cubren?",
-        "answer": "Trabajamos sobre los requisitos técnicos de la Ley 1581 de Colombia y del RGPD europeo, que comparten principios como consentimiento, minimización y derechos del titular, y usamos OWASP como referencia de seguridad de aplicaciones."
+        "answer": "Trabajamos sobre los requisitos técnicos de marcos como el RGPD europeo y la Ley 1581 de Colombia, según el país de tus usuarios; comparten principios como consentimiento, minimización y derechos del titular, y usamos OWASP como referencia de seguridad de aplicaciones."
       }
     ],
     "relatedHeading": "Sigue leyendo",
@@ -490,10 +490,10 @@
       }
     ],
     "colombia": {
-      "heading": "Seguridad y cumplimiento de la Ley 1581 en Colombia",
+      "heading": "Seguridad y cumplimiento de protección de datos",
       "paragraphs": [
-        "La Ley 1581 de 2012 (Habeas Data) exige a quien trata datos personales en Colombia obtener autorización, limitar la finalidad y responder a las solicitudes de los titulares, y la Superintendencia de Industria y Comercio vigila su cumplimiento. Desde Bogotá ayudamos a empresas de todo el país a traducir esos principios en medidas técnicas concretas: control de acceso por roles, cifrado, registro de auditoría y flujos para atender solicitudes de acceso, actualización y supresión.",
-        "Si tu empresa también atiende usuarios en Europa, alineamos los controles con el RGPD, que comparte principios como consentimiento, minimización y derechos del titular, y usamos OWASP Top 10 como referencia para auditar el código. La auditoría funciona igual sobre sistemas que no construimos nosotros. No somos un ente certificador: entregamos las medidas implementadas y su documentación como evidencia ante una auditoría o un requerimiento. Empezamos con una auditoría del código y de los datos, y un plan de remediación priorizado por riesgo real. Trabajamos con avances semanales y respondemos en menos de 24 horas hábiles."
+        "Los marcos de protección de datos, como el RGPD en Europa o la Ley 1581 de 2012 (Habeas Data) en Colombia, exigen a quien trata datos personales obtener autorización, limitar la finalidad y responder a las solicitudes de los titulares, y cada país tiene su autoridad de control. Trabajando de forma remota con clientes de distintos países, ayudamos a las empresas a traducir esos principios en medidas técnicas concretas: control de acceso por roles, cifrado, registro de auditoría y flujos para atender solicitudes de acceso, actualización y supresión.",
+        "Según dónde estén tus usuarios, alineamos los controles con el RGPD, la Ley 1581 u otro marco aplicable; comparten principios como consentimiento, minimización y derechos del titular, y usamos OWASP Top 10 como referencia para auditar el código. La auditoría funciona igual sobre sistemas que no construimos nosotros. No somos un ente certificador: entregamos las medidas implementadas y su documentación como evidencia ante una auditoría o un requerimiento. Empezamos con una auditoría del código y de los datos, y un plan de remediación priorizado por riesgo real. Trabajamos con avances semanales y respondemos en menos de 24 horas hábiles."
       ],
       "facts": [
         "Inversión orientativa (COP): {{TODO: rango de precio en COP de seguridad y cumplimiento}}",
@@ -576,10 +576,10 @@
       }
     ],
     "colombia": {
-      "heading": "Documentación y transferencia técnica de software en Colombia",
+      "heading": "Documentación y transferencia técnica de software",
       "paragraphs": [
-        "Un caso frecuente en sistemas heredados: el dominio, el repositorio o el servidor del software están a nombre de un proveedor o de un desarrollador que ya no trabaja con la empresa. Desde Bogotá atendemos a empresas de todo el país para hacer ese inventario, mover cada activo a cuentas controladas por tu empresa y documentar cómo está construido el sistema, sin interrumpir lo que ya está en producción.",
-        "El resultado es un sistema que tu equipo, o cualquier otro proveedor, puede mantener: diagramas de arquitectura, inventario de servicios y variables de entorno, despliegues automatizados y guías de operación dentro del propio repositorio. Si tu empresa responde por datos personales bajo la Ley 1581 (Habeas Data), saber dónde viven esos datos, quién accede a ellos y cómo se recuperan también es parte del inventario. Hacemos sesiones de traspaso por videollamada con tu equipo técnico hasta que pueda operar sin nosotros, y respondemos en menos de 24 horas hábiles."
+        "Un caso frecuente en sistemas heredados: el dominio, el repositorio o el servidor del software están a nombre de un proveedor o de un desarrollador que ya no trabaja con la empresa. Trabajamos de forma remota con empresas de distintos países para hacer ese inventario, mover cada activo a cuentas controladas por tu empresa y documentar cómo está construido el sistema, sin interrumpir lo que ya está en producción.",
+        "El resultado es un sistema que tu equipo, o cualquier otro proveedor, puede mantener: diagramas de arquitectura, inventario de servicios y variables de entorno, despliegues automatizados y guías de operación dentro del propio repositorio. Si tu empresa responde por datos personales bajo marcos como el RGPD o la Ley 1581, saber dónde viven esos datos, quién accede a ellos y cómo se recuperan también es parte del inventario. Hacemos sesiones de traspaso por videollamada con tu equipo técnico hasta que pueda operar sin nosotros, y respondemos en menos de 24 horas hábiles."
       ],
       "facts": [
         "Inversión orientativa (COP): {{TODO: rango de precio en COP de documentación y transferencia técnica}}",
@@ -680,10 +680,10 @@
       }
     ],
     "colombia": {
-      "heading": "Migración y modernización de sistemas legacy en Colombia",
+      "heading": "Migración y modernización de sistemas legacy",
       "paragraphs": [
-        "Muchas empresas colombianas siguen operando sobre un ERP hecho a medida hace más de una década, una aplicación de escritorio o planillas de Excel que sostienen la facturación y el inventario. Desde Bogotá migramos esos sistemas por fases para empresas de todo el país: el sistema anterior sigue funcionando en paralelo mientras el nuevo asume módulo por módulo, con los datos sincronizados y una reconciliación antes de cada corte, sin paradas de fin de semana.",
-        "Una migración también es un tema de datos personales: antes de mover nada auditamos qué información sensible existe y dónde, y la base nueva sale con cifrado, control de acceso y auditoría alineados con la Ley 1581 (Habeas Data). Los registros que la ley obliga a conservar por motivos contables o fiscales pueden quedar en un archivo de consulta de solo lectura, sin cargarse al sistema nuevo. El código y los scripts de migración son tuyos desde el primer día, y tienes 90 días de garantía técnica tras el corte final."
+        "Muchas empresas siguen operando sobre un ERP hecho a medida hace más de una década, una aplicación de escritorio o planillas de Excel que sostienen la facturación y el inventario. Migramos esos sistemas por fases, de forma remota y para empresas de distintos países: el sistema anterior sigue funcionando en paralelo mientras el nuevo asume módulo por módulo, con los datos sincronizados y una reconciliación antes de cada corte, sin paradas de fin de semana.",
+        "Una migración también es un tema de datos personales: antes de mover nada auditamos qué información sensible existe y dónde, y la base nueva sale con cifrado, control de acceso y auditoría alineados con la norma de protección de datos que te aplique (RGPD, Ley 1581, entre otras). Los registros que la ley obliga a conservar por motivos contables o fiscales pueden quedar en un archivo de consulta de solo lectura, sin cargarse al sistema nuevo. El código y los scripts de migración son tuyos desde el primer día, y tienes 90 días de garantía técnica tras el corte final."
       ],
       "facts": [
         "Inversión orientativa (COP): {{TODO: rango de precio en COP de migración de datos y sistemas legacy}}",
@@ -754,10 +754,10 @@
       }
     ],
     "colombia": {
-      "heading": "Desarrollo de inteligencia artificial aplicada en Colombia",
+      "heading": "Desarrollo de inteligencia artificial aplicada para empresas",
       "paragraphs": [
-        "La inteligencia artificial que vale la pena en una empresa colombiana resuelve una tarea concreta: responder por WhatsApp con información real del negocio, extraer datos de facturas y órdenes escaneadas o buscar en manuales y políticas internas. Desde Bogotá atendemos a empresas de todo el país y siempre empezamos por un caso de uso acotado, con una métrica clara y una prueba de concepto con tus propios documentos antes de invertir en la versión completa.",
-        "Los datos que alimentan un modelo suelen incluir información de clientes, así que aplicamos la Ley 1581 (Habeas Data) desde el diseño: enviamos al modelo solo lo estrictamente necesario, usamos proveedores y configuraciones que no entrenan con los datos recibidos por API y documentamos qué información sale de tu infraestructura. En los puntos críticos una persona revisa y aprueba lo que propone la IA. Ves resultados en un entorno de pruebas cada semana y respondemos en menos de 24 horas hábiles. Si la IA no es la mejor herramienta para tu problema, te lo decimos antes de que inviertas."
+        "La inteligencia artificial que vale la pena en una empresa resuelve una tarea concreta: responder por WhatsApp con información real del negocio, extraer datos de facturas y órdenes escaneadas o buscar en manuales y políticas internas. Trabajamos de forma remota con clientes de distintos países y siempre empezamos por un caso de uso acotado, con una métrica clara y una prueba de concepto con tus propios documentos antes de invertir en la versión completa.",
+        "Los datos que alimentan un modelo suelen incluir información de clientes, así que aplicamos desde el diseño la norma de protección de datos que te corresponda (RGPD, Ley 1581, entre otras): enviamos al modelo solo lo estrictamente necesario, usamos proveedores y configuraciones que no entrenan con los datos recibidos por API y documentamos qué información sale de tu infraestructura. En los puntos críticos una persona revisa y aprueba lo que propone la IA. Ves resultados en un entorno de pruebas cada semana y respondemos en menos de 24 horas hábiles. Si la IA no es la mejor herramienta para tu problema, te lo decimos antes de que inviertas."
       ],
       "facts": [
         "Inversión base de referencia: desde {price.ai}",

@@ -48,8 +48,8 @@
         "answer": "Elegimos según el problema, no por moda. En web trabajamos sobre todo con TypeScript, Next.js y React; en móvil, con React Native; en el servidor, con Node.js y NestJS, y en datos, con PostgreSQL. También conocemos Laravel, PHP y WordPress cuando el caso lo pide. Todo queda en repositorios a tu nombre, así que no dependes de ninguna plataforma propietaria nuestra."
       },
       {
-        "question": "¿Trabajan con empresas fuera de Colombia?",
-        "answer": "Sí. Trabajamos con empresas de otras ciudades y países y atendemos en español, inglés y francés. Colombia usa la hora UTC−5 todo el año, sin cambio de horario, así que la diferencia con tu zona horaria es siempre la misma. En el [cotizador](/cotizador) puedes ver los precios base en pesos colombianos o en dólares."
+        "question": "¿Trabajan con empresas de cualquier país?",
+        "answer": "Sí. Trabajamos con empresas de otras ciudades y países y atendemos en español, inglés y francés. Nuestro equipo trabaja en UTC−5 todo el año, sin cambio de horario, así que la diferencia con tu zona horaria es siempre la misma. En el [cotizador](/cotizador) puedes ver los precios base en dólares o en pesos colombianos."
       },
       {
         "question": "¿Cómo se paga un proyecto?",
@@ -70,7 +70,7 @@
     "challengeLabel": "El problema",
     "deliverablesHeading": "Lo que recibes al terminar",
     "casesHeading": "Casos donde lo aplicamos",
-    "tocColombia": "En Colombia",
+    "tocColombia": "Cómo trabajamos",
     "tocProof": "Evidencia",
     "tocArticles": "Artículos",
     "relatedPostsHeading": "Artículos relacionados",

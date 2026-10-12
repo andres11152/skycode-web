@@ -176,7 +176,7 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
       <section
         id="proceso"
         aria-labelledby="services-process-title"
-        className="scroll-mt-24 bg-inverse px-6 py-24 text-on-inverse sm:py-32"
+        className="scroll-mt-24 band px-6 py-24 text-on-inverse sm:py-32"
       >
         <div className="mx-auto max-w-6xl">
           <div className="max-w-2xl">
@@ -274,7 +274,7 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
       </div>
 
       {/* Cierre — banda oscura (la sección anterior es clara). */}
-      <section aria-labelledby="services-cta-title" className="bg-inverse px-6 py-24 text-on-inverse sm:py-28">
+      <section aria-labelledby="services-cta-title" className="band px-6 py-24 text-on-inverse sm:py-28">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-10 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
             <h2 id="services-cta-title" className="text-4xl font-bold tracking-tight text-balance sm:text-5xl">

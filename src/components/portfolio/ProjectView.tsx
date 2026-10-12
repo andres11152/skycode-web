@@ -308,7 +308,7 @@ export function ProjectView({
 
       {/* Métricas: banda oscura de énfasis. Las galería/siguiente caso que la rodean son claras. */}
       {metrics.length > 0 && (
-        <section aria-label={copy.metrics} className="mt-16 bg-inverse sm:mt-24">
+        <section aria-label={copy.metrics} className="mt-16 band sm:mt-24">
           <div className={cn(WRAP, "py-16 sm:py-24")}>
             <h2 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent">{copy.metrics}</h2>
             <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">

@@ -30,9 +30,10 @@ describe("sección «Desarrollo de X en Colombia» de cada servicio", () => {
       for (const { slug } of services) {
         const colombia = getServiceDetails(slug, locale)?.colombia;
 
-        it(`${slug}: existe, con encabezado que nombra el país`, () => {
+        it(`${slug}: existe, con encabezado propio y sin foco en un solo país`, () => {
           expect(colombia).toBeDefined();
-          expect(colombia?.heading).toMatch(/Colombi/);
+          expect(colombia?.heading.length).toBeGreaterThan(10);
+          expect(colombia?.heading).not.toMatch(/Colombi|Latam|Latinoam|LatAm/i);
           expect(colombia?.paragraphs.length).toBeGreaterThan(0);
         });
 

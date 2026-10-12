@@ -127,7 +127,7 @@ export function BlogIndexView({
         </section>
       )}
 
-      <section aria-labelledby="blog-rss" className="bg-inverse px-6 py-20 text-on-inverse sm:py-24">
+      <section aria-labelledby="blog-rss" className="band px-6 py-20 text-on-inverse sm:py-24">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
           <div className="max-w-xl">
             <h2 id="blog-rss" className="text-3xl font-bold tracking-tight text-balance sm:text-4xl">

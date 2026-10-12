@@ -13,6 +13,7 @@ import { ContactModalProvider } from "@/components/contact/ContactModalProvider"
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
 import { PageTransition } from "@/components/ui/PageTransition";
 import { LazyOnIdle } from "@/components/ui/Lazy";
+import FluidFieldBackground from "@/components/ui/fluid-field";
 
 const WhatsAppButton = dynamic(
   () => import("@/components/ui/WhatsAppButton").then((mod) => mod.WhatsAppButton),
@@ -107,6 +108,7 @@ export function ConditionalLayout({ children, serviceLinks }: { children: React.
 
   return (
     <ContactModalProvider>
+      <FluidFieldBackground />
       <SkipLink />
       <NavigationProgress />
       <Navbar />

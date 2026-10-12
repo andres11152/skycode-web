@@ -2,7 +2,7 @@
   "sectionAria": "Presentación de la agencia",
   "actionsAria": "Acciones principales",
   "badge": "DESARROLLO DE SOFTWARE HONESTO Y SIN AMARRES",
-  "titleBefore": "Desarrollo de software a la medida en Colombia. ",
+  "titleBefore": "Desarrollo de software a la medida para empresas. ",
   "titleAccent": "El código es 100% tuyo",
   "titleAfter": "",
   "subtitle": "Desarrollamos sistemas y aplicaciones a tu medida, con entregas claras cada semana y comunicación directa con los ingenieros que programan. Sin intermediarios comerciales ni cajas negras.",
@@ -18,7 +18,7 @@
     "href": "/portafolio",
     "ariaLabel": "Ver proyectos reales del portafolio"
   },
-  "localLink": "Equipo con base en Bogotá, Colombia",
+  "localLink": "Equipo remoto con base en Bogotá",
   "guarantees": [
     "Código 100% de tu propiedad",
     "90 días de garantía técnica",

@@ -66,7 +66,7 @@ function Band({
       aria-labelledby={headingId}
       className={cn(
         "scroll-mt-24 px-6 py-20 sm:py-28",
-        dark && "bg-inverse text-on-inverse",
+        dark && "band text-on-inverse",
         tone === "tint" && "border-y border-foreground/10 bg-foreground/[0.03]",
         className,
       )}
@@ -201,12 +201,12 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
       </section>
 
       {/* ───────────── Compromisos (oscura) ───────────── */}
-      <section aria-label={stats.label} className="bg-inverse px-6 py-16 text-on-inverse sm:py-20">
+      <section aria-label={stats.label} className="band px-6 py-16 text-on-inverse sm:py-20">
         <div className="mx-auto max-w-6xl">
           <SectionEyebrow onDark>{stats.label}</SectionEyebrow>
-          <ul className="mt-10 grid gap-px overflow-hidden rounded-xl border border-on-inverse/10 bg-on-inverse/10 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-10 grid gap-px overflow-hidden rounded-xl border border-on-inverse/10 sm:grid-cols-2 lg:grid-cols-4">
             {stats.items.map((item, index) => (
-              <li key={item.label} className="reveal-scale flex flex-col gap-3 bg-inverse p-6 sm:p-8" style={stagger(index)}>
+              <li key={item.label} className="reveal-scale flex flex-col gap-3 p-6 outline outline-1 outline-on-inverse/10 sm:p-8" style={stagger(index)}>
                 <p className="flex items-baseline gap-2 font-bold tracking-tight text-on-inverse">
                   {/* La cifra sube desde detrás de una máscara (el texto sigue en el HTML). */}
                   <span className="word-mask text-5xl sm:text-6xl">
@@ -544,7 +544,7 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
       )}
 
       {/* ───────────── Cierre (oscura) ───────────── */}
-      <section aria-labelledby="bogota-cta-titulo" className="relative overflow-hidden bg-inverse">
+      <section aria-labelledby="bogota-cta-titulo" className="relative overflow-hidden band">
         <div
           aria-hidden="true"
           className="parallax absolute -top-24 -right-16 h-80 w-80 rounded-full bg-on-inverse/[0.07] blur-[110px]"

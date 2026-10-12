@@ -48,7 +48,7 @@
         "answer": "Nous choisissons selon le problème, pas selon la mode. Sur le web, nous travaillons surtout avec TypeScript, Next.js et React ; sur mobile, avec React Native ; côté serveur, avec Node.js et NestJS ; et pour les données, avec PostgreSQL. Nous connaissons aussi Laravel, PHP et WordPress quand le cas l'exige. Tout reste dans des dépôts à votre nom : vous ne dépendez d'aucune plateforme propriétaire de notre part."
       },
       {
-        "question": "Travaillez-vous avec des entreprises hors de Colombie ?",
+        "question": "Travaillez-vous avec des entreprises de tous pays ?",
         "answer": "Oui. Nous travaillons avec des entreprises d'autres villes et d'autres pays et communiquons en français, en espagnol et en anglais. La Colombie reste en UTC−5 toute l'année, sans changement d'heure : le décalage avec Paris est donc toujours le même, 6 heures en hiver et 7 heures en été. L'[estimateur](/fr/cotizador) affiche les prix de base en dollars américains."
       },
       {
@@ -92,7 +92,7 @@
     "challengeLabel": "Le problème",
     "deliverablesHeading": "Ce que vous recevez à la fin",
     "casesHeading": "Cas où nous l'avons appliqué",
-    "tocColombia": "En Colombie",
+    "tocColombia": "Notre façon de travailler",
     "tocProof": "Preuve",
     "tocArticles": "Articles",
     "relatedPostsHeading": "Articles liés",

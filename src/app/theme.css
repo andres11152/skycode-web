@@ -84,11 +84,21 @@
     --background: #0a0a0b;
     --foreground: #ededed;
     --inverse: #050506;
-    --on-inverse: #ededed;
+      --on-inverse: #ededed;
     --accent-text: #4cb6ea;
     --surface-raised: #111113;
     --surface-sunken: #060607;
   }
+}
+
+/* Banda de sección que ya NO tiene fondo propio (deja ver el fondo fluido de ui/fluid-field.tsx) y por
+   eso vuelve a leerse con los colores normales de la página: dentro de ella `*-on-inverse` es el texto
+   del tema y `*-inverse` su fondo. Antes era una banda negra con texto blanco. Así los componentes de
+   banda siguen escritos con `text-on-inverse`/`border-on-inverse/NN` y funcionan en claro y oscuro.
+   Solo para <section>/franjas; paneles, portadas y velos siguen usando `bg-inverse`. */
+.band {
+  --inverse: var(--background);
+  --on-inverse: var(--foreground);
 }
 
 /* Utilidades para alternar un par de recursos claro/oscuro (p. ej. el logo, cuyas letras son

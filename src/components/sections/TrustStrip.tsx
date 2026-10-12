@@ -22,7 +22,7 @@ export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
   const trustData = getTrustContent(locale);
 
   return (
-    <div role="group" aria-label={trustData.ariaLabel} className="w-full border-y border-on-inverse/10 bg-inverse">
+    <div role="group" aria-label={trustData.ariaLabel} className="w-full border-y border-on-inverse/10 band">
       <ul
         className={cn(
           "mx-auto grid max-w-6xl divide-y divide-on-inverse/10 px-6 sm:grid-cols-2 sm:divide-y-0 lg:divide-x",

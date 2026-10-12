@@ -66,7 +66,7 @@
       "iconName": "ShieldCheck",
       "features": [
         "Cifrado de datos sensibles en reposo y en tránsito",
-        "Cumplimiento con Ley 1581 (Colombia) y RGPD",
+        "Cumplimiento con RGPD, Ley 1581 y otras normativas de protección de datos",
         "Auditorías preventivas de vulnerabilidades comunes (OWASP)"
       ]
     },

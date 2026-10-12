@@ -22,7 +22,7 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
     <section
       id="testimonios"
       aria-label={uiData.testimonialsSectionAria}
-      className="cv-auto [--cv-h:1800px] lg:[--cv-h:1130px] scroll-mt-24 bg-inverse px-6 py-24 text-on-inverse sm:py-32"
+      className="cv-auto [--cv-h:1800px] lg:[--cv-h:1130px] scroll-mt-24 band px-6 py-24 text-on-inverse sm:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">

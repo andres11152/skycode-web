@@ -41,7 +41,7 @@ function FeaturedCase({
   return (
     // Banda oscura (bg-inverse): una de las secciones invertidas del sitio.
     // No hay otra oscura contigua en esta página — el resto de capítulos son claros.
-    <section aria-label={copy.featuredBadge} className="mt-14 bg-inverse sm:mt-20">
+    <section aria-label={copy.featuredBadge} className="mt-14 band sm:mt-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="group relative grid gap-10 rounded-xl py-14 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-16 lg:py-24">
           <div className="lg:col-span-7">

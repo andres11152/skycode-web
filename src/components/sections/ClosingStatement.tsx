@@ -50,7 +50,7 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
     <section
       aria-label={closingData.sectionAria}
       ref={containerRef}
-      className={cn("relative bg-inverse", reduced ? "py-28" : "h-[175vh]")}
+      className={cn("relative band", reduced ? "py-28" : "h-[175vh]")}
     >
       <div
         className={cn(

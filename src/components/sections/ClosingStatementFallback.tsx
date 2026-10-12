@@ -21,7 +21,7 @@ export function ClosingStatementFallback() {
   const contactHref = `${homePath === "/" ? "" : homePath}/#contacto`;
 
   return (
-    <section aria-label={data.sectionAria} className="relative h-[175vh] bg-inverse motion-reduce:h-auto motion-reduce:py-28">
+    <section aria-label={data.sectionAria} className="relative h-[175vh] band motion-reduce:h-auto motion-reduce:py-28">
       <div className="relative sticky top-0 flex h-screen flex-col items-start justify-center gap-10 overflow-hidden px-6 motion-reduce:static motion-reduce:h-auto motion-reduce:py-4">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-start gap-8">
           <SectionEyebrow onDark>{data.eyebrow}</SectionEyebrow>

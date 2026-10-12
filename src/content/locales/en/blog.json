@@ -1,7 +1,7 @@
 {
   "meta": {
     "indexTitle": "Software Development Technical Blog",
-    "indexDescription": "Guides on software architecture, APIs, legacy system migration, OWASP security and compliance with Colombia's Ley 1581 and GDPR.",
+    "indexDescription": "Guides on software architecture, APIs, legacy system migration, OWASP security and compliance with data protection laws such as GDPR and Ley 1581.",
     "badge": "Technical blog",
     "heading": "Technical resources",
     "intro": "Architecture, security, and engineering practices, written by the team that builds the software, no generic filler.",

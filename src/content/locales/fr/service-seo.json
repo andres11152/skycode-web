@@ -1,6 +1,6 @@
 {
   "index": {
-    "title": "Services de développement logiciel en Colombie",
+    "title": "Développement logiciel pour entreprises",
     "description": "Logiciels sur mesure, apps mobiles, API, e-commerce, sécurité et IA pour entreprises. Code 100 % à vous et 90 jours de garantie. Devis gratuit.",
     "h1": "Services de développement logiciel pour entreprises"
   },
@@ -32,7 +32,7 @@
     },
     "seguridad-cumplimiento": {
       "title": "Sécurité logicielle et conformité RGPD",
-      "description": "Sécurité dès l'architecture : accès par rôle, chiffrement des données, conformité RGPD et loi colombienne Habeas Data (Ley 1581), bonnes pratiques OWASP.",
+      "description": "Sécurité dès l'architecture : accès par rôle, chiffrement des données, conformité RGPD et lois locales de protection des données, bonnes pratiques OWASP.",
       "h1": "Sécurité logicielle et conformité à la protection des données"
     },
     "arquitectura-documentacion": {

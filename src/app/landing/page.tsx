@@ -15,7 +15,7 @@ import { siteName } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Desarrollo de Software, Apps y Páginas Web a la Medida",
   description:
-    "Empresa de desarrollo de software en Colombia: aplicaciones móviles, páginas web y sistemas a la medida. Código 100% tuyo, sin intermediarios. Cotiza sin costo.",
+    "Empresa de desarrollo de software para empresas: aplicaciones móviles, páginas web y sistemas a la medida. Código 100% tuyo, sin intermediarios. Cotiza sin costo.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/landing" },
 };
@@ -64,7 +64,7 @@ export default function LandingPage() {
       <main className="mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-start lg:gap-16">
         <div className="flex flex-col gap-6 text-left">
           <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-text">
-            Empresa de desarrollo de software en Colombia
+            Empresa de desarrollo de software para empresas
           </p>
 
           <h1 className="text-3xl font-bold leading-[1.1] tracking-tight text-balance sm:text-5xl lg:text-6xl">

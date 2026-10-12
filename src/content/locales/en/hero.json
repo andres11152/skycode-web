@@ -2,7 +2,7 @@
   "sectionAria": "Agency introduction",
   "actionsAria": "Main actions",
   "badge": "SOFTWARE ENGINEERING WITHOUT VENDOR LOCK-IN",
-  "titleBefore": "Custom software development in Colombia. ",
+  "titleBefore": "Custom software development for businesses. ",
   "titleAccent": "You own 100% of the code",
   "titleAfter": "",
   "subtitle": "We build scale-ready enterprise platforms with pristine documentation and total intellectual property transfer. Your software, with zero technical dependency on our team once the project ships.",
@@ -18,7 +18,7 @@
     "href": "/en/portfolio",
     "ariaLabel": "View portfolio: real projects and case studies"
   },
-  "localLink": "Engineering team based in Bogotá, Colombia",
+  "localLink": "Remote engineering team based in Bogotá",
   "guarantees": [
     "100% proprietary code",
     "90-day stability warranty",

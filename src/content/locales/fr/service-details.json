@@ -70,10 +70,10 @@
       }
     ],
     "colombia": {
-      "heading": "Développement de logiciels sur mesure en Colombie",
+      "heading": "Développement de logiciels sur mesure pour entreprises",
       "paragraphs": [
-        "Depuis Bogotá, nous travaillons avec des entreprises de toute la Colombie dont l'activité repose encore sur des tableurs, des échanges de courriels et des outils génériques devenus trop étroits. Comme l'équipe partage votre fuseau horaire, les ateliers de cartographie des processus et les démos hebdomadaires se planifient sans décalage, et nous répondons à vos questions en moins de 24 heures ouvrées.",
-        "Le logiciel est conçu dès le premier jour avec le contexte local en tête : si vous traitez des données personnelles de clients ou de salariés, les droits par rôle, l'historique des modifications et les parcours pour répondre aux demandes des personnes concernées sont construits en phase avec la loi colombienne 1581 (Habeas Data). Les connexions avec ce que vous utilisez déjà sur place, comme les passerelles de paiement ou les outils comptables, sont prévues dès la cartographie initiale. Le paiement est réparti 50/50, les dépôts sont à votre nom dès le premier commit et vous bénéficiez de 90 jours de garantie technique."
+        "Notre équipe travaille à distance avec des clients de différents pays dont l'activité repose encore sur des tableurs, des échanges de courriels et des outils génériques devenus trop étroits. Les ateliers de cartographie des processus et les démos hebdomadaires se planifient en visioconférence, à des horaires qui conviennent à votre fuseau, et nous répondons à vos questions en moins de 24 heures ouvrées.",
+        "Le logiciel est conçu dès le premier jour en tenant compte de votre cadre réglementaire : si vous traitez des données personnelles de clients ou de salariés, les droits par rôle, l'historique des modifications et les parcours pour répondre aux demandes des personnes concernées sont construits selon le cadre qui s'applique à vous (RGPD, loi colombienne 1581, etc.). Les connexions avec ce que vous utilisez déjà, comme les passerelles de paiement ou les logiciels comptables, sont prévues dès la cartographie initiale. Le paiement est réparti 50/50, les dépôts sont à votre nom dès le premier commit et vous bénéficiez de 90 jours de garantie technique."
       ],
       "facts": [
         "Investissement de départ : à partir de {priceUsd.software}",
@@ -143,10 +143,10 @@
       }
     ],
     "colombia": {
-      "heading": "Développement d'applications mobiles en Colombie",
+      "heading": "Développement d'applications mobiles pour entreprises",
       "paragraphs": [
-        "En Colombie, une application métier s'utilise dans des conditions très éloignées d'une démo : techniciens dans des zones à couverture irrégulière, commerciaux en tournée entre les villes, clients qui l'ouvrent sur un téléphone d'entrée ou de milieu de gamme. Nous partons donc du contexte d'usage et décidons ce qui doit fonctionner hors connexion. Nous développons avec React Native, une seule base de code pour iOS et Android : chaque fonctionnalité est développée et testée une seule fois.",
-        "Nous accompagnons des entreprises de tout le pays en visioconférence et envoyons chaque semaine des versions de test installables pour que vos équipes de terrain les essaient en conditions réelles. Nous publions sur l'App Store et Google Play avec vos propres comptes développeur. Si l'application conserve des données personnelles de clients ou de collaborateurs, nous appliquons les principes de la loi colombienne 1581 (Habeas Data) : consentement, finalité définie et accès limité par rôle. Après le lancement, vous disposez de 90 jours de garantie technique."
+        "Une application métier s'utilise dans des conditions très éloignées d'une démo : techniciens dans des zones à couverture irrégulière, commerciaux en tournée, clients qui l'ouvrent sur un téléphone d'entrée ou de milieu de gamme. Nous partons donc du contexte d'usage et décidons ce qui doit fonctionner hors connexion. Nous développons avec React Native, une seule base de code pour iOS et Android : chaque fonctionnalité est développée et testée une seule fois.",
+        "Nous travaillons à distance avec des clients de différents pays, en visioconférence, et envoyons chaque semaine des versions de test installables pour que vos équipes de terrain les essaient en conditions réelles. Nous publions sur l'App Store et Google Play avec vos propres comptes développeur. Si l'application conserve des données personnelles de clients ou de collaborateurs, nous appliquons les principes du cadre qui s'applique à vous (RGPD, loi colombienne 1581, etc.) : consentement, finalité définie et accès limité par rôle. Après le lancement, vous disposez de 90 jours de garantie technique."
       ],
       "facts": [
         "Investissement de départ : à partir de {priceUsd.mobile}",
@@ -196,8 +196,8 @@
     ],
     "useCasesHeading": "Intégrations que nous réalisons souvent",
     "useCases": [
-      "Passerelles de paiement (Wompi, Stripe, PayU, Mercado Pago) rapprochées automatiquement avec vos factures.",
-      "Logiciels comptables et ERP (Siigo, Alegra, SAP) synchronisés avec votre plateforme de vente ou d'exploitation.",
+      "Passerelles de paiement (comme Stripe ou celle que vous utilisez déjà) rapprochées automatiquement avec vos factures.",
+      "Logiciels comptables et ERP existants synchronisés avec votre plateforme de vente ou d'exploitation.",
       "WhatsApp Cloud API pour les notifications, la prise de rendez-vous ou un service client automatisé.",
       "Une API propre pour que partenaires, clients ou applications mobiles consomment vos données en toute sécurité."
     ],
@@ -225,10 +225,10 @@
       }
     ],
     "colombia": {
-      "heading": "Développement d'intégrations et d'API en Colombie",
+      "heading": "Développement d'intégrations et d'API sur mesure",
       "paragraphs": [
-        "Les intégrations courantes dans les entreprises colombiennes tournent autour des mêmes points : passerelles de paiement comme Wompi, PayU ou Mercado Pago, logiciels comptables comme Siigo ou Alegra, ERP comme SAP et l'API WhatsApp Cloud pour les notifications et le service client. Depuis Bogotá, nous relions ces systèmes à votre plateforme pour des entreprises de tout le pays : un paiement approuvé, une facture ou une commande circulent seuls, sans que personne les recopie d'un écran à l'autre.",
-        "Chaque intégration est conçue pour échouer sans dégât : idempotence, nouvelles tentatives à délai progressif, signature des webhooks vérifiée et journal de chaque événement. Ces flux transportant des données clients, nous appliquons les principes de la loi colombienne 1581 (Habeas Data) : seul le nécessaire circule, avec des identifiants chiffrés et des droits minimaux par intégration. Les identifiants et les accès restent sous vos comptes, et vous suivez l'avancement dans un environnement de test chaque semaine."
+        "Les intégrations courantes tournent autour des mêmes points : passerelles de paiement comme Stripe ou celle que vous utilisez déjà, logiciels comptables ou ERP existants, et l'API WhatsApp Cloud pour les notifications et le service client. Nous travaillons à distance avec des clients de différents pays et relions ces systèmes à votre plateforme : un paiement approuvé, une facture ou une commande circulent seuls, sans que personne les recopie d'un écran à l'autre.",
+        "Chaque intégration est conçue pour échouer sans dégât : idempotence, nouvelles tentatives à délai progressif, signature des webhooks vérifiée et journal de chaque événement. Ces flux transportant des données clients, nous appliquons les principes de protection des données du cadre qui s'applique à vous (RGPD, loi colombienne 1581, etc.) : seul le nécessaire circule, avec des identifiants chiffrés et des droits minimaux par intégration. Les identifiants et les accès restent sous vos comptes, et vous suivez l'avancement dans un environnement de test chaque semaine."
       ],
       "facts": [
         "Investissement de départ : à partir de {priceUsd.apis}",
@@ -320,9 +320,9 @@
       }
     ],
     "colombia": {
-      "heading": "Développement web haute performance pour équipes francophones, depuis Bogotá, Colombie",
+      "heading": "Développement web haute performance pour équipes francophones",
       "paragraphs": [
-        "Si votre équipe est en France, en Belgique ou en Suisse, travailler avec un studio basé à Bogotá reste simple. La Colombie est en UTC−5 toute l'année, sans changement d'heure : le décalage avec Paris est de 6 heures en hiver et de 7 heures en été, de sorte que les points de suivi se tiennent en fin de matinée à Bogotá, l'après-midi en Europe. Nous travaillons en français, en espagnol et en anglais, et vous échangez directement avec les ingénieurs qui développent votre site.",
+        "Si votre équipe est en France, en Belgique ou en Suisse, travailler avec une équipe à distance reste simple. Notre équipe est en UTC−5 toute l'année, sans changement d'heure : le décalage avec Paris est de 6 heures en hiver et de 7 heures en été, de sorte que les points de suivi se tiennent en fin de matinée pour nous, l'après-midi en Europe. Nous travaillons en français, en espagnol et en anglais, et vous échangez directement avec les ingénieurs qui développent votre site.",
         "Nous développons des sites et des applications web haute performance avec Next.js et React, mesurés avec Lighthouse et les Core Web Vitals sur la version publiée. Les sites multilingues disposent de leurs propres URL, balises hreflang et métadonnées par langue, comme ce site. Le consentement aux cookies et à la mesure d'audience est géré dès l'architecture, dans l'esprit du RGPD, sans remplacer l'avis d'un juriste. Le paiement se fait en deux temps, 50 % à la signature et 50 % à la livraison, et le code et les dépôts sont à votre nom dès le premier jour."
       ],
       "facts": [
@@ -405,7 +405,7 @@
       },
       {
         "question": "Quels moyens de paiement puis-je proposer ?",
-        "answer": "Nous intégrons des passerelles locales et internationales comme Wompi, PayU, Mercado Pago et Stripe, avec cartes, virements et autres moyens que chaque passerelle prend en charge dans votre pays."
+        "answer": "Nous intégrons des passerelles de paiement comme Stripe ou celle que vous utilisez déjà, avec cartes, virements et autres moyens que chaque passerelle prend en charge dans votre pays."
       },
       {
         "question": "Puis-je migrer mes produits et mes clients depuis ma boutique actuelle ?",
@@ -413,10 +413,10 @@
       }
     ],
     "colombia": {
-      "heading": "Développement e-commerce et boutiques en ligne en Colombie",
+      "heading": "Développement e-commerce et boutiques en ligne",
       "paragraphs": [
-        "En Colombie, une boutique en ligne se joue au moment du paiement : quels moyens de paiement elle propose, à quelle vitesse elle confirme le règlement et comment elle se connecte aux stocks et aux expéditions. Depuis Bogotá, nous construisons des boutiques sur mesure pour des entreprises de tout le pays, avec des passerelles comme Wompi, PayU, Mercado Pago ou Stripe, une confirmation de paiement vérifiée côté serveur et un stock synchronisé avec votre système ou votre entrepôt, sans commission par vente d'une plateforme tierce.",
-        "Si vous vendez aujourd'hui sur une plateforme générique, nous migrons catalogue, clients et historique de commandes, et nous configurons des redirections pour que vos fiches produit gardent leur référencement. Une boutique conservant des données personnelles d'acheteurs, l'inscription et le paiement sont conçus avec une autorisation de traitement et des parcours pour répondre aux demandes des personnes concernées, conformément à la loi colombienne 1581 (Habeas Data). Le paiement est réparti 50/50, le code est 100 % à vous et vous bénéficiez de 90 jours de garantie technique."
+        "Une boutique en ligne se joue au moment du paiement : quels moyens de paiement elle propose, à quelle vitesse elle confirme le règlement et comment elle se connecte aux stocks et aux expéditions. Nous travaillons à distance avec des clients de différents pays et construisons des boutiques sur mesure, avec des passerelles comme Stripe ou celle que vous utilisez déjà, une confirmation de paiement vérifiée côté serveur et un stock synchronisé avec votre système ou votre entrepôt, sans commission par vente d'une plateforme tierce.",
+        "Si vous vendez aujourd'hui sur une plateforme générique, nous migrons catalogue, clients et historique de commandes, et nous configurons des redirections pour que vos fiches produit gardent leur référencement. Une boutique conservant des données personnelles d'acheteurs, l'inscription et le paiement sont conçus avec une autorisation de traitement et des parcours pour répondre aux demandes des personnes concernées, conformément au cadre qui s'applique à vous (RGPD, loi colombienne 1581, etc.). Le paiement est réparti 50/50, le code est 100 % à vous et vous bénéficiez de 90 jours de garantie technique."
       ],
       "facts": [
         "Investissement de départ : à partir de {priceUsd.ecommerce}",
@@ -426,8 +426,8 @@
   },
   "seguridad-cumplimiento": {
     "intro": [
-      "La sécurité ne s'ajoute pas à la fin d'un projet : elle se décide dans l'architecture. Nous mettons en place le contrôle d'accès par rôle, le chiffrement des informations sensibles et la journalisation d'audit dès la conception, et nous alignons le logiciel sur les réglementations de protection des données comme la loi 1581 en Colombie et le RGPD en Europe.",
-      "Nous l'expliquons en détail dans notre [guide technique de la loi 1581 colombienne](/fr/blog/ley-1581-guia-tecnica-software) : ce que la loi exige et comment cela se traduit en décisions logicielles concrètes."
+      "La sécurité ne s'ajoute pas à la fin d'un projet : elle se décide dans l'architecture. Nous mettons en place le contrôle d'accès par rôle, le chiffrement des informations sensibles et la journalisation d'audit dès la conception, et nous alignons le logiciel sur les réglementations de protection des données comme le RGPD en Europe ou la loi 1581 en Colombie.",
+      "Nous l'expliquons en détail dans notre [guide technique de la loi 1581](/fr/blog/ley-1581-guia-tecnica-software) : ce que la loi exige et comment cela se traduit en décisions logicielles concrètes."
     ],
     "challenge": {
       "heading": "Les risques que nous rencontrons souvent lors d'un audit",
@@ -466,7 +466,7 @@
     ],
     "useCasesHeading": "Quand nous intervenons habituellement",
     "useCases": [
-      "Entreprises qui traitent des données personnelles de clients et doivent se mettre en conformité avec la loi 1581 colombienne ou le RGPD.",
+      "Entreprises qui traitent des données personnelles de clients et doivent se mettre en conformité avec le RGPD, la loi colombienne 1581 ou un autre cadre selon le pays de leurs clients.",
       "Plateformes qui vont faire l'objet d'un audit ou d'une due diligence de la part d'un client ou d'un investisseur.",
       "Systèmes hérités à moderniser sans exposer d'informations sensibles: voir [migration de systèmes legacy](/fr/servicios/migracion-datos-legacy)."
     ],
@@ -482,7 +482,7 @@
       },
       {
         "question": "Quelles réglementations couvrez-vous ?",
-        "answer": "Nous travaillons sur les exigences techniques de la loi 1581 colombienne et du RGPD européen, qui partagent des principes comme le consentement, la minimisation et les droits des personnes concernées, et nous utilisons l'OWASP comme référence en matière de sécurité applicative."
+        "answer": "Nous travaillons sur les exigences techniques du RGPD européen et de la loi colombienne 1581, entre autres cadres selon le pays de votre client, qui partagent des principes comme le consentement, la minimisation et les droits des personnes concernées, et nous utilisons l'OWASP comme référence en matière de sécurité applicative."
       }
     ],
     "relatedHeading": "Pour aller plus loin",
@@ -494,10 +494,10 @@
       }
     ],
     "colombia": {
-      "heading": "Sécurité et conformité à la loi 1581 en Colombie",
+      "heading": "Sécurité et conformité de vos logiciels",
       "paragraphs": [
-        "La loi colombienne 1581 de 2012 (Habeas Data) impose à toute personne qui traite des données personnelles en Colombie d'obtenir une autorisation, de limiter la finalité et de répondre aux demandes des personnes concernées ; la Surintendance de l'Industrie et du Commerce veille à son application. Depuis Bogotá, nous aidons des entreprises de tout le pays à traduire ces principes en mesures techniques concrètes : contrôle d'accès par rôle, chiffrement, journal d'audit et parcours pour traiter les demandes d'accès, de rectification et de suppression.",
-        "Si votre entreprise sert aussi des utilisateurs en Europe, nous alignons les contrôles sur le RGPD, qui partage des principes comme le consentement, la minimisation et les droits des personnes, et nous prenons l'OWASP Top 10 comme référence pour auditer le code. L'audit fonctionne de la même façon sur des systèmes que nous n'avons pas construits. Nous ne sommes pas un organisme de certification : nous livrons les mesures mises en place et leur documentation comme preuve lors d'un audit ou d'une demande officielle. Nous travaillons avec un point d'avancement hebdomadaire et répondons en moins de 24 heures ouvrées."
+        "Les cadres de protection des données varient selon le pays de vos clients : le RGPD en Europe, la loi colombienne 1581 de 2012 (Habeas Data) en Colombie, entre autres. Ils partagent des principes comme l'autorisation, la finalité limitée et la réponse aux demandes des personnes concernées. Nous travaillons à distance avec des clients de différents pays et traduisons ces principes en mesures techniques concrètes : contrôle d'accès par rôle, chiffrement, journal d'audit et parcours pour traiter les demandes d'accès, de rectification et de suppression.",
+        "Nous alignons les contrôles sur le cadre qui s'applique à votre activité, par exemple le RGPD si vous servez des utilisateurs en Europe, et nous prenons l'OWASP Top 10 comme référence pour auditer le code. L'audit fonctionne de la même façon sur des systèmes que nous n'avons pas construits. Nous ne sommes pas un organisme de certification : nous livrons les mesures mises en place et leur documentation comme preuve lors d'un audit ou d'une demande officielle. Nous travaillons avec un point d'avancement hebdomadaire et répondons en moins de 24 heures ouvrées."
       ],
       "facts": [
         "Investissement indicatif (COP) : {{TODO: rango de precio en COP de seguridad y cumplimiento}}",
@@ -580,10 +580,10 @@
       }
     ],
     "colombia": {
-      "heading": "Documentation et passation technique de logiciels en Colombie",
+      "heading": "Documentation et passation technique de logiciels",
       "paragraphs": [
-        "Cas fréquent avec les systèmes hérités : le domaine, le dépôt ou le serveur du logiciel sont au nom d'un prestataire ou d'un développeur qui ne travaille plus avec l'entreprise. Depuis Bogotá, nous aidons des entreprises de tout le pays à dresser cet inventaire, à transférer chaque actif vers des comptes que votre entreprise contrôle et à documenter la construction du système, sans interrompre ce qui tourne déjà en production.",
-        "Le résultat est un système que votre équipe, ou tout autre prestataire, peut maintenir : schémas d'architecture, inventaire des services et des variables d'environnement, déploiements automatisés et guides d'exploitation dans le dépôt lui-même. Si votre entreprise répond de données personnelles au titre de la loi colombienne 1581 (Habeas Data), savoir où elles se trouvent, qui y accède et comment les restaurer fait aussi partie de l'inventaire. Nous animons des séances de passation en visioconférence avec votre équipe technique jusqu'à ce qu'elle soit autonome, et nous répondons en moins de 24 heures ouvrées."
+        "Cas fréquent avec les systèmes hérités : le domaine, le dépôt ou le serveur du logiciel sont au nom d'un prestataire ou d'un développeur qui ne travaille plus avec l'entreprise. Nous travaillons à distance avec des clients de différents pays pour dresser cet inventaire, à transférer chaque actif vers des comptes que votre entreprise contrôle et à documenter la construction du système, sans interrompre ce qui tourne déjà en production.",
+        "Le résultat est un système que votre équipe, ou tout autre prestataire, peut maintenir : schémas d'architecture, inventaire des services et des variables d'environnement, déploiements automatisés et guides d'exploitation dans le dépôt lui-même. Si votre entreprise répond de données personnelles au titre du RGPD, de la loi colombienne 1581 ou d'un autre cadre, savoir où elles se trouvent, qui y accède et comment les restaurer fait aussi partie de l'inventaire. Nous animons des séances de passation en visioconférence avec votre équipe technique jusqu'à ce qu'elle soit autonome, et nous répondons en moins de 24 heures ouvrées."
       ],
       "facts": [
         "Investissement indicatif (COP) : {{TODO: rango de precio en COP de documentación y transferencia técnica}}",
@@ -684,10 +684,10 @@
       }
     ],
     "colombia": {
-      "heading": "Migration et modernisation de systèmes legacy en Colombie",
+      "heading": "Migration et modernisation de systèmes legacy",
       "paragraphs": [
-        "De nombreuses entreprises colombiennes fonctionnent encore sur un ERP sur mesure vieux de plus de dix ans, une application de bureau ou des classeurs Excel qui portent la facturation et les stocks. Depuis Bogotá, nous migrons ces systèmes par phases pour des entreprises de tout le pays : l'ancien système continue de tourner en parallèle pendant que le nouveau prend le relais module par module, avec des données synchronisées et une réconciliation avant chaque bascule, sans arrêt le week-end.",
-        "Une migration est aussi un sujet de données personnelles : avant de déplacer quoi que ce soit, nous auditons les informations sensibles existantes et leur emplacement, et la nouvelle base est livrée avec chiffrement, contrôle d'accès et audit alignés sur la loi colombienne 1581 (Habeas Data). Les enregistrements que la loi oblige à conserver pour des raisons comptables ou fiscales peuvent rester dans une archive en lecture seule, sans être chargés dans le nouveau système. Le code et les scripts de migration vous appartiennent dès le premier jour, et vous bénéficiez de 90 jours de garantie technique après la bascule finale."
+        "De nombreuses entreprises fonctionnent encore sur un ERP sur mesure vieux de plus de dix ans, une application de bureau ou des classeurs Excel qui portent la facturation et les stocks. Nous travaillons à distance avec des clients de différents pays et migrons ces systèmes par phases : l'ancien système continue de tourner en parallèle pendant que le nouveau prend le relais module par module, avec des données synchronisées et une réconciliation avant chaque bascule, sans arrêt le week-end.",
+        "Une migration est aussi un sujet de données personnelles : avant de déplacer quoi que ce soit, nous auditons les informations sensibles existantes et leur emplacement, et la nouvelle base est livrée avec chiffrement, contrôle d'accès et audit alignés sur le cadre qui s'applique à vous (RGPD, loi colombienne 1581, etc.). Les enregistrements que la loi oblige à conserver pour des raisons comptables ou fiscales peuvent rester dans une archive en lecture seule, sans être chargés dans le nouveau système. Le code et les scripts de migration vous appartiennent dès le premier jour, et vous bénéficiez de 90 jours de garantie technique après la bascule finale."
       ],
       "facts": [
         "Investissement indicatif (COP) : {{TODO: rango de precio en COP de migración de datos y sistemas legacy}}",
@@ -758,10 +758,10 @@
       }
     ],
     "colombia": {
-      "heading": "Développement d'intelligence artificielle appliquée en Colombie",
+      "heading": "Développement d'intelligence artificielle appliquée",
       "paragraphs": [
-        "L'intelligence artificielle utile dans une entreprise colombienne résout une tâche précise : répondre sur WhatsApp avec les informations réelles de l'entreprise, extraire les données de factures et de bons de commande scannés, ou chercher dans les manuels et les politiques internes. Depuis Bogotá, nous accompagnons des entreprises de tout le pays et commençons toujours par un cas d'usage restreint, avec un indicateur clair et une preuve de concept sur vos propres documents avant d'investir dans la version complète.",
-        "Les données qui alimentent un modèle contiennent souvent des informations sur les clients ; nous appliquons donc la loi colombienne 1581 (Habeas Data) dès la conception : seul le strict nécessaire est transmis au modèle, nous utilisons des fournisseurs et des réglages qui n'entraînent pas leurs modèles sur les données reçues par API, et nous documentons les informations qui quittent votre infrastructure. Aux points critiques, une personne relit et valide ce que propose l'IA. Vous voyez des résultats dans un environnement de test chaque semaine et nous répondons en moins de 24 heures ouvrées."
+        "L'intelligence artificielle utile dans une entreprise résout une tâche précise : répondre sur WhatsApp avec les informations réelles de l'entreprise, extraire les données de factures et de bons de commande scannés, ou chercher dans les manuels et les politiques internes. Nous travaillons à distance avec des clients de différents pays et commençons toujours par un cas d'usage restreint, avec un indicateur clair et une preuve de concept sur vos propres documents avant d'investir dans la version complète.",
+        "Les données qui alimentent un modèle contiennent souvent des informations sur les clients ; nous appliquons donc dès la conception le cadre de protection des données qui s'applique à vous (RGPD, loi colombienne 1581, etc.) : seul le strict nécessaire est transmis au modèle, nous utilisons des fournisseurs et des réglages qui n'entraînent pas leurs modèles sur les données reçues par API, et nous documentons les informations qui quittent votre infrastructure. Aux points critiques, une personne relit et valide ce que propose l'IA. Vous voyez des résultats dans un environnement de test chaque semaine et nous répondons en moins de 24 heures ouvrées."
       ],
       "facts": [
         "Investissement de départ : à partir de {priceUsd.ai}",

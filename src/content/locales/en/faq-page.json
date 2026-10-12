@@ -63,7 +63,7 @@
         {
           "id": "presupuesto-estimado",
           "question": "How do I know what my project will cost before hiring?",
-          "answer": "First we talk, assess technical feasibility and give you a clear plan with an honest budget, no commitment. To get an idea before talking to anyone, the [interactive estimator](/en/cotizador) calculates an approximate investment and timeline, in Colombian pesos or US dollars, based on the project type, modules and delivery pace."
+          "answer": "First we talk, assess technical feasibility and give you a clear plan with an honest budget, no commitment. To get an idea before talking to anyone, the [interactive estimator](/en/cotizador) calculates an approximate investment and timeline, in US dollars or Colombian pesos, based on the project type, modules and delivery pace."
         }
       ]
     },
@@ -99,8 +99,8 @@
         },
         {
           "id": "empresas-internacionales",
-          "question": "Do you work with companies outside Colombia?",
-          "answer": "Yes. We operate from Colombia with international companies, and the site and our service are available in Spanish, English and French. On data privacy we work with frameworks such as Colombian Law 1581 and the GDPR."
+          "question": "Do you work with companies from any country?",
+          "answer": "Yes. We work remotely with companies in different countries, and the site and our service are available in Spanish, English and French. On data privacy we work with frameworks such as the GDPR and Colombian Law 1581, depending on where your users are."
         }
       ]
     },
@@ -139,7 +139,7 @@
         {
           "id": "seguridad-datos",
           "question": "How do you protect the security and data of my users?",
-          "answer": "Encryption of data at rest and in transit, role-based access control and regulatory compliance (Colombian Law 1581 and GDPR). Security is designed into the architecture, not patched on at the end. More on [security and data protection](/en/servicios/seguridad-cumplimiento)."
+          "answer": "Encryption of data at rest and in transit, role-based access control and regulatory compliance (GDPR, Colombian Law 1581 and other frameworks depending on your country). Security is designed into the architecture, not patched on at the end. More on [security and data protection](/en/servicios/seguridad-cumplimiento)."
         },
         {
           "id": "datos-de-contacto",

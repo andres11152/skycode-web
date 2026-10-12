@@ -63,7 +63,7 @@
         {
           "id": "presupuesto-estimado",
           "question": "Comment connaître le coût de mon projet avant de m'engager ?",
-          "answer": "Nous échangeons d'abord, évaluons la faisabilité technique et vous remettons un plan clair avec un budget honnête, sans engagement. Pour vous faire une idée avant de parler à qui que ce soit, l'[estimateur interactif](/fr/cotizador) calcule un investissement et un délai approximatifs, en pesos colombiens ou en dollars, selon le type de projet, les modules et le rythme de livraison."
+          "answer": "Nous échangeons d'abord, évaluons la faisabilité technique et vous remettons un plan clair avec un budget honnête, sans engagement. Pour vous faire une idée avant de parler à qui que ce soit, l'[estimateur interactif](/fr/cotizador) calcule un investissement et un délai approximatifs, en dollars ou en pesos colombiens, selon le type de projet, les modules et le rythme de livraison."
         }
       ]
     },
@@ -99,8 +99,8 @@
         },
         {
           "id": "empresas-internacionales",
-          "question": "Travaillez-vous avec des entreprises hors de Colombie ?",
-          "answer": "Oui. Nous opérons depuis la Colombie avec des entreprises internationales, et le site comme notre accompagnement sont disponibles en espagnol, en anglais et en français. En matière de données personnelles, nous travaillons avec des cadres comme la loi colombienne 1581 et le RGPD."
+          "question": "Travaillez-vous avec des entreprises de tous pays ?",
+          "answer": "Oui. Nous travaillons à distance avec des entreprises de différents pays, et le site comme notre accompagnement sont disponibles en espagnol, en anglais et en français. En matière de données personnelles, nous travaillons avec des cadres comme le RGPD et la loi colombienne 1581, selon le pays de vos utilisateurs."
         }
       ]
     },
@@ -139,7 +139,7 @@
         {
           "id": "seguridad-datos",
           "question": "Comment garantissez-vous la protection et la conformité des données ?",
-          "answer": "Chiffrement des données au repos et en transit, gestion des droits par rôles et conformité réglementaire (loi colombienne 1581 et RGPD). La sécurité est pensée dès l'architecture, pas ajoutée en rustine à la fin. Plus d'informations sur la [sécurité et la protection des données](/fr/servicios/seguridad-cumplimiento)."
+          "answer": "Chiffrement des données au repos et en transit, gestion des droits par rôles et conformité réglementaire (RGPD, loi colombienne 1581 et autres cadres selon votre pays). La sécurité est pensée dès l'architecture, pas ajoutée en rustine à la fin. Plus d'informations sur la [sécurité et la protection des données](/fr/servicios/seguridad-cumplimiento)."
         },
         {
           "id": "datos-de-contacto",

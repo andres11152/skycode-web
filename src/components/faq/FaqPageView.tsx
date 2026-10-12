@@ -350,7 +350,7 @@ export function FaqPageView({
       </div>
 
       {/* Cierre: banda oscura (bg-inverse), la única de la página. */}
-      <section aria-label={copy.ctaTitle} className="mt-20 bg-inverse sm:mt-28">
+      <section aria-label={copy.ctaTitle} className="mt-20 band sm:mt-28">
         <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16 sm:py-24 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
           <div className="max-w-xl">
             <h2 className="text-3xl font-bold tracking-tight text-balance text-on-inverse sm:text-4xl">
