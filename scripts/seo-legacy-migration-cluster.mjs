@@ -36,6 +36,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 import { revalidatePublicSite } from "./lib/revalidatePublic.mjs";
+import { postSlugCandidates } from "../src/seo/slugs.ts";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -109,8 +110,8 @@ try {
 
   for (const [locale, d] of Object.entries(data)) {
     const post = await client.query(
-      "SELECT id, content FROM articles WHERE slug = $1 AND locale = $2 AND deleted_at IS NULL;",
-      [POST_SLUG, locale]
+      "SELECT id, content FROM articles WHERE slug = ANY($1::text[]) AND locale = $2 AND deleted_at IS NULL;",
+      [postSlugCandidates(POST_SLUG, locale), locale]
     );
     const row = post.rows[0];
     if (!row) throw new Error(`[${locale}] No existe el post ${POST_SLUG}.`);
@@ -129,8 +130,8 @@ try {
 
     for (const [slug, { afterIndex, block }] of Object.entries(d.others)) {
       const other = await client.query(
-        "SELECT id, content FROM articles WHERE slug = $1 AND locale = $2 AND deleted_at IS NULL;",
-        [slug, locale]
+        "SELECT id, content FROM articles WHERE slug = ANY($1::text[]) AND locale = $2 AND deleted_at IS NULL;",
+        [postSlugCandidates(slug, locale), locale]
       );
       const otherRow = other.rows[0];
       if (!otherRow) throw new Error(`[${locale}] No existe el post ${slug}.`);

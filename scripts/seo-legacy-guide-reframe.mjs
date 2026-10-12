@@ -18,12 +18,14 @@
 //   3. quita del cuerpo el anchor comercial duplicado ("servicio de migración de sistemas legacy"):
 //      la frase comercial queda solo en ese enlace de la apertura y en la página del servicio.
 //
-// Funciona con la columna `translation_key` (migración 0045) o, si aún no existe, con el slug.
+// Encuentra la fila con el slug histórico O con el nativo del idioma (db:seo-localized-slugs): el orden en que se
+// corran los scripts de contenido es indiferente.
 // Edita filas YA publicadas a propósito (`updateArticleContent()` solo acepta borradores) y toca
 // `updated_at` (dateModified del JSON-LD), nunca `published_at`. Todo en una transacción.
 
 import { Pool } from "pg";
 import { revalidatePublicSite } from "./lib/revalidatePublic.mjs";
+import { postSlugCandidates } from "../src/seo/slugs.ts";
 
 const { KEYWORD_MAP } = await import("../src/seo/keyword-map.ts");
 
@@ -99,19 +101,13 @@ const client = await pool.connect();
 
 try {
   await client.query("BEGIN");
-  const hasKey = (
-    await client.query("SELECT 1 FROM information_schema.columns WHERE table_name = 'articles' AND column_name = 'translation_key';")
-  ).rowCount > 0;
-
   for (const locale of ["es", "en", "fr"]) {
     const guide = KEYWORD_MAP["migracion-legacy-guia"][locale];
     const servicePath = KEYWORD_MAP["migracion-datos-legacy"][locale].targetPath;
 
     const res = await client.query(
-      hasKey
-        ? "SELECT id, slug, title, description, content FROM articles WHERE translation_key = $1 AND locale = $2 AND deleted_at IS NULL;"
-        : "SELECT id, slug, title, description, content FROM articles WHERE slug = $1 AND locale = $2 AND deleted_at IS NULL;",
-      [GUIDE_KEY, locale]
+      "SELECT id, slug, title, description, content FROM articles WHERE slug = ANY($1::text[]) AND locale = $2 AND deleted_at IS NULL;",
+      [postSlugCandidates(GUIDE_KEY, locale), locale]
     );
     const row = res.rows[0];
     if (!row) throw new Error(`[${locale}] No existe la guía ${GUIDE_KEY}.`);
@@ -150,6 +146,6 @@ try {
   await pool.end();
 }
 
-// Los cambios no pasan por un Route Handler del sitio: se pide invalidar la caché pública (nunca desde una base local).
-const isLocalDatabase = /@(localhost|127\.0\.0\.1)[:/]/.test(connectionString);
-if (!dryRun && !process.exitCode && !isLocalDatabase) await revalidatePublicSite();
+// Los cambios no pasan por un Route Handler del sitio: se pide invalidar la caché pública
+// (revalidatePublicSite no hace nada si la base es local).
+if (!dryRun && !process.exitCode) await revalidatePublicSite();

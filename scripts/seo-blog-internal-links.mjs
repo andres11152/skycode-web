@@ -42,7 +42,7 @@ import { dirname, join } from "node:path";
 
 import { revalidatePublicSite } from "./lib/revalidatePublic.mjs";
 // Los slugs de servicios y posts son nativos por idioma (src/seo/slugs.ts): una sola tabla, sin duplicarla aquí.
-import { SERVICES_SEGMENT, publicPostSlug, serviceSlugFor } from "../src/seo/slugs.ts";
+import { SERVICES_SEGMENT, postKeyFromSlug, publicPostSlug, serviceSlugFor } from "../src/seo/slugs.ts";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const LOCALES = ["es", "en", "fr"];
@@ -219,6 +219,9 @@ async function main() {
     const seen = new Set();
     let changed = 0;
     for (const row of rows) {
+      // La fila puede guardar el slug histórico o el nativo del idioma (db:seo-localized-slugs): las reglas y las
+      // rutas hablan siempre de la CLAVE de traducción del post.
+      row.slug = postKeyFromSlug(row.slug, row.locale);
       const rules = data.posts[row.slug];
       seen.add(`${row.slug}/${row.locale}`);
       if (!rules) {

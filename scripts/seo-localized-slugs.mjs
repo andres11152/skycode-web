@@ -121,7 +121,7 @@ async function main() {
 // `rewriteLinks`/`rewriteBlocks` son puras y se importan en los tests: solo se ejecuta como script.
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   await main();
-  // Los cambios no pasan por un Route Handler del sitio: se pide invalidar la caché pública (nunca desde una base local).
-  const isLocalDatabase = /@(localhost|127\.0\.0\.1)[:/]/.test(process.env.DATABASE_URL ?? "");
-  if (!dryRun && !process.exitCode && !isLocalDatabase) await revalidatePublicSite();
+  // Los cambios no pasan por un Route Handler del sitio: se pide invalidar la caché pública
+  // (revalidatePublicSite no hace nada si la base es local).
+  if (!dryRun && !process.exitCode) await revalidatePublicSite();
 }

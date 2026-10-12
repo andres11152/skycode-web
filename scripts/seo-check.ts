@@ -5,9 +5,11 @@
 //
 // Sale con código 1 si alguna URL del sitemap falla (canonical distinto de sí
 // misma, título duplicado o de más de 60 caracteres, descripción ausente o de
-// más de 160, H1 != 1, status != 200, noindex dentro del sitemap). La lógica
+// más de 160, H1 != 1, status != 200, noindex dentro del sitemap, keyword primaria del mapa ausente en
+// el título o el H1, hreflang distinto del sitemap). Es el gate bloqueante de CI. La lógica
 // vive en src/lib/seoHealth.ts y la comparte el cron diario del dashboard.
 import { runSeoHealthCheck, type SeoPageResult } from "../src/lib/seoHealth.ts";
+import { getKeywordExpectations } from "../src/seo/keyword-map.ts";
 
 const baseUrl = (process.env.BASE_URL ?? "https://skycode.agency").replace(/\/+$/, "");
 const concurrency = Number(process.env.SEO_CHECK_CONCURRENCY ?? 6);
@@ -28,6 +30,8 @@ async function main() {
   const report = await runSeoHealthCheck({
     baseUrl,
     concurrency,
+    // La keyword primaria de cada página del mapa debe estar en su título y su H1.
+    expectations: getKeywordExpectations(),
     onProgress: (done, total) => {
       if (process.stdout.isTTY) process.stdout.write(`\r  ${done}/${total} URLs`);
     },

@@ -4,6 +4,12 @@
 // de respaldo) en verse. Nunca falla el script: si no hay secreto, URL o el
 // sitio aún no tiene el endpoint, solo avisa.
 export async function revalidatePublicSite() {
+  // Una base local (desarrollo, CI, pruebas) no es la del sitio publicado: invalidar su caché no tiene sentido y
+  // mandaría una petición a producción por un cambio que nunca llegó allí.
+  if (/@(localhost|127\.0\.0\.1)[:/]/.test(process.env.DATABASE_URL ?? "") && !process.env.REVALIDATE_BASE_URL) {
+    console.log("(Base de datos local: no se invalida la caché de ningún sitio publicado.)");
+    return;
+  }
   const base = (process.env.REVALIDATE_BASE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://skycode.agency").replace(/\/+$/, "");
   const secret = process.env.CRON_SECRET?.trim();
   if (!secret) {

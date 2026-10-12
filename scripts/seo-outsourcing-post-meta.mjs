@@ -12,6 +12,7 @@
 // `updated_at` porque el título/descripción sí cambian; nunca `published_at`.
 // Idempotente: si ya tienen el valor, no escribe. Las páginas usan ISR
 // (`revalidate = 3600`): el cambio se ve como mucho una hora después.
+import { postSlugCandidates } from "../src/seo/slugs.ts";
 import { Pool } from "pg";
 
 import { revalidatePublicSite } from "./lib/revalidatePublic.mjs";
@@ -57,9 +58,9 @@ try {
   for (const [locale, meta] of Object.entries(META)) {
     const res = await pool.query(
       `UPDATE articles SET title = $1, description = $2, updated_at = now()
-       WHERE slug = $3 AND locale = $4 AND deleted_at IS NULL
+       WHERE slug = ANY($3::text[]) AND locale = $4 AND deleted_at IS NULL
          AND (title IS DISTINCT FROM $1 OR description IS DISTINCT FROM $2);`,
-      [meta.title, meta.description, SLUG, locale]
+      [meta.title, meta.description, postSlugCandidates(SLUG, locale), locale]
     );
     if (res.rowCount) {
       updated += res.rowCount;
