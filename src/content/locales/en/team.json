@@ -68,5 +68,21 @@
     "href": "/en/#portfolio"
   },
   "seoTitle": "Senior Software Engineering Team in Bogotá",
-  "seoDescription": "Senior engineers and designers who lead your software project: you work directly with the people who design the architecture and write the code."
+  "seoDescription": "Senior engineers and designers who lead your software project: you work directly with the people who design the architecture and write the code.",
+  "author": {
+    "breadcrumbAria": "Breadcrumb",
+    "breadcrumbHome": "Home",
+    "breadcrumbTeam": "Team",
+    "profilesLabel": "Profiles",
+    "linkedinLabel": "LinkedIn",
+    "githubLabel": "GitHub",
+    "articlesHeading": "Articles by {name}",
+    "articlesIntro": "What {name} has published on the SkyCode engineering blog.",
+    "articlesEmpty": "{name} hasn't published any articles on the blog yet.",
+    "teamLabel": "Part of the SkyCode team",
+    "backToTeam": "See the whole team",
+    "ctaTitle": "Talk directly to the engineers who build your project",
+    "ctaButton": "Talk to the team",
+    "seoDescription": "{name}, {role} at SkyCode. {bio}"
+  }
 }

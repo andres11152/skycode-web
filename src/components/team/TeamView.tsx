@@ -23,6 +23,7 @@ import { getTeamSectionContent } from "@/content/team";
 import type { PublicTeamMember } from "@/content/teamShared";
 import { getServicePageContent } from "@/content/servicePage";
 import { getNavContent } from "@/content/nav";
+import { teamMemberPath } from "@/lib/teamPaths";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 
 /** Devuelve las iniciales de un nombre completo (máximo 2 caracteres). */
@@ -170,7 +171,7 @@ export function TeamView({
               className="h-auto sm:h-full scroll-mt-24"
             >
               {/* El id ancla es el destino del JSON-LD `Person.url` del
-                  autor de cada post del blog (ver lib/blogMetadata.ts::authorUrl). */}
+                  autor de cada post del blog (ver lib/blogPaths.ts::authorPath). */}
               <SpotlightCard className="h-auto sm:h-full">
                 <div className="group relative flex h-auto sm:h-full sm:min-h-[500px] sm:aspect-[3/4] flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background transition duration-500 hover:border-accent/35 hover:shadow-[0_24px_64px_rgba(0,137,205,0.12)]">
 
@@ -234,7 +235,13 @@ export function TeamView({
                     <div>
                       {/* Nombre */}
                       <h2 className="font-heading text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-accent sm:text-2xl">
-                        {member.name}
+                        {/* Enlace a la página de la persona (/equipo/{slug}): perfil, artículos y entidad Person. */}
+                        <Link
+                          href={teamMemberPath(locale, member.slug)}
+                          className="inline-flex min-h-11 items-center rounded outline-none hover:underline focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        >
+                          {member.name}
+                        </Link>
                       </h2>
 
                       {/* Separador animado */}

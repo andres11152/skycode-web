@@ -1,5 +1,5 @@
 import { revalidatePath } from "next/cache";
-import { teamPath } from "@/lib/teamMetadata";
+import { teamPath } from "@/lib/teamPaths";
 import { blogIndexPath } from "@/lib/blogPaths";
 
 /**
@@ -16,6 +16,8 @@ export function revalidateTeamPaths(): void {
   revalidatePath(teamPath("en"));
   revalidatePath(teamPath("fr"));
   for (const locale of ["es", "en", "fr"] as const) {
+    // La página de cada persona (`/equipo/{slug}`) muestra su foto, cargo y bio.
+    revalidatePath(`${teamPath(locale)}/[slug]`, "page");
     revalidatePath(blogIndexPath(locale));
     revalidatePath(`${blogIndexPath(locale)}/[slug]`, "page");
   }

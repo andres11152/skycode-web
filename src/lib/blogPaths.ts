@@ -1,4 +1,5 @@
 import { siteUrl } from "@/lib/site";
+import { teamMemberPath } from "@/lib/teamPaths";
 import { localeHomePath, type Locale } from "@/lib/i18n";
 
 // Funciones puras de construcción de rutas — sin ningún import de
@@ -24,16 +25,12 @@ export function blogPostPath(locale: Locale, slug: string): string {
   return `${blogIndexPath(locale)}/${slug}`;
 }
 
-/** Autor del post en `/equipo#slug` — mismo dominio que sirve el sitio, base de la entidad `Person` del JSON-LD. */
+/** URL absoluta de la página del autor (`/equipo/{slug}`): la `url` de su entidad `Person` en el JSON-LD. */
 export function authorUrl(locale: Locale, authorSlug: string): string {
-  const homePath = localeHomePath(locale);
-  const prefix = homePath === "/" ? "" : homePath;
-  return `${siteUrl}${prefix}/equipo#${authorSlug}`;
+  return `${siteUrl}${teamMemberPath(locale, authorSlug)}`;
 }
 
-/** Perfil del autor en `/equipo#slug`, ruta relativa y con prefijo de idioma — para enlaces dentro del sitio (`authorUrl` es la absoluta del JSON-LD). */
+/** Página del autor, ruta relativa y con prefijo de idioma — para enlaces dentro del sitio (`authorUrl` es la absoluta del JSON-LD). */
 export function authorPath(locale: Locale, authorSlug: string): string {
-  const homePath = localeHomePath(locale);
-  const prefix = homePath === "/" ? "" : homePath;
-  return `${prefix}/equipo#${authorSlug}`;
+  return teamMemberPath(locale, authorSlug);
 }

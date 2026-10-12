@@ -68,5 +68,21 @@
     "href": "/fr/#portfolio"
   },
   "seoTitle": "Équipe d'ingénieurs logiciel senior à Bogotá",
-  "seoDescription": "Ingénieurs et designers senior qui dirigent votre projet logiciel : vous travaillez directement avec ceux qui conçoivent l'architecture et écrivent le code."
+  "seoDescription": "Ingénieurs et designers senior qui dirigent votre projet logiciel : vous travaillez directement avec ceux qui conçoivent l'architecture et écrivent le code.",
+  "author": {
+    "breadcrumbAria": "Fil d'Ariane",
+    "breadcrumbHome": "Accueil",
+    "breadcrumbTeam": "Équipe",
+    "profilesLabel": "Profils",
+    "linkedinLabel": "LinkedIn",
+    "githubLabel": "GitHub",
+    "articlesHeading": "Articles de {name}",
+    "articlesIntro": "Ce que {name} a publié sur le blog technique de SkyCode.",
+    "articlesEmpty": "{name} n'a pas encore publié d'article sur le blog.",
+    "teamLabel": "Membre de l'équipe SkyCode",
+    "backToTeam": "Voir toute l'équipe",
+    "ctaTitle": "Échangez directement avec les ingénieurs qui construisent votre projet",
+    "ctaButton": "Parler à l'équipe",
+    "seoDescription": "{name}, {role} chez SkyCode. {bio}"
+  }
 }

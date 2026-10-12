@@ -1,3 +1,4 @@
+import { rethrowDbErrorAtRuntime } from "@/lib/dbBuildGuard";
 import { query } from "../db";
 import { logError } from "../logger";
 import type { Locale } from "../i18n";
@@ -72,6 +73,91 @@ export async function getPublishedTeamProfiles(locale: Locale): Promise<PublicTe
     return members.filter((m): m is PublicTeamMember => m !== null);
   } catch (error) {
     logError("Error al leer los perfiles públicos del equipo", error);
+    return [];
+  }
+}
+
+/** Persona publicada para su página (`/equipo/{slug}`), con la bandera de si el texto es una traducción real a ese idioma. */
+export interface PublicAuthorProfile {
+  member: PublicTeamMember;
+  /** `false` cuando el texto salió del respaldo en español (no hay fila de traducción en ese idioma). */
+  translated: boolean;
+}
+
+/**
+ * Una persona publicada por slug. A diferencia de `getPublishedTeamProfiles`, relanza el error de base
+ * en ejecución: la página usa ISR y un `null` por un fallo momentáneo se guardaría como un 404 válido
+ * (ver lib/dbBuildGuard.ts); en build y en desarrollo sí devuelve `null`.
+ */
+export async function getPublishedTeamProfile(slug: string, locale: Locale): Promise<PublicAuthorProfile | null> {
+  try {
+    const res = await query(
+      `SELECT id, slug, avatar_variants, linkedin_url, github_url
+       FROM team_profiles
+       WHERE slug = $1 AND is_published = true AND deleted_at IS NULL;`,
+      [slug]
+    );
+    const row = res.rows[0];
+    if (!row) return null;
+
+    const own = await query(`SELECT 1 FROM team_profile_translations WHERE profile_id = $1 AND locale = $2;`, [row.id, locale]);
+    const translation = await getProfileTranslation(Number(row.id), locale);
+    if (!translation) return null;
+
+    const variants = (row.avatar_variants as AvatarVariants | null) ?? null;
+    return {
+      translated: locale === "es" || own.rows.length > 0,
+      member: {
+        slug: String(row.slug),
+        name: String(translation.name ?? ""),
+        role: String(translation.public_role ?? ""),
+        description: String(translation.public_bio ?? ""),
+        photo: variants?.lg ?? null,
+        linkedinUrl: row.linkedin_url ? String(row.linkedin_url) : null,
+        githubUrl: row.github_url ? String(row.github_url) : null,
+      },
+    };
+  } catch (error) {
+    logError("Error al leer el perfil público del equipo", error);
+    rethrowDbErrorAtRuntime(error);
+    return null;
+  }
+}
+
+/** Slugs de las personas publicadas (para `generateStaticParams`). */
+export async function getPublishedTeamSlugs(): Promise<string[]> {
+  try {
+    const res = await query(`SELECT slug FROM team_profiles WHERE is_published = true AND deleted_at IS NULL ORDER BY sort_order ASC, id ASC;`);
+    return res.rows.map((row) => String(row.slug));
+  } catch (error) {
+    logError("Error al leer los slugs del equipo", error);
+    rethrowDbErrorAtRuntime(error);
+    return [];
+  }
+}
+
+/**
+ * Idiomas con traducción REAL de cada persona publicada, para el sitemap y el hreflang de su página: una
+ * persona sin traducción al inglés no aparece como página en inglés (se serviría español bajo otra URL).
+ * El español siempre está (publicar lo exige).
+ */
+export async function getPublishedTeamLocaleMap(): Promise<{ slug: string; locales: Locale[] }[]> {
+  try {
+    const res = await query(
+      `SELECT p.slug, array_agg(t.locale ORDER BY t.locale) AS locales
+       FROM team_profiles p
+       JOIN team_profile_translations t ON t.profile_id = p.id AND btrim(t.name) <> ''
+       WHERE p.is_published = true AND p.deleted_at IS NULL
+       GROUP BY p.slug, p.sort_order, p.id
+       ORDER BY p.sort_order ASC, p.id ASC;`
+    );
+    return res.rows.map((row) => ({
+      slug: String(row.slug),
+      locales: (row.locales as string[]).filter((l): l is Locale => LOCALES.includes(l as Locale)),
+    }));
+  } catch (error) {
+    logError("Error al leer el mapa de idiomas del equipo", error);
+    rethrowDbErrorAtRuntime(error);
     return [];
   }
 }

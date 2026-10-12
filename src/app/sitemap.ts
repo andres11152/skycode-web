@@ -6,7 +6,8 @@ import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
 import { portfolioCaseAlternates, portfolioIndexAlternates } from "@/lib/portfolioMetadata";
 import { services } from "@/content/services";
 import { servicePath, servicesIndexPath } from "@/lib/serviceMetadata";
-import { teamPath } from "@/lib/teamMetadata";
+import { teamMemberPath, teamPath } from "@/lib/teamPaths";
+import { getPublishedTeamLocaleMap } from "@/lib/queries/teamProfiles";
 import { estimatorPath } from "@/lib/estimatorMetadata";
 import { faqPath } from "@/lib/faqPaths";
 import { faqLanguageAlternates } from "@/lib/faqMetadata";
@@ -45,12 +46,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "x-default": siteUrl,
   };
 
-  const [postsEs, postsEn, postsFr, portfolioUpdated, teamUpdated] = await Promise.all([
+  const [postsEs, postsEn, postsFr, portfolioUpdated, teamUpdated, teamLocaleMap] = await Promise.all([
     getBlogPosts("es"),
     getBlogPosts("en"),
     getBlogPosts("fr"),
     getPortfolioLastModifiedBySlug(),
     getTeamLastModified(),
+    getPublishedTeamLocaleMap(),
   ]);
   const postsByLocale = { es: postsEs, en: postsEn, fr: postsFr };
   const newestPost = (locale: "es" | "en" | "fr") => newest(...postsByLocale[locale].map((p) => p.updatedAt));
@@ -186,6 +188,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     alternates: { languages: teamLanguages },
   }));
 
+  // Una página por persona publicada (E-E-A-T): mismo slug en los tres idiomas, hreflang solo hacia los
+  // idiomas con traducción real (el español siempre es el x-default).
+  const teamMemberRoutes: MetadataRoute.Sitemap = teamLocaleMap.flatMap(({ slug, locales: available }) => {
+    const present = (["es", "en", "fr"] as const).filter((loc) => loc === "es" || available.includes(loc));
+    const languages = {
+      ...Object.fromEntries(present.map((loc) => [loc, `${siteUrl}${teamMemberPath(loc, slug)}`])),
+      "x-default": `${siteUrl}${teamMemberPath("es", slug)}`,
+    };
+    return present.map((locale) => ({
+      url: `${siteUrl}${teamMemberPath(locale, slug)}`,
+      lastModified: newest(staticLastmod(`team:${locale}`), teamUpdated),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      alternates: { languages },
+    }));
+  });
+
   const estimatorLanguages = {
     es: `${siteUrl}${estimatorPath("es")}`,
     en: `${siteUrl}${estimatorPath("en")}`,
@@ -232,6 +251,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...serviceRoutes,
     ...servicesIndexRoutes,
     ...teamRoutes,
+    ...teamMemberRoutes,
     ...estimatorRoutes,
     ...faqRoutes,
     ...bogotaRoutes,

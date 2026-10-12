@@ -9,6 +9,7 @@ import { TeamJsonLd } from "@/components/team/TeamJsonLd";
 import { getServiceBySlug, getServicesContent } from "@/content/services";
 import type { BlogPost } from "@/content/blogShared";
 import { siteUrl } from "@/lib/site";
+import { personId } from "@/lib/teamPaths";
 import { servicePath } from "@/lib/serviceMetadata";
 import { locales } from "@/lib/i18n";
 
@@ -89,13 +90,38 @@ describe("JSON-LD de un artículo", () => {
   it("es válido, referencia a la organización y al sitio y trae FAQPage", () => {
     const html = renderToStaticMarkup(createElement(ArticleJsonLd, { post, locale: "es" }));
     const nodes = extractJsonLd(html);
-    // La Person del autor la define su propia página (/equipo…), no el artículo.
-    const external = new Set([...siteIds, `${siteUrl}/equipo#cesar-leon`]);
+    // Sin perfil público cargado, la Person del autor se cita por su @id (la define su propia página, /equipo/{slug}).
+    const external = new Set([...siteIds, personId("cesar-leon")]);
     expect(validateJsonLd(nodes, { externalIds: external })).toEqual([]);
     const article = nodes.find((n) => hasType(n, "BlogPosting"))!;
     expect((article.publisher as JsonLdNode)["@id"]).toBe(ORGANIZATION_ID);
     expect((article.isPartOf as JsonLdNode)["@id"]).toBe(WEBSITE_ID);
     expect(nodes.some((n) => hasType(n, "FAQPage"))).toBe(true);
+  });
+});
+
+describe("el autor de un artículo es la misma Person que la del equipo", () => {
+  const member = {
+    slug: "cesar-leon",
+    name: "César León",
+    role: "Frontend & Rendimiento",
+    description: "Frontend con Next.js.",
+    photo: "https://cdn.example/cesar.webp",
+    linkedinUrl: "https://www.linkedin.com/in/cesar",
+    githubUrl: null,
+  };
+
+  it("comparten @id y, con el perfil cargado, el artículo trae cargo, foto y perfiles externos", () => {
+    const articleNodes = extractJsonLd(renderToStaticMarkup(createElement(ArticleJsonLd, { post, locale: "en", author: member })));
+    const author = articleNodes.find((n) => hasType(n, "BlogPosting"))!.author as JsonLdNode;
+    const teamNodes = extractJsonLd(renderToStaticMarkup(createElement(TeamJsonLd, { members: [member], locale: "es" })));
+    expect(author["@id"]).toBe(teamNodes[0]["@id"]);
+    expect(author["@id"]).toBe(personId("cesar-leon"));
+    expect(author.jobTitle).toBe("Frontend & Rendimiento");
+    expect(author.sameAs).toEqual(["https://www.linkedin.com/in/cesar"]);
+    // La URL de la persona es la de su página en el idioma del contenido; el @id no cambia de idioma.
+    expect(author.url).toBe(`${siteUrl}/en/equipo/cesar-leon`);
+    expect(teamNodes[0].url).toBe(`${siteUrl}/equipo/cesar-leon`);
   });
 });
 

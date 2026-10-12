@@ -3,7 +3,9 @@ import { getBlogMeta } from "@/content/blogShared";
 import { blogIndexPath, blogPostPath, authorUrl } from "@/lib/blogPaths";
 import { localeHomePath, type Locale } from "@/lib/i18n";
 import { siteUrl } from "@/lib/site";
-import { organizationRef, serializeJsonLd, websiteRef, type JsonLdNode } from "@/lib/jsonLd";
+import { buildPersonNode, organizationRef, serializeJsonLd, websiteRef, type JsonLdNode } from "@/lib/jsonLd";
+import type { PublicTeamMember } from "@/content/teamShared";
+import { personId } from "@/lib/teamPaths";
 import { stripInlineLinks } from "@/lib/inlineLinks";
 
 /**
@@ -11,7 +13,7 @@ import { stripInlineLinks } from "@/lib/inlineLinks";
  * tres variantes de locale (`/blog`, `/en/blog`, `/fr/blog`) sin triplicar
  * el JSON-LD a mano — mismo criterio que `ServiceJsonLd`.
  */
-export function ArticleJsonLd({ post, locale }: { post: BlogPost; locale: Locale }) {
+export function ArticleJsonLd({ post, locale, author }: { post: BlogPost; locale: Locale; author?: PublicTeamMember | null }) {
   const meta = getBlogMeta(locale);
   const url = `${siteUrl}${blogPostPath(locale, post.slug)}`;
   const homePath = localeHomePath(locale);
@@ -41,13 +43,12 @@ export function ArticleJsonLd({ post, locale }: { post: BlogPost; locale: Locale
       datePublished: post.publishedAt,
       // `updatedAt` es un campo real y separado de `publishedAt` (ver la nota en content/blog.ts).
       dateModified: post.updatedAt,
-      // `@id` = la misma URL de la entidad Person del autor (components/team/TeamJsonLd.tsx).
-      author: {
-        "@type": "Person",
-        "@id": authorUrl(locale, post.authorSlug),
-        name: post.author,
-        url: authorUrl(locale, post.authorSlug),
-      },
+      // `@id` = el de la entidad Person del autor (lib/jsonLd.ts::buildPersonNode), la misma en los tres
+      // idiomas y definida con todo su detalle en la página del autor. Con el perfil público cargado se
+      // suman cargo, foto y perfiles externos (E-E-A-T); sin él, nombre y URL.
+      author: author
+        ? buildPersonNode(author, locale)
+        : { "@type": "Person", "@id": personId(post.authorSlug), name: post.author, url: authorUrl(locale, post.authorSlug) },
       publisher: { ...organizationRef(), logo: { "@type": "ImageObject", url: `${siteUrl}/logo-mark.png` } },
       isPartOf: websiteRef(),
       // Imagen propia del post (opengraph-image.tsx de su ruta), no la genérica.

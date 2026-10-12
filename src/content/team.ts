@@ -61,3 +61,27 @@ export function getTeamSeo(locale: Locale): { title: string; description: string
   const data = teamByLocale[locale];
   return { title: data.seoTitle, description: data.seoDescription };
 }
+
+export interface AuthorPageCopy {
+  breadcrumbAria: string;
+  breadcrumbHome: string;
+  breadcrumbTeam: string;
+  profilesLabel: string;
+  linkedinLabel: string;
+  githubLabel: string;
+  /** Con `{name}`. */
+  articlesHeading: string;
+  articlesIntro: string;
+  articlesEmpty: string;
+  teamLabel: string;
+  backToTeam: string;
+  ctaTitle: string;
+  ctaButton: string;
+  /** Con `{name}`, `{role}` y `{bio}`. */
+  seoDescription: string;
+}
+
+/** Textos de la página de cada persona (`/equipo/{slug}`). Server-only, como el resto de este archivo. */
+export function getAuthorPageCopy(locale: Locale): AuthorPageCopy {
+  return teamByLocale[locale].author;
+}

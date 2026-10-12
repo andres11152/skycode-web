@@ -1,6 +1,9 @@
 import { getServicesContent } from "@/content/services";
 import { contactEmail, contactPhone, ogImageUrl, siteDescription, siteName, siteUrl, whatsappHref } from "@/lib/site";
 import { authorUrl } from "@/lib/blogPaths";
+import type { PublicTeamMember } from "@/content/teamShared";
+import type { Locale } from "@/lib/i18n";
+import { personId } from "@/lib/teamPaths";
 import { servicePath } from "@/lib/serviceMetadata";
 import {
   ORGANIZATION_ALTERNATE_NAMES,
@@ -10,7 +13,7 @@ import {
   bogotaGeo,
   organizationSameAs,
 } from "@/lib/organizationProfiles";
-import { textOrNull } from "@/lib/todoPlaceholders";
+import { textOrNull, withoutTodos } from "@/lib/todoPlaceholders";
 
 // Entidades schema.org del sitio, con `@id` ESTABLES que el resto de las páginas referencian
 // (Service, BlogPosting, Person, WebPage…) en vez de redefinir a la organización cada vez:
@@ -48,6 +51,7 @@ export function serializeJsonLd(data: unknown): string {
 
 export function buildOrganizationNode(): JsonLdNode {
   const foundingDate = textOrNull(ORGANIZATION_FOUNDING_DATE);
+  const founderId = personId(ORGANIZATION_FOUNDER.slug);
   const founderUrl = authorUrl("es", ORGANIZATION_FOUNDER.slug);
   const services = getServicesContent("es").services;
 
@@ -64,7 +68,7 @@ export function buildOrganizationNode(): JsonLdNode {
     email: contactEmail,
     telephone: contactPhone,
     ...(foundingDate ? { foundingDate } : {}),
-    founder: { "@type": "Person", "@id": founderUrl, name: ORGANIZATION_FOUNDER.name, url: founderUrl, jobTitle: ORGANIZATION_FOUNDER.jobTitle },
+    founder: { "@type": "Person", "@id": founderId, name: ORGANIZATION_FOUNDER.name, url: founderUrl, jobTitle: ORGANIZATION_FOUNDER.jobTitle },
     address: {
       "@type": "PostalAddress",
       addressLocality: "Bogotá",
@@ -100,6 +104,26 @@ export function buildOrganizationNode(): JsonLdNode {
       url: `${siteUrl}${servicePath("es", service.slug)}`,
       itemOffered: { "@type": "Service", "@id": serviceNodeId("es", service.slug), name: service.title },
     })),
+  };
+}
+
+/**
+ * Entidad `Person` de una persona del equipo — la misma (`@id`) en los tres idiomas y en todas las
+ * páginas que la citan (autor de un post, lista del equipo, su propia página). `sameAs` solo con perfiles
+ * reales cargados en el dashboard (LinkedIn/GitHub); sin ellos se omite, nunca se inventa.
+ */
+export function buildPersonNode(member: PublicTeamMember, locale: Locale): JsonLdNode {
+  const sameAs = withoutTodos([member.linkedinUrl, member.githubUrl].filter((u): u is string => Boolean(u)));
+  return {
+    "@type": "Person",
+    "@id": personId(member.slug),
+    name: member.name,
+    jobTitle: member.role,
+    description: member.description,
+    url: authorUrl(locale, member.slug),
+    ...(member.photo ? { image: member.photo } : {}),
+    worksFor: organizationRef(),
+    ...(sameAs.length > 0 ? { sameAs } : {}),
   };
 }
 

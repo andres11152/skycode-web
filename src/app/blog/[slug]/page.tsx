@@ -36,7 +36,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <>
-      <ArticleJsonLd post={post} locale="es" />
+      <ArticleJsonLd post={post} locale="es" author={context.author} />
       <ArticleView post={post} locale="es" context={context} />
     </>
   );

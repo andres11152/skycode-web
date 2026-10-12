@@ -68,5 +68,21 @@
     "href": "/#portfolio"
   },
   "seoTitle": "Equipo de Ingenieros de Software en Bogotá",
-  "seoDescription": "Ingenieros y diseñadores sénior que lideran tu proyecto de software: trabajas directo con quien diseña la arquitectura y escribe el código."
+  "seoDescription": "Ingenieros y diseñadores sénior que lideran tu proyecto de software: trabajas directo con quien diseña la arquitectura y escribe el código.",
+  "author": {
+    "breadcrumbAria": "Ruta de navegación",
+    "breadcrumbHome": "Inicio",
+    "breadcrumbTeam": "Equipo",
+    "profilesLabel": "Perfiles",
+    "linkedinLabel": "LinkedIn",
+    "githubLabel": "GitHub",
+    "articlesHeading": "Artículos de {name}",
+    "articlesIntro": "Lo que {name} ha publicado en el blog técnico de SkyCode.",
+    "articlesEmpty": "{name} todavía no ha publicado artículos en el blog.",
+    "teamLabel": "Parte del equipo de SkyCode",
+    "backToTeam": "Ver todo el equipo",
+    "ctaTitle": "Habla directamente con los ingenieros que construyen tu proyecto",
+    "ctaButton": "Hablar con el equipo",
+    "seoDescription": "{name}, {role} en SkyCode. {bio}"
+  }
 }

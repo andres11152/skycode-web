@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
 import { getTeamSeo } from "@/content/team";
 import { ogImageUrl, siteUrl } from "@/lib/site";
-import { localeHomePath, type Locale } from "@/lib/i18n";
+import { teamPath } from "@/lib/teamPaths";
+import type { Locale } from "@/lib/i18n";
 
-export function teamPath(locale: Locale): string {
-  const homePath = localeHomePath(locale);
-  const prefix = homePath === "/" ? "" : homePath;
-  return `${prefix}/equipo`;
-}
+export { teamPath } from "@/lib/teamPaths";
 
 export function buildTeamMetadata(locale: Locale): Metadata {
   const teamData = getTeamSeo(locale);
