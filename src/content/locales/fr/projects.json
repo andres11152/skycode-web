@@ -60,7 +60,8 @@
       "posts": "Articles associés",
       "bogotaLead": "Nous travaillons depuis Bogotá, en Colombie.",
       "bogotaLabel": "Développement logiciel à Bogotá (page en espagnol)"
-    }
+    },
+    "caseStudyLabel": "Étude de cas"
   },
   "breadcrumb": {
     "home": "Accueil",

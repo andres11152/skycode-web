@@ -14,6 +14,7 @@ import { useFeedback } from "./ui/Feedback";
 import { PageBack } from "./ui/PageHeader";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
 import { UnsavedNotice } from "./ui/UnsavedNotice";
+import { postKeyFromSlug, publicPostSlug } from "@/seo/slugs";
 
 const inputClasses =
   "w-full rounded-lg border border-foreground/15 bg-foreground/[0.02] px-3 py-2 text-sm text-foreground outline-none focus:border-accent";
@@ -354,7 +355,7 @@ export function ArticleEditor({ article, canWrite }: { article: Article; canWrit
             )}
             {article.status === "published" && (
               <a
-                href={blogPostPath(article.locale, article.slug)}
+                href={blogPostPath(article.locale, publicPostSlug(postKeyFromSlug(article.slug, article.locale), article.locale))}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs text-accent-strong hover:underline"

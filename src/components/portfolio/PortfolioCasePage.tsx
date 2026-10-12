@@ -10,52 +10,11 @@ import { servicePath } from "@/lib/serviceMetadata";
 import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
 import { getPortfolioProjectCached } from "@/lib/portfolioRequestData";
 import { getPublishedPortfolioSlugs } from "@/lib/queries/portfolio";
+import { getPortfolioLastModifiedBySlug } from "@/lib/queries/lastModified";
+import { CaseJsonLd } from "@/components/portfolio/CaseJsonLd";
 import { localeHomePath, type Locale } from "@/lib/i18n";
 import { ogImageUrl, siteUrl } from "@/lib/site";
 import { organizationRef } from "@/lib/jsonLd";
-
-function CaseJsonLd({ project, locale }: { project: PortfolioProject; locale: Locale }) {
-  const copy = getPortfolioSectionContent(locale);
-  const url = `${siteUrl}${portfolioCasePath(locale, project.slug)}`;
-  const coverUrl = project.coverImage?.variants.lg ?? ogImageUrl;
-  const homePath = localeHomePath(locale);
-
-  const softwareAppJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: project.title,
-    description: project.summary,
-    inLanguage: locale,
-    applicationCategory: "BusinessApplication",
-    operatingSystem: "Web",
-    image: coverUrl,
-    url: project.liveUrl ?? url,
-    author: { ...organizationRef(), url: siteUrl },
-  };
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: copy.breadcrumb.home, item: homePath === "/" ? siteUrl : `${siteUrl}${homePath}` },
-      { "@type": "ListItem", position: 2, name: copy.breadcrumb.portfolio, item: `${siteUrl}${portfolioIndexPath(locale)}` },
-      { "@type": "ListItem", position: 3, name: project.title, item: url },
-    ],
-  };
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd).replace(/</g, "\\u003c") }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
-      />
-    </>
-  );
-}
 
 /**
  * Servicios aplicados en el caso y hasta 2 artículos del blog sobre esos
@@ -75,7 +34,7 @@ async function getRelatedLinks(project: PortfolioProject, locale: Locale): Promi
     await Promise.all(
       pickRelatedPostSlugs(serviceSlugs, 2).map(async (slug) => {
         const post = await getPostBySlug(slug, locale);
-        return post ? { slug, title: post.title, href: blogPostPath(locale, slug) } : null;
+        return post ? { slug, title: post.title, href: blogPostPath(locale, post.slug) } : null;
       }),
     )
   ).filter((post): post is { slug: string; title: string; href: string } => post !== null);
@@ -95,10 +54,11 @@ export async function PortfolioCasePage({ locale, slug }: { locale: Locale; slug
     nextSlug && nextSlug !== slug ? await getPortfolioProjectCached(nextSlug, locale) : null;
 
   const related = await getRelatedLinks(project, locale);
+  const modifiedAt = (await getPortfolioLastModifiedBySlug())[slug] ?? null;
 
   return (
     <>
-      <CaseJsonLd project={project} locale={locale} />
+      <CaseJsonLd project={project} locale={locale} modifiedAt={modifiedAt} />
       <ProjectView
         locale={locale}
         project={project}

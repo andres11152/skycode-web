@@ -54,6 +54,8 @@ export interface PortfolioDetailCopy {
   architecture: string;
   process: string;
   results: string;
+  /** Etiqueta del tipo de contenido (`articleSection` del JSON-LD del caso). */
+  caseStudyLabel: string;
   metrics: string;
   testimonial: string;
   related: PortfolioRelatedCopy;

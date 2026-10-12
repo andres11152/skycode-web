@@ -60,7 +60,8 @@
       "posts": "Artículos relacionados",
       "bogotaLead": "Trabajamos desde Bogotá, Colombia.",
       "bogotaLabel": "Desarrollo de software en Bogotá"
-    }
+    },
+    "caseStudyLabel": "Caso de estudio"
   },
   "breadcrumb": {
     "home": "Inicio",
