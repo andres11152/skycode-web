@@ -17,7 +17,7 @@
     },
     "apis-integraciones": {
       "title": "Integración de Sistemas y Desarrollo de APIs",
-      "description": "Conectamos tu software con pasarelas de pago, ERPs, sistemas contables y WhatsApp mediante APIs seguras y documentadas. Respuesta en menos de 24 h hábiles.",
+      "description": "Conectamos tu software con pasarelas de pago, ERPs, sistemas contables y WhatsApp mediante APIs seguras y documentadas. Respuesta en menos de 4 h hábiles.",
       "h1": "Integración de sistemas y desarrollo de APIs"
     },
     "frontend-alto-rendimiento": {
@@ -42,7 +42,7 @@
     },
     "migracion-datos-legacy": {
       "title": "Servicios de migración de sistemas legacy",
-      "description": "Migramos tu sistema legacy por fases a una plataforma moderna: sin downtime, sin perder datos y con integridad validada. Te respondemos en 24 h."
+      "description": "Migramos tu sistema legacy por fases a una plataforma moderna: sin downtime, sin perder datos y con integridad validada. Respuesta en 4 h hábiles."
     },
     "inteligencia-artificial-aplicada": {
       "title": "IA para empresas: asistentes y automatización",

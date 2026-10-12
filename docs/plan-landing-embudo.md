@@ -231,6 +231,8 @@ Sin esto, cualquier mejora posterior es una opinión.
 
 **Estado de la Fase 2 (12 oct. 2026): hecha para tres variantes** (`/landing`, `/landing/precio`, `/landing/integraciones`), sin commit. Datos del negocio recibidos: respuesta en 4 horas hábiles, cesión del código validada, garantía de 90 días, permiso para nombrar clientes y usar capturas, y operación como persona natural con RUT (sin NIT). Decisiones que se apartan del plan: el formulario conserva el correo como obligatorio (el CRM exige correo y el correo de confirmación depende de él; WhatsApp queda como canal alterno), y se quitó el botón flotante de WhatsApp.
 
+**Estado (12 oct. 2026, ronda 3):** respuesta de 4 horas hábiles alineada en todo el sitio y los tres idiomas, con el horario (lunes a viernes de 8 a. m. a 6 p. m., sábados de 8 a. m. a 1 p. m.). Garantía descrita como cobertura de cualquier falla. Fondo fluido y selector de tema en la landing. Consent Mode v2 implementado (revisado por el abogado): la CSP debía permitir `pagead2.googlesyndication.com` y se corrigió. Lighthouse móvil de `/landing`: perf 91, a11y 100, BP 100, LCP 3,4 s (SEO 69 solo por el `noindex` intencional). Falta: la línea base de 2 a 4 semanas y las conversiones offline.
+
 ### Fase 1: contenido real (lo que tiene que dar el negocio)
 
 Ver la sección 7. El copy final no se escribe hasta tener esto.

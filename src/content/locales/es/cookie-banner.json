@@ -1,6 +1,6 @@
 {
   "ariaLabel": "Aviso de cookies",
-  "message": "Usamos almacenamiento propio para que el sitio funcione y, si usted lo permite, para recordar su país y de qué campaña llegó. No usamos analítica de terceros; solo si acepta la medición, la página de confirmación carga la etiqueta de conversión de Google Ads.",
+  "message": "Usamos almacenamiento propio para que el sitio funcione y, si usted lo permite, para recordar su país y de qué campaña llegó. No usamos analítica de terceros. Las páginas de campaña y de confirmación cargan la etiqueta de Google Ads: sin su permiso de medición no guarda cookies y Google solo recibe datos técnicos de la visita; con él, mide qué anuncio generó su consulta.",
   "linkText": "Política de cookies",
   "linkUrl": "/politica-cookies",
   "acceptAll": "Aceptar todo",
@@ -34,8 +34,9 @@
       },
       "measurement": {
         "label": "Medición",
-        "description": "Guardan de qué campaña o página llegó (parámetros UTM e identificadores de clic de anuncios) para adjuntarlo si nos escribe. Este sitio no lo envía a redes publicitarias."
+        "description": "Guardan de qué campaña o página llegó (parámetros UTM e identificadores de clic de anuncios) para adjuntarlo si nos escribe. Con este permiso, la etiqueta de Google Ads de las páginas de campaña también puede guardar cookies propias y medir qué anuncio generó su consulta."
       }
     }
-  }
+  },
+  "x": null
 }

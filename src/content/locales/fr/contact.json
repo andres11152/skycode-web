@@ -38,7 +38,8 @@
       "Nous répondons à l'adresse e-mail laissée, sous 4 heures ouvrées.",
       "Si vous savez déjà ce que vous voulez, nous proposons périmètre, délai et prix. Sinon, nous posons les questions qui manquent."
     ],
-    "portfolioCta": "Voir des projets en production"
+    "portfolioCta": "Voir des projets en production",
+    "hours": "Horaires : du lundi au vendredi de 8 h à 18 h, le samedi de 8 h à 13 h (heure de Bogotá)."
   },
   "confirmationEmail": {
     "subject": "Nous avons bien reçu votre message, {name}",

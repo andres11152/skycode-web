@@ -52,6 +52,7 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
               </li>
             ))}
           </ol>
+          <p className="mt-3 text-xs text-foreground/70">{successModal.hours}</p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button href={portfolioIndexPath(locale)} variant="accent" size="lg">

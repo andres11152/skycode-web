@@ -224,7 +224,7 @@
       }
     ],
     "closing": [
-      "Después del lanzamiento tienes 90 días de garantía de estabilidad técnica: si aparece un error o algo no se comporta como se acordó, lo corregimos sin costo adicional. Si quieres acompañamiento más allá de ese periodo, puedes contratar un mantenimiento con SLA a la medida; es opcional y lo decides tú.",
+      "Después del lanzamiento tienes 90 días de garantía que cubre cualquier falla: si aparece un error o algo no se comporta como se acordó, lo corregimos sin costo adicional. Si quieres acompañamiento más allá de ese periodo, puedes contratar un mantenimiento con SLA a la medida; es opcional y lo decides tú.",
       "Los clientes también cuentan con un portal donde ven el avance de sus proyectos y entregables (y pueden aprobarlos o dejar comentarios), consultan y descargan facturas y documentos, y abren solicitudes de soporte. El detalle de esta metodología está en la página de [documentación y transferencia técnica](/servicios/arquitectura-documentacion)."
     ]
   },
@@ -355,7 +355,7 @@
       {
         "id": "garantia-90-dias",
         "question": "¿Qué pasa si después de lanzar algo falla?",
-        "answer": "Tienes 90 días de garantía de estabilidad técnica posterior al lanzamiento. Si surge un error o algo no se comporta como se acordó, lo corregimos sin costo adicional. Después puedes contratar, de forma opcional, un mantenimiento con SLA a la medida."
+        "answer": "Tienes 90 días de garantía posterior al lanzamiento que cubre cualquier falla. Si surge un error o algo no se comporta como se acordó, lo corregimos sin costo adicional. Después puedes contratar, de forma opcional, un mantenimiento con SLA a la medida."
       },
       {
         "id": "integraciones-locales",
@@ -366,7 +366,7 @@
   },
   "cta": {
     "heading": "Hablemos de tu proyecto en Bogotá",
-    "body": "Cuéntanos qué necesitas resolver. Lo revisa directamente un ingeniero y te respondemos en menos de 24 horas hábiles, con una valoración sincera de cómo encarar tu proyecto.",
+    "body": "Cuéntanos qué necesitas resolver. Lo revisa directamente un ingeniero y te respondemos en menos de 4 horas hábiles, con una valoración sincera de cómo encarar tu proyecto.",
     "primary": "Hablar con un ingeniero",
     "secondary": "Escribir por WhatsApp"
   },

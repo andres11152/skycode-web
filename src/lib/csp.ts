@@ -40,6 +40,10 @@ const GOOGLE_ADS_CONNECT_SRC = [
   "https://googleads.g.doubleclick.net",
   "https://www.googleadservices.com",
   "https://ad.doubleclick.net",
+  // Modo de consentimiento v2: mientras la persona no acepta la medición, la etiqueta envía
+  // pings sin cookies a /ccm/collect de este dominio (por fetch y por imagen). Bloqueados, el
+  // modo de consentimiento no mide nada (verificado en Chrome: connect-src e img-src).
+  "https://pagead2.googlesyndication.com",
 ];
 // Google Ads sirve sus píxeles de imagen desde el dominio de Google del país
 // del visitante, no siempre www.google.com (visto en consola bloqueando
@@ -50,6 +54,7 @@ const GOOGLE_ADS_IMG_SRC = [
   "https://www.google.com.co",
   "https://googleads.g.doubleclick.net",
   "https://ad.doubleclick.net",
+  "https://pagead2.googlesyndication.com",
 ];
 
 // Checkout embebido de Bold (pagos desde /portal, ver lib/bold.ts): la librería

@@ -1,5 +1,6 @@
 {
   "responseTime": "menos de 4 horas hábiles",
+  "hours": "Lunes a viernes de 8 a. m. a 6 p. m. y sábados de 8 a. m. a 1 p. m., hora de Bogotá.",
   "header": {
     "whatsappCta": "Escribir por WhatsApp"
   },
@@ -11,8 +12,15 @@
       "title": "Software a la medida, con el precio a la vista y el código a tu nombre",
       "intro": "Somos un equipo pequeño en Bogotá. Hablas directo con quienes programan, ves avances funcionales cada semana y pagas la mitad al firmar y la otra mitad al recibir el proyecto funcionando.",
       "defaultService": "",
-      "caseSlugs": ["servifuturo", "cda-revifull", "racingbike"],
-      "testimonialCompanies": ["Servifuturo", "CDA Revifull"],
+      "caseSlugs": [
+        "servifuturo",
+        "cda-revifull",
+        "racingbike"
+      ],
+      "testimonialCompanies": [
+        "Servifuturo",
+        "CDA Revifull"
+      ],
       "whatsappMessage": "Hola, vi su página de desarrollo de software y quiero cotizar un proyecto"
     },
     "precio": {
@@ -22,8 +30,15 @@
       "title": "Precios de desarrollo de software, publicados en pesos",
       "intro": "Cada tipo de proyecto tiene un precio de partida y un plazo. Abajo está lo que mueve el valor final. Si tu caso es distinto, te lo cotizamos por escrito antes de que firmes nada.",
       "defaultService": "",
-      "caseSlugs": ["equilibrio-arquitectonico", "cda-revifull", "racingbike"],
-      "testimonialCompanies": ["Equilibrio Arquitectónico", "CDA Revifull"],
+      "caseSlugs": [
+        "equilibrio-arquitectonico",
+        "cda-revifull",
+        "racingbike"
+      ],
+      "testimonialCompanies": [
+        "Equilibrio Arquitectónico",
+        "CDA Revifull"
+      ],
       "whatsappMessage": "Hola, vi los precios en su página y quiero cotizar un proyecto"
     },
     "integraciones": {
@@ -33,8 +48,15 @@
       "title": "Conectamos tu sistema con WhatsApp, pagos y facturación",
       "intro": "Si hoy pasas datos de un programa a otro a mano, eso se puede automatizar sin reescribir lo que ya te funciona. Trabajamos con Wompi, Stripe, PayU, Siigo, Alegra y la API de WhatsApp.",
       "defaultService": "apis-integraciones",
-      "caseSlugs": ["sentry-crm", "servifuturo", "racingbike"],
-      "testimonialCompanies": ["Sentry CRM", "Servifuturo"],
+      "caseSlugs": [
+        "sentry-crm",
+        "servifuturo",
+        "racingbike"
+      ],
+      "testimonialCompanies": [
+        "Sentry CRM",
+        "Servifuturo"
+      ],
       "whatsappMessage": "Hola, vi su página de integraciones y quiero conectar mi sistema con otras herramientas"
     }
   },
@@ -51,14 +73,36 @@
     "title": "Lo que cuesta cada tipo de proyecto",
     "intro": "Son precios de partida en pesos colombianos. El total depende de los módulos que necesites y del ritmo de entrega: pagos en línea, inicio de sesión de usuarios, funcionamiento sin internet, seguridad reforzada o un asistente de IA. Antes de firmar tienes el valor completo por escrito.",
     "caption": "Precio de partida y plazo por tipo de proyecto",
-    "columns": { "project": "Proyecto", "from": "Desde", "weeks": "Semanas" },
+    "columns": {
+      "project": "Proyecto",
+      "from": "Desde",
+      "weeks": "Semanas"
+    },
     "rows": [
-      { "id": "web", "label": "Página web" },
-      { "id": "ecommerce", "label": "Tienda en línea" },
-      { "id": "mobile", "label": "App móvil, Android e iOS" },
-      { "id": "software", "label": "Software o plataforma a la medida" },
-      { "id": "apis", "label": "Integración entre sistemas" },
-      { "id": "ai", "label": "Inteligencia artificial aplicada" }
+      {
+        "id": "web",
+        "label": "Página web"
+      },
+      {
+        "id": "ecommerce",
+        "label": "Tienda en línea"
+      },
+      {
+        "id": "mobile",
+        "label": "App móvil, Android e iOS"
+      },
+      {
+        "id": "software",
+        "label": "Software o plataforma a la medida"
+      },
+      {
+        "id": "apis",
+        "label": "Integración entre sistemas"
+      },
+      {
+        "id": "ai",
+        "label": "Inteligencia artificial aplicada"
+      }
     ],
     "estimatorNote": "Para un total aproximado con tus módulos, usa el cotizador.",
     "estimatorCta": "Abrir el cotizador"
@@ -81,7 +125,7 @@
       },
       {
         "title": "Entregamos y respondemos 90 días",
-        "body": "Pagas el 50 % restante cuando todo está probado y funcionando. Después tienes 90 días de garantía: si aparece un error o algo no se comporta como se acordó, lo corregimos sin costo."
+        "body": "Pagas el 50 % restante cuando todo está probado y funcionando. Después tienes 90 días de garantía que cubre cualquier falla: la corregimos sin costo."
       }
     ],
     "code": {
@@ -119,7 +163,7 @@
       },
       {
         "question": "¿Qué cubre la garantía?",
-        "answer": "Son 90 días desde el lanzamiento. Si aparece un error o algo no se comporta como se acordó, lo corregimos sin costo adicional."
+        "answer": "Cualquier falla. Son 90 días desde el lanzamiento: si algo no funciona o no se comporta como se acordó, lo corregimos sin costo adicional."
       },
       {
         "question": "¿Con quién hablo durante el proyecto?",
@@ -128,6 +172,10 @@
       {
         "question": "¿Pueden conectar lo que ya uso?",
         "answer": "Sí. Hemos integrado pasarelas de pago como Wompi, Stripe y PayU, software contable como Siigo y Alegra, y la API de WhatsApp."
+      },
+      {
+        "question": "¿Cuándo me responden?",
+        "answer": "En menos de 4 horas hábiles. Atendemos de lunes a viernes de 8 a. m. a 6 p. m. y los sábados de 8 a. m. a 1 p. m., hora de Bogotá, y las horas hábiles se cuentan dentro de ese horario."
       }
     ]
   },
@@ -146,13 +194,34 @@
     "phone": "WhatsApp (opcional)",
     "typeLegend": "¿Qué necesitas?",
     "typeOptions": [
-      { "label": "Página web", "service": "frontend-alto-rendimiento" },
-      { "label": "Tienda en línea", "service": "ecommerce-tienda-online" },
-      { "label": "App móvil", "service": "desarrollo-aplicaciones-moviles" },
-      { "label": "Sistema a la medida", "service": "desarrollo-software-medida" },
-      { "label": "Integración con otro sistema", "service": "apis-integraciones" },
-      { "label": "IA o chatbot", "service": "inteligencia-artificial-aplicada" },
-      { "label": "Aún no lo sé", "service": "" }
+      {
+        "label": "Página web",
+        "service": "frontend-alto-rendimiento"
+      },
+      {
+        "label": "Tienda en línea",
+        "service": "ecommerce-tienda-online"
+      },
+      {
+        "label": "App móvil",
+        "service": "desarrollo-aplicaciones-moviles"
+      },
+      {
+        "label": "Sistema a la medida",
+        "service": "desarrollo-software-medida"
+      },
+      {
+        "label": "Integración con otro sistema",
+        "service": "apis-integraciones"
+      },
+      {
+        "label": "IA o chatbot",
+        "service": "inteligencia-artificial-aplicada"
+      },
+      {
+        "label": "Aún no lo sé",
+        "service": ""
+      }
     ],
     "message": "Algo más que debamos saber (opcional)",
     "messagePlaceholder": "Qué problema quieres resolver, qué usas hoy, para cuándo lo necesitas.",

@@ -26,6 +26,7 @@ export interface LandingFormCopy {
   messagePlaceholder: string;
   submit: string;
   sending: string;
+  hours: string;
   consent: string;
   privacyLink: string;
   privacyUrl: string;
@@ -282,6 +283,7 @@ export function LandingForm({ copy, defaultService }: { copy: LandingFormCopy; d
         <Button type="submit" size="lg" variant="accent" loading={submitting} className="w-full">
           {submitting ? copy.sending : copy.submit}
         </Button>
+        <p className="mt-3 text-center text-xs text-foreground/70">{copy.hours}</p>
       </div>
     </form>
   );

@@ -47,16 +47,21 @@ export const legalDocuments: LegalDocument[] = [
     title: "Política de Privacidad",
     description:
       "Quién es el responsable de sus datos, para qué los usamos, con qué proveedores los compartimos, cuánto los conservamos y cómo ejercer sus derechos (Ley 1581).",
-    updatedAt: "2026-10-02",
-    version: "2.0",
+    updatedAt: "2026-10-12",
+    version: "2.1",
     summary: [
       "Usamos sus datos solo para responderle y, si llega a ser cliente, para prestar el servicio contratado.",
       "No vendemos sus datos ni los cedemos con fines publicitarios.",
-      "No usamos analítica ni publicidad de terceros. Lo opcional (su país y de qué campaña llegó) solo se guarda si usted lo permite.",
+      "No usamos analítica de terceros. La etiqueta de Google Ads de las páginas de campaña mide qué anuncios generan consultas: sin su permiso no guarda cookies y Google solo recibe datos técnicos básicos de la visita. Lo opcional (su país y de qué campaña llegó) solo se guarda si usted lo permite.",
       `Puede pedir acceso, corrección o supresión escribiendo a ${contactEmail}: respondemos consultas en 10 días hábiles y reclamos en 15.`,
       "Los pagos con tarjeta los procesa Bold: nosotros nunca vemos el número de su tarjeta.",
     ],
     changelog: [
+      {
+        date: "2026-10-12",
+        change:
+          "Se describe la medición de conversiones de Google Ads de las páginas de campaña y de confirmación, que usa el Modo de consentimiento de Google (sin permiso no guarda cookies).",
+      },
       {
         date: "2026-10-02",
         change:
@@ -142,7 +147,7 @@ export const legalDocuments: LegalDocument[] = [
       },
       {
         type: "paragraph",
-        text: "No usamos sus datos con fines distintos a los descritos, no tomamos decisiones automatizadas con efectos jurídicos sobre usted ni elaboramos perfiles con fines publicitarios, y no los vendemos ni los compartimos con terceros para publicidad.",
+        text: "No usamos sus datos con fines distintos a los descritos, no tomamos decisiones automatizadas con efectos jurídicos sobre usted ni elaboramos perfiles con fines publicitarios, y no los vendemos ni los compartimos con terceros para publicidad. La única excepción es la medición de conversiones de Google Ads descrita en la [Política de Cookies](/politica-cookies): sin su permiso Google solo recibe datos técnicos básicos de la visita y, con él, puede asociar la visita al anuncio en el que hizo clic.",
       },
       { type: "heading", level: 2, text: "3. Autorización" },
       {
@@ -298,15 +303,20 @@ export const legalDocuments: LegalDocument[] = [
     title: "Política de Cookies",
     description:
       "Lista exacta de lo que este sitio guarda en su navegador, para qué sirve, cuánto dura y cómo aceptarlo, rechazarlo o cambiarlo en cualquier momento.",
-    updatedAt: "2026-10-02",
-    version: "2.0",
+    updatedAt: "2026-10-12",
+    version: "2.1",
     summary: [
-      "No usamos cookies de analítica ni de publicidad, ni píxeles de redes sociales.",
+      "No usamos cookies de analítica ni píxeles de redes sociales. La etiqueta de Google Ads de las páginas de campaña solo guarda cookies si usted acepta la medición.",
       "Lo estrictamente necesario (sesión, su elección de cookies) funciona sin pedirle permiso.",
       "Su país y de qué campaña llegó solo se guardan si usted lo acepta.",
       "Puede aceptar, rechazar o cambiar su elección cuando quiera, con la misma facilidad.",
     ],
     changelog: [
+      {
+        date: "2026-10-12",
+        change:
+          "Se describe la medición de conversiones de Google Ads de las páginas de campaña y de confirmación, que usa el Modo de consentimiento de Google (sin permiso no guarda cookies).",
+      },
       {
         date: "2026-10-02",
         change:
@@ -322,7 +332,7 @@ export const legalDocuments: LegalDocument[] = [
       { type: "heading", level: 2, text: "1. Qué no usamos" },
       {
         type: "paragraph",
-        text: "No usamos Google Analytics ni otra analítica de terceros, píxeles de redes sociales ni herramientas de grabación de sesiones o de seguimiento entre sitios. La única excepción es la etiqueta de conversión de Google Ads de la página de confirmación de envío, que solo se carga si usted acepta la categoría de medición (ver la sección 5). No vendemos lo que se guarda en su navegador.",
+        text: "No usamos Google Analytics ni otra analítica de terceros, píxeles de redes sociales ni herramientas de grabación de sesiones o de seguimiento entre sitios. La única excepción es la etiqueta de Google Ads de las páginas de campaña (/landing) y de confirmación de envío (/gracias), que usa el Modo de consentimiento de Google: se carga siempre, pero sin su permiso de la categoría de medición no guarda cookies y Google solo recibe datos técnicos básicos de la visita (dirección IP, navegador y página). Con su permiso, puede guardar sus cookies y asociar la visita al anuncio en el que hizo clic (ver la sección 5). No vendemos lo que se guarda en su navegador.",
       },
       { type: "heading", level: 2, text: "2. Qué guardamos, para qué y cuánto tiempo" },
       {
@@ -343,7 +353,7 @@ export const legalDocuments: LegalDocument[] = [
         items: [
           "Necesarias: indispensables para que el sitio funcione o para recordar su elección. No requieren consentimiento y no se pueden desactivar. Si solo navega el sitio público sin iniciar sesión, no se instala la cookie de sesión.",
           "Preferencias: recuerdan su país para proponerle moneda e indicativo por defecto. Solo se guardan si las acepta; si las rechaza, el sitio funciona igual y simplemente deduce el país en cada visita sin guardarlo.",
-          "Medición: guardan de qué campaña o página llegó para saber qué canales funcionan y adjuntarlo a su mensaje si nos escribe. Solo se guardan si las acepta; si las rechaza, su mensaje llega igual, sin ese dato.",
+          "Medición: guardan de qué campaña o página llegó para saber qué canales funcionan y adjuntarlo a su mensaje si nos escribe. Con su permiso, la etiqueta de Google Ads también puede guardar sus cookies (_gcl_au, _gcl_aw). Solo se guardan si las acepta; si las rechaza, su mensaje llega igual, sin ese dato.",
         ],
       },
       {

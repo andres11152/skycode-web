@@ -17,13 +17,13 @@
     "resultsOne": "{count} résultat pour « {query} »",
     "resultsMany": "{count} résultats pour « {query} »",
     "noResultsTitle": "Aucun résultat pour « {query} »",
-    "noResultsBody": "Essayez un autre mot ou posez-nous votre question : nous répondons sous 24 heures ouvrées.",
+    "noResultsBody": "Essayez un autre mot ou posez-nous votre question : nous répondons sous 4 heures ouvrées.",
     "topicsLabel": "Thèmes",
     "topicsAria": "Thèmes de la FAQ",
     "copyLink": "Copier le lien vers cette question",
     "linkCopied": "Lien copié",
     "ctaTitle": "Vous n'avez pas trouvé votre réponse ?",
-    "ctaBody": "Décrivez-nous votre cas : un ingénieur l'examine directement et nous répondons sous 24 heures ouvrées.",
+    "ctaBody": "Décrivez-nous votre cas : un ingénieur l'examine directement et nous répondons sous 4 heures ouvrées.",
     "ctaPrimary": "Parler à un ingénieur",
     "ctaSecondary": "Estimer mon projet"
   },
@@ -90,7 +90,7 @@
         {
           "id": "tiempo-de-respuesta",
           "question": "Sous quel délai répondez-vous à une demande ?",
-          "answer": "Sous 24 heures ouvrées, avec une évaluation sincère de la façon d'aborder votre projet et sans réponses génériques de robots. Vous pouvez nous écrire via le [formulaire de contact](/fr/#contacto) ou sur WhatsApp."
+          "answer": "Sous 4 heures ouvrées, avec une évaluation concrète de la façon d'aborder votre projet. Nous sommes disponibles du lundi au vendredi de 8 h à 18 h et le samedi de 8 h à 13 h, heure de Bogotá. Vous pouvez nous écrire via le [formulaire de contact](/fr/#contacto) ou sur WhatsApp."
         },
         {
           "id": "portal-cliente",
@@ -156,7 +156,7 @@
         {
           "id": "garantia-90-dias",
           "question": "Que se passe-t-il si nous trouvons une erreur après le lancement ?",
-          "answer": "Vous bénéficiez d'une garantie de stabilité technique de 90 jours après la livraison. Si un bug apparaît ou si quelque chose ne se comporte pas comme convenu, nous le corrigeons immédiatement sans frais supplémentaires."
+          "answer": "Vous bénéficiez d'une garantie de 90 jours après la livraison, qui couvre toute défaillance : si un bug apparaît ou si quelque chose ne se comporte pas comme convenu, nous le corrigeons immédiatement sans frais supplémentaires."
         },
         {
           "id": "mantenimiento-sla",

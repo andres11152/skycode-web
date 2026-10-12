@@ -38,7 +38,8 @@
       "We reply to the email you left, within 4 business hours.",
       "If you already know what you want, we propose scope, timeline and price. If not, we ask what is missing."
     ],
-    "portfolioCta": "See projects in production"
+    "portfolioCta": "See projects in production",
+    "hours": "Hours: Monday to Friday 8 a.m. to 6 p.m., Saturday 8 a.m. to 1 p.m. (Bogotá time)."
   },
   "confirmationEmail": {
     "subject": "We've received your message, {name}",

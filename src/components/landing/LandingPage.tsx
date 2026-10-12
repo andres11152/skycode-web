@@ -39,6 +39,7 @@ function buildFormCopy(content: LandingContent): LandingFormCopy {
     messagePlaceholder: form.messagePlaceholder,
     submit: form.submit,
     sending: form.sending,
+    hours: content.hours,
     consent: contact.habeasData.label,
     privacyLink: contact.habeasData.linkText,
     privacyUrl: contact.habeasData.linkUrl,

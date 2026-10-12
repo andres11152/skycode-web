@@ -1,7 +1,7 @@
 {
   "badge": "Conversemos",
   "title": "Hablemos de tu idea",
-  "description": "Cuéntanos qué tienes en mente. Lo revisaremos directamente Andrés, César o Ximena y te daremos una respuesta sincera sobre cómo encararlo, en menos de 24 horas.",
+  "description": "Cuéntanos qué tienes en mente. Lo revisaremos directamente Andrés, César o Ximena y te daremos una respuesta sincera sobre cómo encararlo, en menos de 4 horas hábiles.",
   "placeholders": {
     "name": "Tu nombre o el de tu empresa",
     "email": "Tu correo electrónico",
@@ -38,7 +38,8 @@
       "Te respondemos al correo que dejaste, en menos de 4 horas hábiles.",
       "Si ya tienes claro qué quieres, te proponemos alcance, plazo y precio. Si no, te hacemos las preguntas que falten."
     ],
-    "portfolioCta": "Ver proyectos en producción"
+    "portfolioCta": "Ver proyectos en producción",
+    "hours": "Horario: lunes a viernes de 8 a. m. a 6 p. m., sábados de 8 a. m. a 1 p. m. (hora de Bogotá)."
   },
   "confirmationEmail": {
     "subject": "Hemos recibido tu mensaje, {name}",

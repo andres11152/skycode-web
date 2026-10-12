@@ -17,13 +17,13 @@
     "resultsOne": "{count} resultado para «{query}»",
     "resultsMany": "{count} resultados para «{query}»",
     "noResultsTitle": "No encontramos «{query}»",
-    "noResultsBody": "Prueba con otra palabra o cuéntanos tu duda: te respondemos en menos de 24 horas hábiles.",
+    "noResultsBody": "Prueba con otra palabra o cuéntanos tu duda: te respondemos en menos de 4 horas hábiles.",
     "topicsLabel": "Temas",
     "topicsAria": "Temas de preguntas frecuentes",
     "copyLink": "Copiar enlace a esta pregunta",
     "linkCopied": "Enlace copiado",
     "ctaTitle": "¿No encontraste tu respuesta?",
-    "ctaBody": "Cuéntanos tu caso: lo revisa directamente un ingeniero y te respondemos en menos de 24 horas hábiles.",
+    "ctaBody": "Cuéntanos tu caso: lo revisa directamente un ingeniero y te respondemos en menos de 4 horas hábiles.",
     "ctaPrimary": "Hablar con un ingeniero",
     "ctaSecondary": "Calcular mi proyecto"
   },
@@ -90,7 +90,7 @@
         {
           "id": "tiempo-de-respuesta",
           "question": "¿Cuánto tardan en responder una consulta?",
-          "answer": "Menos de 24 horas hábiles, con una valoración sincera de cómo encarar tu proyecto y sin respuestas genéricas de bots. Puedes escribirnos desde el [formulario de contacto](/#contacto) o por WhatsApp."
+          "answer": "Menos de 4 horas hábiles, con una valoración concreta de cómo encarar tu proyecto. Atendemos de lunes a viernes de 8 a. m. a 6 p. m. y los sábados de 8 a. m. a 1 p. m., hora de Bogotá. Puedes escribirnos desde el [formulario de contacto](/#contacto) o por WhatsApp."
         },
         {
           "id": "portal-cliente",
@@ -156,7 +156,7 @@
         {
           "id": "garantia-90-dias",
           "question": "¿Qué pasa si después de lanzar encontramos un error o algo falla?",
-          "answer": "Tienes 90 días de garantía de estabilidad técnica posterior al lanzamiento. Si surge algún bug o algo no se comporta como se acordó, lo corregimos de inmediato sin costo adicional."
+          "answer": "Tienes 90 días de garantía posterior al lanzamiento y cubre cualquier falla: si surge un bug o algo no se comporta como se acordó, lo corregimos de inmediato sin costo adicional."
         },
         {
           "id": "mantenimiento-sla",

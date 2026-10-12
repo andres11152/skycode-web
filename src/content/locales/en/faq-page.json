@@ -17,13 +17,13 @@
     "resultsOne": "{count} result for “{query}”",
     "resultsMany": "{count} results for “{query}”",
     "noResultsTitle": "We couldn't find “{query}”",
-    "noResultsBody": "Try another word or tell us your question: we reply within 24 business hours.",
+    "noResultsBody": "Try another word or tell us your question: we reply within 4 business hours.",
     "topicsLabel": "Topics",
     "topicsAria": "FAQ topics",
     "copyLink": "Copy link to this question",
     "linkCopied": "Link copied",
     "ctaTitle": "Didn't find your answer?",
-    "ctaBody": "Tell us your case: an engineer reviews it directly and we reply within 24 business hours.",
+    "ctaBody": "Tell us your case: an engineer reviews it directly and we reply within 4 business hours.",
     "ctaPrimary": "Talk to an engineer",
     "ctaSecondary": "Estimate my project"
   },
@@ -90,7 +90,7 @@
         {
           "id": "tiempo-de-respuesta",
           "question": "How long do you take to answer an inquiry?",
-          "answer": "Under 24 business hours, with an honest assessment of how to approach your project and no generic bot replies. You can write to us through the [contact form](/en/#contacto) or on WhatsApp."
+          "answer": "Under 4 business hours, with a concrete assessment of how to approach your project. We are available Monday to Friday from 8 a.m. to 6 p.m. and Saturdays from 8 a.m. to 1 p.m., Bogotá time. You can write to us through the [contact form](/en/#contacto) or on WhatsApp."
         },
         {
           "id": "portal-cliente",
@@ -156,7 +156,7 @@
         {
           "id": "garantia-90-dias",
           "question": "What happens if we find a bug or something fails after launch?",
-          "answer": "You get a 90-day technical stability warranty after launch. If a bug appears or something doesn't behave as agreed, we fix it right away at no extra cost."
+          "answer": "You get a 90-day warranty after launch that covers any failure: if a bug appears or something doesn't behave as agreed, we fix it right away at no extra cost."
         },
         {
           "id": "mantenimiento-sla",

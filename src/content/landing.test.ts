@@ -66,6 +66,16 @@ describe("landing de campaña", () => {
     expect(allCopy.filter((text) => /24 ?h/i.test(text))).toEqual([]);
   });
 
+  it("dice el horario real de atención", () => {
+    expect(landingEs.hours).toContain("8 a. m. a 6 p. m.");
+    expect(landingEs.hours).toContain("sábados de 8 a. m. a 1 p. m.");
+  });
+
+  it("la garantía se describe como cobertura de cualquier falla", () => {
+    expect(landingEs.faq.items.find((item) => item.question === "¿Qué cubre la garantía?")?.answer).toContain("Cualquier falla");
+    expect(landingEs.process.steps[3].body).toContain("cubre cualquier falla");
+  });
+
   it("no usa signos de exclamación ni afirma un NIT que no existe", () => {
     expect(allCopy.filter((text) => /[!¡]/.test(text))).toEqual([]);
     expect(allCopy.filter((text) => /\bNIT\b/.test(text))).toEqual([]);
