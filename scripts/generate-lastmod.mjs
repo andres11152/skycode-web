@@ -66,11 +66,12 @@ const L = (locale, names) => names.map((name) => `src/content/locales/${locale}/
 const pages = {};
 for (const locale of LOCALES) {
   pages[`home:${locale}`] = L(locale, ["hero", "site", "highlights", "trust", "process", "faq", "closing", "contact", "testimonials", "bento", "services"]).concat([
+    "src/seo/keyword-map.ts",
     "src/components/HomeSections.tsx",
     "src/components/sections/Hero.tsx",
   ]);
-  pages[`services-index:${locale}`] = L(locale, ["services", "service-page", "service-seo", "process", "trust"]).concat(["src/components/services/ServicesIndexView.tsx"]);
-  pages[`services-detail:${locale}`] = L(locale, ["services", "service-details", "service-seo", "service-page"]).concat(["src/components/services/ServiceView.tsx"]);
+  pages[`services-index:${locale}`] = L(locale, ["services", "service-page", "process", "trust"]).concat(["src/seo/keyword-map.ts", "src/components/services/ServicesIndexView.tsx"]);
+  pages[`services-detail:${locale}`] = L(locale, ["services", "service-details", "service-page"]).concat(["src/seo/keyword-map.ts", "src/components/services/ServiceView.tsx"]);
   pages[`team:${locale}`] = L(locale, ["team"]).concat(["src/components/team/TeamView.tsx"]);
   pages[`faq:${locale}`] = L(locale, ["faq-page"]).concat(["src/components/faq/FaqPageView.tsx"]);
   pages[`estimator:${locale}`] = L(locale, ["projectEstimator"]).concat(["src/components/sections/CotizadorPageView.tsx", "src/components/sections/ProjectEstimator.tsx"]);
@@ -86,19 +87,22 @@ for (const [key, files] of Object.entries(pages)) {
 }
 
 // ── Detalle de servicio: fecha POR PÁGINA, según el contenido real ──────────────────────────────
-// Los nueve detalles de un idioma salen de los mismos JSON (service-details, services, service-seo):
+// Los nueve detalles de un idioma salen de los mismos JSON (service-details, services) y del mapa de keywords:
 // con la fecha del último commit de esos archivos, editar un servicio "actualizaba" los nueve. Aquí
 // cada página guarda el hash del contenido que de verdad la pinta —su bloque de service-details, su
-// ficha en services/service-seo, el copy compartido de la plantilla (sin la plantilla en sí: maquetar no es editar contenido)— y su fecha
+// ficha en services y en el mapa de keywords (title/H1/description), el copy compartido de la plantilla (sin la plantilla en sí: maquetar no es editar contenido)— y su fecha
 // solo avanza cuando ese hash cambia. Sin hash previo (primera vez) se usa la fecha de los archivos.
 const readJson = (rel) => JSON.parse(readFileSync(join(root, rel), "utf8"));
 const sha = (value) => createHash("sha256").update(typeof value === "string" ? value : JSON.stringify(value)).digest("hex").slice(0, 16);
 const previous = existsSync(hashesFile) ? JSON.parse(readFileSync(hashesFile, "utf8")) : {};
 const hashes = {};
+// Copy de buscador (title/H1/description) de cada servicio: vive en el mapa de keywords, un .ts sin imports
+// que Node ejecuta quitando tipos (como scripts/seo-check.ts).
+const { KEYWORD_MAP } = await import("../src/seo/keyword-map.ts");
 for (const locale of LOCALES) {
   const details = readJson(`src/content/locales/${locale}/service-details.json`);
   const services = Object.fromEntries(readJson(`src/content/locales/${locale}/services.json`).items.map((item) => [item.slug, item]));
-  const seo = readJson(`src/content/locales/${locale}/service-seo.json`).items ?? {};
+  const seo = Object.fromEntries(Object.entries(KEYWORD_MAP).map(([cluster, byLocale]) => [cluster, byLocale[locale]]));
   // El bloque `index` es de la página de índice, no del detalle: se excluye del copy compartido.
   // `detail.tocProof` solo rotula una sección que únicamente existe en las páginas con `proof`
   // (ese contenido ya está en details[slug]); contarlo movería la fecha de todos los servicios.

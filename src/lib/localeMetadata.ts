@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getSiteText, ogImageUrl, siteName, siteUrl, titleSuffix } from "@/lib/site";
+import { getSiteText, ogImageUrl, siteName, siteUrl } from "@/lib/site";
 import { localeOgLocale, type Locale } from "@/lib/i18n";
 
 const otherOgLocales: Record<Locale, string[]> = {
@@ -11,11 +11,10 @@ const otherOgLocales: Record<Locale, string[]> = {
 /** Metadata (título/OG/hreflang) para las homes localizadas ("/", "/en", "/fr"). */
 export function buildHomeMetadata(locale: Locale, path: string): Metadata {
   const { homeTitle, homeDescription: siteDescription } = getSiteText(locale);
-  // Título completo (con sufijo) para `<title>`, OG y Twitter. `absolute`
-  // porque la plantilla del layout raíz NO se aplica a la página que vive en
-  // su mismo segmento (la home en español), solo a las hijas: sin esto `/`
-  // salía sin " | SkyCode" y `/en`, `/fr` sí.
-  const title = `${homeTitle}${titleSuffix}`;
+  // Título ABSOLUTO (brand-first: "SkyCode: …" ya lleva la marca, así que no se le agrega el
+  // sufijo " | SkyCode"). `absolute` además porque la plantilla del layout raíz no se aplica a la
+  // página que vive en su mismo segmento (la home en español), solo a las hijas.
+  const title = homeTitle;
 
   return {
     title: { absolute: title },

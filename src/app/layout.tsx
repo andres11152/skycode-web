@@ -62,8 +62,9 @@ export const viewport: Viewport = ENABLE_DARK_MODE
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    // Solo lo usa una página que no declare título (p. ej. not-found).
-    default: `${homeTitle}${titleSuffix}`,
+    // Solo lo usa una página que no declare título (p. ej. not-found). Es el título brand-first de
+    // la home, que va sin sufijo.
+    default: homeTitle,
     template: `%s${titleSuffix}`,
   },
   description: siteDescription,

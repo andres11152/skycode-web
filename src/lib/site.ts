@@ -2,6 +2,7 @@ import siteConfig from "@/content/locales/es/site.json";
 import siteConfigEn from "@/content/locales/en/site.json";
 import siteConfigFr from "@/content/locales/fr/site.json";
 import type { Locale } from "@/lib/i18n";
+import { getPageSeo } from "@/seo/keyword-map";
 
 const siteByLocale = { es: siteConfig, en: siteConfigEn, fr: siteConfigFr };
 
@@ -26,13 +27,19 @@ export const whatsappHref = `https://wa.me/${contactPhone.replace("+", "")}`;
 export const titleSuffix = " | SkyCode";
 export const TITLE_MAX_LENGTH = 60;
 
-/** Tagline/descripción/título de home localizados — el resto de campos de site.json no varían por idioma. */
+/**
+ * Tagline/descripción de sitio localizados — el resto de campos de site.json no varían por idioma.
+ * El título y la descripción de la home salen del mapa de keywords (clúster `brand`): ahí es
+ * donde se decide qué búsqueda es dueña de la home, y esas dos cadenas ya no viven en site.json.
+ * `homeTitle` es ABSOLUTO (lleva la marca primero), por eso no se le agrega `titleSuffix`.
+ */
 export function getSiteText(locale: Locale) {
   const data = siteByLocale[locale];
+  const brand = getPageSeo("brand", locale);
   return {
     siteTagline: data.siteTagline,
     siteDescription: data.siteDescription,
-    homeTitle: data.homeTitle,
-    homeDescription: data.homeDescription,
+    homeTitle: brand.title,
+    homeDescription: brand.description,
   };
 }
