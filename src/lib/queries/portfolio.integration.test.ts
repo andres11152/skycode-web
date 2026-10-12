@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getPublishedPortfolioProjects,
   getPublishedPortfolioProjectBySlug,
@@ -362,8 +362,19 @@ describe("capítulos del caso completo (migración 0041)", () => {
     const detail = await getAdminPortfolioDetail(projectId);
     expect(detail?.translations.es).toMatchObject(CHAPTERS);
 
-    const project = await getPublishedPortfolioProjectBySlug("caso-prueba", "es");
-    expect(project).toMatchObject(CHAPTERS);
+    // El panel recibe el texto tal cual; el sitio público OMITE los marcadores {{TODO}} (lib/todoPlaceholders.ts)
+    // salvo que se pida revisarlos con NEXT_PUBLIC_SHOW_TODO_PLACEHOLDERS=true.
+    const hidden = await getPublishedPortfolioProjectBySlug("caso-prueba", "es");
+    expect(JSON.stringify(hidden)).not.toContain("{{TODO");
+    expect(hidden).toMatchObject({ clientContext: CHAPTERS.clientContext, architecture: CHAPTERS.architecture, testimonialQuote: "" });
+
+    vi.stubEnv("NEXT_PUBLIC_SHOW_TODO_PLACEHOLDERS", "true");
+    try {
+      const shown = await getPublishedPortfolioProjectBySlug("caso-prueba", "es");
+      expect(shown).toMatchObject(CHAPTERS);
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 
   it("un guardado que no manda los campos nuevos (cliente anterior) no borra lo ya cargado; una cadena vacía sí lo vacía", async () => {
