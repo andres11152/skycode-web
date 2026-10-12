@@ -7,14 +7,11 @@ import { getProjectHostname, type CaseRelatedLinks, type PortfolioProject } from
 import { getServiceSlugsForProject, getServicesContent } from "@/content/services";
 import { blogPostPath } from "@/lib/blogPaths";
 import { servicePath } from "@/lib/serviceMetadata";
-import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
 import { getPortfolioProjectCached } from "@/lib/portfolioRequestData";
 import { getPublishedPortfolioSlugs } from "@/lib/queries/portfolio";
 import { getPortfolioLastModifiedBySlug } from "@/lib/queries/lastModified";
 import { CaseJsonLd } from "@/components/portfolio/CaseJsonLd";
-import { localeHomePath, type Locale } from "@/lib/i18n";
-import { ogImageUrl, siteUrl } from "@/lib/site";
-import { organizationRef } from "@/lib/jsonLd";
+import type { Locale } from "@/lib/i18n";
 
 /**
  * Servicios aplicados en el caso y hasta 2 artículos del blog sobre esos
