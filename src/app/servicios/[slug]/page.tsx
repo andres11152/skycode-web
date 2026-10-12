@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { services, getServiceBySlug } from "@/content/services";
-import { ServiceView } from "@/components/services/ServiceView";
-import { ServiceJsonLd } from "@/components/services/ServiceJsonLd";
-import { buildServiceMetadata } from "@/lib/serviceMetadata";
-import { getServiceCaseProjects } from "@/lib/serviceCases";
+import { ServiceDetailPage, buildServicePageMetadata, serviceStaticParams } from "@/components/services/ServicePage";
 
 export const revalidate = 3600;
 
 export function generateStaticParams() {
-  return services.map((service) => ({ slug: service.slug }));
+  return serviceStaticParams("es");
 }
 
 type PageProps = {
@@ -18,23 +13,10 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  return buildServiceMetadata("es", slug);
+  return buildServicePageMetadata("es", slug);
 }
 
 export default async function ServicePage({ params }: PageProps) {
   const { slug } = await params;
-  const service = getServiceBySlug(slug, "es");
-
-  if (!service) {
-    notFound();
-  }
-
-  const projects = await getServiceCaseProjects(slug, "es");
-
-  return (
-    <>
-      <ServiceJsonLd service={service} locale="es" />
-      <ServiceView slug={slug} locale="es" projects={projects} />
-    </>
-  );
+  return <ServiceDetailPage locale="es" slug={slug} />;
 }

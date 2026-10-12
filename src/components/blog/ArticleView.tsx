@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { servicePath } from "@/lib/servicePaths";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/ssr";
 import type { BlogBlock, BlogPost } from "@/content/blogShared";
 import { getBlogMeta, readingTime } from "@/content/blogShared";
@@ -56,7 +57,7 @@ export function ArticleView({
 
   const { author, related, previous, next } = context;
   // 2–3 servicios, del más al menos relevante (content/relatedContent.ts, fuente única del enlazado blog ↔ servicios).
-  const relatedServices = getRelatedServiceSlugsForPost(post.slug)
+  const relatedServices = getRelatedServiceSlugsForPost(post.translationKey)
     .map((slug) => getServiceBySlug(slug, locale))
     .filter((service): service is Service => service !== undefined);
   const primaryServiceSlug = relatedServices[0]?.slug;
@@ -161,7 +162,7 @@ export function ArticleView({
                   services={relatedServices}
                   heading={meta.servicesHeading}
                   ctaLabel={meta.serviceCta}
-                  hrefFor={(slug) => `${prefix}/servicios/${slug}`}
+                  hrefFor={(slug) => servicePath(locale, slug)}
                 />
 
                 {author && (

@@ -6,6 +6,7 @@ import { logError } from "../logger";
 // tipos de vuelta crearía un ciclo. blogShared es la base común sin DB.
 import type { BlogBlock, BlogPost } from "@/content/blogShared";
 import type { Locale } from "@/lib/i18n";
+import { postKeyFromSlug, postSlugCandidates, publicPostSlug } from "@/seo/slugs";
 
 interface QueryRunner {
   query: typeof query;
@@ -71,8 +72,12 @@ function shapeArticleRow(row: Record<string, unknown>): Article {
 
 /** Forma que consume el sitio público (`content/blog.ts::BlogPost`) — recorta los campos internos del dashboard. */
 export function toBlogPost(article: Article): BlogPost {
+  // La fila puede estar guardada con el slug histórico (en inglés/francés era el slug en español) o
+  // con el nuevo; la URL pública siempre usa el nativo del idioma (src/seo/slugs.ts).
+  const translationKey = postKeyFromSlug(article.slug, article.locale);
   return {
-    slug: article.slug,
+    slug: publicPostSlug(translationKey, article.locale),
+    translationKey,
     title: article.title,
     description: article.description,
     publishedAt: article.publishedAt ?? article.createdAt,
@@ -120,9 +125,9 @@ export async function getPublishedArticleBySlug(slug: string, locale: Locale): P
   try {
     const res = await query(
       `SELECT * FROM articles
-       WHERE slug = $1 AND locale = $2 AND status = 'published' AND deleted_at IS NULL
+       WHERE slug = ANY($1::text[]) AND locale = $2 AND status = 'published' AND deleted_at IS NULL
        LIMIT 1;`,
-      [slug, locale]
+      [postSlugCandidates(slug, locale), locale]
     );
     if (res.rows.length === 0) return null;
     return toBlogPost(shapeArticleRow(res.rows[0]));

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { resolveLegacyUrl, stripTrailingSlash } from "./legacyUrls";
+import { SERVICE_IDS, SERVICE_SLUGS, listLocalizedSlugRedirects } from "@/seo/slugs";
+import { servicePath, servicesIndexPath } from "./servicePaths";
+import { blogPostPath } from "./blogPaths";
 
 const to = (path: string) => {
   const result = resolveLegacyUrl(path);
@@ -72,7 +77,10 @@ describe("resolveLegacyUrl: lo legítimo no se toca", () => {
     "/fr",
     "/servicios",
     "/servicios/frontend-alto-rendimiento",
-    "/en/servicios",
+    "/en/services",
+    "/fr/services",
+    "/en/services/legacy-software-migration",
+    "/en/blog/legacy-system-migration-without-downtime",
     "/portafolio",
     "/portafolio/sentry-crm",
     "/portafolio/racingbike",
@@ -96,5 +104,62 @@ describe("stripTrailingSlash", () => {
     expect(stripTrailingSlash("/en/portfolio//")).toBe("/en/portfolio");
     expect(stripTrailingSlash("/")).toBeNull();
     expect(stripTrailingSlash("/servicios")).toBeNull();
+  });
+});
+
+describe("resolveLegacyUrl: slugs nativos de servicios y blog en inglés/francés", () => {
+  it.each([
+    ["/en/servicios", "301 /en/services"],
+    ["/fr/servicios/", "301 /fr/services"],
+    ["/en/servicios/migracion-datos-legacy", "301 /en/services/legacy-software-migration"],
+    ["/fr/servicios/migracion-datos-legacy/", "301 /fr/services/migration-systemes-legacy"],
+    ["/en/blog/migracion-sistemas-legados-sin-interrupcion", "301 /en/blog/legacy-system-migration-without-downtime"],
+    ["/fr/blog/migracion-sistemas-legados-sin-interrupcion", "301 /fr/blog/migration-systeme-legacy-sans-interruption"],
+  ])("%s → %s", (path, expected) => expect(to(path)).toBe(expected));
+
+  it("el español conserva sus URLs (no se redirige nada)", () => {
+    expect(to("/servicios")).toBeNull();
+    expect(to("/servicios/migracion-datos-legacy")).toBeNull();
+    expect(to("/blog/migracion-sistemas-legados-sin-interrupcion")).toBeNull();
+  });
+
+  it("nunca hay cadenas: el destino de cada redirección no es a su vez una URL a redirigir", () => {
+    for (const { from, to: destination } of listLocalizedSlugRedirects()) {
+      expect(resolveLegacyUrl(destination), `${from} → ${destination}`).toBeNull();
+      expect(destination).not.toBe(from);
+    }
+  });
+
+  it("los destinos coinciden con las rutas que construye el sitio", () => {
+    const destinations = new Set(listLocalizedSlugRedirects().map((r) => r.to));
+    for (const locale of ["en", "fr"] as const) {
+      expect(destinations.has(servicesIndexPath(locale))).toBe(true);
+      for (const id of SERVICE_IDS) expect(destinations.has(servicePath(locale, id)), `${locale}/${id}`).toBe(true);
+    }
+    expect(destinations.has(blogPostPath("en", "legacy-system-migration-without-downtime"))).toBe(true);
+  });
+
+  it("los slugs nativos son únicos por idioma y siguen un formato de URL seguro", () => {
+    for (const locale of ["es", "en", "fr"] as const) {
+      const slugs = SERVICE_IDS.map((id) => SERVICE_SLUGS[id][locale]);
+      expect(new Set(slugs).size).toBe(slugs.length);
+      for (const slug of slugs) expect(slug).toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+    }
+  });
+
+  it("el matcher del proxy cubre cada ruta histórica (el proxy solo corre en rutas del matcher)", () => {
+    const source = readFileSync(join(process.cwd(), "src/proxy.ts"), "utf8");
+    const matchers = [...source.matchAll(/^\s+"(\/[^"]*)",$/gm)].map((m) => m[1]);
+    const matches = (pattern: string, path: string): boolean => {
+      const p = pattern.split("/");
+      const q = path.split("/");
+      return p.length === q.length && p.every((seg, i) => seg.startsWith(":") || seg === q[i]);
+    };
+    for (const { from } of listLocalizedSlugRedirects()) {
+      expect(
+        matchers.some((m) => matches(m, from)),
+        `${from} no está en el matcher de proxy.ts`
+      ).toBe(true);
+    }
   });
 });

@@ -12,6 +12,7 @@ import { locales, type Locale } from "@/lib/i18n";
 import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
 import { estimatorPath } from "@/lib/estimatorMetadata";
 import { servicePath } from "@/lib/serviceMetadata";
+import { SERVICE_IDS, SERVICES_SEGMENT, publicPostSlug, serviceSlugFor } from "@/seo/slugs";
 
 // Enlazado interno contextual del blog. Los posts viven en Postgres, así que
 // aquí se aplica el MISMO planificador del script `db:seo-blog-links` sobre la
@@ -45,7 +46,9 @@ const GENERIC_ANCHORS = /^(aquí|aqui|click aquí|haz clic aquí|clic aquí|here
 
 const serviceSlugs = new Set(services.map((s) => s.slug));
 const caseSlugs = new Set(Object.values(SERVICE_PROJECT_SLUGS).flat());
-const allBlogSlugs = new Set(postsByLocale.es.map((p) => p.slug));
+// Slugs públicos válidos de cada post: la clave en español y, en inglés/francés, el nativo de ese idioma.
+const allBlogSlugs = new Set(postsByLocale.es.flatMap((p) => [p.slug, publicPostSlug(p.slug, "en"), publicPostSlug(p.slug, "fr")]));
+const blogSlugsOf = (locale: Locale) => new Set(postsByLocale.es.map((p) => publicPostSlug(p.slug, locale)));
 
 function linksOf(content: BlogBlock[]) {
   const links: { text: string; href: string }[] = [];
@@ -80,7 +83,7 @@ describe("rutas del script", () => {
   it("pathFor coincide con las funciones de ruta reales del sitio", () => {
     for (const locale of locales) {
       expect(pathFor("service", locale, "apis-integraciones")).toBe(servicePath(locale, "apis-integraciones"));
-      expect(pathFor("post", locale, "buenas-practicas-apis-rest")).toBe(blogPostPath(locale, "buenas-practicas-apis-rest"));
+      expect(pathFor("post", locale, "buenas-practicas-apis-rest")).toBe(blogPostPath(locale, publicPostSlug("buenas-practicas-apis-rest", locale)));
       expect(pathFor("case", locale, "sentry-crm")).toBe(portfolioCasePath(locale, "sentry-crm"));
       expect(pathFor("page", locale, "cotizador")).toBe(estimatorPath(locale));
       expect(pathFor("page", locale, "portafolio")).toBe(portfolioIndexPath(locale));
@@ -138,13 +141,14 @@ describe.each(locales)("posts del blog (%s) tras aplicar el script", (locale) =>
         expect(href.startsWith("/") && !href.startsWith("//"), href).toBe(true);
         expect(text.trim().length, `anchor vacío en ${href}`).toBeGreaterThan(2);
         expect(GENERIC_ANCHORS.test(text.trim()), `anchor genérico "${text}"`).toBe(false);
-        if (href.includes("/servicios/")) {
-          expect(href.startsWith(`${prefix}/servicios/`), `prefijo de idioma en ${href}`).toBe(true);
-          expect(serviceSlugs.has(href.split("/servicios/")[1])).toBe(true);
+        const servicesPrefix = `${prefix}/${SERVICES_SEGMENT[locale]}/`;
+        if (href.startsWith(servicesPrefix)) {
+          const slug = href.slice(servicesPrefix.length);
+          expect(SERVICE_IDS.some((id) => serviceSlugFor(id, locale) === slug), `servicio inexistente en ${href}`).toBe(true);
         } else if (href.includes("/blog/")) {
           expect(href.startsWith(`${prefix}/blog/`), `prefijo de idioma en ${href}`).toBe(true);
-          expect(allBlogSlugs.has(href.split("/blog/")[1])).toBe(true);
-          expect(href, "autoenlace").not.toBe(blogPostPath(locale, post.slug));
+          expect(blogSlugsOf(locale).has(href.split("/blog/")[1]), `post inexistente en ${href}`).toBe(true);
+          expect(href, "autoenlace").not.toBe(blogPostPath(locale, publicPostSlug(post.slug, locale)));
         }
       }
     }
@@ -179,7 +183,7 @@ describe.each(locales)("posts del blog (%s) tras aplicar el script", (locale) =>
 
   it("el post de outsourcing recibe enlaces entrantes desde al menos 2 posts distintos", () => {
     const target = "outsourcing-software-latam-propiedad-codigo";
-    const sources = posts.filter((p) => p.slug !== target).filter((p) => internalHrefs(planFor(locale, p).content).has(blogPostPath(locale, target)));
+    const sources = posts.filter((p) => p.slug !== target).filter((p) => internalHrefs(planFor(locale, p).content).has(blogPostPath(locale, publicPostSlug(target, locale))));
     expect(sources.length).toBeGreaterThanOrEqual(2);
   });
 });

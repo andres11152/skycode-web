@@ -71,6 +71,7 @@ describe("JSON-LD de una página de servicio", () => {
 
 const post: BlogPost = {
   slug: "ejemplo",
+  translationKey: "ejemplo",
   title: "Guía de ejemplo",
   description: "Descripción de ejemplo del artículo.",
   publishedAt: "2026-01-10T12:00:00.000Z",

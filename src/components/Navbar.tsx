@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { servicesIndexPath } from "@/lib/servicePaths";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
@@ -40,7 +41,7 @@ export function Navbar() {
   // "scrolled" no tenía ancho suficiente — "Preguntas Frecuentes"/"Cotizar
   // Proyecto" se partían en dos líneas (bug real, visto en auditoría visual).
   const navLinks = [
-    { label: navData.servicios, href: `${prefix}/servicios`, esOnly: false },
+    { label: navData.servicios, href: servicesIndexPath(locale), esOnly: false },
     { label: navData.portafolio, href: portfolioIndexPath(locale), esOnly: false },
     { label: navData.equipo, href: `${prefix}/equipo`, esOnly: false },
     // El blog ya tiene versión en los tres idiomas (ver CLAUDE.md) — deja

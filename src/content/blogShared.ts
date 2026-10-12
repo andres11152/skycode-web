@@ -29,7 +29,13 @@ export type BlogBlock =
   | { type: "faq"; items: { question: string; answer: string }[] };
 
 export interface BlogPost {
+  /** Slug PÚBLICO en este idioma (el de la URL): puede diferir del de otro idioma, ver src/seo/slugs.ts. */
   slug: string;
+  /**
+   * Identificador estable del post en los tres idiomas (su slug en español). Une las versiones para el
+   * hreflang y es la clave de las tablas de enlazado (content/relatedContent.ts, blogTopics.ts).
+   */
+  translationKey: string;
   title: string;
   description: string;
   publishedAt: string;

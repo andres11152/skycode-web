@@ -62,11 +62,13 @@ export async function buildBlogPostMetadata(locale: Locale, slug: string): Promi
   // existen siempre — un slug que todavía no se tradujo/publicó en un
   // locale (contenido nuevo agregado solo en es, por ejemplo) simplemente
   // no tiene esa entrada en `languages`, en vez de apuntar a un 404.
-  const existingLocales = await Promise.all(
-    (["es", "en", "fr"] as const).map(async (loc) => ((await getPostBySlug(slug, loc)) ? loc : null))
+  // Cada versión se busca por la CLAVE DE TRADUCCIÓN (el slug en español) y se enlaza con SU slug
+  // público: el slug ya no es el mismo en los tres idiomas (src/seo/slugs.ts).
+  const siblings = await Promise.all(
+    (["es", "en", "fr"] as const).map(async (loc) => [loc, loc === locale ? post : await getPostBySlug(post.translationKey, loc)] as const)
   );
   const languages: Record<string, string> = Object.fromEntries(
-    existingLocales.filter((loc): loc is Locale => loc !== null).map((loc) => [loc, `${siteUrl}${blogPostPath(loc, slug)}`])
+    siblings.flatMap(([loc, sibling]) => (sibling ? [[loc, `${siteUrl}${blogPostPath(loc, sibling.slug)}`]] : []))
   );
   // x-default al español (el locale sin prefijo), mismo criterio que
   // servicios y home — antes faltaba solo en los posts. Únicamente si la
@@ -83,7 +85,7 @@ export async function buildBlogPostMetadata(locale: Locale, slug: string): Promi
     title: seoTitle,
     description: seoDescription,
     alternates: {
-      canonical: blogPostPath(locale, slug),
+      canonical: blogPostPath(locale, post.slug),
       languages,
     },
     authors: [{ name: post.author }],

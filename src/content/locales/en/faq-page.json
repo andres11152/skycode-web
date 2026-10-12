@@ -41,7 +41,7 @@
         {
           "id": "documentacion-traspaso",
           "question": "Do you provide documentation so another team can take over the project?",
-          "answer": "Yes. We hand over versioned repositories, environment setups and architecture diagrams, with clear technical documentation, so your internal team or future partners can maintain the code with full autonomy. It is detailed in our [documentation and technical handover](/en/servicios/arquitectura-documentacion) service."
+          "answer": "Yes. We hand over versioned repositories, environment setups and architecture diagrams, with clear technical documentation, so your internal team or future partners can maintain the code with full autonomy. It is detailed in our [documentation and technical handover](/en/services/software-architecture-documentation) service."
         },
         {
           "id": "sin-dependencia",
@@ -112,22 +112,22 @@
         {
           "id": "integraciones",
           "question": "Can you connect with what I already use (payment gateways, invoicing, WhatsApp)?",
-          "answer": "Yes. We integrate payment gateways (Wompi, Stripe, PayU), accounting software and ERPs (Siigo, Alegra, SAP) and the WhatsApp API so everything flows without repetitive manual work. More on [integrations and APIs](/en/servicios/apis-integraciones)."
+          "answer": "Yes. We integrate payment gateways (Wompi, Stripe, PayU), accounting software and ERPs (Siigo, Alegra, SAP) and the WhatsApp API so everything flows without repetitive manual work. More on [integrations and APIs](/en/services/api-development-system-integration)."
         },
         {
           "id": "migracion-legacy",
           "question": "Can you migrate data from an old system or scattered spreadsheets?",
-          "answer": "Yes. We safely extract, clean and migrate data from outdated systems, XML dumps or legacy spreadsheets into modern databases, without disrupting your live operation. Details in [data migration and modernization](/en/servicios/migracion-datos-legacy)."
+          "answer": "Yes. We safely extract, clean and migrate data from outdated systems, XML dumps or legacy spreadsheets into modern databases, without disrupting your live operation. Details in [data migration and modernization](/en/services/legacy-software-migration)."
         },
         {
           "id": "apps-moviles",
           "question": "Do you build mobile apps for iOS and Android?",
-          "answer": "Yes. We build fast apps for customers or field staff, designed to sync in the background and keep working normally even without an internet connection. See the [mobile applications](/en/servicios/desarrollo-aplicaciones-moviles) service."
+          "answer": "Yes. We build fast apps for customers or field staff, designed to sync in the background and keep working normally even without an internet connection. See the [mobile applications](/en/services/mobile-app-development) service."
         },
         {
           "id": "inteligencia-artificial",
           "question": "What kind of artificial intelligence solutions do you implement?",
-          "answer": "Smart assistants and automated document workflows connected to your company's knowledge bases, focused on saving operational hours. Details in [applied business AI](/en/servicios/inteligencia-artificial-aplicada)."
+          "answer": "Smart assistants and automated document workflows connected to your company's knowledge bases, focused on saving operational hours. Details in [applied business AI](/en/services/applied-ai-automation)."
         }
       ]
     },
@@ -139,7 +139,7 @@
         {
           "id": "seguridad-datos",
           "question": "How do you protect the security and data of my users?",
-          "answer": "Encryption of data at rest and in transit, role-based access control and regulatory compliance (GDPR, Colombian Law 1581 and other frameworks depending on your country). Security is designed into the architecture, not patched on at the end. More on [security and data protection](/en/servicios/seguridad-cumplimiento)."
+          "answer": "Encryption of data at rest and in transit, role-based access control and regulatory compliance (GDPR, Colombian Law 1581 and other frameworks depending on your country). Security is designed into the architecture, not patched on at the end. More on [security and data protection](/en/services/software-security-compliance)."
         },
         {
           "id": "datos-de-contacto",

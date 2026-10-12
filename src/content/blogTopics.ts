@@ -49,8 +49,8 @@ const TOPIC_KEYWORDS: [RegExp, BlogTopic][] = [
   [/arquitect|architect|deuda|debt|dette/, "architecture"],
 ];
 
-export function getPostTopic(post: Pick<BlogPost, "slug" | "tags" | "title">): BlogTopic {
-  const bySlug = TOPIC_BY_SLUG[post.slug];
+export function getPostTopic(post: Pick<BlogPost, "translationKey" | "tags" | "title">): BlogTopic {
+  const bySlug = TOPIC_BY_SLUG[post.translationKey];
   if (bySlug) return bySlug;
   const haystack = `${post.tags.join(" ")} ${post.title}`.toLowerCase();
   return TOPIC_KEYWORDS.find(([pattern]) => pattern.test(haystack))?.[1] ?? "code";

@@ -45,8 +45,8 @@ export async function POST(request: Request) {
     "/en/blog/[slug]",
     "/fr/blog/[slug]",
     "/servicios/[slug]",
-    "/en/servicios/[slug]",
-    "/fr/servicios/[slug]",
+    "/en/services/[slug]",
+    "/fr/services/[slug]",
   ]) {
     revalidatePath(pattern, "page");
   }

@@ -65,7 +65,7 @@
     "related": [
       {
         "label": "Choisir un prestataire sans perdre le contrôle de votre code",
-        "href": "/fr/blog/outsourcing-software-latam-propiedad-codigo",
+        "href": "/fr/blog/externalisation-logicielle-amerique-latine-propriete-code",
         "description": "Ce qu'il faut exiger dans le contrat et dans les dépôts pour que le logiciel vous appartienne vraiment."
       }
     ],
@@ -157,7 +157,7 @@
   "apis-integraciones": {
     "intro": [
       "La plupart des entreprises n'ont pas besoin d'un système de plus : elles ont besoin que ceux qu'elles ont déjà communiquent entre eux. Nous connectons votre logiciel aux passerelles de paiement, logiciels comptables, ERP et à WhatsApp pour que l'information circule d'elle-même, sans que quelqu'un la recopie d'un écran à l'autre.",
-      "Nous concevons chaque intégration pour échouer en toute sécurité : nouvelles tentatives, journalisation de chaque événement et alertes quand un fournisseur externe ne répond pas. Nous détaillons les pratiques que nous appliquons dans notre [guide d'architecture des API REST](/fr/blog/buenas-practicas-apis-rest)."
+      "Nous concevons chaque intégration pour échouer en toute sécurité : nouvelles tentatives, journalisation de chaque événement et alertes quand un fournisseur externe ne répond pas. Nous détaillons les pratiques que nous appliquons dans notre [guide d'architecture des API REST](/fr/blog/architecture-api-rest-bonnes-pratiques)."
     ],
     "challenge": {
       "heading": "Les signes qu'il vous manque des intégrations",
@@ -220,7 +220,7 @@
     "related": [
       {
         "label": "Architecture d'API REST : 7 pratiques pour la production",
-        "href": "/fr/blog/buenas-practicas-apis-rest",
+        "href": "/fr/blog/architecture-api-rest-bonnes-pratiques",
         "description": "Versionnage, idempotence, gestion des erreurs et autres choix qui évitent les pannes."
       }
     ],
@@ -388,7 +388,7 @@
       },
       {
         "title": "Lancement et optimisation",
-        "text": "Nous mettons en ligne avec une analytique de conversion et vous accompagnons les premières semaines pour ajuster le tunnel à partir de données réelles. Si la vitesse de chargement du catalogue est une priorité, nous la traitons avec notre service de [développement web haute performance](/fr/servicios/frontend-alto-rendimiento)."
+        "text": "Nous mettons en ligne avec une analytique de conversion et vous accompagnons les premières semaines pour ajuster le tunnel à partir de données réelles. Si la vitesse de chargement du catalogue est une priorité, nous la traitons avec notre service de [développement web haute performance](/fr/services/developpement-web-nextjs-react)."
       }
     ],
     "useCasesHeading": "Boutiques que nous construisons souvent",
@@ -427,7 +427,7 @@
   "seguridad-cumplimiento": {
     "intro": [
       "La sécurité ne s'ajoute pas à la fin d'un projet : elle se décide dans l'architecture. Nous mettons en place le contrôle d'accès par rôle, le chiffrement des informations sensibles et la journalisation d'audit dès la conception, et nous alignons le logiciel sur les réglementations de protection des données comme le RGPD en Europe ou la loi 1581 en Colombie.",
-      "Nous l'expliquons en détail dans notre [guide technique de la loi 1581](/fr/blog/ley-1581-guia-tecnica-software) : ce que la loi exige et comment cela se traduit en décisions logicielles concrètes."
+      "Nous l'expliquons en détail dans notre [guide technique de la loi 1581](/fr/blog/loi-1581-colombie-conformite-logicielle) : ce que la loi exige et comment cela se traduit en décisions logicielles concrètes."
     ],
     "challenge": {
       "heading": "Les risques que nous rencontrons souvent lors d'un audit",
@@ -468,7 +468,7 @@
     "useCases": [
       "Entreprises qui traitent des données personnelles de clients et doivent se mettre en conformité avec le RGPD, la loi colombienne 1581 ou un autre cadre selon le pays de leurs clients.",
       "Plateformes qui vont faire l'objet d'un audit ou d'une due diligence de la part d'un client ou d'un investisseur.",
-      "Systèmes hérités à moderniser sans exposer d'informations sensibles: voir [migration de systèmes legacy](/fr/servicios/migracion-datos-legacy)."
+      "Systèmes hérités à moderniser sans exposer d'informations sensibles: voir [migration de systèmes legacy](/fr/services/migration-systemes-legacy)."
     ],
     "faqHeading": "Questions fréquentes sur la sécurité et la protection des données",
     "faqs": [
@@ -489,7 +489,7 @@
     "related": [
       {
         "label": "La loi 1581 en pratique : ce que doit faire votre logiciel",
-        "href": "/fr/blog/ley-1581-guia-tecnica-software",
+        "href": "/fr/blog/loi-1581-colombie-conformite-logicielle",
         "description": "Les exigences de la loi traduites en décisions de développement concrètes."
       }
     ],
@@ -570,12 +570,12 @@
     "related": [
       {
         "label": "Choisir un prestataire sans perdre le contrôle de votre code",
-        "href": "/fr/blog/outsourcing-software-latam-propiedad-codigo",
+        "href": "/fr/blog/externalisation-logicielle-amerique-latine-propriete-code",
         "description": "Les clauses et pratiques qui garantissent que le logiciel vous appartient."
       },
       {
         "label": "Dette technique : la détecter à temps",
-        "href": "/fr/blog/deuda-tecnica-como-detectarla",
+        "href": "/fr/blog/detecter-dette-technique",
         "description": "Pourquoi un système sans documentation accumule plus vite de la dette technique."
       }
     ],
@@ -594,7 +594,7 @@
   "migracion-datos-legacy": {
     "intro": [
       "Un système legacy n'est pas seulement un vieux logiciel : c'est celui qui fait encore tourner la facturation, les stocks ou l'activité quotidienne, mais que plus personne n'ose modifier. Notre service de migration système legacy le remplace module par module, l'ancien système restant en service en parallèle jusqu'à ce que le nouveau prouve qu'il traite les mêmes opérations avec les mêmes résultats.",
-      "Pas de bascule « big bang » le week-end. Nous appliquons le pattern Strangler Fig, la synchronisation des données entre les deux systèmes et un rapprochement automatisé avant chaque bascule, détaillés dans notre [guide pour migrer un système legacy sans interruption](/fr/blog/migracion-sistemas-legados-sin-interrupcion)."
+      "Pas de bascule « big bang » le week-end. Nous appliquons le pattern Strangler Fig, la synchronisation des données entre les deux systèmes et un rapprochement automatisé avant chaque bascule, détaillés dans notre [guide pour migrer un système legacy sans interruption](/fr/blog/migration-systeme-legacy-sans-interruption)."
     ],
     "challenge": {
       "heading": "Les signes que votre système est déjà devenu un système legacy",
@@ -644,7 +644,7 @@
       "Un ERP ou logiciel de gestion développé sur mesure il y a 10-15 ans, sans documentation, maîtrisé par une seule personne.",
       "Une activité qui repose sur des fichiers Excel, XML ou Access dispersés et a besoin d'une base unique, avec droits d'accès et traçabilité.",
       "Des applications client lourd (Visual Basic, Delphi, ancien PHP) à porter vers le web ou le cloud sans arrêter la facturation.",
-      "Des bases de données non conformes au RGPD qui ont besoin de chiffrement, de contrôle d'accès et de journalisation: voir notre service [sécurité et conformité](/fr/servicios/seguridad-cumplimiento).",
+      "Des bases de données non conformes au RGPD qui ont besoin de chiffrement, de contrôle d'accès et de journalisation: voir notre service [sécurité et conformité](/fr/services/securite-logicielle-conformite).",
       "Des systèmes à décommissionner sans reprendre tout l'historique : seules les données actives migrent, le reste est archivé en consultation."
     ],
     "faqHeading": "Questions fréquentes sur la migration de systèmes legacy",
@@ -682,12 +682,12 @@
     "related": [
       {
         "label": "Guide : comment migrer un système legacy sans interruption",
-        "href": "/fr/blog/migracion-sistemas-legados-sin-interrupcion",
+        "href": "/fr/blog/migration-systeme-legacy-sans-interruption",
         "description": "Méthode étape par étape, erreurs fréquentes et comment décommissionner un système sans reprendre toutes ses données."
       },
       {
         "label": "Dette technique : la détecter à temps",
-        "href": "/fr/blog/deuda-tecnica-como-detectarla",
+        "href": "/fr/blog/detecter-dette-technique",
         "description": "Les signes que votre système actuel est déjà en train de devenir un système legacy."
       }
     ],

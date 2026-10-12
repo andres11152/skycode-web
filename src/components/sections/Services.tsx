@@ -1,11 +1,12 @@
 import type { CSSProperties } from "react";
 import { RevealText } from "@/components/ui/RevealText";
+import { servicesIndexPath } from "@/lib/servicePaths";
 import { ServicesExplorer } from "@/components/services/ServicesExplorer";
 import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getServicePageContent } from "@/content/servicePage";
 import { getServicesContent } from "@/content/services";
-import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
+import { defaultLocale, type Locale } from "@/lib/i18n";
 
 /**
  * Servicios en la home: el mismo índice con vista previa que `/servicios`
@@ -19,8 +20,6 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
   const { servicesSection, services } = getServicesContent(locale);
   const explorerServices = services.map(({ slug, title, description, features }) => ({ slug, title, description, features }));
   const { index } = getServicePageContent(locale);
-  const homePath = localeHomePath(locale);
-  const prefix = homePath === "/" ? "" : homePath;
 
   return (
     <section id="servicios" className="cv-auto [--cv-h:2540px] lg:[--cv-h:1970px] scroll-mt-24 border-y border-foreground/10 bg-foreground/[0.03] px-6 py-24 sm:py-32">
@@ -34,7 +33,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
             <p style={{ "--i": 3 } as CSSProperties} className="reveal-up mt-5 text-lg leading-relaxed text-foreground/80">{servicesSection.description}</p>
           </div>
           <div className="shrink-0">
-            <Button href={`${prefix}/servicios`} variant="secondary" size="md">
+            <Button href={servicesIndexPath(locale)} variant="secondary" size="md">
               {servicesSection.viewAll}
             </Button>
           </div>

@@ -1,5 +1,6 @@
 import { BogotaLink } from "@/components/bogota/BogotaLink";
 import Link from "next/link";
+import { servicesIndexPath } from "@/lib/servicePaths";
 import { CheckCircle } from "@phosphor-icons/react/ssr";
 import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
@@ -59,7 +60,7 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: navData.inicio, item: homeUrl },
-      { "@type": "ListItem", position: 2, name: navData.servicios, item: `${siteUrl}${prefix}/servicios` },
+      { "@type": "ListItem", position: 2, name: navData.servicios, item: `${siteUrl}${servicesIndexPath(locale)}` },
     ],
   };
 

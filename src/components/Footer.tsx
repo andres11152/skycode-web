@@ -1,6 +1,7 @@
 "use client";
 
 import { openCookiePreferences } from "@/lib/useConsent";
+import { servicePath, servicesIndexPath } from "@/lib/servicePaths";
 import { getCookieBannerContent } from "@/content/cookieBanner";
 import { useRef } from "react";
 import Link from "next/link";
@@ -120,7 +121,7 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
   const esOnly = locale !== "es";
   const exploreLinks = [
     { label: footerData.homeLabel, href: homePath, esOnly: false },
-    { label: footerData.servicesHeading, href: `${prefix}/servicios`, esOnly: false },
+    { label: footerData.servicesHeading, href: servicesIndexPath(locale), esOnly: false },
     { label: navData.portafolio, href: portfolioIndexPath(locale), esOnly: false },
     { label: navData.cotizador, href: `${prefix}/cotizador`, esOnly: false },
     { label: navData.equipo, href: `${prefix}/equipo`, esOnly: false },
@@ -175,7 +176,7 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
                   <li key={service.slug}>
                     <Link
                       prefetch={false}
-                      href={`${prefix}/servicios/${service.slug}`}
+                      href={servicePath(locale, service.slug)}
                       className={linkClasses}
                     >
                       {service.title}

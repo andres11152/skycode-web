@@ -41,6 +41,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
 
 import { revalidatePublicSite } from "./lib/revalidatePublic.mjs";
+// Los slugs de servicios y posts son nativos por idioma (src/seo/slugs.ts): una sola tabla, sin duplicarla aquí.
+import { SERVICES_SEGMENT, publicPostSlug, serviceSlugFor } from "../src/seo/slugs.ts";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const LOCALES = ["es", "en", "fr"];
@@ -53,8 +55,8 @@ const localePrefix = (locale) => (locale === "es" ? "" : `/${locale}`);
 
 /** Ruta pública de un destino — espejo de servicePath / blogPostPath / portfolioCasePath. */
 export function pathFor(kind, locale, slug) {
-  if (kind === "service") return `${localePrefix(locale)}/servicios/${slug}`;
-  if (kind === "post") return `${localePrefix(locale)}/blog/${slug}`;
+  if (kind === "service") return `${localePrefix(locale)}/${SERVICES_SEGMENT[locale]}/${serviceSlugFor(slug, locale)}`;
+  if (kind === "post") return `${localePrefix(locale)}/blog/${publicPostSlug(slug, locale)}`;
   if (kind === "case") return locale === "es" ? `/portafolio/${slug}` : `/${locale}/portfolio/${slug}`;
   // Páginas fijas del sitio (no un recurso con slug propio): el cotizador y el índice del portafolio.
   if (kind === "page") {

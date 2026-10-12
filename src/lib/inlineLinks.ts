@@ -17,6 +17,8 @@
 // Módulo puro (sin React ni `pg`): lo usan el render (InlineText), el RSS,
 // el conteo de palabras y el JSON-LD de FAQ.
 
+import { localizeLegacyPath } from "@/seo/slugs";
+
 export type InlineSegment =
   | { type: "text"; text: string }
   | { type: "link"; text: string; href: string }
@@ -40,7 +42,9 @@ export function parseInlineLinks(text: string): InlineSegment[] {
     if (code === undefined && !isInternalHref(href)) continue;
     const start = match.index ?? 0;
     if (start > lastIndex) segments.push({ type: "text", text: text.slice(lastIndex, start) });
-    segments.push(code !== undefined ? { type: "code", text: code } : { type: "link", text: label, href });
+    // `localizeLegacyPath`: el contenido guardado antes de los slugs nativos (inglés/francés) apunta al
+    // destino final sin pasar por un 301, aunque la base aún no se haya reescrito.
+    segments.push(code !== undefined ? { type: "code", text: code } : { type: "link", text: label, href: localizeLegacyPath(href) });
     lastIndex = start + whole.length;
   }
 

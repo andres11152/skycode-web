@@ -41,7 +41,7 @@
         {
           "id": "documentacion-traspaso",
           "question": "Fournissez-vous une documentation pour qu'une autre équipe reprenne le projet ?",
-          "answer": "Oui. Nous livrons les dépôts, les variables d'environnement et les schémas d'architecture, avec une documentation technique claire, afin que votre équipe ou d'autres développeurs fassent évoluer le code en toute autonomie. Le détail se trouve dans notre service de [documentation et passation technique](/fr/servicios/arquitectura-documentacion)."
+          "answer": "Oui. Nous livrons les dépôts, les variables d'environnement et les schémas d'architecture, avec une documentation technique claire, afin que votre équipe ou d'autres développeurs fassent évoluer le code en toute autonomie. Le détail se trouve dans notre service de [documentation et passation technique](/fr/services/architecture-documentation-technique)."
         },
         {
           "id": "sin-dependencia",
@@ -112,22 +112,22 @@
         {
           "id": "integraciones",
           "question": "Pouvez-vous vous connecter à ce que j'utilise déjà (paiement, facturation, WhatsApp) ?",
-          "answer": "Oui. Nous intégrons vos systèmes aux passerelles de paiement (Wompi, Stripe, PayU), logiciels comptables et ERP (Siigo, Alegra, SAP) ainsi qu'à l'API WhatsApp, pour que tout circule sans tâches manuelles répétitives. Plus d'informations sur les [intégrations et API](/fr/servicios/apis-integraciones)."
+          "answer": "Oui. Nous intégrons vos systèmes aux passerelles de paiement (Wompi, Stripe, PayU), logiciels comptables et ERP (Siigo, Alegra, SAP) ainsi qu'à l'API WhatsApp, pour que tout circule sans tâches manuelles répétitives. Plus d'informations sur les [intégrations et API](/fr/services/integration-systemes-developpement-api)."
         },
         {
           "id": "migracion-legacy",
           "question": "Pouvez-vous migrer les données d'un ancien système ou de tableurs dispersés ?",
-          "answer": "Oui. Nous extrayons, nettoyons et migrons les données depuis des systèmes obsolètes, des fichiers XML ou des tableurs dispersés vers des bases de données modernes, sans interrompre vos opérations. Détails dans [migration et modernisation de données](/fr/servicios/migracion-datos-legacy)."
+          "answer": "Oui. Nous extrayons, nettoyons et migrons les données depuis des systèmes obsolètes, des fichiers XML ou des tableurs dispersés vers des bases de données modernes, sans interrompre vos opérations. Détails dans [migration et modernisation de données](/fr/services/migration-systemes-legacy)."
         },
         {
           "id": "apps-moviles",
           "question": "Développez-vous des applications mobiles iOS et Android ?",
-          "answer": "Oui. Nous construisons des applications fluides pour vos clients ou vos équipes terrain, conçues pour synchroniser en arrière-plan et fonctionner normalement même sans connexion internet. Découvrez le service d'[applications mobiles](/fr/servicios/desarrollo-aplicaciones-moviles)."
+          "answer": "Oui. Nous construisons des applications fluides pour vos clients ou vos équipes terrain, conçues pour synchroniser en arrière-plan et fonctionner normalement même sans connexion internet. Découvrez le service d'[applications mobiles](/fr/services/developpement-applications-mobiles)."
         },
         {
           "id": "inteligencia-artificial",
           "question": "Quelles solutions d'intelligence artificielle mettez-vous en place ?",
-          "answer": "Des assistants intelligents et l'automatisation du traitement de documents, connectés à la base de connaissances de votre entreprise, pour réduire les tâches manuelles. Détails dans [IA appliquée aux métiers](/fr/servicios/inteligencia-artificial-aplicada)."
+          "answer": "Des assistants intelligents et l'automatisation du traitement de documents, connectés à la base de connaissances de votre entreprise, pour réduire les tâches manuelles. Détails dans [IA appliquée aux métiers](/fr/services/ia-appliquee-automatisation)."
         }
       ]
     },
@@ -139,7 +139,7 @@
         {
           "id": "seguridad-datos",
           "question": "Comment garantissez-vous la protection et la conformité des données ?",
-          "answer": "Chiffrement des données au repos et en transit, gestion des droits par rôles et conformité réglementaire (RGPD, loi colombienne 1581 et autres cadres selon votre pays). La sécurité est pensée dès l'architecture, pas ajoutée en rustine à la fin. Plus d'informations sur la [sécurité et la protection des données](/fr/servicios/seguridad-cumplimiento)."
+          "answer": "Chiffrement des données au repos et en transit, gestion des droits par rôles et conformité réglementaire (RGPD, loi colombienne 1581 et autres cadres selon votre pays). La sécurité est pensée dès l'architecture, pas ajoutée en rustine à la fin. Plus d'informations sur la [sécurité et la protection des données](/fr/services/securite-logicielle-conformite)."
         },
         {
           "id": "datos-de-contacto",

@@ -3,6 +3,7 @@ import { blogIndexPath, blogPostPath } from "@/lib/blogPaths";
 import { rssFeedPath } from "@/lib/rss";
 import { pingIndexNow } from "@/lib/indexNow";
 import { localeHomePath } from "@/lib/i18n";
+import { postKeyFromSlug, publicPostSlug } from "@/seo/slugs";
 import { siteUrl } from "@/lib/site";
 import type { PublishResult } from "@/lib/queries/articles";
 
@@ -19,7 +20,9 @@ import type { PublishResult } from "@/lib/queries/articles";
  * la URL del post y la del índice del blog.
  */
 export function revalidateArticlePaths(result: PublishResult, notifySearchEngines = false): void {
-  revalidatePath(blogPostPath(result.locale, result.slug));
+  // `result.slug` es el de la fila; la URL pública usa el slug nativo del idioma.
+  const publicSlug = publicPostSlug(postKeyFromSlug(result.slug, result.locale), result.locale);
+  revalidatePath(blogPostPath(result.locale, publicSlug));
   revalidatePath(blogIndexPath(result.locale));
   // El BlogTeaser de la home lista los últimos artículos.
   revalidatePath(localeHomePath(result.locale));
@@ -28,7 +31,7 @@ export function revalidateArticlePaths(result: PublishResult, notifySearchEngine
 
   if (notifySearchEngines) {
     void pingIndexNow([
-      `${siteUrl}${blogPostPath(result.locale, result.slug)}`,
+      `${siteUrl}${blogPostPath(result.locale, publicSlug)}`,
       `${siteUrl}${blogIndexPath(result.locale)}`,
     ]);
   }

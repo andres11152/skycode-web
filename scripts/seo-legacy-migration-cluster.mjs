@@ -45,9 +45,11 @@ if (!connectionString) {
 
 const data = JSON.parse(readFileSync(join(__dirname, "seed-data", "seo", "legacy-migration-cluster.json"), "utf-8"));
 const POST_SLUG = "migracion-sistemas-legados-sin-interrupcion";
-const SERVICE_PATH = "servicios/migracion-datos-legacy";
+// El slug del servicio es nativo por idioma desde la fase 3 del programa de SEO (src/seo/slugs.ts): un
+// post ya ampliado puede enlazarlo con cualquiera de las tres formas.
+const SERVICE_PATHS = ["servicios/migracion-datos-legacy", "services/legacy-software-migration", "services/migration-systemes-legacy"];
 
-const linksToService = (content) => JSON.stringify(content).includes(SERVICE_PATH);
+const linksToService = (content) => SERVICE_PATHS.some((path) => JSON.stringify(content).includes(path));
 
 // Posiciones de inserción por idioma: la versión en español del post
 // original tiene 23 bloques (con una sección "Señales de que la migración

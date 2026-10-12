@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { servicePath } from "@/lib/servicePaths";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
@@ -9,7 +10,7 @@ import { ServiceDemoSkeleton } from "@/components/services/ServiceDemoSkeleton";
 import { MorphTransition } from "@/components/ui/CoverTransition";
 import { DURATION, EASE_OUT, SPRING_SNAPPY } from "@/lib/animations";
 import { useMediaQuery } from "@/lib/useMediaQuery";
-import { localeHomePath, type Locale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 // Las 9 demos viven en un solo módulo (BentoServiceWidgets, ~650 líneas):
@@ -55,8 +56,6 @@ export function ServicesExplorer({
   const Heading = headingLevel;
   const reduced = Boolean(useReducedMotion());
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const homePath = localeHomePath(locale);
-  const prefix = homePath === "/" ? "" : homePath;
 
   const [activeSlug, setActiveSlug] = useState(services[0]?.slug ?? "");
   const active = services.find((service) => service.slug === activeSlug) ?? services[0];
@@ -66,7 +65,7 @@ export function ServicesExplorer({
       <ol aria-label={copy.listAria} className="border-t border-foreground/10">
         {services.map((service, index) => {
           const isActive = isDesktop && service.slug === active?.slug;
-          const href = `${prefix}/servicios/${service.slug}`;
+          const href = servicePath(locale, service.slug);
 
           return (
             <li key={service.slug} className="scroll-reveal relative border-b border-foreground/10">
@@ -153,7 +152,7 @@ export function ServicesExplorer({
                 </ul>
 
                 <Link
-                  href={`${prefix}/servicios/${active.slug}`}
+                  href={servicePath(locale, active.slug)}
                   className="group inline-flex min-h-11 items-center gap-2 self-start rounded-full text-sm font-semibold text-foreground outline-none hover:text-accent-text focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {copy.openService}

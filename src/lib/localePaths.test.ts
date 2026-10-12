@@ -22,16 +22,33 @@ describe("switchLocalePath", () => {
     expect(switchLocalePath("/fr/faq", "es")).toBe("/preguntas-frecuentes");
   });
 
-  it("servicios, equipo y cotizador conservan la sub-ruta con el prefijo del idioma", () => {
-    expect(switchLocalePath("/servicios", "en")).toBe("/en/servicios");
-    expect(switchLocalePath("/servicios/apis-integraciones", "fr")).toBe("/fr/servicios/apis-integraciones");
+  it("servicios: el segmento y el slug de cada servicio se traducen en todos los sentidos", () => {
+    expect(switchLocalePath("/servicios", "en")).toBe("/en/services");
+    expect(switchLocalePath("/servicios", "fr")).toBe("/fr/services");
+    expect(switchLocalePath("/en/services", "es")).toBe("/servicios");
+    expect(switchLocalePath("/servicios/migracion-datos-legacy", "en")).toBe("/en/services/legacy-software-migration");
+    expect(switchLocalePath("/servicios/migracion-datos-legacy", "fr")).toBe("/fr/services/migration-systemes-legacy");
+    expect(switchLocalePath("/en/services/legacy-software-migration", "fr")).toBe("/fr/services/migration-systemes-legacy");
+    expect(switchLocalePath("/fr/services/migration-systemes-legacy", "es")).toBe("/servicios/migracion-datos-legacy");
+    expect(switchLocalePath("/fr/services/migration-systemes-legacy", "en")).toBe("/en/services/legacy-software-migration");
+  });
+
+  it("servicios: una ruta histórica o un slug desconocido caen al índice o se entienden", () => {
     expect(switchLocalePath("/en/servicios/apis-integraciones", "es")).toBe("/servicios/apis-integraciones");
+    expect(switchLocalePath("/en/services/no-existe", "es")).toBe("/servicios");
+  });
+
+  it("equipo y cotizador conservan la sub-ruta con el prefijo del idioma", () => {
     expect(switchLocalePath("/en/equipo", "fr")).toBe("/fr/equipo");
     expect(switchLocalePath("/cotizador", "en")).toBe("/en/cotizador");
   });
 
-  it("blog: el índice se conserva; un artículo va al índice porque puede no estar traducido", () => {
+  it("blog: el índice se conserva; un artículo conocido va a su versión y uno desconocido al índice", () => {
     expect(switchLocalePath("/blog", "en")).toBe("/en/blog");
+    expect(switchLocalePath("/blog/migracion-sistemas-legados-sin-interrupcion", "en")).toBe("/en/blog/legacy-system-migration-without-downtime");
+    expect(switchLocalePath("/en/blog/legacy-system-migration-without-downtime", "fr")).toBe("/fr/blog/migration-systeme-legacy-sans-interruption");
+    expect(switchLocalePath("/fr/blog/migration-systeme-legacy-sans-interruption", "es")).toBe("/blog/migracion-sistemas-legados-sin-interrupcion");
+    // Un post sin slug propio por idioma puede no estar traducido: al índice.
     expect(switchLocalePath("/en/blog/mi-post", "es")).toBe("/blog");
   });
 

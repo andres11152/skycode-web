@@ -1,5 +1,6 @@
 import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
 import type { Locale } from "@/lib/i18n";
+import { resolveLocalizedSlugRedirect } from "@/seo/slugs";
 
 // URLs heredadas del sitio anterior (WordPress) y casos retirados del portafolio.
 //
@@ -63,6 +64,11 @@ export function resolveLegacyUrl(pathname: string): LegacyOutcome | null {
 
   const exact = EXACT_REDIRECTS.get(path);
   if (exact) return redirect(exact);
+
+  // Servicios y blog en inglés/francés: los slugs en español de antes → los nativos de cada idioma
+  // (tabla única en src/seo/slugs.ts). Un solo salto, hacia una URL que responde 200.
+  const localized = resolveLocalizedSlugRedirect(path);
+  if (localized) return redirect(localized);
 
   // Listados antiguos del portafolio (`/portafolio/all`, `/portafolio-cat/web`, `/portfolio-cat/…`):
   // al índice del idioma de la URL; sin prefijo, el español (el idioma sin prefijo del sitio).

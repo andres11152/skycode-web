@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
+import { servicesIndexPath } from "@/lib/servicePaths";
 import { locales } from "@/lib/i18n";
 
 /**
@@ -22,8 +23,8 @@ export function revalidatePortfolioPaths(slug: string): void {
   revalidatePath("/");
   revalidatePath("/en");
   revalidatePath("/fr");
-  for (const prefix of ["", "/en", "/fr"]) {
-    revalidatePath(`${prefix}/servicios`);
-    revalidatePath(`${prefix}/servicios/[slug]`, "page");
+  for (const locale of locales) {
+    revalidatePath(servicesIndexPath(locale));
+    revalidatePath(`${servicesIndexPath(locale)}/[slug]`, "page");
   }
 }

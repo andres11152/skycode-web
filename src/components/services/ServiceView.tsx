@@ -1,5 +1,6 @@
 import { BogotaLink } from "@/components/bogota/BogotaLink";
 import { getServiceSeo } from "@/content/serviceSeo";
+import { servicePath, servicesIndexPath } from "@/lib/servicePaths";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle } from "@phosphor-icons/react/ssr";
@@ -57,7 +58,7 @@ export async function ServiceView({
 
   const homePath = localeHomePath(locale);
   const prefix = homePath === "/" ? "" : homePath;
-  const servicesIndexHref = `${prefix}/servicios`;
+  const servicesIndexHref = servicesIndexPath(locale);
   const contactHref = `${prefix}/#contacto`;
   const estimatorHref = `${prefix}/cotizador`;
 
@@ -452,7 +453,7 @@ export async function ServiceView({
       <section aria-label={pageCopy.nextServiceLabel} className="border-t border-foreground/10 px-6">
         <div className="mx-auto max-w-6xl">
           <Link
-            href={`${prefix}/servicios/${nextService.slug}`}
+            href={servicePath(locale, nextService.slug)}
             className="group flex items-center justify-between gap-6 rounded-xl py-14 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:py-20"
           >
             <div className="flex min-w-0 items-center gap-5 sm:gap-6">

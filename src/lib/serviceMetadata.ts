@@ -3,21 +3,10 @@ import { notFound } from "next/navigation";
 import { getServiceBySlug } from "@/content/services";
 import { getServiceSeo, getServicesIndexSeo } from "@/content/serviceSeo";
 import { ogImageUrl, siteUrl } from "@/lib/site";
-import { localeHomePath, type Locale } from "@/lib/i18n";
+import { servicePath, servicesIndexPath } from "@/lib/servicePaths";
+import type { Locale } from "@/lib/i18n";
 
-/** Ruta absoluta (sin dominio) de una página de servicio para un locale dado. */
-export function servicePath(locale: Locale, slug: string): string {
-  const homePath = localeHomePath(locale);
-  const prefix = homePath === "/" ? "" : homePath;
-  return `${prefix}/servicios/${slug}`;
-}
-
-/** Ruta absoluta (sin dominio) del índice de servicios para un locale dado. */
-export function servicesIndexPath(locale: Locale): string {
-  const homePath = localeHomePath(locale);
-  const prefix = homePath === "/" ? "" : homePath;
-  return `${prefix}/servicios`;
-}
+export { servicePath, servicesIndexPath } from "@/lib/servicePaths";
 
 export function buildServicesIndexMetadata(locale: Locale): Metadata {
   const seo = getServicesIndexSeo(locale);

@@ -256,7 +256,7 @@
       },
       {
         "type": "paragraph",
-        "text": "If several of these sound familiar, you're probably already paying interest on [accumulated technical debt](/en/blog/deuda-tecnica-como-detectarla). The question stops being whether to migrate and becomes how to do it without putting operations at risk — which is exactly what a well-run [legacy software migration service](/en/servicios/migracion-datos-legacy) solves, and what this guide walks through."
+        "text": "If several of these sound familiar, you're probably already paying interest on [accumulated technical debt](/en/blog/how-to-detect-technical-debt). The question stops being whether to migrate and becomes how to do it without putting operations at risk — which is exactly what a well-run [legacy software migration service](/en/services/legacy-software-migration) solves, and what this guide walks through."
       }
     ],
     "beforeStrangler": [
@@ -320,7 +320,7 @@
       },
       {
         "type": "paragraph",
-        "text": "Define the target platform and the intermediate layer that will split traffic between the old and new systems. In practice, that layer is a well-designed API in front of the legacy system — which is why [REST API best practices](/en/blog/buenas-practicas-apis-rest) (versioning, validation at the edge, idempotency) are the technical foundation of any incremental migration."
+        "text": "Define the target platform and the intermediate layer that will split traffic between the old and new systems. In practice, that layer is a well-designed API in front of the legacy system — which is why [REST API best practices](/en/blog/rest-api-architecture-best-practices) (versioning, validation at the edge, idempotency) are the technical foundation of any incremental migration."
       },
       {
         "type": "heading",
@@ -329,7 +329,7 @@
       },
       {
         "type": "paragraph",
-        "text": "Extract, cleanse, deduplicate and transform data with versioned, repeatable scripts — never with one-off manual exports that can't be re-run. While both systems coexist, data stays in sync (with a clear source of truth for each entity), so there's never a moment when it's half migrated. That's the core of a [phased data migration with zero downtime](/en/servicios/migracion-datos-legacy)."
+        "text": "Extract, cleanse, deduplicate and transform data with versioned, repeatable scripts — never with one-off manual exports that can't be re-run. While both systems coexist, data stays in sync (with a clear source of truth for each entity), so there's never a moment when it's half migrated. That's the core of a [phased data migration with zero downtime](/en/services/legacy-software-migration)."
       },
       {
         "type": "heading",
@@ -409,7 +409,7 @@
     "afterClosing": [
       {
         "type": "paragraph",
-        "text": "If you're considering modernizing a system your operations can't afford to stop, our [legacy system migration team](/en/servicios/migracion-datos-legacy) can review your case and propose a phased plan — we reply within 24 hours."
+        "text": "If you're considering modernizing a system your operations can't afford to stop, our [legacy system migration team](/en/services/legacy-software-migration) can review your case and propose a phased plan — we reply within 24 hours."
       },
       {
         "type": "heading",
@@ -451,14 +451,14 @@
         "afterIndex": 21,
         "block": {
           "type": "paragraph",
-          "text": "If your system has already reached that point, our [guide to migrating legacy systems without downtime](/en/blog/migracion-sistemas-legados-sin-interrupcion) lays out the step-by-step framework — the same approach we apply in our [legacy system modernization](/en/servicios/migracion-datos-legacy) projects."
+          "text": "If your system has already reached that point, our [guide to migrating legacy systems without downtime](/en/blog/legacy-system-migration-without-downtime) lays out the step-by-step framework — the same approach we apply in our [legacy system modernization](/en/services/legacy-software-migration) projects."
         }
       },
       "buenas-practicas-apis-rest": {
         "afterIndex": 25,
         "block": {
           "type": "paragraph",
-          "text": "When the API is part of a legacy system, these practices are also the foundation of an incremental migration: the routing layer in the Strangler Fig pattern is nothing more than a well-versioned API in front of the old system. It's the approach we use for [legacy application migration without stopping operations](/en/servicios/migracion-datos-legacy)."
+          "text": "When the API is part of a legacy system, these practices are also the foundation of an incremental migration: the routing layer in the Strangler Fig pattern is nothing more than a well-versioned API in front of the old system. It's the approach we use for [legacy application migration without stopping operations](/en/services/legacy-software-migration)."
         }
       }
     }
@@ -488,7 +488,7 @@
       },
       {
         "type": "paragraph",
-        "text": "Si vous reconnaissez plusieurs de ces signaux, vous payez probablement déjà les intérêts d'une [dette technique accumulée](/fr/blog/deuda-tecnica-como-detectarla). La question n'est plus de savoir s'il faut migrer, mais comment le faire sans mettre l'activité en danger — c'est précisément ce que permet un [service de migration de systèmes legacy](/fr/servicios/migracion-datos-legacy) bien mené, et ce que détaille ce guide."
+        "text": "Si vous reconnaissez plusieurs de ces signaux, vous payez probablement déjà les intérêts d'une [dette technique accumulée](/fr/blog/detecter-dette-technique). La question n'est plus de savoir s'il faut migrer, mais comment le faire sans mettre l'activité en danger — c'est précisément ce que permet un [service de migration de systèmes legacy](/fr/services/migration-systemes-legacy) bien mené, et ce que détaille ce guide."
       }
     ],
     "beforeStrangler": [
@@ -552,7 +552,7 @@
       },
       {
         "type": "paragraph",
-        "text": "Définir la plateforme cible et la couche intermédiaire qui répartira le trafic entre l'ancien et le nouveau système. En pratique, cette couche est une API bien conçue placée devant l'existant — c'est pourquoi les [bonnes pratiques d'API REST](/fr/blog/buenas-practicas-apis-rest) (versionnement, validation en bordure, idempotence) sont le socle technique de toute migration progressive."
+        "text": "Définir la plateforme cible et la couche intermédiaire qui répartira le trafic entre l'ancien et le nouveau système. En pratique, cette couche est une API bien conçue placée devant l'existant — c'est pourquoi les [bonnes pratiques d'API REST](/fr/blog/architecture-api-rest-bonnes-pratiques) (versionnement, validation en bordure, idempotence) sont le socle technique de toute migration progressive."
       },
       {
         "type": "heading",
@@ -561,7 +561,7 @@
       },
       {
         "type": "paragraph",
-        "text": "Extraire, nettoyer, dédoublonner et transformer les données avec des scripts versionnés et rejouables — jamais avec des exports manuels impossibles à relancer. Pendant la cohabitation, les données restent synchronisées (avec une source de vérité claire pour chaque entité), si bien qu'elles ne sont jamais « à moitié migrées ». C'est le cœur d'une [reprise de données progressive, sans interruption de service](/fr/servicios/migracion-datos-legacy)."
+        "text": "Extraire, nettoyer, dédoublonner et transformer les données avec des scripts versionnés et rejouables — jamais avec des exports manuels impossibles à relancer. Pendant la cohabitation, les données restent synchronisées (avec une source de vérité claire pour chaque entité), si bien qu'elles ne sont jamais « à moitié migrées ». C'est le cœur d'une [reprise de données progressive, sans interruption de service](/fr/services/migration-systemes-legacy)."
       },
       {
         "type": "heading",
@@ -641,7 +641,7 @@
     "afterClosing": [
       {
         "type": "paragraph",
-        "text": "Si vous envisagez de moderniser un système que votre activité ne peut pas se permettre d'arrêter, notre [équipe de migration de systèmes legacy](/fr/servicios/migracion-datos-legacy) peut étudier votre cas et vous proposer un plan par étapes — réponse en moins de 24 heures."
+        "text": "Si vous envisagez de moderniser un système que votre activité ne peut pas se permettre d'arrêter, notre [équipe de migration de systèmes legacy](/fr/services/migration-systemes-legacy) peut étudier votre cas et vous proposer un plan par étapes — réponse en moins de 24 heures."
       },
       {
         "type": "heading",
@@ -683,14 +683,14 @@
         "afterIndex": 21,
         "block": {
           "type": "paragraph",
-          "text": "Si votre système en est déjà là, notre [guide pour migrer un système legacy sans interruption](/fr/blog/migracion-sistemas-legados-sin-interrupcion) détaille la méthode pas à pas — la même approche que nous appliquons dans nos projets de [modernisation de systèmes legacy](/fr/servicios/migracion-datos-legacy)."
+          "text": "Si votre système en est déjà là, notre [guide pour migrer un système legacy sans interruption](/fr/blog/migration-systeme-legacy-sans-interruption) détaille la méthode pas à pas — la même approche que nous appliquons dans nos projets de [modernisation de systèmes legacy](/fr/services/migration-systemes-legacy)."
         }
       },
       "buenas-practicas-apis-rest": {
         "afterIndex": 25,
         "block": {
           "type": "paragraph",
-          "text": "Lorsque l'API fait partie d'un système hérité, ces pratiques sont aussi le socle d'une migration progressive : la couche de routage du pattern Strangler Fig n'est rien d'autre qu'une API bien versionnée placée devant l'ancien système. C'est l'approche que nous suivons pour la [migration d'applications legacy sans arrêter l'activité](/fr/servicios/migracion-datos-legacy)."
+          "text": "Lorsque l'API fait partie d'un système hérité, ces pratiques sont aussi le socle d'une migration progressive : la couche de routage du pattern Strangler Fig n'est rien d'autre qu'une API bien versionnée placée devant l'ancien système. C'est l'approche que nous suivons pour la [migration d'applications legacy sans arrêter l'activité](/fr/services/migration-systemes-legacy)."
         }
       }
     }

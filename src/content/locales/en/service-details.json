@@ -65,7 +65,7 @@
     "related": [
       {
         "label": "How to choose a vendor without losing control of your code",
-        "href": "/en/blog/outsourcing-software-latam-propiedad-codigo",
+        "href": "/en/blog/software-outsourcing-latin-america-code-ownership",
         "description": "What to require in the contract and in the repositories so the software is truly yours."
       }
     ],
@@ -157,7 +157,7 @@
   "apis-integraciones": {
     "intro": [
       "Most companies don't need another system: they need the ones they already have to talk to each other. We connect your software with payment gateways, accounting systems, ERPs and WhatsApp so information flows on its own, without anyone copying it from one screen to another.",
-      "We design every integration to fail safely: retries, a log of every event and alerts when an external provider doesn't respond. We explain the practices we apply in our [REST API architecture guide](/en/blog/buenas-practicas-apis-rest)."
+      "We design every integration to fail safely: retries, a log of every event and alerts when an external provider doesn't respond. We explain the practices we apply in our [REST API architecture guide](/en/blog/rest-api-architecture-best-practices)."
     ],
     "challenge": {
       "heading": "Signs you're missing integrations",
@@ -220,7 +220,7 @@
     "related": [
       {
         "label": "REST API architecture: 7 practices for production",
-        "href": "/en/blog/buenas-practicas-apis-rest",
+        "href": "/en/blog/rest-api-architecture-best-practices",
         "description": "Versioning, idempotency, error handling and other decisions that prevent outages."
       }
     ],
@@ -388,7 +388,7 @@
       },
       {
         "title": "Launch and optimization",
-        "text": "We launch with conversion analytics and support you through the first weeks to tune the funnel with real data. If catalog load speed is a priority, we handle it with our [high-performance web development](/en/servicios/frontend-alto-rendimiento) service."
+        "text": "We launch with conversion analytics and support you through the first weeks to tune the funnel with real data. If catalog load speed is a priority, we handle it with our [high-performance web development](/en/services/nextjs-react-web-development) service."
       }
     ],
     "useCasesHeading": "Stores we often build",
@@ -427,7 +427,7 @@
   "seguridad-cumplimiento": {
     "intro": [
       "Security isn't added at the end of a project: it's decided in the architecture. We implement role-based access control, encryption of sensitive information and audit logging from the design stage, and we align the software with data protection regulations such as Colombia's Law 1581 and the GDPR in Europe.",
-      "We explain it in detail in our [technical guide to Law 1581](/en/blog/ley-1581-guia-tecnica-software): what the law requires and how it translates into concrete software decisions."
+      "We explain it in detail in our [technical guide to Law 1581](/en/blog/colombia-law-1581-software-compliance-guide): what the law requires and how it translates into concrete software decisions."
     ],
     "challenge": {
       "heading": "Risks we often find in an audit",
@@ -468,7 +468,7 @@
     "useCases": [
       "Companies that handle customers' personal data and need to align with Law 1581 or the GDPR.",
       "Platforms about to go through an audit or due diligence by a client or investor.",
-      "Legacy systems that need to be modernized without exposing sensitive information: see [legacy system migration](/en/servicios/migracion-datos-legacy)."
+      "Legacy systems that need to be modernized without exposing sensitive information: see [legacy system migration](/en/services/legacy-software-migration)."
     ],
     "faqHeading": "Security and data protection FAQ",
     "faqs": [
@@ -489,7 +489,7 @@
     "related": [
       {
         "label": "Law 1581 in practice: what your software needs to do",
-        "href": "/en/blog/ley-1581-guia-tecnica-software",
+        "href": "/en/blog/colombia-law-1581-software-compliance-guide",
         "description": "The law's requirements translated into concrete development decisions."
       }
     ],
@@ -570,12 +570,12 @@
     "related": [
       {
         "label": "How to choose a vendor without losing control of your code",
-        "href": "/en/blog/outsourcing-software-latam-propiedad-codigo",
+        "href": "/en/blog/software-outsourcing-latin-america-code-ownership",
         "description": "The clauses and practices that guarantee the software is yours."
       },
       {
         "label": "Technical debt: how to spot it early",
-        "href": "/en/blog/deuda-tecnica-como-detectarla",
+        "href": "/en/blog/how-to-detect-technical-debt",
         "description": "Why an undocumented system accumulates technical debt faster."
       }
     ],
@@ -594,7 +594,7 @@
   "migracion-datos-legacy": {
     "intro": [
       "A legacy system isn't just old software: it's the one still running your billing, inventory or daily operations, yet nobody dares to change it. Our legacy software migration services replace it module by module, with the old system running in parallel until the new one proves it processes the same transactions with the same results.",
-      "We don't do weekend \"big bang\" cutovers. We use the Strangler Fig pattern, data synchronization between both systems and automated reconciliation before every cutover, all explained in our [guide to migrating legacy systems without downtime](/en/blog/migracion-sistemas-legados-sin-interrupcion)."
+      "We don't do weekend \"big bang\" cutovers. We use the Strangler Fig pattern, data synchronization between both systems and automated reconciliation before every cutover, all explained in our [guide to migrating legacy systems without downtime](/en/blog/legacy-system-migration-without-downtime)."
     ],
     "challenge": {
       "heading": "Signs your system has already become legacy",
@@ -644,7 +644,7 @@
       "A custom ERP or line-of-business app built 10-15 years ago, undocumented, with a single person who understands the code.",
       "Operations running on scattered Excel spreadsheets, XML files or Access databases that need a single database with permissions and audit trails.",
       "Desktop applications (Visual Basic, Delphi, legacy PHP) that must move to the web or the cloud without stopping invoicing.",
-      "Databases that don't meet today's data protection requirements (GDPR, CCPA) and need encryption, access control and auditing: see our [security and compliance](/en/servicios/seguridad-cumplimiento) service.",
+      "Databases that don't meet today's data protection requirements (GDPR, CCPA) and need encryption, access control and auditing: see our [security and compliance](/en/services/software-security-compliance) service.",
       "Systems that must be retired without migrating the full history: only active data moves, the rest stays in a read-only archive."
     ],
     "faqHeading": "Legacy system migration FAQ",
@@ -682,12 +682,12 @@
     "related": [
       {
         "label": "Guide: how to migrate legacy systems without downtime",
-        "href": "/en/blog/migracion-sistemas-legados-sin-interrupcion",
+        "href": "/en/blog/legacy-system-migration-without-downtime",
         "description": "Step-by-step framework, common mistakes and how to decommission a system without migrating all its data."
       },
       {
         "label": "Technical debt: how to spot it early",
-        "href": "/en/blog/deuda-tecnica-como-detectarla",
+        "href": "/en/blog/how-to-detect-technical-debt",
         "description": "The signs that your current system is already turning into a legacy system."
       }
     ],

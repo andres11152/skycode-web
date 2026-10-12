@@ -20,6 +20,7 @@ import { getServicesContent } from "@/content/services";
 import { blogPostPath } from "@/lib/blogPaths";
 import { servicePath, servicesIndexPath } from "@/lib/serviceMetadata";
 import { localeHomePath } from "@/lib/i18n";
+import { publicPostSlug } from "@/seo/slugs";
 import { titleSuffix, TITLE_MAX_LENGTH } from "@/lib/site";
 
 const entries = listKeywordEntries();
@@ -110,7 +111,7 @@ describe("keyword map", () => {
         expect(KEYWORD_MAP[id as ClusterId][locale].targetPath, `${locale}/${id}`).toBe(servicePath(locale, id));
       }
       expect(KEYWORD_MAP["migracion-legacy-guia"][locale].targetPath).toBe(
-        blogPostPath(locale, "migracion-sistemas-legados-sin-interrupcion")
+        blogPostPath(locale, publicPostSlug("migracion-sistemas-legados-sin-interrupcion", locale))
       );
     }
   });

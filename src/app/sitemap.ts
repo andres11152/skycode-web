@@ -93,13 +93,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const postRoutes: MetadataRoute.Sitemap = (["es", "en", "fr"] as const).flatMap((locale) =>
     postsByLocale[locale].map((post) => {
-      const languages = Object.fromEntries(
-        (["es", "en", "fr"] as const)
-          .filter((loc) => postsByLocale[loc].some((p) => p.slug === post.slug))
-          .map((loc) => [loc, `${siteUrl}${blogPostPath(loc, post.slug)}`])
+      // Las versiones de un post se unen por su clave de traducción: el slug público difiere por idioma.
+      const versions = (["es", "en", "fr"] as const).flatMap((loc) => {
+        const sibling = postsByLocale[loc].find((p) => p.translationKey === post.translationKey);
+        return sibling ? [[loc, sibling.slug] as const] : [];
+      });
+      const languages: Record<string, string> = Object.fromEntries(
+        versions.map(([loc, slug]) => [loc, `${siteUrl}${blogPostPath(loc, slug)}`])
       );
-      const defaultLoc = postsByLocale["es"].some((p) => p.slug === post.slug) ? "es" : locale;
-      languages["x-default"] = `${siteUrl}${blogPostPath(defaultLoc, post.slug)}`;
+      const esVersion = versions.find(([loc]) => loc === "es");
+      languages["x-default"] = `${siteUrl}${blogPostPath(esVersion ? "es" : locale, esVersion ? esVersion[1] : post.slug)}`;
       return {
         url: `${siteUrl}${blogPostPath(locale, post.slug)}`,
         lastModified: post.updatedAt,
