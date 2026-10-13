@@ -98,11 +98,20 @@ const previous = existsSync(hashesFile) ? JSON.parse(readFileSync(hashesFile, "u
 const hashes = {};
 // Copy de buscador (title/H1/description) de cada servicio: vive en el mapa de keywords, un .ts sin imports
 // que Node ejecuta quitando tipos (como scripts/seo-check.ts).
-const { KEYWORD_MAP } = await import("../src/seo/keyword-map.ts");
+// Si el Node del entorno no ejecuta .ts (anterior a 22.18), se sigue sin ese componente del hash en vez de romper el build.
+let KEYWORD_MAP = {};
+try {
+  ({ KEYWORD_MAP } = await import("../src/seo/keyword-map.ts"));
+} catch (error) {
+  console.warn(`seo:lastmod: no se pudo leer src/seo/keyword-map.ts (${error instanceof Error ? error.message : error}); el hash por servicio omite su title/H1/description.`);
+}
 for (const locale of LOCALES) {
   const details = readJson(`src/content/locales/${locale}/service-details.json`);
   const services = Object.fromEntries(readJson(`src/content/locales/${locale}/services.json`).items.map((item) => [item.slug, item]));
-  const seo = Object.fromEntries(Object.entries(KEYWORD_MAP).map(([cluster, byLocale]) => [cluster, byLocale[locale]]));
+  // Solo lo que se publica (title/description/H1, en el orden del JSON anterior): el resto del mapa (keywords) no es contenido de la página.
+  const seo = Object.fromEntries(
+    Object.entries(KEYWORD_MAP).map(([cluster, byLocale]) => [cluster, { title: byLocale[locale].title, description: byLocale[locale].description, h1: byLocale[locale].h1 }])
+  );
   // El bloque `index` es de la página de índice, no del detalle: se excluye del copy compartido.
   // `detail.tocProof` solo rotula una sección que únicamente existe en las páginas con `proof`
   // (ese contenido ya está en details[slug]); contarlo movería la fecha de todos los servicios.
