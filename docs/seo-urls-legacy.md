@@ -31,7 +31,8 @@ Reglas en [src/lib/legacyUrls.ts](../src/lib/legacyUrls.ts) (probadas en `legacy
 | `/feed`, `/feed/`, `/comments/feed(/)`, `/blog/feed(/)`, `/en/feed(/)`, `/fr/feed(/)` | 404 · 308→404 | 410 |
 | `/wp-content/*`, `/wp-includes/*`, `/wp-admin`, `/wp-login.php`, `/xmlrpc.php` | 404 | 410 |
 | `/portafolio/moncyre`, `/en/portfolio/moncyre`, `/fr/portfolio/moncyre` | 308 → índice | 301 → índice |
-| `/cotizador`, `/servicios/frontend-alto-rendimiento`, `/en/servicios`, `/en/portfolio`, `/fr/portfolio` | 200 | 200 |
+| `/cotizador`, `/servicios/frontend-alto-rendimiento`, `/en/portfolio`, `/fr/portfolio` | 200 | 200 |
+| `/en/servicios`, `/en/servicios/<servicio>`, `/fr/servicios…`, `/en/blog/<post en español>`, `/fr/blog/…` | 200 | **301 → slug nativo** (ver [seo-remediacion.md](seo-remediacion.md)) |
 | `/robots.txt`, `/sitemap.xml`, `/feed.xml`, `/en/feed.xml`, `/fr/feed.xml` | 200 | 200 (sin cambios) |
 
 ## http → https y www → apex (no se resuelve en el código)
