@@ -25,6 +25,8 @@ const row = (query: string, path: string, impressions: number, position: number,
 });
 const entries = listKeywordEntries();
 
+const Q = "servicios de migracion de sistemas legacy";
+
 // El caso real del diagnóstico: la guía del blog (pos. ~80) captura una búsqueda comercial que debería ganar
 // el servicio (pos. ~33).
 const GUIDE = "/blog/migracion-sistemas-legados-sin-interrupcion";
@@ -151,10 +153,28 @@ describe("alertas", () => {
     expect(codes([row("q", "/a", 10, 28)], [row("q", "/a", 10, 20)])).not.toContain("page_drop");
   });
 
+  it("caída de página y página equivocada exigen >=10 impresiones en AMBAS semanas (muestras pequeñas = ruido)", () => {
+    const min = ALERT_THRESHOLDS.minImpressionsBothWeeks;
+    expect(min).toBe(10);
+    // Caída de 25 posiciones, pero con 9 impresiones en la semana actual o en la anterior: no avisa.
+    expect(codes([row("q", "/a", min - 1, 45)], [row("q", "/a", 50, 20)])).not.toContain("page_drop");
+    expect(codes([row("q", "/a", 50, 45)], [row("q", "/a", min - 1, 20)])).not.toContain("page_drop");
+    expect(codes([row("q", "/a", min, 45)], [row("q", "/a", min, 20)])).toContain("page_drop");
+
+    const wrong = (cur: number, prev: number) =>
+      codes([row(Q, GUIDE, cur, 79.9)], [row(Q, GUIDE, prev, 79.9)]).includes("wrong_target");
+    expect(wrong(min - 1, 50)).toBe(false);
+    expect(wrong(50, min - 1)).toBe(false);
+    expect(wrong(0 + min, min)).toBe(true);
+    // Sin semana anterior (query nueva) tampoco: aún no es una tendencia.
+    expect(codes([row(Q, GUIDE, 50, 79.9)], [])).not.toContain("wrong_target");
+  });
+
   it("canibalización y página equivocada salen como avisos con una clave estable", () => {
+    const both = [row("servicios de migracion de sistemas legacy", GUIDE, 79, 79.9), row("servicios de migracion de sistemas legacy", SERVICE, 60, 33.2)];
     const alerts = buildSeoAlerts({
-      current: [row("servicios de migracion de sistemas legacy", GUIDE, 79, 79.9), row("servicios de migracion de sistemas legacy", SERVICE, 60, 33.2)],
-      previous: [],
+      current: both,
+      previous: both,
       entries,
     });
     expect(alerts.map((a) => a.kind).sort()).toEqual(["cannibalization", "wrong_target"]);

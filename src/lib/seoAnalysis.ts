@@ -335,6 +335,11 @@ export const ALERT_THRESHOLDS = {
   minImpressions: 3,
   /** Una página "cae" si su posición media empeora más de esto. */
   pageDropPositions: 10,
+  /**
+   * "Caída de página" y "Página equivocada" exigen al menos estas impresiones en AMBAS semanas: con menos, la
+   * posición media es ruido de una muestra pequeña (3 impresiones pueden bailar 30 posiciones sin que cambie nada).
+   */
+  minImpressionsBothWeeks: 10,
 } as const;
 
 const shortPath = (page: string) => pathOfPage(page);
@@ -371,7 +376,8 @@ export function buildSeoAlerts({ current, previous, entries, nonOkUrls = [] }: B
 
   // 2) Una página cae más de 10 posiciones.
   for (const delta of compareByPage(current, previous)) {
-    if (delta.positionDelta === null || delta.previousImpressions < ALERT_THRESHOLDS.minImpressions) continue;
+    if (delta.positionDelta === null) continue;
+    if (delta.previousImpressions < ALERT_THRESHOLDS.minImpressionsBothWeeks || delta.impressions < ALERT_THRESHOLDS.minImpressionsBothWeeks) continue;
     if (delta.positionDelta <= ALERT_THRESHOLDS.pageDropPositions) continue;
     alerts.push({
       kind: "page_drop",
@@ -396,7 +402,10 @@ export function buildSeoAlerts({ current, previous, entries, nonOkUrls = [] }: B
   }
 
   // 4) La URL que rankea no es la que el mapa de keywords asigna.
-  for (const item of findWrongTarget(current, entries)) {
+  // Solo si la búsqueda tiene volumen suficiente en las dos semanas (no una racha de una semana).
+  const previousByQuery = aggregateByQuery(previous);
+  const enoughBothWeeks = (query: string) => (previousByQuery.get(query)?.impressions ?? 0) >= ALERT_THRESHOLDS.minImpressionsBothWeeks;
+  for (const item of findWrongTarget(current, entries, { minImpressions: ALERT_THRESHOLDS.minImpressionsBothWeeks }).filter((w) => enoughBothWeeks(w.query))) {
     alerts.push({
       kind: "wrong_target",
       severity: "warning",
