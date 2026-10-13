@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   auditParsedPage,
+  buildAlternateGroups,
   flagDuplicateH1,
   flagDuplicateTitles,
   normalizeUrl,
@@ -198,5 +199,37 @@ describe("flagDuplicateH1", () => {
     expect(pages[0].issues[0]).toMatchObject({ code: "h1_duplicate", severity: "warning" });
     expect(pages[1].issues).toHaveLength(1);
     expect(pages[2].issues).toHaveLength(0);
+  });
+});
+
+describe("duplicados entre versiones hreflang", () => {
+  const mk = (url: string, title: string, h1Text = title) =>
+    ({ url, fetchedUrl: url, status: 200, ttfbMs: 1, title, description: "d", canonical: url, h1Count: 1, h1Text, robots: null, issues: [] }) as Parameters<typeof flagDuplicateTitles>[0][number];
+  const a = "https://x/equipo/ana";
+  const aEn = "https://x/en/equipo/ana";
+  const other = "https://x/servicios/otro";
+  const groups = buildAlternateGroups(
+    new Map<string, Record<string, string>>([
+      [a, { es: a, en: aEn }],
+      [aEn, { es: a, en: aEn }],
+      [other, {}],
+    ])
+  );
+
+  it("el mismo título en la página y en su versión de otro idioma NO es un duplicado", () => {
+    const pages = flagDuplicateTitles([mk(a, "Ana López"), mk(aEn, "Ana López")], groups);
+    expect(pages.flatMap((p) => p.issues)).toEqual([]);
+    expect(flagDuplicateH1([mk(a, "Ana"), mk(aEn, "Ana")], groups).flatMap((p) => p.issues)).toEqual([]);
+  });
+
+  it("sí lo es entre páginas que no son versiones una de otra (la home y el servicio del diagnóstico)", () => {
+    const pages = flagDuplicateTitles([mk(a, "Mismo título"), mk(aEn, "Mismo título"), mk(other, "Mismo título")], groups);
+    expect(pages[2].issues[0].message).toContain(a);
+    expect(pages[0].issues[0].message).toContain(other);
+    expect(pages[0].issues[0].message).not.toContain(aEn);
+  });
+
+  it("sin grupos se comporta como antes (toda URL distinta cuenta)", () => {
+    expect(flagDuplicateTitles([mk(a, "T"), mk(aEn, "T")]).flatMap((p) => p.issues)).toHaveLength(2);
   });
 });

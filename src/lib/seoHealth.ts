@@ -375,8 +375,28 @@ export function auditParsedPage(
   return base;
 }
 
-/** Marca los títulos repetidos entre URLs distintas. Muta y devuelve el mismo arreglo. */
-export function flagDuplicateTitles(pages: SeoPageResult[]): SeoPageResult[] {
+/**
+ * Identificador de "la misma página en otros idiomas": las URLs que el sitemap declara como alternativas hreflang
+ * entre sí comparten clave. Un título o un H1 igual entre ellas NO es un duplicado (el nombre de una persona o una
+ * marca no se traduce); sí lo es entre páginas que no son versiones una de otra.
+ */
+export type AlternateGroups = ReadonlyMap<string, string>;
+
+export function buildAlternateGroups(alternatesByLoc: ReadonlyMap<string, Record<string, string>>): AlternateGroups {
+  const groups = new Map<string, string>();
+  for (const [loc, alternates] of alternatesByLoc) {
+    const members = [...new Set([loc, ...Object.values(alternates)])].map(normalizeUrl).sort();
+    groups.set(normalizeUrl(loc), members.length > 1 ? members.join("|") : normalizeUrl(loc));
+  }
+  return groups;
+}
+
+function groupKeyOf(page: SeoPageResult, groups?: AlternateGroups): string {
+  return groups?.get(normalizeUrl(page.url)) ?? normalizeUrl(page.url);
+}
+
+/** Marca los títulos repetidos entre URLs distintas (las versiones hreflang de una misma página no cuentan). Muta y devuelve el mismo arreglo. */
+export function flagDuplicateTitles(pages: SeoPageResult[], groups?: AlternateGroups): SeoPageResult[] {
   const byTitle = new Map<string, SeoPageResult[]>();
   for (const page of pages) {
     if (!page.title) continue;
@@ -386,9 +406,10 @@ export function flagDuplicateTitles(pages: SeoPageResult[]): SeoPageResult[] {
     else byTitle.set(key, [page]);
   }
   for (const group of byTitle.values()) {
-    if (group.length < 2) continue;
+    if (new Set(group.map((p) => groupKeyOf(p, groups))).size < 2) continue;
     for (const page of group) {
-      const others = group.filter((p) => p !== page).map((p) => p.url);
+      const others = group.filter((p) => groupKeyOf(p, groups) !== groupKeyOf(page, groups)).map((p) => p.url);
+      if (others.length === 0) continue;
       page.issues.push(
         issue("title_duplicate", "error", `Título duplicado con ${others.length} URL(s): ${others.slice(0, 3).join(", ")}`)
       );
@@ -398,7 +419,7 @@ export function flagDuplicateTitles(pages: SeoPageResult[]): SeoPageResult[] {
 }
 
 /** Avisa (no rompe) de los H1 idénticos entre URLs distintas: señal de páginas que compiten por la misma búsqueda. */
-export function flagDuplicateH1(pages: SeoPageResult[]): SeoPageResult[] {
+export function flagDuplicateH1(pages: SeoPageResult[], groups?: AlternateGroups): SeoPageResult[] {
   const byH1 = new Map<string, SeoPageResult[]>();
   for (const page of pages) {
     if (!page.h1Text) continue;
@@ -408,9 +429,10 @@ export function flagDuplicateH1(pages: SeoPageResult[]): SeoPageResult[] {
     else byH1.set(key, [page]);
   }
   for (const group of byH1.values()) {
-    if (group.length < 2) continue;
+    if (new Set(group.map((p) => groupKeyOf(p, groups))).size < 2) continue;
     for (const page of group) {
-      const others = group.filter((p) => p !== page).map((p) => p.url);
+      const others = group.filter((p) => groupKeyOf(p, groups) !== groupKeyOf(page, groups)).map((p) => p.url);
+      if (others.length === 0) continue;
       page.issues.push(issue("h1_duplicate", "warning", `H1 duplicado con ${others.length} URL(s): ${others.slice(0, 3).join(", ")}`));
     }
   }
@@ -521,8 +543,9 @@ export async function runSeoHealthCheck(options: RunOptions): Promise<SeoHealthR
     }
   }
 
-  flagDuplicateTitles(pages);
-  flagDuplicateH1(pages);
+  const alternateGroups = buildAlternateGroups(alternatesByLoc);
+  flagDuplicateTitles(pages, alternateGroups);
+  flagDuplicateH1(pages, alternateGroups);
   return {
     baseUrl,
     startedAt,
