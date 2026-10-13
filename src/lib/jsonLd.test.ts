@@ -29,7 +29,9 @@ describe("grafo del sitio (layout raíz)", () => {
   it("la organización trae el nombre legal, los alias de marca, el fundador y sameAs", () => {
     const org = byId(siteNodes, ORGANIZATION_ID)!;
     expect(hasType(org, "ProfessionalService") && hasType(org, "Organization")).toBe(true);
-    expect(org.legalName).toBeTruthy();
+    // El nombre comercial, no el civil del titular (no hay aprobación explícita para publicarlo).
+    expect(org.legalName).toBe("SkyCode Agency");
+    expect(JSON.stringify(org)).not.toContain("Betancourt Ortiz");
     expect(org.alternateName).toEqual(["SkyCode", "Sky Code", "SkyCode Agency"]);
     expect((org.founder as JsonLdNode).name).toBeTruthy();
     const sameAs = org.sameAs as string[];

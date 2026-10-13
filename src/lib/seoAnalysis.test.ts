@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   ALERT_THRESHOLDS,
   buildSeoAlerts,
+  buildWatchAlert,
   compareByPage,
   compareByQuery,
   findCannibalization,
@@ -195,5 +196,26 @@ describe("localeOfPage", () => {
     expect(localeOfPage(`${SITE}/fr`)).toBe("fr");
     expect(localeOfPage(`${SITE}/servicios/x`)).toBe("es");
     expect(localeOfPage(`${SITE}/entregables`)).toBe("es");
+  });
+});
+
+describe("vigilancia tras un cambio de título", () => {
+  const watch = { id: 7, query: "migration système legacy", label: "Título de /fr/blog/…", changedAt: "2026-10-12", watchUntil: "2026-10-26", baselinePosition: 10.2, baselineImpressions: 5, alertAbovePosition: 15 };
+
+  it("avisa si, ya con el título nuevo, la posición media queda peor que 15", () => {
+    const alert = buildWatchAlert(watch, { impressions: 4, position: 17.3 }, "2026-10-20")!;
+    expect(alert).toMatchObject({ kind: "watch_drop", severity: "warning", dedupeKey: "watch:7" });
+    expect(alert.title).toContain("17.3");
+    expect(alert.detail).toContain("10.2");
+    expect(alert.detail).toContain("2026-10-26");
+  });
+
+  it("no avisa en 15 o mejor, sin datos posteriores al cambio, ni fuera de la ventana de dos semanas", () => {
+    expect(buildWatchAlert(watch, { impressions: 4, position: 15 }, "2026-10-20")).toBeNull();
+    expect(buildWatchAlert(watch, { impressions: 4, position: 9 }, "2026-10-20")).toBeNull();
+    expect(buildWatchAlert(watch, null, "2026-10-20")).toBeNull();
+    expect(buildWatchAlert(watch, { impressions: 0, position: 30 }, "2026-10-20")).toBeNull();
+    expect(buildWatchAlert(watch, { impressions: 4, position: 30 }, "2026-10-27")).toBeNull();
+    expect(buildWatchAlert(watch, { impressions: 4, position: 30 }, "2026-10-26")).not.toBeNull(); // el último día cuenta
   });
 });

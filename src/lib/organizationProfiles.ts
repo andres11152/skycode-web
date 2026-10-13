@@ -18,11 +18,11 @@ const PENDING_PROFILES = [
 export const organizationSameAs: string[] = withoutTodos([socials.facebook, socials.instagram, ...PENDING_PROFILES]);
 
 /**
- * Nombre legal del titular. SkyCode Agency es el nombre comercial de una persona natural inscrita en
- * el RUT (sin razón social): es el mismo dato que ya publica la política de privacidad
- * (`CONTROLLER` en content/legal.ts). Si se constituye una sociedad, se cambia aquí y allá.
+ * `legalName` del schema: el NOMBRE COMERCIAL. SkyCode Agency es el nombre comercial de una persona natural inscrita en
+ * el RUT (sin razón social) y no existe un campo de configuración que apruebe publicar el nombre civil del titular en
+ * el schema, así que no se expone. Si se constituye una sociedad, aquí va su razón social.
  */
-export const ORGANIZATION_LEGAL_NAME = "Andrés Felipe Betancourt Ortiz";
+export const ORGANIZATION_LEGAL_NAME = "SkyCode Agency";
 
 /** Nombres con los que la gente busca la marca (variantes con y sin espacio) — alimenta el SERP de marca. */
 export const ORGANIZATION_ALTERNATE_NAMES = ["SkyCode", "Sky Code", "SkyCode Agency"] as const;

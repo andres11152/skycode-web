@@ -33,6 +33,7 @@ const KIND_LABEL: Record<SeoAlert["kind"], string> = {
   cannibalization: "Canibalización",
   wrong_target: "Página equivocada",
   url_not_ok: "URL caída",
+  watch_drop: "Vigilancia de título",
 };
 
 const shortUrl = (url: string) => url.replace(/^https?:\/\/[^/]+/, "") || "/";

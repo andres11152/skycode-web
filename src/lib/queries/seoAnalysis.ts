@@ -1,9 +1,11 @@
 import { query } from "../db";
 import { logError } from "../logger";
 import { listKeywordEntries } from "../../seo/keyword-map";
-import { buildSeoAlerts, type PeriodRow, type SeoAlertDraft, type SeoAlertKind, type SeoAlertSeverity } from "../seoAnalysis";
+import { buildSeoAlerts, buildWatchAlert, type PeriodRow, type SeoAlertDraft, type SeoAlertKind, type SeoAlertSeverity } from "../seoAnalysis";
 import { getLatestSeoHealthRun } from "./seoHealth";
 import { createNotification } from "./notifications";
+import { getActiveSeoWatches, getWatchAfter, recordWatchCheck } from "./seoWatches";
+import { todayBogota } from "../dateOnly";
 
 // Lectura de `gsc_metrics` por ventanas de una semana y registro de alertas en `seo_alerts`. La lógica de
 // análisis (qué es canibalización, caída, top 10…) es pura y vive en `lib/seoAnalysis.ts`.
@@ -186,7 +188,7 @@ export async function notifyAdminsOfSeoAlerts(created: SeoAlert[]): Promise<numb
   return sent;
 }
 
-export const SEO_ALERT_KINDS: readonly SeoAlertKind[] = ["top10_entry", "page_drop", "cannibalization", "wrong_target", "url_not_ok"];
+export const SEO_ALERT_KINDS: readonly SeoAlertKind[] = ["top10_entry", "page_drop", "cannibalization", "wrong_target", "url_not_ok", "watch_drop"];
 
 export interface SeoAnalysisRun {
   /** Última fecha con datos de Search Console, o `null` si todavía no hay ninguno. */
@@ -216,7 +218,16 @@ export async function runSeoAnalysis(): Promise<SeoAnalysisRun> {
     entries: listKeywordEntries(),
     nonOkUrls,
   });
-  const kinds = windows ? SEO_ALERT_KINDS : (["url_not_ok"] as const);
+
+  // Vigilancias tras un cambio de título: miden lo ocurrido después del cambio, no las ventanas semanales.
+  const today = todayBogota();
+  for (const watch of await getActiveSeoWatches(today)) {
+    const after = await getWatchAfter(watch);
+    await recordWatchCheck(watch.id, after);
+    const alert = buildWatchAlert(watch, after, today);
+    if (alert) drafts.push(alert);
+  }
+  const kinds = windows ? SEO_ALERT_KINDS : (["url_not_ok", "watch_drop"] as const);
 
   const { created, resolved } = await syncSeoAlerts(drafts.filter((d) => kinds.includes(d.kind)), kinds);
   const notified = await notifyAdminsOfSeoAlerts(created);

@@ -3,6 +3,7 @@ import { createTestUser, resetTestDb } from "../testHelpers/db";
 import { query } from "../db";
 import { upsertGscMetrics } from "./seoMetrics";
 import type { GscRow } from "../googleSearchConsole";
+import { todayBogota } from "../dateOnly";
 import { getOpenSeoAlerts, loadSeoWindows, runSeoAnalysis, syncSeoAlerts, SEO_ALERT_KINDS } from "./seoAnalysis";
 
 beforeEach(async () => {
@@ -118,5 +119,55 @@ describe("runSeoAnalysis", () => {
   it("sin datos de Search Console no falla y solo evalúa las URLs caídas de la última auditoría", async () => {
     const run = await runSeoAnalysis();
     expect(run).toMatchObject({ latestDate: null, created: 0, alertsOpen: 0 });
+  });
+});
+
+describe("vigilancia tras un cambio de título (seo_watches)", () => {
+  const FR = `${SITE}/fr/blog/migration-systeme-legacy-sans-interruption`;
+  const QUERY = "migration système legacy";
+  const shift = (days: number) => {
+    const d = new Date(`${todayBogota()}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + days);
+    return d.toISOString().slice(0, 10);
+  };
+  async function watch(changedAtOffset: number, watchDays = 14) {
+    const r = await query(
+      `INSERT INTO seo_watches (query, label, changed_at, watch_until, baseline_position, baseline_impressions, alert_above_position)
+       VALUES ($1, 'Título de /fr/blog', $2::date, $2::date + $3::int, 10.2, 5, 15) RETURNING id;`,
+      [QUERY, shift(changedAtOffset), watchDays]
+    );
+    return Number(r.rows[0].id);
+  }
+
+  it("avisa si la posición medida después del cambio queda peor que 15, una sola vez, y se cierra al recuperarse", async () => {
+    const id = await watch(-3);
+    // Antes del cambio: posición ~10 (no cuenta). Después: 18.
+    await upsertGscMetrics([gsc(shift(-5), FR, QUERY, 5, 10), gsc(shift(-1), FR, QUERY, 3, 18)]);
+
+    const first = await runSeoAnalysis();
+    expect(first.created).toBe(1);
+    const [alert] = (await getOpenSeoAlerts()).filter((a) => a.kind === "watch_drop");
+    expect(alert).toMatchObject({ kind: "watch_drop", dedupeKey: `watch:${id}` });
+    expect(alert.title).toContain("18.0");
+
+    expect((await runSeoAnalysis()).created).toBe(0); // no se repite el aviso
+
+    // Mejora (datos posteriores con mejor posición): la media ponderada vuelve a ≤15 y la alerta se cierra.
+    await upsertGscMetrics([gsc(shift(0), FR, QUERY, 30, 8)]);
+    await runSeoAnalysis();
+    expect((await getOpenSeoAlerts()).filter((a) => a.kind === "watch_drop")).toHaveLength(0);
+    const watchRow = await query(`SELECT last_position::float AS p, last_impressions FROM seo_watches WHERE id = $1;`, [id]);
+    expect(watchRow.rows[0].last_impressions).toBe(33);
+  });
+
+  it("no avisa sin datos posteriores al cambio ni cuando la ventana de dos semanas ya terminó", async () => {
+    await watch(-3);
+    await upsertGscMetrics([gsc(shift(-5), FR, QUERY, 5, 30)]); // solo datos ANTERIORES al cambio
+    expect((await runSeoAnalysis()).created).toBe(0);
+
+    await resetTestDb();
+    await watch(-20); // cambio hace 20 días: la vigilancia terminó hace 6
+    await upsertGscMetrics([gsc(shift(-1), FR, QUERY, 5, 30)]);
+    expect((await runSeoAnalysis()).created).toBe(0);
   });
 });

@@ -21,6 +21,7 @@
     "db:seo-legacy-cluster": "node --env-file=.env.local scripts/seo-legacy-migration-cluster.mjs",
     "db:seo-legacy-guide": "node --env-file=.env.local scripts/seo-legacy-guide-reframe.mjs",
     "db:seo-localized-slugs": "node --env-file=.env.local scripts/seo-localized-slugs.mjs",
+    "db:seo-watch": "node --env-file=.env.local scripts/seo-register-watch.mjs",
     "db:seo-case-studies": "node --env-file=.env.local scripts/seo-case-studies.mjs",
     "db:seo-outsourcing-meta": "node --env-file=.env.local scripts/seo-outsourcing-post-meta.mjs",
     "db:seo-blog-links": "node --env-file=.env.local scripts/seo-blog-internal-links.mjs",

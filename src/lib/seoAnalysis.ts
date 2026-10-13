@@ -315,7 +315,7 @@ export function compareByPage(current: PeriodRow[], previous: PeriodRow[]): Page
 
 // ── Alertas ─────────────────────────────────────────────────────────────────────────────────────
 
-export type SeoAlertKind = "top10_entry" | "page_drop" | "cannibalization" | "wrong_target" | "url_not_ok";
+export type SeoAlertKind = "top10_entry" | "page_drop" | "cannibalization" | "wrong_target" | "url_not_ok" | "watch_drop";
 export type SeoAlertSeverity = "info" | "warning" | "critical";
 
 export interface SeoAlertDraft {
@@ -344,6 +344,47 @@ export const ALERT_THRESHOLDS = {
 
 const shortPath = (page: string) => pathOfPage(page);
 const fixed = (n: number) => n.toFixed(1);
+
+// ── Vigilancia tras un cambio de título ─────────────────────────────────────────────────────────
+
+export interface SeoWatch {
+  id: number;
+  query: string;
+  label: string;
+  /** Fecha (`YYYY-MM-DD`, Bogotá) en que se cambió el título/H1. */
+  changedAt: string;
+  /** Último día de la vigilancia (inclusive). */
+  watchUntil: string;
+  baselinePosition: number | null;
+  baselineImpressions: number;
+  /** Se avisa si la posición media DESPUÉS del cambio es peor (mayor) que esto. */
+  alertAbovePosition: number;
+}
+
+/** Posición e impresiones de la búsqueda con fecha posterior al cambio (lo que Search Console ya midió con el título nuevo). */
+export interface WatchAfter {
+  impressions: number;
+  position: number;
+}
+
+/**
+ * Alerta de una vigilancia: solo mientras dura la ventana y hay datos posteriores al cambio. Sin impresiones después
+ * del cambio no hay nada que comparar (no avisa: "sin datos" no es "bajó").
+ */
+export function buildWatchAlert(watch: SeoWatch, after: WatchAfter | null, today: string): SeoAlertDraft | null {
+  if (today > watch.watchUntil || !after || after.impressions <= 0) return null;
+  if (after.position <= watch.alertAbovePosition) return null;
+  const baseline =
+    watch.baselinePosition === null ? "sin posición de partida registrada" : `posición de partida ${fixed(watch.baselinePosition)} (${watch.baselineImpressions} imp.)`;
+  return {
+    kind: "watch_drop",
+    severity: "warning",
+    dedupeKey: `watch:${watch.id}`,
+    title: `«${watch.query}» bajó de la posición ${watch.alertAbovePosition} tras el cambio de título (pos. ${fixed(after.position)})`,
+    detail: `${watch.label ? `${watch.label}. ` : ""}Cambio del ${watch.changedAt}; vigilancia hasta el ${watch.watchUntil}. ${baseline}; después del cambio: ${after.impressions} imp.`,
+    data: { watchId: watch.id, query: watch.query, changedAt: watch.changedAt, baselinePosition: watch.baselinePosition, position: after.position, impressions: after.impressions },
+  };
+}
 
 export interface BuildAlertsInput {
   current: PeriodRow[];
