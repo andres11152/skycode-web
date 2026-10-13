@@ -91,7 +91,8 @@ export interface UpdateRetainerData {
   description?: string;
 }
 
-export async function updateRetainer(id: number, data: UpdateRetainerData, dbRunner: QueryRunner): Promise<boolean> {
+/** `now` es el reloj inyectable (por defecto, el real): "hoy" siempre se calcula en Bogotá, nunca en UTC. */
+export async function updateRetainer(id: number, data: UpdateRetainerData, dbRunner: QueryRunner, now: Date = new Date()): Promise<boolean> {
   const fields: string[] = [];
   const params: unknown[] = [];
   let idx = 1;
@@ -104,7 +105,10 @@ export async function updateRetainer(id: number, data: UpdateRetainerData, dbRun
     if (data.status !== "cancelled") guard = " AND status <> 'cancelled'";
     // Al reactivar, la próxima factura no puede quedar en el pasado: el cron
     // facturaría uno a uno todos los meses de pausa en días seguidos.
-    if (data.status === "active") fields.push("next_invoice_date = GREATEST(next_invoice_date, (now() AT TIME ZONE 'America/Bogota')::date)");
+    if (data.status === "active") {
+      fields.push(`next_invoice_date = GREATEST(next_invoice_date, ($${idx++}::timestamptz AT TIME ZONE 'America/Bogota')::date)`);
+      params.push(now.toISOString());
+    }
   }
   if (data.amount !== undefined) {
     fields.push(`amount = $${idx++}`);
@@ -150,13 +154,14 @@ export async function softDeleteRetainer(id: number, dbRunner: QueryRunner): Pro
  * el mismo período: cada corrida solo mira si YA llegó la fecha, avanza
  * un mes, y listo.
  */
-export async function generateDueRetainerInvoices(): Promise<number> {
+export async function generateDueRetainerInvoices(now: Date = new Date()): Promise<number> {
   const dueRes = await query(
     `SELECT id, project_id, description, amount, currency, next_invoice_date::text AS next_invoice_date, created_by
      FROM retainers
-     WHERE deleted_at IS NULL AND status = 'active' AND next_invoice_date <= (now() AT TIME ZONE 'America/Bogota')::date
+     WHERE deleted_at IS NULL AND status = 'active' AND next_invoice_date <= ($1::timestamptz AT TIME ZONE 'America/Bogota')::date
        AND EXISTS (SELECT 1 FROM projects p WHERE p.id = retainers.project_id AND p.deleted_at IS NULL)
-     ORDER BY id;`
+     ORDER BY id;`,
+    [now.toISOString()]
   );
 
   let generated = 0;

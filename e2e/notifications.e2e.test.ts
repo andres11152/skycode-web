@@ -4,6 +4,7 @@ import { BASE_URL } from "./helpers/config";
 import { query } from "../src/lib/db";
 import { notifyLeadFollowUps } from "../src/lib/queries/notifications";
 import { createTestLead, createTestUser, resetTestDb } from "../src/lib/testHelpers/db";
+import { CLOCK, TODAY } from "../src/lib/testHelpers/clock";
 
 beforeEach(async () => {
   await resetTestDb();
@@ -13,8 +14,8 @@ describe("Notificaciones in-app — extremo a extremo", () => {
   it("GET /api/notifications devuelve solo las propias, con el conteo de no leídas", async () => {
     const user = await createTestUser({ password: "SuperSecret123456" });
     const lead = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
-    await notifyLeadFollowUps();
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
+    await notifyLeadFollowUps(CLOCK);
 
     const userClient = await loginAs(user.email, "SuperSecret123456");
     const res = await userClient.get("/api/notifications");
@@ -29,8 +30,8 @@ describe("Notificaciones in-app — extremo a extremo", () => {
     const owner = await createTestUser({ password: "SuperSecret123456" });
     const other = await createTestUser({ password: "SuperSecret123456" });
     const lead = await createTestLead({ ownerId: owner.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
-    await notifyLeadFollowUps();
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
+    await notifyLeadFollowUps(CLOCK);
 
     const otherClient = await loginAs(other.email, "SuperSecret123456");
     const res = await otherClient.get("/api/notifications");
@@ -42,8 +43,8 @@ describe("Notificaciones in-app — extremo a extremo", () => {
   it("PATCH /api/notifications/[id] marca como leída y baja el conteo", async () => {
     const user = await createTestUser({ password: "SuperSecret123456" });
     const lead = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
-    await notifyLeadFollowUps();
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
+    await notifyLeadFollowUps(CLOCK);
 
     const userClient = await loginAs(user.email, "SuperSecret123456");
     const listRes = await userClient.get("/api/notifications");
@@ -62,8 +63,8 @@ describe("Notificaciones in-app — extremo a extremo", () => {
     const owner = await createTestUser({ password: "SuperSecret123456" });
     const attacker = await createTestUser({ password: "SuperSecret123456" });
     const lead = await createTestLead({ ownerId: owner.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
-    await notifyLeadFollowUps();
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
+    await notifyLeadFollowUps(CLOCK);
 
     const ownerClient = await loginAs(owner.email, "SuperSecret123456");
     const { notifications } = await (await ownerClient.get("/api/notifications")).json();
@@ -80,8 +81,8 @@ describe("Notificaciones in-app — extremo a extremo", () => {
     const user = await createTestUser({ password: "SuperSecret123456" });
     const leadA = await createTestLead({ ownerId: user.id });
     const leadB = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id IN ($1, $2);`, [leadA.id, leadB.id]);
-    await notifyLeadFollowUps();
+    await query(`UPDATE leads SET next_follow_up_at = $3::date WHERE id IN ($1, $2);`, [leadA.id, leadB.id, TODAY]);
+    await notifyLeadFollowUps(CLOCK);
 
     const userClient = await loginAs(user.email, "SuperSecret123456");
     const markAllRes = await userClient.post("/api/notifications");

@@ -9,6 +9,7 @@ import {
   markAllNotificationsRead,
 } from "./notifications";
 import { query, withTransaction } from "../db";
+import { CLOCK, TODAY, dayOffset } from "../testHelpers/clock";
 import { createTicket } from "./supportTickets";
 import { createInvoice } from "./invoices";
 import {
@@ -167,13 +168,24 @@ describe("notifySlaWarnings", () => {
   });
 });
 
+describe("notifyLeadFollowUps — \"hoy\" es la fecha de Bogotá, no la de UTC", () => {
+  it("a las 22:30 de Bogotá avisa el seguimiento de hoy y NO el de mañana (que en UTC ya es hoy)", async () => {
+    const owner = await createTestUser();
+    const due = await createTestLead({ ownerId: owner.id });
+    const tomorrow = await createTestLead({ ownerId: owner.id });
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [due.id, TODAY]);
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [tomorrow.id, dayOffset(1)]);
+    expect(await notifyLeadFollowUps(CLOCK)).toBe(1);
+  });
+});
+
 describe("notifyLeadFollowUps", () => {
   it("avisa un lead cuyo recontacto es hoy, y marca como avisado", async () => {
     const user = await createTestUser();
     const lead = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
 
-    const count = await notifyLeadFollowUps();
+    const count = await notifyLeadFollowUps(CLOCK);
     expect(count).toBe(1);
 
     const row = await query(`SELECT follow_up_notified_at FROM leads WHERE id = $1;`, [lead.id]);
@@ -183,56 +195,56 @@ describe("notifyLeadFollowUps", () => {
   it("avisa un recontacto ya vencido (fecha pasada, nunca avisada)", async () => {
     const user = await createTestUser();
     const lead = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE - INTERVAL '3 days' WHERE id = $1;`, [lead.id]);
+    await query(`UPDATE leads SET next_follow_up_at = $2::date - 3 WHERE id = $1;`, [lead.id, TODAY]);
 
-    const count = await notifyLeadFollowUps();
+    const count = await notifyLeadFollowUps(CLOCK);
     expect(count).toBe(1);
   });
 
   it("ignora un recontacto agendado a futuro", async () => {
     const user = await createTestUser();
     const lead = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE + INTERVAL '5 days' WHERE id = $1;`, [lead.id]);
+    await query(`UPDATE leads SET next_follow_up_at = $2::date + 5 WHERE id = $1;`, [lead.id, TODAY]);
 
-    expect(await notifyLeadFollowUps()).toBe(0);
+    expect(await notifyLeadFollowUps(CLOCK)).toBe(0);
   });
 
   it("no reprocesa un recontacto ya avisado (idempotente entre corridas)", async () => {
     const user = await createTestUser();
     const lead = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
 
-    await notifyLeadFollowUps();
-    const second = await notifyLeadFollowUps();
+    await notifyLeadFollowUps(CLOCK);
+    const second = await notifyLeadFollowUps(CLOCK);
     expect(second).toBe(0);
   });
 
   it("ignora leads sin recontacto agendado", async () => {
     await createTestLead();
-    expect(await notifyLeadFollowUps()).toBe(0);
+    expect(await notifyLeadFollowUps(CLOCK)).toBe(0);
   });
 
   it("ignora leads ya cerrados (Ganado/Perdido) aunque tengan un recontacto vencido sin borrar", async () => {
     const won = await createTestLead({ status: "Ganado" });
     const lost = await createTestLead({ status: "Perdido" });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id IN ($1, $2);`, [won.id, lost.id]);
+    await query(`UPDATE leads SET next_follow_up_at = $3::date WHERE id IN ($1, $2);`, [won.id, lost.id, TODAY]);
 
-    expect(await notifyLeadFollowUps()).toBe(0);
+    expect(await notifyLeadFollowUps(CLOCK)).toBe(0);
   });
 
   it("un lead sin dueño se marca como avisado igual, sin fallar (solo no se envía correo)", async () => {
     const lead = await createTestLead({ ownerId: null });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
 
-    const count = await notifyLeadFollowUps();
+    const count = await notifyLeadFollowUps(CLOCK);
     expect(count).toBe(1);
   });
 
   it("ignora leads borrados lógicamente", async () => {
     const lead = await createTestLead({ deletedAt: new Date() });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
 
-    expect(await notifyLeadFollowUps()).toBe(0);
+    expect(await notifyLeadFollowUps(CLOCK)).toBe(0);
   });
 });
 
@@ -285,9 +297,9 @@ describe("notificaciones in-app (campanita) — mismo evento que el correo", () 
   it("notifyLeadFollowUps crea una notificación in-app para el dueño del lead", async () => {
     const user = await createTestUser();
     const lead = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
 
-    await notifyLeadFollowUps();
+    await notifyLeadFollowUps(CLOCK);
 
     const { notifications } = await getUserNotifications(user.id);
     expect(notifications).toHaveLength(1);
@@ -296,9 +308,9 @@ describe("notificaciones in-app (campanita) — mismo evento que el correo", () 
 
   it("un lead sin dueño no genera ninguna notificación in-app (nadie a quién mostrársela)", async () => {
     const lead = await createTestLead({ ownerId: null });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
 
-    await notifyLeadFollowUps();
+    await notifyLeadFollowUps(CLOCK);
 
     const allNotifications = await query(`SELECT id FROM notifications;`);
     expect(allNotifications.rows).toHaveLength(0);
@@ -310,8 +322,8 @@ describe("getUserNotifications / markNotificationRead / markAllNotificationsRead
     const user = await createTestUser();
     const otherUser = await createTestUser();
     const lead = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
-    await notifyLeadFollowUps();
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
+    await notifyLeadFollowUps(CLOCK);
 
     const { notifications: forOwner } = await getUserNotifications(user.id);
     const { notifications: forOther } = await getUserNotifications(otherUser.id);
@@ -322,8 +334,8 @@ describe("getUserNotifications / markNotificationRead / markAllNotificationsRead
   it("markNotificationRead marca como leída y descuenta el conteo de no leídas", async () => {
     const user = await createTestUser();
     const lead = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
-    await notifyLeadFollowUps();
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
+    await notifyLeadFollowUps(CLOCK);
 
     const { notifications } = await getUserNotifications(user.id);
     const marked = await markNotificationRead(notifications[0].id, user.id);
@@ -338,8 +350,8 @@ describe("getUserNotifications / markNotificationRead / markAllNotificationsRead
     const user = await createTestUser();
     const attacker = await createTestUser();
     const lead = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id = $1;`, [lead.id]);
-    await notifyLeadFollowUps();
+    await query(`UPDATE leads SET next_follow_up_at = $2::date WHERE id = $1;`, [lead.id, TODAY]);
+    await notifyLeadFollowUps(CLOCK);
 
     const { notifications } = await getUserNotifications(user.id);
     const marked = await markNotificationRead(notifications[0].id, attacker.id);
@@ -353,8 +365,8 @@ describe("getUserNotifications / markNotificationRead / markAllNotificationsRead
     const user = await createTestUser();
     const leadA = await createTestLead({ ownerId: user.id });
     const leadB = await createTestLead({ ownerId: user.id });
-    await query(`UPDATE leads SET next_follow_up_at = CURRENT_DATE WHERE id IN ($1, $2);`, [leadA.id, leadB.id]);
-    await notifyLeadFollowUps();
+    await query(`UPDATE leads SET next_follow_up_at = $3::date WHERE id IN ($1, $2);`, [leadA.id, leadB.id, TODAY]);
+    await notifyLeadFollowUps(CLOCK);
 
     const touched = await markAllNotificationsRead(user.id);
     expect(touched).toBe(2);

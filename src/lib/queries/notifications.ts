@@ -193,7 +193,8 @@ export async function notifySlaWarnings(): Promise<number> {
  * reintentarla cada hora) pero no se envía ningún correo ni notificación
  * — mismo patrón que el resto de `notify*()` de este archivo.
  */
-export async function notifyLeadFollowUps(): Promise<number> {
+export async function notifyLeadFollowUps(now: Date = new Date()): Promise<number> {
+  // `now` inyectable (por defecto, el real): "hoy" es la fecha de Bogotá, no la de UTC.
   const res = await query(`
     WITH candidates AS (
       SELECT l.id, l.name, l.next_follow_up_at, l.follow_up_note, l.owner_id, u.email AS owner_email
@@ -202,7 +203,7 @@ export async function notifyLeadFollowUps(): Promise<number> {
       WHERE l.deleted_at IS NULL
         AND l.follow_up_notified_at IS NULL
         AND l.next_follow_up_at IS NOT NULL
-        AND l.next_follow_up_at <= (now() AT TIME ZONE 'America/Bogota')::date
+        AND l.next_follow_up_at <= ($1::timestamptz AT TIME ZONE 'America/Bogota')::date
         AND l.status NOT IN ('Ganado', 'Perdido')
     )
     UPDATE leads l
@@ -210,7 +211,7 @@ export async function notifyLeadFollowUps(): Promise<number> {
     FROM candidates c
     WHERE l.id = c.id
     RETURNING c.name, c.follow_up_note, c.owner_id, c.owner_email;
-  `);
+  `, [now.toISOString()]);
 
   for (const row of res.rows) {
     if (!row.owner_id) continue;

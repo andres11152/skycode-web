@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { createRetainer, getRetainers, updateRetainer, softDeleteRetainer, generateDueRetainerInvoices } from "./retainers";
 import { query, withTransaction } from "../db";
+import { CLOCK, TODAY, dayOffset } from "../testHelpers/clock";
 import { createTestClient, createTestProject, createTestUser, resetTestDb } from "../testHelpers/db";
 
 beforeEach(async () => {
@@ -99,7 +100,7 @@ describe("generateDueRetainerInvoices", () => {
       )
     );
 
-    const count = await generateDueRetainerInvoices();
+    const count = await generateDueRetainerInvoices(CLOCK);
     expect(count).toBe(1);
 
     const invoiceRes = await query(`SELECT description, amount, currency, project_id FROM invoices WHERE project_id = $1;`, [project.id]);
@@ -120,7 +121,7 @@ describe("generateDueRetainerInvoices", () => {
     );
     await withTransaction((c) => updateRetainer(id!, { status: "paused" }, c));
 
-    expect(await generateDueRetainerInvoices()).toBe(0);
+    expect(await generateDueRetainerInvoices(CLOCK)).toBe(0);
   });
 
   it("no genera factura si la fecha todavía no llega", async () => {
@@ -131,7 +132,7 @@ describe("generateDueRetainerInvoices", () => {
       createRetainer({ project_id: project.id, description: "x", amount: 100, billing_day: 1, next_invoice_date: "2099-01-01" }, user.id, c)
     );
 
-    expect(await generateDueRetainerInvoices()).toBe(0);
+    expect(await generateDueRetainerInvoices(CLOCK)).toBe(0);
   });
 
   it("es idempotente dentro del mismo día: correrlo dos veces seguidas no duplica la factura", async () => {
@@ -144,16 +145,16 @@ describe("generateDueRetainerInvoices", () => {
     // mes seguiría dando una fecha pasada, y una segunda corrida
     // generaría OTRA factura de un mes distinto — eso es el
     // comportamiento correcto de "recuperar atraso" (ver el comentario de
-    // generateDueRetainerInvoices()), no un fallo de idempotencia; probar
+    // generateDueRetainerInvoices(CLOCK)), no un fallo de idempotencia; probar
     // idempotencia real requiere partir de una fecha que quede en el
     // futuro apenas se genera la primera.
-    const today = new Date().toISOString().slice(0, 10);
+    const today = TODAY;
     await withTransaction((c) =>
       createRetainer({ project_id: project.id, description: "x", amount: 100, billing_day: 1, next_invoice_date: today }, user.id, c)
     );
 
-    const first = await generateDueRetainerInvoices();
-    const second = await generateDueRetainerInvoices();
+    const first = await generateDueRetainerInvoices(CLOCK);
+    const second = await generateDueRetainerInvoices(CLOCK);
     expect(first).toBe(1);
     expect(second).toBe(0);
 
@@ -162,6 +163,24 @@ describe("generateDueRetainerInvoices", () => {
   });
 });
 
+
+describe("generateDueRetainerInvoices — \"hoy\" es la fecha de Bogotá, no la de UTC", () => {
+  async function retainerDue(date: string) {
+    const client = await createTestClient();
+    const project = await createTestProject(client.id);
+    const user = await createTestUser();
+    await withTransaction((c) =>
+      createRetainer({ project_id: project.id, description: "x", amount: 100, billing_day: 1, next_invoice_date: date }, user.id, c)
+    );
+  }
+
+  it("a las 22:30 de Bogotá (ya es el día siguiente en UTC) factura lo de hoy y NO lo de mañana", async () => {
+    expect(TODAY).toBe("2026-06-14"); // CLOCK = 03:30 UTC del 15
+    await retainerDue(TODAY);
+    await retainerDue(dayOffset(1)); // 2026-06-15: es "hoy" en UTC, pero todavía no en Bogotá
+    expect(await generateDueRetainerInvoices(CLOCK)).toBe(1);
+  });
+});
 
 describe("generateDueRetainerInvoices — concurrencia y ciclo de vida", () => {
   async function seedDueRetainer() {
@@ -183,13 +202,13 @@ describe("generateDueRetainerInvoices — concurrencia y ciclo de vida", () => {
     // Vence HOY (un solo ciclo pendiente): tras avanzar un mes ya no es
     // elegible, así que cualquier segunda factura sería un duplicado.
     const id = await seedDueRetainer();
-    await query("UPDATE retainers SET next_invoice_date = CURRENT_DATE WHERE id = $1;", [id]);
+    await query("UPDATE retainers SET next_invoice_date = $2::date WHERE id = $1;", [id, TODAY]);
 
-    await Promise.all([generateDueRetainerInvoices(), generateDueRetainerInvoices()]);
+    await Promise.all([generateDueRetainerInvoices(CLOCK), generateDueRetainerInvoices(CLOCK)]);
 
     const invoices = await query("SELECT id FROM invoices;");
     expect(invoices.rows).toHaveLength(1);
-    const next = await query("SELECT next_invoice_date = (CURRENT_DATE + interval '1 month')::date AS ok FROM retainers WHERE id = $1;", [id]);
+    const next = await query("SELECT next_invoice_date = ($2::date + interval '1 month')::date AS ok FROM retainers WHERE id = $1;", [id, TODAY]);
     expect(next.rows[0].ok).toBe(true);
   });
 
@@ -206,19 +225,19 @@ describe("generateDueRetainerInvoices — concurrencia y ciclo de vida", () => {
     );
     await seedDueRetainer();
 
-    expect(await generateDueRetainerInvoices()).toBe(2);
+    expect(await generateDueRetainerInvoices(CLOCK)).toBe(2);
   });
 
   it("reactivar un retainer pausado no factura los meses de pausa; cancelled no se reabre", async () => {
     const id = await seedDueRetainer();
     await withTransaction((c) => updateRetainer(id, { status: "paused" }, c));
-    await withTransaction((c) => updateRetainer(id, { status: "active" }, c));
+    await withTransaction((c) => updateRetainer(id, { status: "active" }, c, CLOCK));
 
-    const next = await query("SELECT next_invoice_date >= CURRENT_DATE AS future FROM retainers WHERE id = $1;", [id]);
+    const next = await query("SELECT next_invoice_date >= $2::date AS future FROM retainers WHERE id = $1;", [id, TODAY]);
     expect(next.rows[0].future).toBe(true);
 
     await withTransaction((c) => updateRetainer(id, { status: "cancelled" }, c));
-    const reopened = await withTransaction((c) => updateRetainer(id, { status: "active" }, c));
+    const reopened = await withTransaction((c) => updateRetainer(id, { status: "active" }, c, CLOCK));
     expect(reopened).toBe(false);
   });
 });
