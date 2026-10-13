@@ -4,6 +4,7 @@ import { resetTestDb } from "../src/lib/testHelpers/db";
 import { extractJsonLd, hasType, validateJsonLd, type JsonLdNode } from "../src/lib/jsonLdValidate";
 import { SERVICE_IDS } from "../src/seo/slugs";
 import { BASE_URL } from "./helpers/config";
+import { revalidatePublicPages } from "./helpers/revalidate";
 
 // Validación estructural del JSON-LD de seis páginas representativas contra el servidor real: home, servicio
 // (español e inglés), guía del blog con FAQ, página de autor y caso de estudio. Comprueba @type, @id, campos
@@ -45,6 +46,7 @@ beforeAll(async () => {
      VALUES ($1, 'es', 'Sentry CRM', 'Cliente', 'Plataforma de leads por WhatsApp.', 'El problema.', 'La solución.', ARRAY['Multi-inquilino']);`,
     [project.rows[0].id]
   );
+  await revalidatePublicPages();
 });
 
 describe("JSON-LD de páginas representativas", () => {

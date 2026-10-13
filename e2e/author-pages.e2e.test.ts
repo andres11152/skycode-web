@@ -4,6 +4,7 @@ import { resetTestDb } from "../src/lib/testHelpers/db";
 import { extractJsonLd, hasType, validateJsonLd } from "../src/lib/jsonLdValidate";
 import { SERVICE_IDS } from "../src/seo/slugs";
 import { BASE_URL } from "./helpers/config";
+import { revalidatePublicPages } from "./helpers/revalidate";
 
 // Página de cada persona del equipo (E-E-A-T): /equipo/{slug} en los tres idiomas, con la entidad Person
 // que cita cada artículo suyo como autor.
@@ -33,6 +34,7 @@ beforeAll(async () => {
      VALUES ('post-de-cesar', 'es', 'published', 'Post de César', 'Descripción.', 'César León', $1, '{}', '[{"type":"paragraph","text":"Texto."}]', now());`,
     [SLUG]
   );
+  await revalidatePublicPages();
 });
 
 describe("páginas de autor", () => {

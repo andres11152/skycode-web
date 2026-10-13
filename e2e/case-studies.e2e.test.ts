@@ -6,6 +6,7 @@ import { resetTestDb } from "../src/lib/testHelpers/db";
 import { extractJsonLd, hasType, validateJsonLd } from "../src/lib/jsonLdValidate";
 import { SERVICE_IDS } from "../src/seo/slugs";
 import { BASE_URL } from "./helpers/config";
+import { revalidatePublicPages } from "./helpers/revalidate";
 
 // Plantilla de caso de estudio (contexto → problema → solución → arquitectura y stack → proceso →
 // resultados) aplicada a Sentry CRM y ServiFuturo con el texto REAL archivado en
@@ -55,6 +56,7 @@ beforeAll(async () => {
     );
     await query(`INSERT INTO portfolio_project_technologies (project_id, technology_id, sort_order) SELECT $1, id, id FROM portfolio_technologies;`, [id]);
   }
+  await revalidatePublicPages();
 });
 
 describe.each(CASES)("caso de estudio $slug", ({ slug, title }) => {

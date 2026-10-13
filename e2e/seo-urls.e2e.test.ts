@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { query } from "../src/lib/db";
 import { resetTestDb } from "../src/lib/testHelpers/db";
 import { BASE_URL } from "./helpers/config";
+import { revalidatePublicPages } from "./helpers/revalidate";
 import { BLOG_POST_SLUGS, SERVICE_IDS, SERVICE_SLUGS, listLocalizedSlugRedirects, publicPostSlug } from "../src/seo/slugs";
 
 // Slugs nativos de servicios y blog en inglés/francés (fase 3 del programa de SEO), contra el servidor
@@ -35,6 +36,8 @@ async function insertPosts(storedSlug: (key: string, locale: (typeof LOCALES)[nu
       );
     }
   }
+  // El sitemap y las páginas del blog se generan estáticas (ISR): sin invalidar verían los datos del build.
+  await revalidatePublicPages();
 }
 
 async function expectRedirectChain(from: string, to: string) {
