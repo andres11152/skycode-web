@@ -1,4 +1,6 @@
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getPublishedPortfolioProjects,
@@ -417,7 +419,14 @@ describe("scripts/seo-case-studies.mjs (datos de los casos de SEO)", () => {
     });
   }
 
-  // `racingbike` tiene 6 capturas en el JSON; el caso de prueba replica el estado en que migrate-portfolio-projects.mjs lo dejó.
+  // El caso de prueba replica el estado en que migrate-portfolio-projects.mjs dejó `racingbike`, con tantas capturas como
+  // describe el JSON (si no coinciden, el script no toca ningún alt a propósito).
+  const racingBikeImageCount = (
+    JSON.parse(readFileSync(join(process.cwd(), "scripts/seed-data/seo/case-studies.json"), "utf-8")) as {
+      projects: Record<string, { alt: { es: string[] } }>;
+    }
+  ).projects.racingbike.alt.es.length;
+
   async function seedRacingBike(admin: { id: number }) {
     const projectId = await withTransaction((c) => createPortfolioProject({ slug: "racingbike", industryIcon: "ShoppingCart" }, admin.id, c));
     await withTransaction((c) =>
@@ -428,7 +437,7 @@ describe("scripts/seo-case-studies.mjs (datos de los casos de SEO)", () => {
         c
       )
     );
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < racingBikeImageCount; i++) {
       await withTransaction(async (c) => {
         const { id } = await addPortfolioProjectImage(
           projectId,
@@ -448,12 +457,12 @@ describe("scripts/seo-case-studies.mjs (datos de los casos de SEO)", () => {
     runScript();
     const first = await getAdminPortfolioDetail(projectId);
     const es = first?.translations.es;
-    expect(es?.clientContext).toContain("Racing Bike 1998 es una tienda de ciclismo");
+    expect(es?.clientContext).toContain("Racing Bike 1998 es una tienda y taller de ciclismo");
     expect(es?.testimonialQuote).toMatch(/^\{\{TODO: /);
     expect(es?.results).toContain("{{TODO:");
     expect(first?.translations.en).toBeNull(); // nunca inventa una traducción que no existe
-    expect(first?.images).toHaveLength(6);
-    expect(first?.images[0].alt.es).toContain("Portada de la tienda Racing Bike 1998");
+    expect(first?.images).toHaveLength(racingBikeImageCount);
+    expect(first?.images[0].alt.es).toContain("Portada de Racing Bike 1998");
     expect(first?.images[0].alt.en).toBeUndefined(); // sin traducción al inglés, su alt no se toca
 
     const second = runScript();
@@ -483,8 +492,8 @@ describe("scripts/seo-case-studies.mjs (datos de los casos de SEO)", () => {
 
     runScript("--force");
     detail = await getAdminPortfolioDetail(projectId);
-    expect(detail?.translations.es?.challenge).toContain("Vender bicicletas y componentes en línea");
-    expect(detail?.images[0].alt.es).toContain("Portada de la tienda Racing Bike 1998");
+    expect(detail?.translations.es?.challenge).toContain("Vender bicicletas de gama alta en línea");
+    expect(detail?.images[0].alt.es).toContain("Portada de Racing Bike 1998");
   });
 
   it("--dry-run no escribe nada", async () => {
