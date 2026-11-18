@@ -37,7 +37,8 @@
     "seo:todos": "node scripts/seo-todos.mjs",
     "seo:lastmod": "node scripts/generate-lastmod.mjs",
     "seo:canonical": "node scripts/seo-canonical-audit.mjs",
-    "gen:phosphor": "node scripts/gen-phosphor-lite.mjs"
+    "gen:phosphor": "node scripts/gen-phosphor-lite.mjs",
+    "db:portfolio-case": "node --env-file=.env.local scripts/portfolio-case-refresh.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1140.0",

@@ -68,9 +68,9 @@ export interface Service {
 export const SERVICE_PROJECT_SLUGS: Record<string, string[]> = {
   "desarrollo-software-medida": ["sentry-crm", "servifuturo"],
   "desarrollo-aplicaciones-moviles": [],
-  "apis-integraciones": ["sentry-crm", "cda-revifull"],
+  "apis-integraciones": ["sentry-crm", "cda-revifull", "5amgym"],
   "frontend-alto-rendimiento": ["equilibrio-arquitectonico", "cda-revifull"],
-  "ecommerce-tienda-online": ["racingbike"],
+  "ecommerce-tienda-online": ["racingbike", "5amgym"],
   "seguridad-cumplimiento": [],
   "arquitectura-documentacion": [],
   "migracion-datos-legacy": [],

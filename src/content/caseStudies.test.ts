@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { countCaseWords, parseCaseText } from "@/content/portfolioShared";
 
-// Protege el JSON de datos de `npm run db:seo-case-studies`: los 5 casos en
+// Protege el JSON de datos de `npm run db:seo-case-studies` y `db:portfolio-case`: los 6 casos en
 // los 3 idiomas, con los mismos campos, sin inventar nada que parezca un dato
 // verificado donde debe haber un marcador `{{TODO}}`, y con la extensión
 // mínima que justificó el trabajo de SEO.
@@ -30,14 +30,14 @@ interface CaseEntry {
 const data = JSON.parse(readFileSync(join(process.cwd(), "scripts/seed-data/seo/case-studies.json"), "utf-8")) as {
   projects: Record<string, CaseEntry>;
 };
-const SLUGS = ["sentry-crm", "servifuturo", "equilibrio-arquitectonico", "cda-revifull", "racingbike"];
+const SLUGS = ["sentry-crm", "servifuturo", "equilibrio-arquitectonico", "cda-revifull", "racingbike", "5amgym"];
 const LOCALES = ["es", "en", "fr"] as const;
 const CHAPTERS = ["clientContext", "challenge", "solution", "architecture", "process", "results"] as const;
 // Imágenes de cada caso en la base (orden de la galería original).
-const IMAGE_COUNT: Record<string, number> = { "sentry-crm": 19, servifuturo: 14, "equilibrio-arquitectonico": 6, "cda-revifull": 5, racingbike: 6 };
+const IMAGE_COUNT: Record<string, number> = { "sentry-crm": 19, servifuturo: 14, "equilibrio-arquitectonico": 6, "cda-revifull": 5, racingbike: 10, "5amgym": 11 };
 
 describe("scripts/seed-data/seo/case-studies.json", () => {
-  it("trae los 5 casos y solo esos", () => {
+  it("trae los 6 casos y solo esos", () => {
     expect(Object.keys(data.projects).sort()).toEqual([...SLUGS].sort());
   });
 
