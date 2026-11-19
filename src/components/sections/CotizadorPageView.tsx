@@ -23,7 +23,7 @@ export function CotizadorPageView({ locale }: { locale: Locale }) {
     <main id="main-content" className="pt-24 sm:pt-28">
       <div className="mx-auto max-w-6xl px-6 pt-4">
         <nav aria-label={content.breadcrumbAria}>
-          <ol className="flex items-center gap-2 text-sm text-foreground/60">
+          <ol className="breadcrumbs flex items-center gap-2 text-sm text-foreground/60">
             <li>
               <Link
                 href={homePath}

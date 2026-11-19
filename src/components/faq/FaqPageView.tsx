@@ -161,7 +161,7 @@ export function FaqPageView({
     <main id="main-content" className="pt-28 sm:pt-36">
       <header className="mx-auto max-w-6xl px-6">
         <nav aria-label={copy.breadcrumbAria}>
-          <ol className="flex items-center gap-2 text-sm text-foreground/60">
+          <ol className="breadcrumbs flex items-center gap-2 text-sm text-foreground/60">
             <li>
               <Link href={homeHref} className={cn("rounded hover:text-foreground", FOCUS)}>
                 {copy.breadcrumbHome}

@@ -184,7 +184,7 @@ export function SwipeRail({
                 onClick={() => goTo(index)}
                 aria-label={t(labels.goTo, { index: String(index + 1), total: String(total) })}
                 aria-current={index === active ? "true" : undefined}
-                className="flex h-11 w-6 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="flex size-11 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
                 <span className="relative block size-2 rounded-full bg-current/20">
                   {/* El punto activo se desliza de una posición a otra (layoutId) en vez de apagarse y encenderse. */}

@@ -300,6 +300,19 @@
   color: var(--accent-secondary);
 }
 
+/* Migas de pan en móvil: cada enlace es un objetivo táctil de 44 px (antes medían 18 px de alto), y
+   el margen negativo devuelve el espacio para que la cabecera de la página no se desplace. */
+@media (max-width: 639px) {
+  .breadcrumbs {
+    margin-block: -0.8125rem;
+  }
+  .breadcrumbs a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+  }
+}
+
 .link-underline {
   position: relative;
 }

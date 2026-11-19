@@ -84,7 +84,7 @@ export async function AuthorPage({ locale, slug }: { locale: Locale; slug: strin
       <header className="px-6 pt-28 pb-16 sm:pt-36 sm:pb-24">
         <div className="mx-auto max-w-6xl">
           <nav aria-label={copy.breadcrumbAria}>
-            <ol className="flex flex-wrap items-center gap-2 text-sm text-foreground/70">
+            <ol className="breadcrumbs flex flex-wrap items-center gap-2 text-sm text-foreground/70">
               <li>
                 <Link href={homePath} className={cn("rounded hover:text-foreground", LINK_FOCUS)}>
                   {copy.breadcrumbHome}

@@ -33,7 +33,8 @@ export function PostCard({
     <Link
       href={blogPostPath(locale, post.slug)}
       className={cn(
-        "group flex h-full flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background outline-none transition-colors duration-200 hover:border-foreground/25 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        // Al tocar, la tarjeta se hunde un poco (respuesta táctil); solo `transform`, anulado con reduced motion.
+        "group flex h-full flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background outline-none transition-[border-color,transform] duration-200 hover:border-foreground/25 active:scale-[0.98] active:duration-100 motion-reduce:active:scale-100 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         className,
       )}
     >

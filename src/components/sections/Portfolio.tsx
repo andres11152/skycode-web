@@ -14,7 +14,8 @@ import { getProjectHostname, type PortfolioProject } from "@/content/portfolioSh
 import { portfolioCasePath, portfolioIndexPath } from "@/lib/portfolioPaths";
 
 // Enlace estirado: el <a> es solo el título (nombre accesible = texto visible, WCAG 2.5.3)
-// y su ::after cubre la tarjeta entera; el anillo de foco se dibuja en ese ::after.
+// y su ::after cubre la tarjeta entera; el anillo de foco se dibuja en ese ::after. Al tocarlo, la
+// tarjeta entera se hunde un poco (`has-[a:active]:scale-…`, CSS).
 const STRETCH =
   "outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-accent focus-visible:after:ring-offset-2 focus-visible:after:ring-offset-background";
 
@@ -51,7 +52,7 @@ function FeaturedCase({
   locale: Locale;
 }) {
   return (
-    <div className="group relative grid gap-8 rounded-xl max-sm:gap-6 lg:grid-cols-12 lg:items-center lg:gap-14">
+    <div className="group relative grid gap-8 rounded-xl transition-transform duration-200 has-[a:active]:scale-[0.985] has-[a:active]:duration-100 motion-reduce:has-[a:active]:scale-100 max-sm:gap-6 lg:grid-cols-12 lg:items-center lg:gap-14">
       <div className="lg:col-span-7">
         <CaseVisual
           slug={project.slug}
@@ -118,7 +119,7 @@ function SecondaryCase({
   locale: Locale;
 }) {
   return (
-    <div className="group relative flex h-full flex-col rounded-xl">
+    <div className="group relative flex h-full flex-col rounded-xl transition-transform duration-200 has-[a:active]:scale-[0.985] has-[a:active]:duration-100 motion-reduce:has-[a:active]:scale-100">
       <CaseVisual
         slug={project.slug}
         imageSrc={project.coverImage?.variants.md ?? null}

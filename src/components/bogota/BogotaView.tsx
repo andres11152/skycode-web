@@ -137,7 +137,7 @@ export function BogotaView({ projects = [] }: { projects?: PortfolioProject[] })
 
         <div className="mx-auto max-w-6xl">
           <nav aria-label={content.breadcrumb.aria}>
-            <ol className="flex flex-wrap items-center gap-2 text-sm text-foreground/70">
+            <ol className="breadcrumbs flex flex-wrap items-center gap-2 text-sm text-foreground/70">
               <li>
                 <Link href="/" className={cn("rounded hover:text-foreground", FOCUS)}>
                   {content.breadcrumb.home}

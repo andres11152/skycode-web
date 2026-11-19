@@ -196,7 +196,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
           <div className="flex items-center gap-2 self-start rounded-full border border-foreground/15 bg-background p-1.5 shadow-sm">
             <button
               onClick={() => setCurrency("COP")}
-              className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-colors ${
+              className={`flex min-h-11 items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-colors sm:min-h-0 ${
                 currency === "COP"
                   ? "bg-accent-strong text-accent-foreground shadow-sm"
                   : "text-foreground/70 hover:text-foreground"
@@ -206,7 +206,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
             </button>
             <button
               onClick={() => setCurrency("USD")}
-              className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-colors ${
+              className={`flex min-h-11 items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-colors sm:min-h-0 ${
                 currency === "USD"
                   ? "bg-accent-strong text-accent-foreground shadow-sm"
                   : "text-foreground/70 hover:text-foreground"
@@ -221,12 +221,13 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
         <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
           {/* Main Selectors */}
           <div className="space-y-8">
-            {/* 1. Tipo de Proyecto */}
+            {/* 1. Tipo de Proyecto. Los títulos de paso son h2 (van directo bajo el h1 de /cotizador):
+                como h3 saltaban un nivel (Lighthouse `heading-order`). */}
             <div>
-              <h3 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-4 flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-accent-foreground">1</span>
+              <h2 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-4 flex items-center gap-2">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-xs text-accent-foreground">1</span>
                 {content.steps.type}
-              </h3>
+              </h2>
               <div className="grid gap-3 sm:grid-cols-2">
                 {projectTypes.map((type) => {
                   const Icon = type.icon;
@@ -262,7 +263,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                         <span className="mt-1 block text-xs leading-relaxed text-foreground/70">{type.desc}</span>
                       </span>
 
-                      <span className="mt-3 block border-t border-foreground/5 pt-2 text-[11px]">
+                      <span className="mt-3 block border-t border-foreground/5 pt-2 text-xs">
                         <span className="font-mono font-bold text-accent-text">
                           {content.fromLabel} {formatPrice(displayPrice)}
                         </span>
@@ -275,10 +276,10 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
 
             {/* 2. Módulos Adicionales */}
             <div>
-              <h3 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-4 flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-accent-foreground">2</span>
+              <h2 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-4 flex items-center gap-2">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-xs text-accent-foreground">2</span>
                 {content.steps.addons}
-              </h3>
+              </h2>
               <div className="grid gap-2.5">
                 {addons.map((addon) => {
                   const isChecked = selectedAddons.includes(addon.id);
@@ -313,10 +314,10 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
 
             {/* 3. Urgencia */}
             <div>
-              <h3 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-3 flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-[10px] text-accent-foreground">3</span>
+              <h2 className="text-xs font-mono font-bold tracking-wider uppercase text-foreground/60 mb-3 flex items-center gap-2">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-strong text-xs text-accent-foreground">3</span>
                 {content.steps.pace}
-              </h3>
+              </h2>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
@@ -329,7 +330,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   }`}
                 >
                   <div className="font-bold mb-0.5">{content.pace.standardTitle}</div>
-                  <div className="text-[11px] text-foreground/60">{content.pace.standardDesc}</div>
+                  <div className="text-xs text-foreground/60">{content.pace.standardDesc}</div>
                 </button>
                 <button
                   type="button"
@@ -344,7 +345,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   <div className="font-bold mb-0.5 text-accent-text flex items-center gap-1">
                     <Lightning size={12} /> {content.pace.expressTitle}
                   </div>
-                  <div className="text-[11px] text-foreground/60">{content.pace.expressDesc}</div>
+                  <div className="text-xs text-foreground/60">{content.pace.expressDesc}</div>
                 </button>
               </div>
             </div>
@@ -361,16 +362,16 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-on-inverse/60">
                   {content.summary.title}
                 </span>
-                <span className="rounded-full bg-on-inverse/10 px-2.5 py-0.5 text-[10px] font-bold text-on-inverse">
+                <span className="rounded-full bg-on-inverse/10 px-2.5 py-0.5 text-xs font-bold text-on-inverse">
                   {currency}
                 </span>
               </div>
 
               {/* Price Display */}
               <div className="space-y-1 mb-6">
-                <div className="flex items-center justify-between text-[11px] text-on-inverse/60">
+                <div className="flex items-center justify-between text-xs text-on-inverse/60">
                   <span>{content.summary.investmentLabel}</span>
-                  <span className="text-accent font-bold text-[10px] flex items-center gap-1">
+                  <span className="text-accent font-bold text-xs flex items-center gap-1">
                     <Tag size={10} /> {content.summary.competitiveRateLabel}
                   </span>
                 </div>
@@ -392,7 +393,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   />
                   <span className="text-sm font-semibold text-on-inverse/70">{currency}</span>
                 </div>
-                <div className="text-[10px] text-on-inverse/50">
+                <div className="text-xs text-on-inverse/50">
                   {currency === "COP"
                     ? `(~ $${Math.round(displayPrice / 4100).toLocaleString("en-US")} USD aprox)`
                     : `(~ $${(displayPrice * 4100).toLocaleString("es-CO")} COP aprox)`}
@@ -445,7 +446,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   sigue siendo el botón de arriba. */}
               <div className="mt-3">
                 {captureStatus === "sent" ? (
-                  <div role="status" className="animate-enter-pop flex min-h-11 items-center justify-center gap-1.5 text-[11px] font-medium text-emerald-400">
+                  <div role="status" className="animate-enter-pop flex min-h-11 items-center justify-center gap-1.5 text-xs font-medium text-emerald-400">
                     <CheckCircle size={13} />
                     <span>{content.emailCapture.successMessage}</span>
                   </div>
@@ -476,7 +477,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                     {/* Autorización de tratamiento de datos (Ley 1581) —
                         mismo requisito que la casilla grande de
                         Contact.tsx, adaptada a este mini-formulario. */}
-                    <label className="flex items-start gap-2 text-[10px] leading-relaxed text-on-inverse/60">
+                    <label className="flex items-start gap-2 text-xs leading-relaxed text-on-inverse/60">
                       <input
                         type="checkbox"
                         checked={captureConsent}
@@ -497,7 +498,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                       </span>
                     </label>
                     {captureStatus === "error" && (
-                      <span role="alert" className="animate-enter-error flex items-center gap-1 text-[10px] font-medium text-red-400">
+                      <span role="alert" className="animate-enter-error flex items-center gap-1 text-xs font-medium text-red-400">
                         <WarningCircle size={11} /> {content.emailCapture.errorMessage}
                       </span>
                     )}
@@ -506,7 +507,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                   <button
                     type="button"
                     onClick={() => setShowEmailCapture(true)}
-                    className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg text-[11px] font-semibold text-on-inverse/60 transition-colors hover:text-on-inverse outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse"
+                    className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg text-xs font-semibold text-on-inverse/60 transition-colors hover:text-on-inverse outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse"
                   >
                     <EnvelopeSimple size={13} />
                     <span>{content.emailCapture.toggleLabel}</span>
@@ -514,7 +515,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                 )}
               </div>
 
-              <p className="mt-3 text-center text-[10px] text-on-inverse/50">{content.summary.disclaimer}</p>
+              <p className="mt-3 text-center text-xs text-on-inverse/50">{content.summary.disclaimer}</p>
             </SpotlightCard>
           </div>
         </div>
@@ -541,7 +542,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
               {/* Plazo arriba, precio abajo: en 390 px no cabía todo en una línea junto al botón. Sin
                   `aria-label` en el botón (taparía el precio al lector de pantalla): el propósito va en sr-only. */}
               <span className="sr-only">{content.summary.barDetails}: </span>
-              <span className="flex items-center gap-1 text-[11px] text-on-inverse/70">
+              <span className="flex items-center gap-1 text-xs text-on-inverse/70">
                 <Clock size={12} aria-hidden="true" />
                 {displayWeeks} {content.summary.weeksSuffix.toLowerCase()}
               </span>

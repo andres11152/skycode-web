@@ -87,7 +87,7 @@ export function ServicesIndexView({ locale, projects }: { locale: Locale; projec
       <section className="px-6 pt-28 pb-16 sm:pt-36 sm:pb-20">
         <div className="mx-auto max-w-6xl">
           <nav aria-label={pageCopy.breadcrumbAria}>
-            <ol className="flex items-center gap-2 text-sm text-foreground/70">
+            <ol className="breadcrumbs flex items-center gap-2 text-sm text-foreground/70">
               <li>
                 <Link
                   href={homePath}
