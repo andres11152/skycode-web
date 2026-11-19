@@ -20,6 +20,10 @@ const WhatsAppButton = dynamic(
   () => import("@/components/ui/WhatsAppButton").then((mod) => mod.WhatsAppButton),
   { ssr: false }
 );
+const MobileActionBar = dynamic(
+  () => import("@/components/MobileActionBar").then((mod) => mod.MobileActionBar),
+  { ssr: false }
+);
 const CookieBanner = dynamic(
   () => import("@/components/CookieBanner").then((mod) => mod.CookieBanner),
   { ssr: false }
@@ -122,10 +126,12 @@ export function ConditionalLayout({ children, serviceLinks }: { children: React.
       <PageTransition>{children}</PageTransition>
       <Footer serviceLinks={serviceLinks} />
       <HtmlLangSync />
-      {/* El botón de WhatsApp y el banner de cookies no son parte del primer pintado: se montan (y sus
-          chunks se descargan) cuando el navegador está ocioso, no durante la hidratación. */}
+      {/* El botón de WhatsApp, la barra de acción móvil y el banner de cookies no son parte del primer
+          pintado: se montan (y sus chunks se descargan) cuando el navegador está ocioso, no durante la
+          hidratación. En móvil la barra reemplaza al botón flotante (que se oculta por debajo de `sm`). */}
       <LazyOnIdle timeout={2500}>
         <WhatsAppButton locale={locale} />
+        <MobileActionBar locale={locale} />
         <CookieBanner />
       </LazyOnIdle>
       <AttributionCapture />

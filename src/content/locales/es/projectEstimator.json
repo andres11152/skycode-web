@@ -94,7 +94,9 @@
     "warrantyLabel": "Garantía incluida:",
     "warrantyValue": "90 días de soporte y correcciones",
     "ctaLabel": "Quiero revisar este estimado con ustedes",
-    "disclaimer": "Este cálculo es una guía inicial. Nos sentamos contigo a revisar los detalles para darte un presupuesto exacto y definitivo."
+    "disclaimer": "Este cálculo es una guía inicial. Nos sentamos contigo a revisar los detalles para darte un presupuesto exacto y definitivo.",
+    "barCta": "Revisar con el equipo",
+    "barDetails": "Ver el resumen completo"
   },
   "whatsappMessageTemplate": "¡Hola equipo SkyCode! Estuve usando el cotizador en su web para un proyecto de {type}:\n- Adicionales: {addons}\n- Ritmo: {pace}\n- Estimado: {total} (~{weeks} semanas).\n\nMe gustaría charlar con ustedes para ver cómo podemos aterrizarlo.",
   "noAddonsLabel": "Ninguno",

@@ -94,7 +94,9 @@
     "warrantyLabel": "Code Warranty:",
     "warrantyValue": "90-Day SLA Included",
     "ctaLabel": "Request Official Proposal",
-    "disclaimer": "Preliminary estimate, taxes not included. Confirmed via formal technical proposal."
+    "disclaimer": "Preliminary estimate, taxes not included. Confirmed via formal technical proposal.",
+    "barCta": "Review with the team",
+    "barDetails": "See the full summary"
   },
   "whatsappMessageTemplate": "Hi SKYCODE team, I configured my project with the interactive estimator:\n- Type: {type}\n- Additional modules: {addons}\n- Mode: {pace}\n- Estimate: {total} (~{weeks} weeks).\nI'd like to request a formal proposal and schedule a scoping call.",
   "noAddonsLabel": "None",

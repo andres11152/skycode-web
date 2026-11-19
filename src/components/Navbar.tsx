@@ -1,10 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { servicesIndexPath } from "@/lib/servicePaths";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  m as motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  type Variants,
+} from "framer-motion";
 import { List, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/components/LocaleProvider";
@@ -13,7 +21,12 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { ThemedLogo } from "@/components/ui/ThemedLogo";
 import { EsBadge } from "@/components/ui/EsBadge";
 import { getNavContent } from "@/content/nav";
-import { localeHomePath } from "@/lib/i18n";
+import { localeHomePath, localeNames, locales, type Locale } from "@/lib/i18n";
+import { switchLocalePath } from "@/lib/localePaths";
+import { useMediaQuery } from "@/lib/useMediaQuery";
+import { useOverlayLock } from "@/lib/useOverlayLock";
+import { useFocusTrap } from "@/lib/useFocusTrap";
+import { BrandPeriod } from "@/components/ui/BrandPeriod";
 import { blogIndexPath } from "@/lib/blogPaths";
 import { faqPath } from "@/lib/faqPaths";
 import { portfolioIndexPath } from "@/lib/portfolioPaths";
@@ -27,7 +40,6 @@ import { DURATION, EASE_OUT, SPRING_SNAPPY } from "@/lib/animations";
 // 70% dejaba pasar tanto negro que la Navbar se leía como una barra gris
 // sucia en vez de un panel blanco (bug real, visto en auditoría visual).
 const GLASS = "bg-background/85 shadow-lg shadow-black/5 backdrop-blur-xl";
-const MOBILE_GLASS = "border border-foreground/15 bg-surface-raised/95 shadow-2xl shadow-black/30 backdrop-blur-2xl";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,8 +76,20 @@ export function Navbar() {
   // (`/#portfolio`, `/#faq`) apuntan a la home y `usePathname()` no ve el
   // hash, así que "Portafolio" y "FAQ" quedarían activos en toda la home.
   const isActive = (href: string) => !href.includes("#") && (pathname === href || pathname.startsWith(`${href}/`));
-  const reduced = useReducedMotion();
-  const hiddenDrawer = reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: -6 };
+
+  // Móvil: la barra se esconde al bajar y reaparece al subir (patrón de app nativa), así el contenido
+  // gana ~80 px de pantalla mientras se lee. Solo por debajo de `sm`; en escritorio no se mueve. Con
+  // reduced motion, `MotionConfig reducedMotion="user"` hace el cambio instantáneo en vez de deslizarlo.
+  const isMobile = useMediaQuery("(max-width: 639px)");
+  const { scrollY } = useScroll();
+  const [hideOnScroll, setHideOnScroll] = useState(false);
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (Math.abs(y - previous) < 6) return;
+    const next = y > previous && y > 160;
+    setHideOnScroll((current) => (current === next ? current : next));
+  });
+  const headerHidden = isMobile && hideOnScroll && !isOpen;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -84,7 +108,14 @@ export function Navbar() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-4 z-50 px-4 sm:px-6 lg:px-8">
+    <motion.header
+      initial={false}
+      animate={{ y: headerHidden ? "-150%" : 0 }}
+      transition={{ duration: DURATION.base, ease: EASE_OUT }}
+      // Si el foco de teclado entra en la barra escondida, vuelve a mostrarse.
+      onFocusCapture={() => setHideOnScroll(false)}
+      className="fixed inset-x-0 top-4 z-50 px-4 sm:px-6 lg:px-8"
+    >
       <div
         className={cn(
           "mx-auto flex items-center justify-between gap-2 rounded-full transition-[max-width,padding,background-color,border-color,box-shadow] duration-300 ease-out",
@@ -155,8 +186,9 @@ export function Navbar() {
 
         <div className="flex items-center gap-1.5">
 
-          <LanguageSwitcher locale={locale} className="flex items-center" />
-          <ThemeToggle />
+          {/* En móvil el idioma y el tema viven dentro del menú: la barra queda en logo + menú. */}
+          <LanguageSwitcher locale={locale} className="hidden items-center sm:flex" />
+          <ThemeToggle className="max-sm:hidden" />
 
           {/* Desktop Contact button — sin halo/pulso: es el único CTA de
               acento visible en todo momento en la página, no necesita
@@ -178,74 +210,212 @@ export function Navbar() {
           {/* Hamburger Menu Button (Mobile) */}
           <button
             type="button"
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => setIsOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={isOpen}
             className={cn(
-              "flex h-9 w-9 items-center justify-center rounded-full text-foreground outline-none transition-colors hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-accent sm:hidden",
+              "flex h-11 w-11 items-center justify-center rounded-full text-foreground outline-none transition-colors hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-accent sm:hidden",
               GLASS,
             )}
-            aria-label={isOpen ? navData.closeMenu : navData.openMenu}
+            aria-label={navData.openMenu}
           >
-            {isOpen ? <X size={18} /> : <List size={18} />}
-
+            <List size={20} />
           </button>
         </div>
 
 
 
-        {/* Mobile Navigation Drawer — entra y sale (AnimatePresence); antes
-            solo entraba, y la salida era un corte seco. */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={hiddenDrawer}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ ...hiddenDrawer, transition: { duration: DURATION.fast, ease: EASE_OUT } }}
-              transition={{ duration: DURATION.base, ease: EASE_OUT }}
-              className={cn(
-                "absolute inset-x-0 top-14 z-40 flex origin-top flex-col gap-3 rounded-xl p-4 sm:hidden",
-                MOBILE_GLASS,
-              )}
-            >
-              <ul className="flex flex-col gap-2">
-                {navLinks.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      prefetch={prefetchFor(link.href)}
-                      onClick={() => setIsOpen(false)}
-                      aria-current={isActive(link.href) ? "page" : undefined}
-                      className={cn(
-                        "relative flex min-h-11 items-center gap-1.5 rounded-xl px-4 py-3 text-sm font-medium text-foreground outline-none transition-colors hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-accent",
-                        isActive(link.href) && "bg-foreground/[0.07] font-semibold",
-                      )}
-                    >
-                      {link.label}
-                      {link.esOnly && (
-                        <span className="rounded border border-foreground/15 px-1 text-[10px] font-semibold text-foreground/60">
-                          ES
-                        </span>
-                      )}
-                      <LinkPending />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <ThemeToggle variant="segmented" />
-              <Button
-                href={contactHref}
-                prefetch={homePrefetch}
-                variant="accent"
-                size="md"
-                onClick={() => setIsOpen(false)}
-                className="w-full justify-center"
-              >
-                {navData.contacto}
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <MobileMenuSheet
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          links={navLinks}
+          isActive={isActive}
+          prefetchFor={prefetchFor}
+          locale={locale}
+          pathname={pathname}
+          homePath={homePath}
+          homePrefetch={homePrefetch}
+          contactHref={contactHref}
+        />
       </div>
-    </header>
+    </motion.header>
   );
 }
 
+
+type NavLink = { label: string; href: string; esOnly: boolean; hideBelowLg?: boolean };
+
+const noopSubscribe = () => () => {};
+
+/** Escalonado de la hoja: los enlaces entran uno tras otro (60 ms), subiendo 16 px. */
+const SHEET_LIST: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } },
+};
+
+/**
+ * Menú móvil como hoja de pantalla completa (antes, una tarjeta pequeña bajo la barra): enlaces
+ * grandes y numerados en mono, el punto del logo marcando la página actual, y abajo idioma, tema
+ * y el CTA. Va en un portal a `<body>` para que `useOverlayLock` deje `inert` el resto de la página
+ * (foco y lector de pantalla quedan dentro) y bloquee el scroll; `useFocusTrap` va DESPUÉS (ver el
+ * comentario de ese hook). Escape lo cierra (efecto en `Navbar`).
+ */
+function MobileMenuSheet({
+  open,
+  onClose,
+  links,
+  isActive,
+  prefetchFor,
+  locale,
+  pathname,
+  homePath,
+  homePrefetch,
+  contactHref,
+}: {
+  open: boolean;
+  onClose: () => void;
+  links: NavLink[];
+  isActive: (href: string) => boolean;
+  prefetchFor: (href: string) => false | undefined;
+  locale: Locale;
+  pathname: string;
+  homePath: string;
+  homePrefetch: false | undefined;
+  contactHref: string;
+}) {
+  const navData = getNavContent(locale);
+  const reduced = useReducedMotion();
+  const sheetRef = useRef<HTMLDivElement>(null);
+  // El portal solo puede montarse en el cliente (en el servidor no hay `document.body`).
+  const isClient = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  useOverlayLock(open, sheetRef);
+  useFocusTrap(open, sheetRef);
+
+  const item: Variants = {
+    hidden: reduced ? { opacity: 0 } : { opacity: 0, y: 16 },
+    show: { opacity: 1, y: 0, transition: { duration: DURATION.slow, ease: EASE_OUT } },
+  };
+
+  if (!isClient) return null;
+
+  return createPortal(
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          ref={sheetRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={navData.menuTitle}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: DURATION.fast, ease: EASE_OUT } }}
+          transition={{ duration: DURATION.base, ease: EASE_OUT }}
+          // z-[70]: la misma capa que `Modal` (es un diálogo), sobre el CookieBanner (65).
+          className="fixed inset-0 z-[70] flex flex-col bg-background/95 backdrop-blur-2xl sm:hidden"
+        >
+          <div className="flex items-center justify-between px-4 pt-5">
+            <Link
+              href={homePath}
+              prefetch={homePrefetch}
+              onClick={onClose}
+              aria-label={navData.logoAria}
+              className="flex min-h-11 items-center rounded-full pr-2 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <ThemedLogo variant="mark" alt="" width={110} height={63} className="h-6 w-auto" />
+            </Link>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label={navData.closeMenu}
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-foreground/10 text-foreground outline-none transition-colors hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          <motion.ul
+            variants={SHEET_LIST}
+            initial="hidden"
+            animate="show"
+            className="flex-1 overflow-y-auto px-6 pt-8"
+          >
+            {links.map((link, index) => {
+              const active = isActive(link.href);
+              return (
+                <motion.li key={link.href} variants={item}>
+                  <Link
+                    href={link.href}
+                    prefetch={prefetchFor(link.href)}
+                    onClick={onClose}
+                    aria-current={active ? "page" : undefined}
+                    className="relative flex min-h-16 items-baseline gap-4 border-b border-foreground/10 py-3 text-3xl font-semibold tracking-[-0.03em] text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:opacity-60"
+                  >
+                    <span className="w-6 shrink-0 font-mono text-xs font-medium tracking-normal text-foreground/60">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span>
+                      {link.label}
+                      {active && <BrandPeriod />}
+                    </span>
+                    {link.esOnly && <EsBadge />}
+                    <LinkPending />
+                  </Link>
+                </motion.li>
+              );
+            })}
+          </motion.ul>
+
+          <motion.div
+            variants={item}
+            initial="hidden"
+            animate="show"
+            className="flex flex-col gap-4 border-t border-foreground/10 px-6 pt-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              {/* Enlaces reales a esta misma página en los otros idiomas (mismo criterio que el Footer). */}
+              <nav aria-label={navData.languageLabel}>
+                <ul className="flex items-center gap-1 rounded-full border border-foreground/10 p-1">
+                  {locales.map((target) => (
+                    <li key={target}>
+                      {target === locale ? (
+                        <span
+                          aria-current="true"
+                          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full bg-foreground px-3 font-mono text-xs font-semibold text-background uppercase"
+                        >
+                          {target}
+                        </span>
+                      ) : (
+                        <Link
+                          href={switchLocalePath(pathname, target)}
+                          hrefLang={target}
+                          lang={target}
+                          aria-label={localeNames[target]}
+                          onClick={onClose}
+                          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 font-mono text-xs font-semibold text-foreground/70 uppercase outline-none transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent"
+                        >
+                          {target}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              <ThemeToggle variant="segmented" className="min-w-40 flex-1" />
+            </div>
+            <Button
+              href={contactHref}
+              prefetch={homePrefetch}
+              variant="accent"
+              size="lg"
+              onClick={onClose}
+              className="w-full justify-center"
+            >
+              {navData.quickContact}
+            </Button>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body,
+  );
+}

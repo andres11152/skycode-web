@@ -16,5 +16,10 @@
   "themeSystem": "Sistema",
   "themeLight": "Claro",
   "themeDark": "Oscuro",
-  "themeCycleAria": "Cambiar tema (actual: {current})"
+  "themeCycleAria": "Cambiar tema (actual: {current})",
+  "menuTitle": "Menú",
+  "languageLabel": "Idioma",
+  "quickActionsAria": "Acciones rápidas",
+  "quickContact": "Hablemos de tu proyecto",
+  "quickWhatsapp": "Escribir por WhatsApp"
 }

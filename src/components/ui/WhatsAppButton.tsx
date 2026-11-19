@@ -23,7 +23,8 @@ export function WhatsAppButton({
   return (
     // z-40: por debajo de Navbar (50), ScrollProgress (55), skip-link (60) y CookieBanner
     // (65) — el banner de cookies, que ocupa todo el ancho inferior, debe poder taparlo.
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end pointer-events-auto">
+    // Solo desde `sm`: en móvil tapaba texto en todas las páginas y lo reemplaza `MobileActionBar`.
+    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end pointer-events-auto max-sm:hidden">
       {/* Popover / Chat Card Preview */}
       {isOpen && (
         <div

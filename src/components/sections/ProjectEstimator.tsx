@@ -1,6 +1,7 @@
 "use client";
 
-import { useDeferredValue, useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useRef, useState } from "react";
+import { AnimatePresence, m as motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, CheckCircle, Clock, EnvelopeSimple, Lightning, Spinner, Tag, WarningCircle } from "@phosphor-icons/react";
 import NumberFlow from "@number-flow/react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
@@ -12,6 +13,7 @@ import { useGeoCountry } from "@/lib/useGeoCountry";
 import { openContactModal } from "@/lib/contactModalEvent";
 import { ESTIMATOR_TYPE_TO_SERVICE_SLUG } from "@/lib/leadServices";
 import { logError } from "@/lib/logger";
+import { DURATION, EASE_OUT, SPRING_SOFT } from "@/lib/animations";
 
 export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }) {
   const content = getProjectEstimatorContent(locale);
@@ -47,6 +49,31 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
   // marcado.
   const [captureConsent, setCaptureConsent] = useState(false);
   const [captureStatus, setCaptureStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  // Barra de precio fija (por debajo de `lg`): en móvil la tarjeta de resumen queda ~4 pantallas debajo
+  // de las opciones, así que se elegía sin ver cómo cambiaba el precio (hallazgo de la auditoría móvil).
+  // Se retira cuando la tarjeta real o el pie están en pantalla, para no mostrar el precio dos veces.
+  const summaryRef = useRef<HTMLDivElement>(null);
+  const [summaryInView, setSummaryInView] = useState(false);
+  const reducedMotion = useReducedMotion();
+  useEffect(() => {
+    const targets = [summaryRef.current, document.querySelector("footer")].filter(
+      (el): el is HTMLDivElement | HTMLElement => el !== null,
+    );
+    const visible = new Set<Element>();
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) visible.add(entry.target);
+        else visible.delete(entry.target);
+      }
+      setSummaryInView(visible.size > 0);
+    });
+    for (const el of targets) observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  const scrollToSummary = () => {
+    summaryRef.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+  };
 
   const currentType = projectTypes.find((type) => type.id === selectedType) || projectTypes[0];
 
@@ -324,7 +351,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
           </div>
 
           {/* Estimation Summary Box */}
-          <div className="lg:sticky lg:top-28 h-fit">
+          <div ref={summaryRef} className="scroll-mt-24 lg:sticky lg:top-28 h-fit">
             {/* Sin BorderBeam (ver Highlights.tsx): un borde en loop
                 infinito alrededor de la tarjeta de precio compite con el
                 número que cambia en vivo (NumberFlow) — demasiado
@@ -492,6 +519,56 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {!summaryInView && (
+          <motion.div
+            key="estimator-price-bar"
+            role="region"
+            aria-label={content.summary.title}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: "140%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : "140%", transition: { duration: DURATION.fast, ease: EASE_OUT } }}
+            transition={SPRING_SOFT}
+            // z-40 como la barra de acción móvil; desde `sm` deja libre la esquina del botón de WhatsApp.
+            className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 flex items-center gap-2 rounded-xl border border-on-inverse/10 bg-inverse p-2 pl-4 text-on-inverse shadow-2xl shadow-black/25 sm:right-24 lg:hidden"
+          >
+            <button
+              type="button"
+              onClick={scrollToSummary}
+              className="flex min-h-12 min-w-0 flex-1 flex-col items-start justify-center rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse"
+            >
+              {/* Plazo arriba, precio abajo: en 390 px no cabía todo en una línea junto al botón. Sin
+                  `aria-label` en el botón (taparía el precio al lector de pantalla): el propósito va en sr-only. */}
+              <span className="sr-only">{content.summary.barDetails}: </span>
+              <span className="flex items-center gap-1 text-[11px] text-on-inverse/70">
+                <Clock size={12} aria-hidden="true" />
+                {displayWeeks} {content.summary.weeksSuffix.toLowerCase()}
+              </span>
+              <span className="flex items-baseline gap-1 font-mono text-base leading-tight font-bold whitespace-nowrap text-accent">
+                <span>$</span>
+                <NumberFlow
+                  value={displayPrice}
+                  locales={currency === "COP" ? "es-CO" : "en-US"}
+                  format={{ maximumFractionDigits: 0 }}
+                  transformTiming={{ duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                  spinTiming={{ duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                />
+                <span className="text-xs font-semibold text-on-inverse/70">{currency}</span>
+              </span>
+            </button>
+            <motion.button
+              type="button"
+              onClick={handlePreFillContact}
+              whileTap={reducedMotion ? undefined : { scale: 0.96 }}
+              className="flex min-h-12 shrink-0 items-center gap-1.5 rounded-lg bg-accent-strong px-4 text-sm font-semibold text-accent-foreground outline-none transition-[filter] hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-inverse"
+            >
+              {content.summary.barCta}
+              <ArrowRight size={14} aria-hidden="true" />
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

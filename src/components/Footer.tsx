@@ -3,7 +3,7 @@
 import { openCookiePreferences } from "@/lib/useConsent";
 import { servicePath, servicesIndexPath } from "@/lib/servicePaths";
 import { getCookieBannerContent } from "@/content/cookieBanner";
-import { useRef } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemedLogo } from "@/components/ui/ThemedLogo";
@@ -87,8 +87,9 @@ const legalLinks = [
   { label: "Términos y Condiciones", href: "/terminos-y-condiciones" },
 ];
 
+// `max-sm:min-h-11`: en móvil cada enlace del pie es un objetivo táctil de 44 px (antes medían 20 px de alto).
 const linkClasses =
-  "rounded text-sm text-foreground/70 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  "rounded text-sm text-foreground/70 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background max-sm:inline-flex max-sm:min-h-11 max-sm:items-center";
 
 function ColumnHeading({ children, esOnly }: { children: string; esOnly?: boolean }) {
   return (
@@ -97,6 +98,56 @@ function ColumnHeading({ children, esOnly }: { children: string; esOnly?: boolea
       <BrandPeriod />
       {esOnly && <EsBadge />}
     </h3>
+  );
+}
+
+/**
+ * Columna de enlaces del pie. En escritorio, encabezado + lista siempre visibles. En móvil es un
+ * acordeón (la auditoría midió el pie en ~2,5 pantallas de enlaces): el encabezado es un botón de
+ * 56 px y la lista sigue en el HTML aunque esté plegada (`max-sm:hidden`), así los rastreadores y
+ * Ctrl+F la ven. Al abrirse entra con el mismo fundido que la FAQ (CSS, sin animar la altura).
+ */
+function FooterColumn({ heading, children }: { heading: string; children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const listId = useId();
+  return (
+    <nav aria-label={heading} className="max-sm:border-b max-sm:border-foreground/10">
+      <div className="max-sm:hidden">
+        <ColumnHeading>{heading}</ColumnHeading>
+      </div>
+      <h3 className="sm:hidden">
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={listId}
+          onClick={() => setOpen((value) => !value)}
+          className="flex min-h-14 w-full items-center justify-between rounded text-left text-base font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          <span className="flex items-center">
+            {heading}
+            <BrandPeriod />
+          </span>
+          <svg
+            viewBox="0 0 16 16"
+            width={16}
+            height={16}
+            aria-hidden="true"
+            className={cn(
+              "text-foreground/70 transition-transform duration-[250ms] ease-[var(--ease-out)] motion-reduce:transition-none",
+              open && "rotate-180",
+            )}
+          >
+            <path d="M3.5 6 8 10.5 12.5 6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      </h3>
+      <ul
+        id={listId}
+        className={cn("mt-4 flex flex-col gap-3 max-sm:mt-0 max-sm:gap-0 max-sm:pb-3", open ? "max-sm:animate-faq-in" : "max-sm:hidden")}
+      >
+        {children}
+      </ul>
+    </nav>
   );
 }
 
@@ -140,12 +191,12 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
     <footer ref={footerRef} className="border-t border-foreground/10">
       <div className="grid lg:grid-cols-[1fr_380px]">
         <div className="px-6 py-16 sm:px-10">
-          <div className="mx-auto grid max-w-5xl gap-12 sm:grid-cols-[auto_1fr_1fr_1fr] sm:gap-8">
+          <div className="mx-auto grid max-w-5xl gap-0 sm:grid-cols-[auto_1fr_1fr_1fr] sm:gap-8">
             <Link
               prefetch={false}
               href={homePath}
               aria-label={footerData.logoAria}
-              className="flex h-14 items-start outline-none transition-transform duration-300 ease-out hover:scale-105 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+              className="flex h-14 items-start outline-none transition-transform duration-300 ease-out hover:scale-105 max-sm:mb-6 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
             >
               <ThemedLogo
                 variant="full"
@@ -156,9 +207,7 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
               />
             </Link>
 
-            <nav aria-label={footerData.exploreHeading}>
-              <ColumnHeading>{footerData.exploreHeading}</ColumnHeading>
-              <ul className="mt-4 flex flex-col gap-3">
+            <FooterColumn heading={footerData.exploreHeading}>
                 {exploreLinks.map((link) => (
                   <li key={link.href}>
                     <Link prefetch={false} href={link.href} className={cn(linkClasses, "inline-flex items-center gap-1.5")}>
@@ -167,12 +216,9 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
                     </Link>
                   </li>
                 ))}
-              </ul>
-            </nav>
+            </FooterColumn>
 
-            <nav aria-label={footerData.servicesHeading}>
-              <ColumnHeading>{footerData.servicesHeading}</ColumnHeading>
-              <ul className="mt-4 flex flex-col gap-3">
+            <FooterColumn heading={footerData.servicesHeading}>
                 {services.map((service) => (
                   <li key={service.slug}>
                     <Link
@@ -184,12 +230,9 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
                     </Link>
                   </li>
                 ))}
-              </ul>
-            </nav>
+            </FooterColumn>
 
-            <nav aria-label={footerData.resourcesHeading}>
-              <ColumnHeading>{footerData.resourcesHeading}</ColumnHeading>
-              <ul className="mt-4 flex flex-col gap-3">
+            <FooterColumn heading={footerData.resourcesHeading}>
                 <li>
                   <Link prefetch={false} href={blogIndexPath(locale)} className={linkClasses}>
                     {footerData.allArticles}
@@ -207,8 +250,7 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
                     </Link>
                   </li>
                 ))}
-              </ul>
-            </nav>
+            </FooterColumn>
           </div>
 
           <div className="mx-auto mt-16 flex max-w-5xl flex-col gap-5 border-t border-foreground/10 pt-6 text-xs text-foreground/60">
