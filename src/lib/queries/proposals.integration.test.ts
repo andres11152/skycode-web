@@ -2,34 +2,28 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { getAllProposals, getProposalById, acceptProposalAndCreateProject, rejectProposal, ProposalAlreadyRespondedError } from "./proposals";
 import { query, withTransaction } from "../db";
 import { createTestProposal, resetTestDb } from "../testHelpers/db";
+import { todayBogota } from "../dateOnly";
 
 beforeEach(async () => {
   await resetTestDb();
 });
 
-// Formatea en fecha LOCAL, no UTC: `computeStatus` en proposals.ts compara
-// contra `new Date().toDateString()` (local) — usar `toISOString()` acá
-// desalinea el resultado varias horas al día según la zona horaria (ej.
-// en UTC-5 después de las 7pm, "ayer" calculado vía ISO/UTC cae en el
-// mismo día calendario que "hoy" local, no un día antes), lo que hacía
-// este test intermitente según la hora a la que corriera.
-function formatLocalDate(d: Date): string {
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+// "Ayer" y "mañana" en la fecha de BOGOTÁ, la misma que usa `computeStatus` (vía `isBeforeToday` de
+// lib/dateOnly). Antes se formateaban en la fecha local del proceso: el runner de CI está en UTC, y entre
+// las 19:00 y la medianoche de Bogotá "ayer" en UTC es "hoy" en Bogotá, así que la propuesta no figuraba
+// vencida y el test fallaba según la hora del push (fallo real en CI, nov. 2026).
+function bogotaDayOffset(days: number): string {
+  const d = new Date(`${todayBogota()}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
 }
 
 function yesterday(): string {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return formatLocalDate(d);
+  return bogotaDayOffset(-1);
 }
 
 function tomorrow(): string {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return formatLocalDate(d);
+  return bogotaDayOffset(1);
 }
 
 describe("getAllProposals / getProposalById — status derivado", () => {
