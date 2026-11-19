@@ -52,8 +52,11 @@ function FeaturedCase({
   locale: Locale;
 }) {
   return (
-    <div className="group relative grid gap-8 rounded-xl transition-transform duration-200 has-[a:active]:scale-[0.985] has-[a:active]:duration-100 motion-reduce:has-[a:active]:scale-100 max-sm:gap-6 lg:grid-cols-12 lg:items-center lg:gap-14">
-      <div className="lg:col-span-7">
+    // `grid-cols-[minmax(0,1fr)]`: sin columnas explícitas, la columna implícita crecía hasta el ancho de
+    // la línea del cliente (truncada, no se parte) y la tarjeta se salía de su hueco del carril móvil,
+    // pasando por debajo del caso siguiente (bug real, 291 px de hueco y 376 de contenido).
+    <div className="group relative grid grid-cols-[minmax(0,1fr)] gap-8 rounded-xl transition-transform duration-200 has-[a:active]:scale-[0.985] has-[a:active]:duration-100 motion-reduce:has-[a:active]:scale-100 max-sm:gap-6 lg:grid-cols-12 lg:items-center lg:gap-14">
+      <div className="min-w-0 lg:col-span-7">
         <CaseVisual
           slug={project.slug}
           imageSrc={project.coverImage?.variants.lg ?? null}
@@ -67,7 +70,7 @@ function FeaturedCase({
         />
       </div>
 
-      <div className="flex flex-col lg:col-span-5">
+      <div className="flex min-w-0 flex-col lg:col-span-5">
         <div className="flex items-center gap-3">
           <span className="font-mono text-sm text-foreground/60">{pad(1)}</span>
           <span aria-hidden="true" className="h-px w-8 bg-foreground/20" />
@@ -136,7 +139,7 @@ function SecondaryCase({
         <div className="flex items-center gap-3">
           <span className="font-mono text-sm text-foreground/60">{pad(number)}</span>
           <span aria-hidden="true" className="h-px w-6 bg-foreground/20" />
-          <span className="truncate text-xs font-medium uppercase tracking-wide text-foreground/70">
+          <span className="min-w-0 truncate text-xs font-medium uppercase tracking-wide text-foreground/70">
             {project.clientLabel.split("·")[0].trim()}
           </span>
         </div>
