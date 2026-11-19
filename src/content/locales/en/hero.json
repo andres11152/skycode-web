@@ -56,6 +56,7 @@
     "comment": {
       "label": "SkyCode team",
       "text": "The reporting dashboard is ready for your review in the private environment."
-    }
+    },
+    "commentNext": "You approved the reporting dashboard. We're starting on the payments integration."
   }
 }

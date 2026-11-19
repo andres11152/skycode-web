@@ -5,18 +5,22 @@ import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProcessContent } from "@/content/process";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { ProcessTimeline } from "@/components/sections/ProcessTimeline";
 
 /**
  * Proceso en cuatro pasos: columnas numeradas bajo una línea que se dibuja con
  * el scroll (CSS puro, `.scroll-progress-x`). Antes eran cuatro tarjetas con un
  * cuadro azul numerado, una flecha entre ellas y un título que repetía el
- * número ("01" y "1. Charlamos…"). Server Component sin Framer Motion.
+ * número ("01" y "1. Charlamos…"). Server Component.
+ *
+ * Móvil: línea de tiempo VERTICAL que se dibuja con el scroll (`ProcessTimeline`, Framer Motion) con
+ * los marcadores a la izquierda; la línea horizontal de escritorio se oculta.
  */
 export function Process({ locale = defaultLocale }: { locale?: Locale }) {
   const processData = getProcessContent(locale);
 
   return (
-    <section id="proceso" aria-labelledby="process-title" className="cv-auto [--cv-h:1390px] lg:[--cv-h:840px] scroll-mt-24 px-6 py-24 sm:py-32">
+    <section id="proceso" aria-labelledby="process-title" className="cv-auto [--cv-h:1450px] lg:[--cv-h:840px] scroll-mt-24 px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
           <SectionEyebrow className="reveal-up mb-4">{processData.badge}</SectionEyebrow>
@@ -29,22 +33,23 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
           <p style={{ "--i": 3 } as CSSProperties} className="reveal-up mt-5 text-lg leading-relaxed text-foreground/80">{processData.description}</p>
         </div>
 
-        <div className="relative mt-16">
-          <span aria-hidden="true" className="absolute top-0 left-0 h-px w-full bg-foreground/15" />
+        <div className="relative mt-16 max-sm:mt-12">
+          <span aria-hidden="true" className="absolute top-0 left-0 h-px w-full bg-foreground/15 max-sm:hidden" />
           <span
             aria-hidden="true"
-            className="scroll-progress-x absolute top-0 left-0 h-px w-full bg-foreground motion-reduce:hidden"
+            className="scroll-progress-x absolute top-0 left-0 h-px w-full bg-foreground motion-reduce:hidden max-sm:hidden"
           />
-          <ol className="grid gap-10 pt-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+          <ProcessTimeline>
+          <ol className="grid gap-10 pt-8 max-sm:pt-0 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
             {processData.steps.map((step, index) => (
-              <li key={step.title} style={{ "--i": index } as CSSProperties} className="scroll-reveal relative flex flex-col gap-3">
+              <li key={step.title} style={{ "--i": index } as CSSProperties} className="scroll-reveal relative flex flex-col gap-3 max-sm:pl-9">
                 {/* Marcador sobre la línea: se enciende cuando el paso entra en pantalla. */}
                 {/* El último paso (la entrega) es la meta: lleva el punto amarillo del logo, con un
                     anillo fino porque sobre blanco el amarillo solo no llega a 3:1. */}
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "dot-on absolute -top-[2.35rem] left-0 h-2.5 w-2.5 rounded-full",
+                    "dot-on absolute -top-[2.35rem] left-0 h-2.5 w-2.5 rounded-full max-sm:top-1.5",
                     index === processData.steps.length - 1
                       ? "bg-accent-secondary ring-1 ring-foreground/25"
                       : "bg-foreground",
@@ -56,6 +61,7 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
               </li>
             ))}
           </ol>
+          </ProcessTimeline>
         </div>
 
         <BogotaLink locale={locale} className="mt-14" />

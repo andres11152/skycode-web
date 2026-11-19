@@ -56,6 +56,7 @@
     "comment": {
       "label": "Équipe SkyCode",
       "text": "Le tableau de bord de rapports est prêt pour votre revue dans l'environnement privé."
-    }
+    },
+    "commentNext": "Vous avez approuvé le tableau de bord de rapports. Nous attaquons l'intégration des paiements."
   }
 }

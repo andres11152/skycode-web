@@ -43,7 +43,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
         aria-hidden="true"
         className="parallax absolute -top-[110px] -right-[110px] -z-10 h-[640px] w-[740px] bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--accent)_5%,transparent),color-mix(in_srgb,var(--accent)_2%,transparent)_55%,transparent)]"
       />
-      <div className="relative mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-10 xl:gap-16">
+      <div className="relative mx-auto grid w-full max-w-6xl gap-12 max-sm:gap-7 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-10 xl:gap-16">
         {/* min-w-0 en ambas columnas: un ítem de grid tiene `min-width: auto` y, si algo adentro no
             puede achicarse, empuja la columna más ancha que la pista y la sección lo recorta por el
             borde derecho (bug real en móvil). `min-w-0` deja que cada columna respete su ancho. */}
@@ -84,7 +84,8 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
               </Button>
             </div>
 
-            <div className="hero-cta inline-flex w-full sm:w-auto">
+            {/* En móvil el secundario baja a la fila de enlaces bajo el portal: así el portal entra en el primer pantallazo. */}
+            <div className="hero-cta inline-flex w-full max-sm:hidden sm:w-auto">
               <Button
                 href={heroData.ctaSecondary.href}
                 variant="secondary"
@@ -124,7 +125,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           {/* Entrada a la página local de Bogotá (solo español: fuera de /, lleva la insignia ES). */}
           <Link
             href={bogotaPagePath}
-            className="group -ml-1 inline-flex min-h-11 items-center gap-2 rounded-full px-1 text-sm font-medium text-foreground/80 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="group -ml-1 inline-flex min-h-11 items-center gap-2 rounded-full px-1 text-sm font-medium text-foreground/80 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background max-sm:hidden"
           >
             <MapPin size={18} weight="regular" aria-hidden="true" />
             <span className="link-underline underline decoration-foreground/25 underline-offset-4">
@@ -147,6 +148,25 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           </Tilt>
         </div>
 
+        {/* Solo móvil: el CTA secundario y la página local, como enlaces bajo el portal. */}
+        <div className="-mt-2 flex flex-wrap items-center gap-x-6 sm:hidden">
+          <Link
+            href={heroData.ctaSecondary.href}
+            aria-label={heroData.ctaSecondary.ariaLabel}
+            className="group inline-flex min-h-11 items-center gap-1.5 rounded-full text-sm font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <span className="link-underline">{heroData.ctaSecondary.label}</span>
+            <ArrowRight size={14} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" />
+          </Link>
+          <Link
+            href={bogotaPagePath}
+            className="group inline-flex min-h-11 items-center gap-1.5 rounded-full text-sm font-medium text-foreground/80 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <MapPin size={16} aria-hidden="true" />
+            <span className="underline decoration-foreground/25 underline-offset-4">{heroData.localLink}</span>
+            {locale !== "es" && <EsBadge />}
+          </Link>
+        </div>
       </div>
     </section>
   );
