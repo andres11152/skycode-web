@@ -61,7 +61,10 @@
       "bogotaLead": "We work from Bogotá, Colombia.",
       "bogotaLabel": "Software development in Bogotá (page in Spanish)"
     },
-    "caseStudyLabel": "Case study"
+    "caseStudyLabel": "Case study",
+    "readMore": "Read more",
+    "readLess": "Read less",
+    "chaptersNav": "Case study chapters"
   },
   "breadcrumb": {
     "home": "Home",

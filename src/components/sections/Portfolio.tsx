@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { ArrowUpRight } from "@phosphor-icons/react/ssr";
 import { RevealText } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
+import { SwipeRail } from "@/components/ui/SwipeRail";
 import { Button } from "@/components/ui/Button";
 import { EsBadge } from "@/components/ui/EsBadge";
 import { CaseVisual } from "@/components/portfolio/CaseVisual";
@@ -50,7 +51,7 @@ function FeaturedCase({
   locale: Locale;
 }) {
   return (
-    <div className="group relative grid gap-8 rounded-xl lg:grid-cols-12 lg:items-center lg:gap-14">
+    <div className="group relative grid gap-8 rounded-xl max-sm:gap-6 lg:grid-cols-12 lg:items-center lg:gap-14">
       <div className="lg:col-span-7">
         <CaseVisual
           slug={project.slug}
@@ -74,19 +75,19 @@ function FeaturedCase({
           </span>
         </div>
 
-        <p className="mt-5 text-xs font-medium uppercase tracking-wide text-foreground/70">{project.clientLabel}</p>
-        <h3 className="mt-2 text-2xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text sm:text-3xl">
+        <p className="mt-5 text-xs font-medium uppercase tracking-wide text-foreground/70 max-sm:mt-3 max-sm:truncate">{project.clientLabel}</p>
+        <h3 className="mt-2 text-2xl max-sm:text-xl font-bold tracking-tight text-balance text-foreground transition-colors duration-200 group-hover:text-accent-text sm:text-3xl">
           <Link href={portfolioCasePath(locale, project.slug)} className={STRETCH}>
             {project.title}
           </Link>
           {!project.translated && <EsBadge />}
         </h3>
-        <p className="mt-4 text-base leading-relaxed text-foreground/80">{project.summary}</p>
+        <p className="mt-4 text-base leading-relaxed text-foreground/80 max-sm:mt-2 max-sm:line-clamp-3 max-sm:text-sm">{project.summary}</p>
 
         {project.capabilities.length > 0 && (
           <ul
             aria-label={t(uiData.portfolioTechUsed, { title: project.title })}
-            className="mt-5 flex flex-wrap gap-2"
+            className="mt-5 flex flex-wrap gap-2 max-sm:hidden"
           >
             {project.capabilities.map((capability) => (
               <li key={capability} className="rounded-full bg-foreground/5 px-3 py-1 text-xs text-foreground/70">
@@ -96,7 +97,7 @@ function FeaturedCase({
           </ul>
         )}
 
-        <span aria-hidden="true" className="mt-7 inline-flex items-center gap-3 text-sm font-semibold text-foreground">
+        <span aria-hidden="true" className="mt-7 inline-flex items-center gap-3 text-sm font-semibold text-foreground max-sm:mt-5">
           {sectionCopy.viewCaseStudy}
           <CaseArrow />
         </span>
@@ -175,7 +176,7 @@ export function Portfolio({
     <section
       id="portfolio"
       aria-label={uiData.portfolioSectionAria}
-      className="cv-auto [--cv-h:2400px] lg:[--cv-h:1800px] scroll-mt-24 px-6 py-24 sm:py-32"
+      className="cv-auto [--cv-h:1130px] lg:[--cv-h:1800px] scroll-mt-24 px-6 py-24 sm:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
@@ -190,28 +191,27 @@ export function Portfolio({
           </Button>
         </div>
 
-        {/* Revelado ligado al scroll en CSS (`.scroll-reveal`, escalonado con `--i`): la sección es un
-            Server Component, no hidrata Framer Motion ni deja el contenido en opacity 0 hasta hidratar. */}
-        <div className="flex flex-col gap-14 lg:gap-20">
-          <div className="scroll-reveal">
-            <FeaturedCase project={featured} uiData={uiData} sectionCopy={sectionCopy} locale={locale} />
-          </div>
-
-          {secondary.length > 0 && (
-            <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:gap-x-12">
-              {secondary.map((project, index) => (
-                <div key={project.slug} style={{ "--i": index + 1 } as CSSProperties} className="scroll-reveal">
-                  <SecondaryCase
-                    project={project}
-                    number={index + 2}
-                    sectionCopy={sectionCopy}
-                    locale={locale}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Revelado ligado al scroll en CSS (`.scroll-reveal`, escalonado con `--i`). En móvil, los tres casos
+            son un carril deslizable (`SwipeRail`, ~2.300 px de casos apilados pasan a uno); desde `sm`, grilla
+            con el destacado a ancho completo. Son los MISMOS elementos en los dos tamaños: duplicarlos
+            repetiría el nombre de la transición de vista de cada portada (`project-cover-{slug}`). */}
+        <SwipeRail
+          as="div"
+          label={uiData.portfolioSectionAria}
+          labels={uiData.rail}
+          className="sm:grid sm:grid-cols-2 sm:gap-x-8 sm:gap-y-14 lg:gap-x-12 lg:gap-y-20"
+          itemClassNames={["sm:col-span-2", ...secondary.map(() => "")]}
+          items={[
+            <div key={featured.slug} className="scroll-reveal h-full">
+              <FeaturedCase project={featured} uiData={uiData} sectionCopy={sectionCopy} locale={locale} />
+            </div>,
+            ...secondary.map((project, index) => (
+              <div key={project.slug} style={{ "--i": index + 1 } as CSSProperties} className="scroll-reveal h-full">
+                <SecondaryCase project={project} number={index + 2} sectionCopy={sectionCopy} locale={locale} />
+              </div>
+            )),
+          ]}
+        />
       </div>
     </section>
   );

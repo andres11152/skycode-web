@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowSquareOut, CheckCircle, CornersOut } from "@phosphor-icons/react";
+import { ArrowSquareOut, CaretDown, CheckCircle, CornersOut } from "@phosphor-icons/react";
 import { m as motion, useReducedMotion } from "framer-motion";
 import { InlineText } from "@/components/blog/InlineText";
 import { Button } from "@/components/ui/Button";
@@ -14,6 +14,8 @@ import { CaseVisual } from "@/components/portfolio/CaseVisual";
 import { GalleryRail } from "@/components/portfolio/GalleryRail";
 import { NextCase, type NextCaseData } from "@/components/portfolio/NextCase";
 import { TechIcon } from "@/components/portfolio/TechIcon";
+import { ChapterTabs } from "@/components/portfolio/ChapterTabs";
+import { CountUp } from "@/components/ui/CountUp";
 import { fadeUp } from "@/lib/animations";
 import { preloadNextImage } from "@/lib/preloadImage";
 import { cn } from "@/lib/utils";
@@ -40,6 +42,20 @@ const FOCUS =
   "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 const VIEWPORT = { once: true, margin: "-80px" } as const;
 
+/** Un capítulo con más de estas palabras se pliega en móvil detrás de "Leer más". */
+const COLLAPSE_WORDS = 70;
+
+/**
+ * Valor de métrica animable: solo un entero "limpio" de 2+ cifras con un prefijo/sufijo simple
+ * ("175", "+40%", "90 días"). Rangos ("2–5"), decimales y miles ("10.000") se muestran tal cual:
+ * los valores son texto libre del dashboard y adivinar su formato sería frágil.
+ */
+function parseCountable(value: string): { prefix: string; number: number; suffix: string } | null {
+  const match = /^([+~<>]?)(\d{2,})(\s?[^\d.,–-]*)$/.exec(value.trim());
+  if (!match) return null;
+  return { prefix: match[1], number: Number(match[2]), suffix: match[3] };
+}
+
 export function ProjectView({
   locale,
   project,
@@ -63,6 +79,8 @@ export function ProjectView({
   const [lightboxIndex, setLightboxIndex] = useState(0);
   // Se monta al primer uso y se queda montado: así la salida animada del visor sí se ve.
   const [lightboxMounted, setLightboxMounted] = useState(false);
+  // Capítulos desplegados en móvil (en `sm`+ siempre se ven completos).
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const galleryImages = project.images;
   const hostname = getProjectHostname(project);
@@ -199,7 +217,38 @@ export function ProjectView({
           </button>
         </div>
 
-        {/* Datos clave: fila editorial con divisores, no una sidebar. */}
+      </div>
+
+      {/* Cifras justo después de la portada (antes, al final del caso: la auditoría móvil las encontró
+          en la pantalla 9). Los enteros "limpios" cuentan desde 0 al entrar en pantalla (`CountUp`). */}
+      {metrics.length > 0 && (
+        <section aria-label={copy.metrics} className={cn(WRAP, "mt-10 sm:mt-14")}>
+          <h2 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-text">{copy.metrics}</h2>
+          <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
+            {metrics.map((metric, index) => {
+              const countable = parseCountable(metric.value);
+              return (
+                <div
+                  key={`${metric.label}-${index}`}
+                  className="flex flex-col-reverse justify-end border-l border-foreground/15 pl-4 sm:pl-5"
+                >
+                  <dt className="mt-2 text-sm leading-snug text-foreground/80">{metric.label}</dt>
+                  <dd className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+                    {countable ? (
+                      <CountUp value={countable.number} prefix={countable.prefix} suffix={countable.suffix} />
+                    ) : (
+                      metric.value
+                    )}
+                  </dd>
+                </div>
+              );
+            })}
+          </dl>
+        </section>
+      )}
+
+      {/* Datos clave: fila editorial con divisores, no una sidebar. Va después de las cifras: primero lo visual. */}
+      <div className={WRAP}>
         <dl
           className={cn(
             "mt-10 grid gap-x-8 gap-y-6 border-y border-foreground/10 py-8 sm:grid-cols-2",
@@ -239,6 +288,27 @@ export function ProjectView({
         </dl>
       </div>
 
+      {galleryImages.length > 0 && (
+        <motion.section
+          variants={fadeUp(reduced)}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT}
+          className={cn(WRAP, "mt-12 sm:mt-16")}
+        >
+          <GalleryRail
+            images={galleryImages}
+            title={copy.gallery}
+            regionLabel={copy.galleryRegion}
+            prevLabel={copy.galleryPrev}
+            nextLabel={copy.galleryNext}
+            expandLabel={copy.expandImage}
+            onOpen={openLightbox}
+            onIntent={prefetchLightbox}
+          />
+        </motion.section>
+      )}
+
       {project.technologies.length > 0 && !stackInArchitecture && (
         <motion.section
           aria-label={copy.stack}
@@ -256,15 +326,24 @@ export function ProjectView({
       {/* Capítulos: etiqueta fija a la izquierda, texto grande a la derecha. Solo si hay contenido real. */}
       {chapters.length > 0 && (
         <div className={cn(WRAP, "mt-16 sm:mt-24")}>
-          {chapters.map((chapter, index) => (
+          <ChapterTabs label={copy.chaptersNav} chapters={chapters.map(({ key, label }) => ({ key, label }))} />
+          {chapters.map((chapter, index) => {
+            const words = chapter.blocks
+              .map((block) => (block.type === "list" ? block.items.join(" ") : block.text))
+              .join(" ")
+              .split(/\s+/).length;
+            const collapsible = words > COLLAPSE_WORDS;
+            const isOpen = !collapsible || expanded[chapter.key];
+            return (
             <motion.section
               key={chapter.key}
+              id={`capitulo-${chapter.key}`}
               aria-labelledby={`chapter-${chapter.key}`}
               variants={fadeUp(reduced)}
               initial="hidden"
               whileInView="visible"
               viewport={VIEWPORT}
-              className="grid gap-4 border-t border-foreground/10 py-10 sm:py-14 lg:grid-cols-[14rem_1fr] lg:gap-16"
+              className="grid scroll-mt-20 gap-4 border-t border-foreground/10 py-10 first-of-type:border-t-0 sm:scroll-mt-40 sm:py-14 lg:scroll-mt-28 lg:grid-cols-[14rem_1fr] lg:gap-16 lg:first-of-type:border-t"
             >
               <div className="lg:sticky lg:top-28 lg:h-fit">
                 <span className="font-mono text-sm text-foreground/60">{String(index + 1).padStart(2, "0")}</span>
@@ -275,7 +354,16 @@ export function ProjectView({
                   {chapter.label}
                 </h2>
               </div>
-              <div className="max-w-2xl space-y-5">
+              <div>
+              {/* Plegado solo en móvil: el texto entero sigue en el HTML (buscadores, Ctrl+F); se recorta con
+                  una máscara y se abre con "Leer más". La altura no se anima (regla del proyecto). */}
+              <div
+                id={`capitulo-${chapter.key}-texto`}
+                className={cn(
+                  "max-w-2xl space-y-5",
+                  !isOpen && "max-sm:max-h-48 max-sm:overflow-hidden max-sm:[mask-image:linear-gradient(to_bottom,black_55%,transparent)]",
+                )}
+              >
                 {chapter.blocks.map((block, blockIndex) =>
                   block.type === "list" ? (
                     <ul
@@ -301,34 +389,32 @@ export function ProjectView({
                   </div>
                 )}
               </div>
+              {collapsible && (
+                <button
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={`capitulo-${chapter.key}-texto`}
+                  onClick={() => setExpanded((current) => ({ ...current, [chapter.key]: !isOpen }))}
+                  className={cn(
+                    "mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-full text-sm font-semibold text-foreground sm:hidden",
+                    FOCUS,
+                  )}
+                >
+                  {isOpen ? copy.readLess : copy.readMore}
+                  <CaretDown
+                    size={14}
+                    aria-hidden="true"
+                    className={cn("transition-transform duration-200 motion-reduce:transition-none", isOpen && "rotate-180")}
+                  />
+                </button>
+              )}
+              </div>
             </motion.section>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      {/* Métricas: banda oscura de énfasis. Las galería/siguiente caso que la rodean son claras. */}
-      {metrics.length > 0 && (
-        <section aria-label={copy.metrics} className="mt-16 band sm:mt-24">
-          <div className={cn(WRAP, "py-16 sm:py-24")}>
-            <h2 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent">{copy.metrics}</h2>
-            <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
-              {metrics.map((metric, index) => (
-                <motion.div
-                  key={`${metric.label}-${index}`}
-                  variants={fadeUp(reduced)}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={VIEWPORT}
-                  className="flex flex-col-reverse justify-end border-l border-on-inverse/15 pl-5"
-                >
-                  <dt className="mt-2 text-sm leading-snug text-on-inverse/80">{metric.label}</dt>
-                  <dd className="text-4xl font-bold tracking-tight text-on-inverse sm:text-5xl">{metric.value}</dd>
-                </motion.div>
-              ))}
-            </dl>
-          </div>
-        </section>
-      )}
 
       {testimonialQuote && (
         <section aria-label={copy.testimonial} className={cn(WRAP, "mt-16 sm:mt-24")}>
@@ -345,26 +431,6 @@ export function ProjectView({
         </section>
       )}
 
-      {galleryImages.length > 0 && (
-        <motion.section
-          variants={fadeUp(reduced)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={VIEWPORT}
-          className={cn(WRAP, "mt-16 sm:mt-24")}
-        >
-          <GalleryRail
-            images={galleryImages}
-            title={copy.gallery}
-            regionLabel={copy.galleryRegion}
-            prevLabel={copy.galleryPrev}
-            nextLabel={copy.galleryNext}
-            expandLabel={copy.expandImage}
-            onOpen={openLightbox}
-            onIntent={prefetchLightbox}
-          />
-        </motion.section>
-      )}
 
       <section aria-label={copy.related.title} className={cn(WRAP, "mt-16 sm:mt-24")}>
         <div className="grid gap-10 border-t border-foreground/10 pt-10 sm:grid-cols-2 lg:grid-cols-3">

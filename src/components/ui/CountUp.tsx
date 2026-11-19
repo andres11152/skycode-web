@@ -9,11 +9,21 @@ import { animate, m as motion, useMotionValue, useReducedMotion, useTransform } 
  * con reduced motion se ve el número real, nunca un "0". El lector de pantalla lee el valor fijo
  * (`sr-only`); la versión animada va `aria-hidden` para no anunciar cada paso del conteo.
  */
-export function CountUp({ value, suffix = "", className }: { value: number; suffix?: string; className?: string }) {
+export function CountUp({
+  value,
+  prefix = "",
+  suffix = "",
+  className,
+}: {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  className?: string;
+}) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
   const count = useMotionValue(value);
-  const rounded = useTransform(count, (latest) => `${Math.round(latest)}${suffix}`);
+  const rounded = useTransform(count, (latest) => `${prefix}${Math.round(latest)}${suffix}`);
 
   useEffect(() => {
     const node = ref.current;
@@ -39,6 +49,7 @@ export function CountUp({ value, suffix = "", className }: { value: number; suff
   return (
     <span ref={ref} className={className}>
       <span className="sr-only">
+        {prefix}
         {value}
         {suffix}
       </span>

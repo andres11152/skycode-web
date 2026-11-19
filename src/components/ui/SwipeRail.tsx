@@ -37,6 +37,7 @@ export function SwipeRail({
   as = "ul",
   className,
   itemClassName,
+  itemClassNames,
   controlsClassName,
 }: {
   items: ReactNode[];
@@ -47,6 +48,8 @@ export function SwipeRail({
   /** Maqueta desde `sm` (p. ej. `sm:grid sm:grid-cols-3 sm:gap-8`). */
   className?: string;
   itemClassName?: string;
+  /** Clases extra por tarjeta, en el mismo orden que `items` (p. ej. el caso destacado a ancho completo). */
+  itemClassNames?: string[];
   controlsClassName?: string;
 }) {
   const reduced = useReducedMotion();
@@ -165,7 +168,7 @@ export function SwipeRail({
         )}
       >
         {items.map((item, index) => (
-          <Item key={index} className={cn("max-sm:w-[85%] max-sm:shrink-0 max-sm:snap-start", itemClassName)}>
+          <Item key={index} className={cn("max-sm:w-[85%] max-sm:shrink-0 max-sm:snap-start", itemClassName, itemClassNames?.[index])}>
             {item}
           </Item>
         ))}

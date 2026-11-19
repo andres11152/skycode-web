@@ -73,6 +73,11 @@ export interface PortfolioDetailCopy {
   /** Plantilla con `{title}` e `{index}` — alt de cada captura cuando no tiene texto alternativo propio. */
   captureAlt: string;
   lightbox: PortfolioLightboxCopy;
+  /** Botón de los capítulos plegados en móvil. */
+  readMore: string;
+  readLess: string;
+  /** Nombre de la barra de pestañas de capítulos (móvil y tablet). */
+  chaptersNav: string;
 }
 
 export interface PortfolioSectionCopy {
