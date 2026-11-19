@@ -5,7 +5,10 @@
       "label": "Bonnes pratiques OWASP"
     },
     {
-      "label": "Garantie 90 jours SLA · Corrections de bugs incluses"
+      "label": "Garantie 90 jours SLA · Corrections de bugs incluses",
+      "stat": 90,
+      "unit": " jours",
+      "statLabel": "de garantie SLA, corrections incluses"
     },
     {
       "label": "Conformité protection des données"
@@ -14,7 +17,10 @@
       "label": "Documentation technique incluse"
     },
     {
-      "label": "Code 100% transférable"
+      "label": "Code 100% transférable",
+      "stat": 100,
+      "unit": "%",
+      "statLabel": "de code transférable"
     }
   ]
 }

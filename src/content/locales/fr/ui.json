@@ -24,5 +24,10 @@
   "whatsappPreview": "Cher client : des questions sur votre projet ou besoin d'une évaluation technique immédiate ? Discutez directement avec notre équipe d'ingénierie.",
   "whatsappOpenChat": "Ouvrir le chat WhatsApp",
   "whatsappTriggerAria": "Nous contacter sur WhatsApp",
-  "backToHome": "Retour à l'accueil"
+  "backToHome": "Retour à l'accueil",
+  "rail": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "goTo": "Aller à la carte {index} sur {total}"
+  }
 }

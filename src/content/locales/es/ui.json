@@ -24,5 +24,10 @@
   "whatsappPreview": "¡Hola! Si tienes dudas sobre tu proyecto o quieres saber si podemos construir lo que tienes en mente, escríbenos. Te responde Andrés o César, sin bots ni rodeos.",
   "whatsappOpenChat": "Escribir por WhatsApp",
   "whatsappTriggerAria": "Contactar por WhatsApp",
-  "backToHome": "Volver al inicio"
+  "backToHome": "Volver al inicio",
+  "rail": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "goTo": "Ir a la tarjeta {index} de {total}"
+  }
 }

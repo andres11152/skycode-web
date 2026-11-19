@@ -22,7 +22,7 @@ export function Services({ locale = defaultLocale }: { locale?: Locale }) {
   const { index } = getServicePageContent(locale);
 
   return (
-    <section id="servicios" className="cv-auto [--cv-h:2540px] lg:[--cv-h:1970px] scroll-mt-24 border-y border-foreground/10 bg-foreground/[0.03] px-6 py-24 sm:py-32">
+    <section id="servicios" className="cv-auto [--cv-h:1410px] lg:[--cv-h:1970px] scroll-mt-24 border-y border-foreground/10 bg-foreground/[0.03] px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="mb-14 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">

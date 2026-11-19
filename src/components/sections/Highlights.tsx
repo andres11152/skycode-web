@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/Button";
 import { RevealText } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getHighlightsContent } from "@/content/highlights";
+import { getUiContent } from "@/content/ui";
+import { SwipeRail } from "@/components/ui/SwipeRail";
+import { BrandPeriod } from "@/components/ui/BrandPeriod";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 import {
   FlutterIcon,
@@ -42,14 +45,18 @@ const techStack = [
  * una sola franja de tecnologías en monocromo, sin cajas ni tooltips. Server
  * Component: nada aquí necesita JS. Se quitó el video de muestra: enseñaba una
  * aplicación de tareas genérica que no es un producto nuestro, y pesaba 2,3 MB.
+ *
+ * Móvil: los tres argumentos son tarjetas deslizables (`SwipeRail`) con la cifra grande, y las
+ * tecnologías un carril de dos filas: antes ocupaban ~4 pantallas de texto apilado.
  */
 export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
   const data = getHighlightsContent(locale);
   const homePath = localeHomePath(locale);
   const prefix = homePath === "/" ? "" : homePath;
+  const rail = getUiContent(locale).rail;
 
   return (
-    <section id="por-que" aria-label={data.sectionAria} className="cv-auto [--cv-h:1750px] lg:[--cv-h:1080px] scroll-mt-24 px-6 py-24 sm:py-32">
+    <section id="por-que" aria-label={data.sectionAria} className="cv-auto [--cv-h:1390px] lg:[--cv-h:1080px] scroll-mt-24 px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
           <SectionEyebrow className="reveal-up mb-4">{data.badge}</SectionEyebrow>
@@ -59,21 +66,36 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
           <p style={{ "--i": 3 } as CSSProperties} className="reveal-up mt-5 text-lg leading-relaxed text-foreground/80">{data.description}</p>
         </div>
 
-        <ol className="mt-16 grid gap-10 sm:grid-cols-3 sm:gap-8">
-          {data.items.map((item, index) => (
-            <li key={item.title} style={{ "--i": index } as CSSProperties} className="scroll-reveal relative border-t border-foreground/20 pt-6">
-              {/* Filete que se dibuja con el scroll sobre el filete tenue de base. */}
-              <span aria-hidden="true" className="scroll-progress-x absolute -top-px left-0 h-px w-full bg-foreground motion-reduce:hidden" />
-              <span className="font-mono text-sm text-foreground/70">{String(index + 1).padStart(2, "0")}</span>
-              <h3 className="mt-4 text-xl font-semibold tracking-tight text-balance text-foreground">{item.title}</h3>
-              <p className="mt-3 text-base leading-relaxed text-foreground/80">{item.description}</p>
-            </li>
-          ))}
-        </ol>
+        <div className="mt-12 sm:mt-16">
+          <SwipeRail
+            as="ol"
+            label={data.title}
+            labels={rail}
+            className="sm:grid sm:grid-cols-3 sm:gap-8"
+            itemClassName="max-sm:flex"
+            items={data.items.map((item, index) => (
+              <div
+                key={item.title}
+                style={{ "--i": index } as CSSProperties}
+                className="scroll-reveal relative w-full border-t border-foreground/20 pt-6 max-sm:rounded-xl max-sm:border max-sm:border-foreground/10 max-sm:bg-surface-raised/80 max-sm:p-6 max-sm:shadow-lg max-sm:shadow-black/5 max-sm:backdrop-blur"
+              >
+                {/* Filete que se dibuja con el scroll sobre el filete tenue de base (solo escritorio). */}
+                <span aria-hidden="true" className="scroll-progress-x absolute -top-px left-0 h-px w-full bg-foreground motion-reduce:hidden max-sm:hidden" />
+                <span className="font-mono text-sm text-foreground/70 max-sm:flex max-sm:items-end max-sm:text-5xl max-sm:leading-none max-sm:font-semibold max-sm:tracking-[-0.04em] max-sm:text-foreground">
+                  {String(index + 1).padStart(2, "0")}
+                  <BrandPeriod className="sm:hidden" />
+                </span>
+                <h3 className="mt-4 text-xl font-semibold tracking-tight text-balance text-foreground max-sm:mt-6">{item.title}</h3>
+                <p className="mt-3 text-base leading-relaxed text-foreground/80">{item.description}</p>
+              </div>
+            ))}
+          />
+        </div>
 
         <div className="mt-20 border-t border-foreground/10 pt-10">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-foreground/70">{data.techLabel}</p>
-          <ul className="mt-6 flex flex-wrap gap-x-9 gap-y-5">
+          {/* Móvil: carril horizontal de dos filas (antes 7 filas de logos apiladas). */}
+          <ul className="mt-6 flex flex-wrap gap-x-9 gap-y-5 max-sm:-mx-6 max-sm:grid max-sm:auto-cols-max max-sm:grid-flow-col max-sm:grid-rows-2 max-sm:gap-x-7 max-sm:gap-y-4 max-sm:overflow-x-auto max-sm:px-6 max-sm:pb-1 max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden">
             {techStack.map(({ name, Icon }, index) => (
               <li
                 key={name}

@@ -1,11 +1,29 @@
 {
   "ariaLabel": "Compromisos de confianza de SkyCode",
   "items": [
-    { "label": "Garantía de 90 días ante cualquier falla" },
-    { "label": "El código es 100% tuyo desde el día 1" },
-    { "label": "Sin intermediarios: hablas con los programadores" },
-    { "label": "Documentación clara para tu equipo" },
-    { "label": "Seguridad y privacidad en cada línea" }
+    {
+      "label": "Garantía de 90 días ante cualquier falla",
+      "stat": 90,
+      "unit": " días",
+      "statLabel": "de garantía ante cualquier falla"
+    },
+    {
+      "label": "El código es 100% tuyo desde el día 1",
+      "stat": 100,
+      "unit": "%",
+      "statLabel": "del código es tuyo desde el día 1"
+    },
+    {
+      "label": "Sin intermediarios: hablas con los programadores",
+      "stat": 0,
+      "unit": "",
+      "statLabel": "intermediarios: hablas con los programadores"
+    },
+    {
+      "label": "Documentación clara para tu equipo"
+    },
+    {
+      "label": "Seguridad y privacidad en cada línea"
+    }
   ]
 }
-

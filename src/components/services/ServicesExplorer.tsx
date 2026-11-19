@@ -32,6 +32,10 @@ const ServiceDemo = dynamic(() => import("@/components/services/ServiceDemo"), {
  * Los textos llegan por prop desde el servidor en vez de importar
  * `content/servicePage`: ese JSON trae la FAQ del índice en 3 idiomas, y
  * importarlo aquí lo mandaría entero al navegador.
+ *
+ * Móvil (por debajo de `sm`): mosaico de 2 columnas con el número grande y el título; la descripción
+ * se oculta (sigue en el HTML para buscadores y Ctrl+F) y el detalle está a un toque. La lista de 9
+ * filas con párrafo ocupaba ~3 pantallas (auditoría móvil).
  */
 export interface ExplorerService {
   slug: string;
@@ -62,13 +66,16 @@ export function ServicesExplorer({
 
   return (
     <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] lg:gap-16">
-      <ol aria-label={copy.listAria} className="border-t border-foreground/10">
+      <ol
+        aria-label={copy.listAria}
+        className="border-t border-foreground/10 max-sm:grid max-sm:grid-cols-2 max-sm:gap-3 max-sm:border-t-0"
+      >
         {services.map((service, index) => {
           const isActive = isDesktop && service.slug === active?.slug;
           const href = servicePath(locale, service.slug);
 
           return (
-            <li key={service.slug} className="scroll-reveal relative border-b border-foreground/10">
+            <li key={service.slug} className="scroll-reveal relative border-b border-foreground/10 max-sm:border-b-0">
               {isActive && (
                 <motion.span
                   layoutId="services-index-active"
@@ -81,12 +88,12 @@ export function ServicesExplorer({
                 href={href}
                 onMouseEnter={() => setActiveSlug(service.slug)}
                 onFocus={() => setActiveSlug(service.slug)}
-                className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-start gap-4 rounded-xl px-2 py-6 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-center sm:gap-5 sm:px-4 sm:py-7"
+                className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-start gap-4 rounded-xl px-2 py-6 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-center sm:gap-5 sm:px-4 sm:py-7 max-sm:relative max-sm:flex max-sm:h-full max-sm:min-h-36 max-sm:flex-col max-sm:justify-between max-sm:gap-5 max-sm:border max-sm:border-foreground/10 max-sm:bg-surface-raised/80 max-sm:p-4 max-sm:shadow-sm max-sm:shadow-black/5 max-sm:backdrop-blur max-sm:transition-transform max-sm:duration-150 max-sm:active:scale-[0.97] max-sm:motion-reduce:active:scale-100"
               >
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "pt-1 font-mono text-sm font-medium text-foreground/60 transition-colors duration-200 sm:pt-0",
+                    "pt-1 font-mono text-sm font-medium text-foreground/60 transition-colors duration-200 sm:pt-0 max-sm:pt-0 max-sm:text-2xl max-sm:leading-none max-sm:font-semibold max-sm:tracking-[-0.04em] max-sm:text-foreground",
                     isActive && "text-accent-text",
                   )}
                 >
@@ -94,10 +101,10 @@ export function ServicesExplorer({
                 </span>
 
                 <span className="min-w-0">
-                  <Heading className="text-lg font-semibold tracking-tight text-balance text-foreground sm:text-2xl">
+                  <Heading className="text-lg font-semibold tracking-tight text-balance text-foreground max-sm:text-[15px] max-sm:leading-snug sm:text-2xl">
                     {service.title}
                   </Heading>
-                  <span className="mt-1.5 block max-w-xl text-sm leading-relaxed text-foreground/80 line-clamp-2">
+                  <span className="mt-1.5 block max-w-xl text-sm leading-relaxed text-foreground/80 line-clamp-2 max-sm:hidden">
                     {service.description}
                   </span>
                 </span>
@@ -106,7 +113,7 @@ export function ServicesExplorer({
                   size={20}
                   aria-hidden="true"
                   className={cn(
-                    "mt-1 shrink-0 text-foreground/60 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-text motion-reduce:transform-none sm:mt-0",
+                    "mt-1 shrink-0 text-foreground/60 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-text motion-reduce:transform-none sm:mt-0 max-sm:absolute max-sm:top-4 max-sm:right-4 max-sm:mt-0",
                     isActive && "text-accent-text",
                   )}
                 />
