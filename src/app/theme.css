@@ -17,7 +17,16 @@
   --accent: #0089cd;
   --accent-strong: #006998;
   --accent-foreground: #ffffff;
+  /* Amarillo del logo = "el punto de SkyCode". Sobre blanco da ~1,4:1: SOLO decorativo (un punto,
+     una marca diminuta, aria-hidden), nunca texto ni el único indicador de un estado. Sobre
+     `inverse` (~14:1) sí se lee. Usos permitidos: ACCENT_SECONDARY_FILES en themeRules.test.ts.
+     `on-accent-secondary` es el texto SOBRE amarillo (selección): fijo en los dos temas, porque
+     en oscuro `foreground` es claro y no se leería sobre amarillo. */
   --accent-secondary: #ffd100;
+  --on-accent-secondary: #0a0a0a;
+  /* Color del "punto de SkyCode" (eyebrows, final de titulares): amarillo, y negro dentro de una
+     `.band-yellow` (ahí el amarillo desaparecería), como en las piezas amarillas de Instagram. */
+  --brand-dot: var(--accent-secondary);
   /* Tokens semánticos del modo oscuro (ver "Modo oscuro" más abajo). En claro
      reproducen EXACTAMENTE lo que el sitio ya hacía, así que añadirlos no cambia
      ningún píxel:
@@ -101,6 +110,34 @@
   --on-inverse: var(--foreground);
 }
 
+/* Banda AMARILLA de marca (como las piezas "Guárdalo" de Instagram): amarillo del logo de borde a
+   borde, texto negro, grilla fina y un brillo blanco arriba a la derecha. Es la misma en claro y en
+   oscuro (es identidad, no tema). Reasigna los tokens dentro de la sección, igual que `.band`, así
+   que todo lo escrito con `text-foreground/NN`, `text-on-inverse/NN` y los bordes al 10% se lee en
+   negro sobre amarillo (contrastes en themeContrast.test.ts). `--accent` pasa a negro porque el
+   azul sobre amarillo da 2,6:1 y el anillo de foco (`ring-accent`) dejaría de verse; el botón de
+   acento usa `accent-strong` y no cambia. Usos permitidos: ACCENT_SECONDARY_FILES. */
+.band-yellow {
+  --background: var(--accent-secondary);
+  --foreground: var(--on-accent-secondary);
+  --inverse: var(--accent-secondary);
+  --on-inverse: var(--on-accent-secondary);
+  --accent: var(--on-accent-secondary);
+  --accent-text: var(--on-accent-secondary);
+  --brand-dot: var(--on-accent-secondary);
+  color-scheme: light;
+  color: var(--on-accent-secondary);
+  background-color: var(--accent-secondary);
+  background-image:
+    radial-gradient(55% 45% at 92% 0%, color-mix(in srgb, #ffffff 50%, transparent), transparent 75%),
+    linear-gradient(to right, color-mix(in srgb, var(--on-accent-secondary) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--on-accent-secondary) 5%, transparent) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    72px 72px,
+    72px 72px;
+}
+
 /* Utilidades para alternar un par de recursos claro/oscuro (p. ej. el logo, cuyas letras son
    negras) sin JavaScript. `.show-on-dark` nace oculto; los dos disparadores son los mismos de
    los tokens de arriba. Sin `data-dark-ready` ninguna regla aplica y solo se ve la versión clara. */
@@ -133,6 +170,8 @@
   --color-accent-strong: var(--accent-strong);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-secondary: var(--accent-secondary);
+  --color-on-accent-secondary: var(--on-accent-secondary);
+  --color-brand-dot: var(--brand-dot);
   --color-inverse: var(--inverse);
   --color-on-inverse: var(--on-inverse);
   --color-accent-text: var(--accent-text);

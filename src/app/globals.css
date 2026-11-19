@@ -287,6 +287,19 @@
 }
 
 /* Subrayado que se dibuja de izquierda a derecha (solo enlaces de una línea). */
+/* Selección de texto en el amarillo del logo: solo aparece cuando alguien selecciona, así que es
+   el toque de marca más discreto. Texto `on-accent-secondary` (fijo, oscuro) sobre amarillo: ~13:1
+   en los dos temas (themeContrast.test.ts). Solo el sitio público: el panel no carga este archivo. */
+::selection {
+  background-color: var(--accent-secondary);
+  color: var(--on-accent-secondary);
+}
+/* Dentro de una banda amarilla la selección amarilla no se vería: se invierte a negro. */
+.band-yellow ::selection {
+  background-color: var(--on-accent-secondary);
+  color: var(--accent-secondary);
+}
+
 .link-underline {
   position: relative;
 }

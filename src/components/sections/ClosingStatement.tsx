@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { m as motion, useScroll, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
@@ -8,28 +8,33 @@ import { cn } from "@/lib/utils";
 import { getClosingContent } from "@/content/closing";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 import { Magnetic } from "@/components/ui/Magnetic";
+import { BrandPeriod } from "@/components/ui/BrandPeriod";
 
 function RevealWord({
   word,
   index,
   total,
   progress,
+  trailing,
 }: {
   word: string;
   index: number;
   total: number;
   progress: MotionValue<number>;
+  /** Lo que sigue pegado a la palabra y se revela con ella (el punto de marca de la última). */
+  trailing?: ReactNode;
 }) {
   const start = (index / total) * 0.7;
   const end = Math.min(start + 0.3, 1);
-  // Piso de opacidad 0.4 (no 0.15): a 0.15 el texto "dim" cae a un contraste de 1.47:1
-  // contra el fondo negro — por debajo del mínimo 3:1 de WCAG para texto grande. En 0.4
-  // el contraste es ~3.8:1, cumple, y el efecto de revelado sigue siendo visible.
-  const opacity = useTransform(progress, [start, end], [0.4, 1]);
+  // Piso de opacidad 0.5: el texto aún sin revelar es negro al 50% sobre la banda amarilla, ~3,4:1,
+  // por encima del 3:1 de WCAG para texto grande (al 0.4 de antes daría 2,6:1 sobre amarillo).
+  // Lo verifica themeContrast.test.ts. Mantener igual en ClosingStatementFallback.
+  const opacity = useTransform(progress, [start, end], [0.5, 1]);
 
   return (
     <motion.span style={{ opacity }} className="mr-[0.28em] inline-block">
       {word}
+      {trailing}
     </motion.span>
   );
 }
@@ -37,7 +42,7 @@ function RevealWord({
 export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }) {
   const reduced = Boolean(useReducedMotion());
   const closingData = getClosingContent(locale);
-  const words = closingData.statement.split(" ");
+  const words = closingData.statementBody.split(" ");
   const homePath = localeHomePath(locale);
   const contactHref = `${homePath === "/" ? "" : homePath}/#contacto`;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -50,7 +55,7 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
     <section
       aria-label={closingData.sectionAria}
       ref={containerRef}
-      className={cn("relative band", reduced ? "py-28" : "h-[175vh]")}
+      className={cn("relative band-yellow", reduced ? "py-28" : "h-[175vh]")}
     >
       <div
         className={cn(
@@ -58,17 +63,13 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
           reduced ? "py-4" : "sticky top-0 h-screen justify-center",
         )}
       >
-        <div
-          aria-hidden="true"
-          className="absolute left-1/2 top-1/2 -z-10 h-[740px] w-[1080px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--accent)_15%,transparent),color-mix(in_srgb,var(--accent)_6%,transparent)_55%,transparent)]"
-        />
-
         <div className="mx-auto flex w-full max-w-4xl flex-col items-start gap-8">
           <SectionEyebrow onDark>{closingData.eyebrow}</SectionEyebrow>
 
           {reduced ? (
             <p className="text-3xl font-bold leading-snug tracking-tight text-balance text-on-inverse sm:text-5xl">
-              {closingData.statement}
+              {closingData.statementBody}
+              {closingData.endsWithPeriod && <BrandPeriod />}
             </p>
           ) : (
             <p className="text-3xl font-bold leading-snug tracking-tight text-balance text-on-inverse sm:text-5xl">
@@ -79,6 +80,7 @@ export function ClosingStatement({ locale = defaultLocale }: { locale?: Locale }
                   index={index}
                   total={words.length}
                   progress={scrollYProgress}
+                  trailing={index === words.length - 1 && closingData.endsWithPeriod ? <BrandPeriod /> : undefined}
                 />
               ))}
             </p>

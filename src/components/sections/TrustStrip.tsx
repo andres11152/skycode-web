@@ -12,17 +12,17 @@ const DESKTOP_COLUMNS: Record<number, string> = {
 };
 
 /**
- * Franja oscura con las cuatro capacidades propias (OWASP, protección de datos,
- * documentación, código transferible). Estática y sin íconos: antes era un
- * marquee infinito de 4 ítems repetidos 4 veces, con un pictograma de degradado
- * azul por ítem — movimiento y decoración para decir cuatro frases. Numeradas
- * en mono y separadas por filetes, se leen de una vez.
+ * Franja AMARILLA de marca (`.band-yellow`, como las piezas "Guárdalo" de Instagram) con las
+ * capacidades propias (OWASP, protección de datos, documentación, código transferible), justo
+ * bajo el Hero. Estática y sin íconos: antes era un marquee infinito con un pictograma de
+ * degradado azul por ítem. Numeradas en mono y separadas por filetes, se leen de una vez.
+ * Texto negro sobre amarillo (los tokens los reasigna `.band-yellow`).
  */
 export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
   const trustData = getTrustContent(locale);
 
   return (
-    <div role="group" aria-label={trustData.ariaLabel} className="w-full border-y border-on-inverse/10 band">
+    <div role="group" aria-label={trustData.ariaLabel} className="w-full border-y border-on-inverse/10 band-yellow">
       <ul
         className={cn(
           "mx-auto grid max-w-6xl divide-y divide-on-inverse/10 px-6 sm:grid-cols-2 sm:divide-y-0 lg:divide-x",
@@ -33,9 +33,9 @@ export function TrustStrip({ locale = defaultLocale }: { locale?: Locale }) {
           <li
             key={item.label}
             style={{ "--i": index } as CSSProperties}
-            className="reveal-up flex items-baseline gap-4 py-5 text-sm leading-snug text-on-inverse/80 sm:py-6 sm:last:odd:col-span-2 lg:px-6 lg:first:pl-0 lg:last:pr-0 lg:last:odd:col-span-1"
+            className="reveal-up flex items-baseline gap-4 py-5 text-sm leading-snug font-medium text-on-inverse sm:py-6 sm:last:odd:col-span-2 lg:px-6 lg:first:pl-0 lg:last:pr-0 lg:last:odd:col-span-1"
           >
-            <span className="font-mono text-xs text-on-inverse/60">{String(index + 1).padStart(2, "0")}</span>
+            <span className="font-mono text-xs text-on-inverse/70">{String(index + 1).padStart(2, "0")}</span>
             <span>{item.label}</span>
           </li>
         ))}

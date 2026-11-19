@@ -30,9 +30,10 @@ export function RepoMockup({ lines }: { lines: string[] }) {
             </li>
           );
         })}
-        {/* Cursor de terminal: la línea que "sigue escribiéndose". */}
+        {/* Cursor de terminal: la línea que "sigue escribiéndose". En el amarillo del logo: sobre
+            bg-inverse da ~14:1 y deja el azul solo para las claves. */}
         <li className="flex h-4 items-center">
-          <span className="caret-blink h-3.5 w-1.5 bg-accent" />
+          <span className="caret-blink h-3.5 w-1.5 bg-accent-secondary" />
         </li>
       </ul>
     </div>

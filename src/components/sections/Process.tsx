@@ -4,6 +4,7 @@ import { BogotaLink } from "@/components/bogota/BogotaLink";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProcessContent } from "@/content/process";
 import { defaultLocale, type Locale } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 
 /**
  * Proceso en cuatro pasos: columnas numeradas bajo una línea que se dibuja con
@@ -38,7 +39,17 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
             {processData.steps.map((step, index) => (
               <li key={step.title} style={{ "--i": index } as CSSProperties} className="scroll-reveal relative flex flex-col gap-3">
                 {/* Marcador sobre la línea: se enciende cuando el paso entra en pantalla. */}
-                <span aria-hidden="true" className="dot-on absolute -top-[2.35rem] left-0 h-2.5 w-2.5 rounded-full bg-foreground" />
+                {/* El último paso (la entrega) es la meta: lleva el punto amarillo del logo, con un
+                    anillo fino porque sobre blanco el amarillo solo no llega a 3:1. */}
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "dot-on absolute -top-[2.35rem] left-0 h-2.5 w-2.5 rounded-full",
+                    index === processData.steps.length - 1
+                      ? "bg-accent-secondary ring-1 ring-foreground/25"
+                      : "bg-foreground",
+                  )}
+                />
                 <span className="font-mono text-sm text-foreground/70">{String(index + 1).padStart(2, "0")}</span>
                 <h3 className="text-xl font-semibold tracking-tight text-balance text-foreground">{step.title}</h3>
                 <p className="text-base leading-relaxed text-foreground/80">{step.description}</p>

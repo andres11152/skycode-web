@@ -13,6 +13,7 @@ import Link from "next/link";
 import { ArrowRight, MapPin } from "@phosphor-icons/react/ssr";
 import { Button } from "@/components/ui/Button";
 import { EsBadge } from "@/components/ui/EsBadge";
+import { BrandPeriod } from "@/components/ui/BrandPeriod";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { PortalMockup } from "./PortalMockup";
 import { Tilt } from "@/components/ui/Tilt";
@@ -48,7 +49,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
             borde derecho (bug real en móvil). `min-w-0` deja que cada columna respete su ancho. */}
         <div className="flex min-w-0 flex-col items-start gap-4 text-left">
           {/* En móvil se omite: es la tercera línea de texto antes del titular y no aporta al primer pantallazo. */}
-          <SectionEyebrow className="mb-1 hidden sm:inline-block">{heroData.badge}</SectionEyebrow>
+          <SectionEyebrow className="mb-1 hidden sm:inline-flex">{heroData.badge}</SectionEyebrow>
 
           {/*
            * H1 — LCP principal. Dos tonos de neutro (negro y gris) en vez de degradado de acento:
@@ -59,6 +60,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
             <span>{heroData.titleBefore}</span>
             <span className="text-foreground/55">{heroData.titleAccent}</span>
             <span>{heroData.titleAfter}</span>
+            <BrandPeriod />
           </h1>
 
           {/* Móvil: versión corta (2–3 líneas); desde `sm`, el texto completo. Ambas están en el HTML;
@@ -95,15 +97,28 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
             </div>
           </div>
 
-          {/* Garantías: solo desde `sm` (en móvil la franja oscura de abajo ya las repite). Texto con separadores finos, sin palomitas dentro de círculos. Viven en
+          {/* Garantías: solo desde `sm` (en móvil la franja amarilla de abajo ya las repite). La primera en píldora amarilla y el resto con el punto del logo como viñeta, sin palomitas dentro de círculos. Viven en
               hero.json (3 idiomas), no en un ternario por locale en el JSX. */}
-          <ul className="mt-3 hidden flex-wrap items-center gap-x-3 gap-y-1 text-sm text-foreground/80 sm:flex">
-            {heroData.guarantees.map((point, index) => (
-              <li key={point} className="flex items-center gap-3">
-                {index > 0 && <span aria-hidden="true" className="h-3 w-px bg-foreground/20" />}
-                {point}
-              </li>
-            ))}
+          <ul className="mt-3 hidden flex-wrap items-center gap-x-4 gap-y-2 text-sm text-foreground/80 sm:flex">
+            {heroData.guarantees.map((point, index) =>
+              index === 0 ? (
+                // La promesa principal ("el código es tuyo") en píldora amarilla, como "Sin amarres"
+                // en Instagram. Texto en `foreground` pleno: el amarillo es solo tinte y borde.
+                <li
+                  key={point}
+                  className="rounded-full border border-accent-secondary bg-accent-secondary/20 px-3 py-1 font-medium text-foreground"
+                >
+                  {point}
+                </li>
+              ) : (
+                // Viñeta = el punto del logo: a diferencia de un filete vertical, se ve bien también
+                // cuando la fila se parte en dos (la píldora ocupa más ancho).
+                <li key={point} className="flex items-center gap-2">
+                  <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-brand-dot" />
+                  {point}
+                </li>
+              ),
+            )}
           </ul>
 
           {/* Entrada a la página local de Bogotá (solo español: fuera de /, lleva la insignia ES). */}
@@ -131,6 +146,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
             <PortalMockup copy={heroData.portalMockup} />
           </Tilt>
         </div>
+
       </div>
     </section>
   );

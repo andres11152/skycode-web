@@ -119,6 +119,53 @@ for (const [themeName, t] of [["claro", light], ["oscuro", dark]] as const) {
         expect(contrast(rgb(t.accent), rgb(surface)), surface).toBeGreaterThanOrEqual(GRAPHIC);
       }
     });
+
+    it("texto sobre el amarillo (selección: on-accent-secondary sobre accent-secondary): AAA", () => {
+      expect(contrast(rgb(t["on-accent-secondary"]), rgb(t["accent-secondary"]))).toBeGreaterThanOrEqual(AAA);
+    });
+
+    it("el amarillo como marca sobre superficie oscura (inverse) llega a 3:1", () => {
+      expect(contrast(rgb(t["accent-secondary"]), rgb(t.inverse))).toBeGreaterThanOrEqual(GRAPHIC);
+    });
+  });
+}
+
+describe("banda amarilla (.band-yellow): texto negro sobre el amarillo del logo", () => {
+  const yellow = light["accent-secondary"];
+  const ink = light["on-accent-secondary"];
+
+  it("texto de lectura (/80) y metadata (/70) cumplen AAA y AA", () => {
+    expect(contrast(over(ink, 0.8, yellow), rgb(yellow))).toBeGreaterThanOrEqual(AAA);
+    expect(contrast(over(ink, 0.7, yellow), rgb(yellow))).toBeGreaterThanOrEqual(AA);
+  });
+
+  it("el piso de opacidad del cierre (0,5) llega a 3:1 (texto grande)", () => {
+    expect(contrast(over(ink, 0.5, yellow), rgb(yellow))).toBeGreaterThanOrEqual(GRAPHIC);
+  });
+
+  it("el anillo de foco (accent reasignado a negro) y el borde del botón de acento llegan a 3:1", () => {
+    expect(contrast(rgb(ink), rgb(yellow))).toBeGreaterThanOrEqual(GRAPHIC);
+    expect(contrast(rgb(light["accent-strong"]), rgb(yellow))).toBeGreaterThanOrEqual(GRAPHIC);
+  });
+
+  it("el azul de marca como anillo NO llega a 3:1 sobre amarillo (por eso la banda reasigna --accent)", () => {
+    expect(contrast(rgb(light.accent), rgb(yellow))).toBeLessThan(GRAPHIC);
+  });
+});
+
+describe("el amarillo sobre blanco es SOLO decorativo", () => {
+  it("accent-secondary sobre el fondo claro NO llega a 3:1: nunca texto ni único indicador de estado", () => {
+    // Si este test falla es porque el amarillo cambió y ahora sí contrasta: revisar la regla en
+    // CLAUDE.md y ACCENT_SECONDARY_FILES en themeRules.test.ts antes de ampliar su uso.
+    expect(contrast(rgb(light["accent-secondary"]), rgb(light.background))).toBeLessThan(GRAPHIC);
+  });
+});
+
+for (const [themeName, t] of [["claro", light], ["oscuro", dark]] as const) {
+  describe(`amarillo, tema ${themeName}`, () => {
+    it("on-accent-secondary es el mismo en los dos temas (texto oscuro fijo sobre amarillo)", () => {
+      expect(t["on-accent-secondary"]).toBe(light["on-accent-secondary"]);
+    });
   });
 }
 

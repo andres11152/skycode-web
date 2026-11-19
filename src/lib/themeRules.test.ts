@@ -71,6 +71,28 @@ const ALLOWED_FIXED_COLOR: Record<string, { values: string[]; reason: string }> 
   },
 };
 
+/**
+ * Únicos componentes públicos que pueden usar el amarillo del logo. Tres formas, cada una acotada:
+ *  - `band-yellow`: superficie amarilla completa con texto negro (como las piezas "Guárdalo" de
+ *    Instagram). Nunca dos seguidas; hoy son dos en toda la home (arriba y al cierre).
+ *  - `bg-brand-dot`: el punto del logo (eyebrows y final de titulares); negro dentro de una banda.
+ *  - `accent-secondary` directo: marcas pequeñas y la píldora del Hero (tinte + borde, texto negro).
+ * Sobre blanco el amarillo da ~1,4:1: nunca es color de texto ni el único indicador de un estado.
+ * Añadir un archivo exige justificarlo aquí y en CLAUDE.md.
+ */
+const ACCENT_SECONDARY_FILES: Record<string, string> = {
+  "components/ui/BrandPeriod.tsx": "el punto redondo del logo al final de un titular (Hero H1, cierre, Footer)",
+  "components/ui/SectionEyebrow.tsx": "el punto del logo antes de cada etiqueta de sección",
+  "components/sections/TrustStrip.tsx": "franja amarilla bajo el Hero (band-yellow)",
+  "components/sections/ClosingStatement.tsx": "banda amarilla del cierre (band-yellow)",
+  "components/sections/ClosingStatementFallback.tsx": "la misma banda mientras carga el cierre",
+  "components/sections/Hero.tsx": "píldora de la promesa principal (tinte y borde, texto foreground)",
+  "components/sections/Process.tsx": "marcador del último paso (la entrega); la numeración da el orden",
+  "components/bogota/BogotaVisuals.tsx": "cursor de terminal sobre bg-inverse (~14:1)",
+};
+
+const YELLOW_USE = /accent-secondary|band-yellow|brand-dot/;
+
 const isAllowed = (file: string, value: string) => ALLOWED_FIXED_COLOR[file]?.values.includes(value) ?? false;
 
 describe("modo oscuro: tokens en componentes públicos", () => {
@@ -143,6 +165,25 @@ describe("modo oscuro: tokens en componentes públicos", () => {
       }
     }
     expect(hits, "usa var(--token) o color-mix(in srgb, var(--token) NN%, transparent)").toEqual([]);
+  });
+
+  it("el amarillo (`accent-secondary`) solo vive en sus usos documentados", () => {
+    const hits: string[] = [];
+    for (const path of files) {
+      const file = rel(path);
+      for (const literal of stringLiterals(read(path))) {
+        if (!YELLOW_USE.test(literal)) continue;
+        const allowed = ACCENT_SECONDARY_FILES[file];
+        if (!allowed) {
+          hits.push(`${file}: "${literal.slice(0, 100)}" (no está en ACCENT_SECONDARY_FILES)`);
+          continue;
+        }
+        // Nunca degradados con el amarillo, ni el amarillo como color de texto (~1,4:1 sobre blanco).
+        if (/(?<![\w-])(?:[a-z-]+:)*(from|via|to)-accent-secondary/.test(literal)) hits.push(`${file}: degradado con amarillo`);
+        if (/(?<![\w-])(?:[a-z-]+:)*text-accent-secondary/.test(literal)) hits.push(`${file}: text-accent-secondary`);
+      }
+    }
+    expect(hits, "el amarillo es el punto del logo: ver ACCENT_SECONDARY_FILES y CLAUDE.md").toEqual([]);
   });
 
   it("no hay variantes `dark:` ad hoc (todo pasa por tokens)", () => {

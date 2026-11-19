@@ -24,6 +24,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { localeHomePath, localeNames, locales, t, type Locale } from "@/lib/i18n";
 import { switchLocalePath } from "@/lib/localePaths";
 import { EsBadge } from "@/components/ui/EsBadge";
+import { BrandPeriod } from "@/components/ui/BrandPeriod";
 
 const FOUNDED_YEAR = 2023;
 
@@ -93,7 +94,7 @@ function ColumnHeading({ children, esOnly }: { children: string; esOnly?: boolea
   return (
     <h3 className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
       {children}
-      <span className="text-accent-secondary">.</span>
+      <BrandPeriod />
       {esOnly && <EsBadge />}
     </h3>
   );
@@ -279,7 +280,7 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
         <div className="border-t border-foreground/10 bg-foreground/[0.03] px-6 py-16 sm:px-10 lg:border-t-0 lg:border-l">
           <h3 className="text-2xl font-bold tracking-tight text-foreground">
             {footerData.getInTouchHeading}
-            <span className="text-accent-secondary">.</span>
+            <BrandPeriod />
           </h3>
           <p className="mt-2 max-w-xs text-sm text-foreground/80">
             {footerData.getInTouchDescription}
@@ -321,7 +322,7 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
 
           <h3 className="mt-10 text-sm font-semibold text-foreground">
             {footerData.followHeading}
-            <span className="text-accent-secondary">.</span>
+            <BrandPeriod />
           </h3>
           <ul className="mt-4 flex flex-wrap gap-2">
             {socialLinks.map(({ label, href, Icon, hoverClass }) => (
