@@ -6,19 +6,19 @@
   "steps": [
     {
       "title": "Charlamos y aterrizamos tu idea",
-      "description": "Nos cuentas qué necesitas resolver y evaluamos la viabilidad técnica. Te damos un plan claro y un presupuesto honesto, sin compromisos."
+      "description": "Evaluamos la viabilidad técnica y te damos plan y presupuesto, sin compromiso."
     },
     {
       "title": "Hoja de ruta clara y 50% inicial",
-      "description": "Definimos fechas exactas y firmamos contrato. Iniciamos el desarrollo con el 50% de anticipo y repositorios a tu nombre desde el primer día."
+      "description": "Fechas exactas, contrato y 50% de anticipo. Repositorios a tu nombre desde el día uno."
     },
     {
       "title": "Avances reales cada semana",
-      "description": "Nada de esperar meses a ciegas. Tienes un enlace privado donde pruebas cada pantalla y función a medida que las vamos construyendo."
+      "description": "Un enlace privado donde pruebas cada pantalla mientras la construimos."
     },
     {
       "title": "Lanzamiento y 50% final",
-      "description": "El saldo restante se abona únicamente cuando todo esté probado, funcionando en tus servidores y tú nos des el visto bueno definitivo."
+      "description": "Pagas el 50% restante solo cuando todo funciona y das el visto bueno."
     }
   ],
   "localPage": {
