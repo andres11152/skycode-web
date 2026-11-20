@@ -137,3 +137,115 @@ describe("trackEvent y trackContactLinkClick", () => {
     expect(calls.map((call) => call[1])).toEqual(["email_click", "phone_click"]);
   });
 });
+
+describe("contexto de página en navegaciones (set antes del page_view)", () => {
+  let calls: unknown[][];
+
+  beforeEach(() => {
+    vi.stubEnv("NEXT_PUBLIC_GA4_ID", "G-TEST123");
+    calls = [];
+    vi.stubGlobal("window", {
+      location: { pathname: "/cotizador", href: "https://skycode.agency/cotizador" },
+      localStorage: { getItem: () => null },
+      gtag: (...args: unknown[]) => calls.push(args),
+      __skycodeGtagReady: true,
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  it("actualiza la URL y el referente para todos los eventos, y el page_view hereda el título", async () => {
+    vi.resetModules();
+    const { setPageContext, trackPageView } = await import("./analytics");
+    setPageContext({ href: "https://skycode.agency/cotizador", referrer: "https://skycode.agency/servicios" });
+    trackPageView("Cotizador | SkyCode");
+    expect(calls).toEqual([
+      ["set", { page_location: "https://skycode.agency/cotizador", page_referrer: "https://skycode.agency/servicios" }],
+      ["set", { page_title: "Cotizador | SkyCode" }],
+      ["event", "page_view", { send_to: "G-TEST123" }],
+    ]);
+  });
+});
+
+describe("waitForDocumentTitle", async () => {
+  const { isNewDocumentTitle, waitForDocumentTitle, TITLE_WAIT_MS } = await import("./analytics");
+
+  it("solo acepta un título no vacío y distinto del anterior", () => {
+    expect(isNewDocumentTitle("", "Inicio")).toBe(false);
+    expect(isNewDocumentTitle("   ", "Inicio")).toBe(false);
+    expect(isNewDocumentTitle("Inicio", "Inicio")).toBe(false);
+    expect(isNewDocumentTitle("Servicios", "Inicio")).toBe(true);
+    expect(isNewDocumentTitle("Servicios", null)).toBe(true);
+  });
+
+  describe("en el navegador", () => {
+    let observerCallback: (() => void) | null;
+    let doc: { title: string; head: object };
+
+    beforeEach(() => {
+      vi.useFakeTimers();
+      observerCallback = null;
+      doc = { title: "", head: {} };
+      vi.stubGlobal("document", doc);
+      vi.stubGlobal(
+        "MutationObserver",
+        class {
+          constructor(callback: () => void) {
+            observerCallback = callback;
+          }
+          observe() {}
+          disconnect() {
+            observerCallback = null;
+          }
+        },
+      );
+      vi.stubGlobal("window", {
+        setTimeout: (fn: () => void, ms: number) => setTimeout(fn, ms),
+        clearTimeout: (id: ReturnType<typeof setTimeout>) => clearTimeout(id),
+        requestAnimationFrame: (fn: () => void) => setTimeout(fn, 16),
+      });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+      vi.unstubAllGlobals();
+    });
+
+    it("espera a que el <title> vacío de la transición se reemplace por el de la página nueva", () => {
+      const onReady = vi.fn();
+      waitForDocumentTitle("Inicio", onReady);
+      expect(onReady).not.toHaveBeenCalled();
+      doc.title = "Servicios | SkyCode";
+      observerCallback?.();
+      expect(onReady).toHaveBeenCalledExactlyOnceWith("Servicios | SkyCode");
+    });
+
+    it("con el título ya cambiado envía en el siguiente frame, una sola vez", () => {
+      doc.title = "Cotizador | SkyCode";
+      const onReady = vi.fn();
+      const flush = waitForDocumentTitle("Inicio", onReady);
+      vi.advanceTimersByTime(16);
+      flush();
+      expect(onReady).toHaveBeenCalledExactlyOnceWith("Cotizador | SkyCode");
+    });
+
+    it("al cumplirse el tope envía igual (dos páginas con el mismo título)", () => {
+      doc.title = "Inicio";
+      const onReady = vi.fn();
+      waitForDocumentTitle("Inicio", onReady);
+      vi.advanceTimersByTime(TITLE_WAIT_MS);
+      expect(onReady).toHaveBeenCalledExactlyOnceWith("Inicio");
+    });
+
+    it("flush envía en el acto lo pendiente si llega otra navegación, sin duplicar después", () => {
+      const onReady = vi.fn();
+      const flush = waitForDocumentTitle("Inicio", onReady);
+      flush();
+      vi.advanceTimersByTime(TITLE_WAIT_MS);
+      expect(onReady).toHaveBeenCalledTimes(1);
+    });
+  });
+});

@@ -331,7 +331,9 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
             <Button href={`${prefix}/#contacto`} variant="secondary" size="md">
               {footerData.getInTouchCtaPrimary}
             </Button>
-            <Button href={whatsappHref} variant="accent" size="md">
+            {/* Pestaña nueva, como el resto de enlaces a WhatsApp del sitio: la persona no sale del sitio y el
+                evento de clic (escucha global de GoogleTag) no compite con la descarga de la página. */}
+            <Button href={whatsappHref} target="_blank" rel="noopener noreferrer" variant="accent" size="md">
               {footerData.getInTouchCtaSecondary}
             </Button>
           </div>

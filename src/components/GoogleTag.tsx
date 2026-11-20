@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Script from "next/script";
 import { GA4_ID, GOOGLE_ADS_ID, buildGtagInitScript, gtagLoaderId, updateGoogleConsent } from "@/lib/googleTag";
-import { isAnalyticsPath, trackContactLinkClick, trackPageView } from "@/lib/analytics";
+import { isAnalyticsPath, setPageContext, trackContactLinkClick, trackPageView, waitForDocumentTitle } from "@/lib/analytics";
 import { isCategoryAllowed } from "@/lib/consent";
 import { useConsentRecord } from "@/lib/useConsent";
 
@@ -44,6 +44,9 @@ export function GoogleTag() {
   // ruta privada, así que la próxima pública es una página nueva aunque repita la última ruta medida.
   const lastPath = useRef<string | null>(null);
   const lastHref = useRef<string | null>(null);
+  const lastTitle = useRef<string | null>(null);
+  // `page_view` que espera el título de su página; se vacía (envía) si llega otra navegación antes.
+  const pendingPageView = useRef<(() => void) | null>(null);
   useEffect(() => {
     if (!LOADER_ID) return;
     if (!tracked) {
@@ -53,17 +56,26 @@ export function GoogleTag() {
     if (lastPath.current === null) {
       lastPath.current = pathname;
       lastHref.current = window.location.href;
+      lastTitle.current = document.title;
       return;
     }
     if (lastPath.current === pathname) return;
     lastPath.current = pathname;
-    const previousHref = lastHref.current;
-    // Un tick después del commit: el <title> de la página nueva ya está aplicado.
-    const timer = window.setTimeout(() => {
-      trackPageView(previousHref);
-      lastHref.current = window.location.href;
-    }, 0);
-    return () => window.clearTimeout(timer);
+    pendingPageView.current?.();
+
+    // 1) En el acto: URL y referente de la página nueva para TODOS los eventos siguientes.
+    const href = window.location.href;
+    setPageContext({ href, referrer: lastHref.current });
+    lastHref.current = href;
+
+    // 2) El page_view, cuando el <title> ya es el de la página nueva (o al cumplirse el tope).
+    // Sin limpieza ligada al efecto a propósito: el modo estricto de React lo desmontaría y volvería a montar
+    // en desarrollo, y la segunda pasada ya sale en `lastPath.current === pathname`.
+    pendingPageView.current = waitForDocumentTitle(lastTitle.current, (title) => {
+      pendingPageView.current = null;
+      lastTitle.current = title;
+      trackPageView(title);
+    });
   }, [pathname, tracked]);
 
   // Una escucha en fase de captura para TODOS los enlaces de WhatsApp, correo y teléfono del sitio (Navbar,

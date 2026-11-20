@@ -64,9 +64,14 @@ export function gtagLoaderId(ids: { ga4Id?: string; adsId?: string }): string | 
  *     identificadores de clic de anuncios.
  *  3. Si la persona ya había aceptado la medición (registro vigente en `localStorage`), se aplica en el mismo
  *     script, en orden: un `update` encolado antes del `default` sería ignorado.
- *  4. GA4 envía el `page_view` de la carga inicial con su `config`; las navegaciones del App Router las envía
- *     `GoogleTag` (ver `trackPageView`). `page_location` va explícito porque gtag.js se descarga con el
- *     navegador ocioso y, si la persona ya cambió de ruta, leería la URL nueva.
+ *  4. La página actual (`page_location`/`page_title`) se fija con `set`, NO como parámetro del `config`: un
+ *     parámetro de `config` persiste en todos los eventos de ese destino y un `set` posterior no lo pisa (bug
+ *     real: tras navegar, quote_start/email_click… salían con la URL y el título de la página de entrada).
+ *     Con `set`, cada navegación del App Router lo actualiza (`setPageContext` en lib/analytics.ts) y todos
+ *     los eventos lo heredan. Va explícito porque gtag.js se descarga con el navegador ocioso y, si la persona
+ *     ya cambió de ruta, el `page_view` inicial leería la URL nueva.
+ *  5. GA4 envía el `page_view` de la carga inicial con su `config`; los de las navegaciones los envía
+ *     `GoogleTag`.
  * Los cambios posteriores (aceptar o rechazar desde el banner) los envía `updateGoogleConsent`.
  */
 export function buildGtagInitScript(ids: { ga4Id?: string; adsId?: string }): string {
@@ -84,7 +89,8 @@ export function buildGtagInitScript(ids: { ga4Id?: string; adsId?: string }): st
       }
     } catch (error) {}
     gtag('js', new Date());
-    ${ids.ga4Id ? `gtag('config', ${JSON.stringify(ids.ga4Id)}, { page_location: window.location.href, page_title: document.title });` : ""}
+    gtag('set', { page_location: window.location.href, page_title: document.title });
+    ${ids.ga4Id ? `gtag('config', ${JSON.stringify(ids.ga4Id)});` : ""}
     ${ids.adsId ? `gtag('config', ${JSON.stringify(ids.adsId)});` : ""}
     window.${GTAG_READY_FLAG} = true;
   `;

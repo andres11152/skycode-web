@@ -4,7 +4,10 @@ import { usePathname } from "next/navigation";
 import { ChatCircle } from "@phosphor-icons/react";
 import { trackWhatsappClick } from "@/lib/landingEvents";
 
-/** Enlace a WhatsApp de la landing: cuenta el clic (contador propio y, si hay etiqueta, conversión en Ads) y abre el chat. */
+/**
+ * Enlace a WhatsApp de la landing: cuenta el clic en el contador propio y abre el chat. El evento de GA4 y la
+ * conversión de Ads los envía la escucha global de `GoogleTag`, igual que en el resto de enlaces de WhatsApp.
+ */
 export function LandingWhatsappLink({ href, children }: { href: string; children: React.ReactNode }) {
   const pathname = usePathname();
 

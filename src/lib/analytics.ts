@@ -61,19 +61,66 @@ export function trackEvent<Name extends AnalyticsEventName>(name: Name, params: 
 }
 
 /**
- * `page_view` de una navegación del App Router (la de la carga inicial la envía el `config` del script de
- * arranque). Solo a GA4: a Google Ads le basta el de la carga del documento.
+ * Página actual para TODOS los eventos siguientes (`gtag('set')`, ver el punto 4 de `buildGtagInitScript`).
+ * Se llama en cuanto cambia la ruta, sin esperar al título: un evento disparado justo después de navegar ya
+ * lleva la URL correcta. No depende del consentimiento: es contexto, no un envío.
  */
-export function trackPageView(previousHref: string | null): void {
+export function setPageContext(context: { href: string; referrer: string | null }): void {
+  const gtag = getGtag();
+  if (!gtag) return;
+  gtag("set", { page_location: context.href, ...(context.referrer ? { page_referrer: context.referrer } : {}) });
+}
+
+/**
+ * `page_view` de una navegación del App Router (el de la carga inicial lo envía el `config` del script de
+ * arranque), ya con el título de la página nueva (ver `waitForDocumentTitle`). Fija el título con `set` para
+ * que también lo hereden los eventos siguientes. Solo a GA4: a Google Ads le basta el de la carga del
+ * documento. Como el `page_view` inicial, sigue el Modo de consentimiento (sin permiso, ping sin cookies).
+ */
+export function trackPageView(title: string): void {
   if (!GA4_ID) return;
   const gtag = getGtag();
   if (!gtag || !isAnalyticsPath(window.location.pathname)) return;
-  gtag("event", "page_view", {
-    send_to: GA4_ID,
-    page_location: window.location.href,
-    page_title: document.title,
-    ...(previousHref ? { page_referrer: previousHref } : {}),
+  gtag("set", { page_title: title });
+  gtag("event", "page_view", { send_to: GA4_ID });
+}
+
+/** El `<title>` ya es el de la página nueva: no vacío y distinto del de la página anterior. */
+export function isNewDocumentTitle(current: string, previous: string | null): boolean {
+  return current.trim() !== "" && current !== previous;
+}
+
+/** Tope de espera del título: pasado este tiempo se envía igual (dos páginas pueden compartir título). */
+export const TITLE_WAIT_MS = 1500;
+
+/**
+ * Llama a `onReady(título)` UNA vez, en cuanto `document.title` es el de la página nueva o al cumplirse el
+ * tope. En una navegación de Next 16 el `<title>` se reemplaza durante la transición y, un tick después del
+ * cambio de ruta, puede valer "" (bug real: page_view de /servicios con `dt` vacío).
+ *
+ * Devuelve `flush`, que envía en el acto lo pendiente (si la persona vuelve a navegar antes de que llegue el
+ * título, el `page_view` de la página intermedia no se pierde).
+ */
+export function waitForDocumentTitle(previous: string | null, onReady: (title: string) => void): () => void {
+  let done = false;
+  const observer = new MutationObserver(() => {
+    if (isNewDocumentTitle(document.title, previous)) finish();
   });
+  const timer = window.setTimeout(finish, TITLE_WAIT_MS);
+  function finish() {
+    if (done) return;
+    done = true;
+    observer.disconnect();
+    window.clearTimeout(timer);
+    onReady(document.title);
+  }
+  if (isNewDocumentTitle(document.title, previous)) {
+    // Un frame: deja que React termine de aplicar el resto del <head> de la página nueva.
+    window.requestAnimationFrame(finish);
+  } else {
+    observer.observe(document.head, { subtree: true, childList: true, characterData: true });
+  }
+  return finish;
 }
 
 const WHATSAPP_HOSTS = new Set(["wa.me", "api.whatsapp.com", "web.whatsapp.com", "whatsapp.com", "www.whatsapp.com"]);

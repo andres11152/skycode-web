@@ -45,14 +45,18 @@ describe("Etiqueta de Google (GA4 + Ads) con Modo de consentimiento v2", () => {
     });
   });
 
-  it("el page_view inicial de GA4 lleva la URL de la carga, no la que haya cuando llegue gtag.js", () => {
-    expect(script).toContain("gtag('config', \"G-TEST123\", { page_location: window.location.href");
+  it("fija la página con `set` ANTES del config y no como parámetro del config (que persistiría en cada evento)", () => {
+    const setAt = script.indexOf("gtag('set', { page_location: window.location.href, page_title: document.title })");
+    expect(setAt).toBeGreaterThan(-1);
+    expect(setAt).toBeLessThan(script.indexOf("gtag('config'"));
+    expect(script).toContain("gtag('config', \"G-TEST123\");");
+    expect(script).not.toMatch(/gtag\('config'[^)]*page_location/);
   });
 
   it("solo configura las cuentas que existen", () => {
     const adsOnly = buildGtagInitScript({ adsId: "AW-1" });
     expect(adsOnly).toContain("gtag('config', \"AW-1\")");
-    expect(adsOnly).not.toContain("page_location");
+    expect(adsOnly).not.toContain("G-");
     const ga4Only = buildGtagInitScript({ ga4Id: "G-1" });
     expect(ga4Only).not.toContain("AW-");
   });
