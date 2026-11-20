@@ -44,6 +44,11 @@ const GOOGLE_ADS_CONNECT_SRC = [
   // pings sin cookies a /ccm/collect de este dominio (por fetch y por imagen). Bloqueados, el
   // modo de consentimiento no mide nada (verificado en Chrome: connect-src e img-src).
   "https://pagead2.googlesyndication.com",
+  // Google Analytics 4: envía a /g/collect de subdominios regionales (region1.google-analytics.com,
+  // region1.analytics.google.com…), por eso el comodín. Recomendación de la guía de CSP de Google.
+  "https://*.google-analytics.com",
+  "https://*.analytics.google.com",
+  "https://*.googletagmanager.com",
 ];
 // Google Ads sirve sus píxeles de imagen desde el dominio de Google del país
 // del visitante, no siempre www.google.com (visto en consola bloqueando
@@ -55,6 +60,9 @@ const GOOGLE_ADS_IMG_SRC = [
   "https://googleads.g.doubleclick.net",
   "https://ad.doubleclick.net",
   "https://pagead2.googlesyndication.com",
+  // Píxel de respaldo de GA4 cuando el navegador no admite sendBeacon/fetch keepalive.
+  "https://*.google-analytics.com",
+  "https://*.googletagmanager.com",
 ];
 
 // Checkout embebido de Bold (pagos desde /portal, ver lib/bold.ts): la librería
@@ -84,8 +92,8 @@ function common(): string[] {
     // *.r2.dev: bucket público de imágenes del portafolio (lib/portfolioStorage.ts).
     `img-src 'self' data: https://*.r2.dev ${GOOGLE_ADS_IMG_SRC.join(" ")}`,
     "font-src 'self' data:",
-    // La única llamada de red del navegador a un tercero es la de gtag.js
-    // (conversión de Google Ads); el resto de APIs externas se consulta desde el servidor.
+    // Las únicas llamadas de red del navegador a terceros son las de gtag.js
+    // (Google Analytics 4 y Google Ads); el resto de APIs externas se consulta desde el servidor.
     `connect-src 'self' ${GOOGLE_ADS_CONNECT_SRC.join(" ")}`,
     // El iframe modal del checkout embebido de Bold.
     `frame-src 'self' ${BOLD_CHECKOUT_ORIGIN}`,

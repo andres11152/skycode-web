@@ -12,6 +12,9 @@ const SOURCES = {
  * versión con las letras en #ededed (azul y amarillo de marca intactos). Se renderizan las dos
  * y CSS muestra la que toca (`.hide-on-dark`/`.show-on-dark`, theme.css): sin JavaScript y sin
  * parpadeo al cargar. La oscura es `lazy`: con el tema claro nunca se descarga.
+ * Las dos llevan el mismo `alt`: la que no toca tiene `display: none`, que la saca también del árbol de
+ * accesibilidad, así que un lector de pantalla anuncia una sola (antes la oscura iba con `alt=""` y, con el
+ * tema oscuro activo, el logo visible quedaba sin texto alternativo).
  * Server Component (sin "use client"): funciona igual dentro de uno cliente.
  */
 export function ThemedLogo({
@@ -46,8 +49,7 @@ export function ThemedLogo({
       {ENABLE_DARK_MODE ? (
         <Image
           src={sources.dark}
-          alt=""
-          aria-hidden="true"
+          alt={alt}
           width={width}
           height={height}
           loading="lazy"

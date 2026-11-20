@@ -1,6 +1,6 @@
 {
   "ariaLabel": "Avis sur les cookies",
-  "message": "Nous utilisons un stockage propre pour faire fonctionner le site et, si vous l'autorisez, pour mémoriser votre pays et la campagne d'où vous venez. Nous n'utilisons pas d'analyse de tiers. Les pages de campagne et de confirmation chargent la balise Google Ads : sans votre autorisation de mesure, elle ne stocke aucun cookie et Google ne reçoit que des données techniques de la visite ; avec elle, elle mesure quelle annonce a généré votre demande.",
+  "message": "Nous utilisons un stockage propre pour faire fonctionner le site et, si vous l'autorisez, pour mémoriser votre pays et la campagne d'où vous venez. Nous utilisons aussi Google Analytics et la balise Google Ads : sans votre autorisation de mesure, ils ne stockent aucun cookie et Google ne reçoit que des données techniques de la visite ; avec elle, ils mesurent l'utilisation du site et l'annonce à l'origine de votre demande.",
   "linkText": "Politique de cookies",
   "linkUrl": "/politica-cookies",
   "acceptAll": "Tout accepter",
@@ -34,7 +34,7 @@
       },
       "measurement": {
         "label": "Mesure",
-        "description": "Enregistrent la campagne ou la page d'où vous venez (paramètres UTM, identifiants de clic publicitaire) pour les joindre si vous nous écrivez. Avec cette autorisation, la balise Google Ads des pages de campagne peut aussi enregistrer ses propres cookies et mesurer quelle annonce a généré votre demande."
+        "description": "Enregistrent la campagne ou la page d'où vous venez (paramètres UTM, identifiants de clic publicitaire) pour les joindre si vous nous écrivez. Avec cette autorisation, Google Analytics et la balise Google Ads peuvent aussi enregistrer leurs propres cookies pour mesurer l'utilisation du site et l'annonce à l'origine de votre demande."
       }
     }
   },

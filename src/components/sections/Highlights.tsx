@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { Button } from "@/components/ui/Button";
-import { RevealText } from "@/components/ui/RevealText";
+import { RevealWords } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getHighlightsContent } from "@/content/highlights";
 import { getUiContent } from "@/content/ui";
@@ -60,8 +60,8 @@ export function Highlights({ locale = defaultLocale }: { locale?: Locale }) {
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
           <SectionEyebrow className="reveal-up mb-4">{data.badge}</SectionEyebrow>
-          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl">
-            <RevealText text={data.title} />
+          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl" aria-label={data.title}>
+            <RevealWords text={data.title} />
           </h2>
           <p style={{ "--i": 3 } as CSSProperties} className="reveal-up mt-5 text-lg leading-relaxed text-foreground/80">{data.description}</p>
         </div>

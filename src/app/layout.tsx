@@ -4,6 +4,7 @@ import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { LazyMotionProvider } from "@/components/LazyMotionProvider";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { ThemeSync } from "@/components/ThemeSync";
+import { GoogleTag } from "@/components/GoogleTag";
 import { getServicesContent } from "@/content/services";
 import { locales, type Locale } from "@/lib/i18n";
 import type { FooterServiceLinks } from "@/components/Footer";
@@ -81,8 +82,10 @@ export const metadata: Metadata = {
   // agrega un motor de búsqueda nuevo. Sin las variables configuradas,
   // Next.js simplemente no renderiza el tag correspondiente (no hace falta
   // desactivarlo a mano) — ver .env.example para dónde obtenerlos.
+  // `NEXT_PUBLIC_GSC_VERIFICATION` es el nombre vigente; el anterior se conserva como respaldo para no
+  // romper un entorno que ya lo tenga definido.
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
     other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
       ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
       : undefined,
@@ -160,6 +163,9 @@ export default function RootLayout({
           <LocaleProvider>
             {/* Fuera de ConditionalLayout: ahí el panel/login hacen `return` anticipado y no lo montarían. */}
             <ThemeSync />
+            {/* Etiqueta de Google (GA4 + Ads, Modo de consentimiento v2) para todas las rutas públicas e
+                idiomas. Aquí y no en ConditionalLayout por la misma razón que ThemeSync. */}
+            <GoogleTag />
             <ConditionalLayout serviceLinks={SERVICE_LINKS}>{children}</ConditionalLayout>
           </LocaleProvider>
         </LazyMotionProvider>

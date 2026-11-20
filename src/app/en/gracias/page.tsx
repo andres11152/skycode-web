@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ThankYouView } from "@/components/ThankYouView";
 
 export const metadata: Metadata = {
-  title: "Request Received | SKYCODE Agency",
+  title: "Request received",
   robots: { index: false, follow: false },
 };
 

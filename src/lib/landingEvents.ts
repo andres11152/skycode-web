@@ -1,12 +1,12 @@
 import { getAttribution } from "@/lib/attribution";
-import { GOOGLE_ADS_WHATSAPP_LABEL, reportAdsConversion } from "@/lib/googleAds";
 import type { LandingEventInput } from "@/lib/landingEventSchema";
 
 /**
- * Registra el clic al chat de WhatsApp de una landing de campaña: un contador
- * propio (`POST /api/landing-events`) y, si hay etiqueta configurada y la
- * persona aceptó la medición, la conversión en Google Ads. Nunca lanza ni
- * bloquea el clic: el enlace a WhatsApp se abre igual aunque esto falle.
+ * Registra el clic al chat de WhatsApp de una landing de campaña en el contador
+ * propio (`POST /api/landing-events`). El evento de GA4 y la conversión de
+ * Google Ads los envía la escucha global de `GoogleTag` (lib/analytics.ts),
+ * que cubre todos los enlaces de WhatsApp del sitio: enviarlos también aquí
+ * contaría dos veces la conversión. Nunca lanza ni bloquea el clic.
  */
 export function trackWhatsappClick(landingPage: string): void {
   if (typeof window === "undefined") return;
@@ -35,6 +35,4 @@ export function trackWhatsappClick(landingPage: string): void {
   } catch {
     // Sin red o sin fetch: el clic igual sigue su camino.
   }
-
-  reportAdsConversion(GOOGLE_ADS_WHATSAPP_LABEL);
 }

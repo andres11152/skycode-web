@@ -5,7 +5,7 @@ import { blogIndexPath } from "@/lib/blogPaths";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { PostCard } from "@/components/blog/PostCard";
 import { Button } from "@/components/ui/Button";
-import { RevealText } from "@/components/ui/RevealText";
+import { RevealWords } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { SwipeRail } from "@/components/ui/SwipeRail";
 import { getUiContent } from "@/content/ui";
@@ -21,8 +21,8 @@ export function BlogTeaser({ locale = defaultLocale, posts }: { locale?: Locale;
         <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
             <SectionEyebrow className="reveal-up mb-3">{blogTeaserData.badge}</SectionEyebrow>
-            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
-              <RevealText text={blogTeaserData.title} />
+            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl" aria-label={blogTeaserData.title}>
+              <RevealWords text={blogTeaserData.title} />
             </h2>
             <p className="mt-3 text-foreground/80">
               {blogTeaserData.description}

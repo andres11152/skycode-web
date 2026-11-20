@@ -2,7 +2,7 @@
 
 import { ChatCircle, Envelope } from "@phosphor-icons/react";
 import { ContactForm } from "@/components/contact/ContactForm";
-import { RevealText } from "@/components/ui/RevealText";
+import { RevealWords } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getContactContent } from "@/content/contact";
 import { getUiContent } from "@/content/ui";
@@ -103,8 +103,8 @@ export function Contact({
           ) : (
             <>
               <SectionEyebrow className="reveal-up mb-3">{contactData.badge}</SectionEyebrow>
-              <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
-                <RevealText text={contactData.title} />
+              <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl" aria-label={contactData.title}>
+                <RevealWords text={contactData.title} />
               </h2>
               <p className="mt-3 text-foreground/80">
                 {contactData.description}

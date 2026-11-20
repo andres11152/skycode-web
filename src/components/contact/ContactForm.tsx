@@ -13,6 +13,7 @@ import { isValidRealEmail } from "@/lib/emailValidation";
 import { cn } from "@/lib/utils";
 import { getAttribution } from "@/lib/attribution";
 import { logError } from "@/lib/logger";
+import { trackEvent } from "@/lib/analytics";
 import {
   CONTACT_PREFILL_EVENT,
   consumePendingContactPrefill,
@@ -228,6 +229,11 @@ export function ContactForm({
         // manual de gtag('config'|'event', ...) equivalente.
         navigating = true;
         clearContactDraft();
+        // Antes de navegar: GA4 envía sus eventos con `sendBeacon`, que sobrevive a la descarga de la página.
+        trackEvent("generate_lead", {
+          form_location: isModal ? "contact_modal" : "contact_section",
+          lead_source: formContext,
+        });
         window.location.href = thankYouPath;
       } else {
         setErrorMessage(result.error || contactData.errorGeneral);

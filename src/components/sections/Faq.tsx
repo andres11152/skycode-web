@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { RevealText } from "@/components/ui/RevealText";
+import { RevealWords } from "@/components/ui/RevealText";
 import { Button } from "@/components/ui/Button";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { FaqAccordionItem } from "@/components/faq/FaqAccordionItem";
@@ -22,7 +22,7 @@ export function Faq({ locale = defaultLocale }: { locale?: Locale }) {
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
             <SectionEyebrow className="reveal-up mb-3">{faqData.badge}</SectionEyebrow>
-            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl"><RevealText text={faqData.title} /></h2>
+            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl" aria-label={faqData.title}><RevealWords text={faqData.title} /></h2>
             <p className="mt-3 text-foreground/80">{faqData.description}</p>
           </div>
         </div>

@@ -1,6 +1,6 @@
 {
   "ariaLabel": "Cookie notice",
-  "message": "We use first-party storage to make the site work and, if you allow it, to remember your country and which campaign brought you here. We don't use third-party analytics. Campaign and confirmation pages load the Google Ads tag: without your measurement permission it stores no cookies and Google only receives technical data about the visit; with it, it measures which ad led to your enquiry.",
+  "message": "We use first-party storage to make the site work and, if you allow it, to remember your country and which campaign brought you here. We also use Google Analytics and the Google Ads tag: without your measurement permission they store no cookies and Google only receives technical data about the visit; with it, they measure how the site is used and which ad led to your enquiry.",
   "linkText": "Cookie policy",
   "linkUrl": "/politica-cookies",
   "acceptAll": "Accept all",
@@ -34,7 +34,7 @@
       },
       "measurement": {
         "label": "Measurement",
-        "description": "Store which campaign or page you came from (UTM parameters, ad click identifiers) so it can be attached if you write to us. With this permission, the Google Ads tag on campaign pages can also store its own cookies and measure which ad led to your enquiry."
+        "description": "Store which campaign or page you came from (UTM parameters, ad click identifiers) so it can be attached if you write to us. With this permission, Google Analytics and the Google Ads tag can also store their own cookies to measure how the site is used and which ad led to your enquiry."
       }
     }
   },

@@ -11,8 +11,12 @@
  *    "aceptado".
  */
 
-/** Subir este número vuelve a mostrar el aviso a todos los visitantes. */
-export const CONSENT_VERSION = 1;
+/**
+ * Subir este número vuelve a mostrar el aviso a todos los visitantes.
+ * 2 (2026-11-20): se incorporó Google Analytics 4 y la etiqueta de Google pasó a todas las páginas públicas;
+ * un "sí" a la medición dado cuando la política decía que no había analítica no cubre esto.
+ */
+export const CONSENT_VERSION = 2;
 export const CONSENT_STORAGE_KEY = "skycode-consent";
 export const CONSENT_EVENT = "skycode:consent-change";
 /** Evento para reabrir el centro de preferencias desde el Footer o la política. */

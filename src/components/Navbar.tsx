@@ -127,15 +127,15 @@ export function Navbar() {
             href={homePath}
             prefetch={homePrefetch}
             className="group flex items-center gap-2 rounded-full py-1.5 pr-1.5 text-foreground outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            aria-label={navData.logoAria}
             onClick={() => setIsOpen(false)}
           >
             <span
               className="flex h-8 items-center rounded-full transition-transform duration-300 ease-out group-hover:scale-110"
             >
+              {/* El nombre del enlace es el `alt` del logo (no un `aria-label`): Google lo usa como texto del enlace. */}
               <ThemedLogo
                 variant="mark"
-                alt=""
+                alt={navData.logoAria}
                 width={110}
                 height={63}
                 priority
@@ -318,10 +318,9 @@ function MobileMenuSheet({
               href={homePath}
               prefetch={homePrefetch}
               onClick={onClose}
-              aria-label={navData.logoAria}
               className="flex min-h-11 items-center rounded-full pr-2 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              <ThemedLogo variant="mark" alt="" width={110} height={63} className="h-6 w-auto" />
+              <ThemedLogo variant="mark" alt={navData.logoAria} width={110} height={63} className="h-6 w-auto" />
             </Link>
             <button
               type="button"

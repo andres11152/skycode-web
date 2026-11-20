@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { RevealText } from "@/components/ui/RevealText";
+import { RevealWords } from "@/components/ui/RevealText";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getTestimonialsContent } from "@/content/testimonials";
 import { getUiContent } from "@/content/ui";
@@ -39,8 +39,8 @@ export function Testimonials({ locale = defaultLocale }: { locale?: Locale }) {
           <SectionEyebrow onDark className="reveal-up mb-4">
             {testimonialsSection.badge}
           </SectionEyebrow>
-          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance text-on-inverse sm:text-5xl">
-            <RevealText text={testimonialsSection.title} />
+          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-balance text-on-inverse sm:text-5xl" aria-label={testimonialsSection.title}>
+            <RevealWords text={testimonialsSection.title} />
           </h2>
           <p style={{ "--i": 3 } as CSSProperties} className="reveal-up mt-5 text-lg leading-relaxed text-on-inverse/80">{testimonialsSection.description}</p>
         </div>

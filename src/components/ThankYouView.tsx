@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { m as motion, useReducedMotion } from "framer-motion";
 import { ChatCircle, CheckCircle } from "@phosphor-icons/react";
@@ -8,7 +9,7 @@ import { getUiContent } from "@/content/ui";
 import { whatsappHref } from "@/lib/site";
 import { defaultLocale, localeHomePath, type Locale } from "@/lib/i18n";
 import { fadeUp } from "@/lib/animations";
-import { GoogleAdsTag } from "@/components/GoogleAdsTag";
+import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/Button";
 import { portfolioIndexPath } from "@/lib/portfolioPaths";
 
@@ -26,9 +27,18 @@ export function ThankYouView({ locale = defaultLocale }: { locale?: Locale }) {
   const reduced = useReducedMotion();
   const { successModal } = contactData;
 
+  // Evento de GA4 al cargar la página de gracias. La conversión de Google Ads del formulario NO depende de
+  // esto: la mide la propia etiqueta por la carga de /gracias (ver lib/googleTag.ts). El ref evita el doble
+  // envío del modo estricto de React en desarrollo.
+  const sent = useRef(false);
+  useEffect(() => {
+    if (sent.current) return;
+    sent.current = true;
+    trackEvent("thank_you_view", { page_locale: locale });
+  }, [locale]);
+
   return (
     <>
-      <GoogleAdsTag />
       <section className="flex min-h-[70vh] items-center px-6 py-20">
         <motion.div
           variants={fadeUp(reduced ?? false)}

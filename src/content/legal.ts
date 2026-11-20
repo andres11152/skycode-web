@@ -1,6 +1,6 @@
 import type { BlogBlock } from "./blogShared";
 import { contactEmail, siteName } from "@/lib/site";
-import { GOOGLE_ADS_STORAGE_NOTE, STORAGE_INVENTORY, THIRD_PARTY_STORAGE_NOTE, storageKindLabel } from "./cookieInventory";
+import { GOOGLE_TAG_STORAGE_NOTE, STORAGE_INVENTORY, THIRD_PARTY_STORAGE_NOTE, storageKindLabel } from "./cookieInventory";
 
 /**
  * Bloques propios de los documentos legales, además de los del blog:
@@ -47,16 +47,21 @@ export const legalDocuments: LegalDocument[] = [
     title: "Política de Privacidad",
     description:
       "Quién es el responsable de sus datos, para qué los usamos, con qué proveedores los compartimos, cuánto los conservamos y cómo ejercer sus derechos (Ley 1581).",
-    updatedAt: "2026-10-12",
-    version: "2.1",
+    updatedAt: "2026-11-20",
+    version: "2.2",
     summary: [
       "Usamos sus datos solo para responderle y, si llega a ser cliente, para prestar el servicio contratado.",
       "No vendemos sus datos ni los cedemos con fines publicitarios.",
-      "No usamos analítica de terceros. La etiqueta de Google Ads de las páginas de campaña mide qué anuncios generan consultas: sin su permiso no guarda cookies y Google solo recibe datos técnicos básicos de la visita. Lo opcional (su país y de qué campaña llegó) solo se guarda si usted lo permite.",
+      "Usamos Google Analytics y la etiqueta de Google Ads para medir cómo se usa el sitio y qué anuncios generan consultas: sin su permiso no guardan cookies y Google solo recibe datos técnicos básicos de la visita. Lo opcional (su país y de qué campaña llegó) solo se guarda si usted lo permite.",
       `Puede pedir acceso, corrección o supresión escribiendo a ${contactEmail}: respondemos consultas en 10 días hábiles y reclamos en 15.`,
       "Los pagos con tarjeta los procesa Bold: nosotros nunca vemos el número de su tarjeta.",
     ],
     changelog: [
+      {
+        date: "2026-11-20",
+        change:
+          "Se incorpora Google Analytics 4 en las páginas públicas, con el mismo Modo de consentimiento de Google, y la etiqueta de Google Ads pasa a cargarse también en todas las páginas públicas (antes solo en las de campaña y confirmación). Se vuelve a pedir su decisión sobre la medición.",
+      },
       {
         date: "2026-10-12",
         change:
@@ -147,7 +152,7 @@ export const legalDocuments: LegalDocument[] = [
       },
       {
         type: "paragraph",
-        text: "No usamos sus datos con fines distintos a los descritos, no tomamos decisiones automatizadas con efectos jurídicos sobre usted ni elaboramos perfiles con fines publicitarios, y no los vendemos ni los compartimos con terceros para publicidad. La única excepción es la medición de conversiones de Google Ads descrita en la [Política de Cookies](/politica-cookies): sin su permiso Google solo recibe datos técnicos básicos de la visita y, con él, puede asociar la visita al anuncio en el que hizo clic.",
+        text: "No usamos sus datos con fines distintos a los descritos, no tomamos decisiones automatizadas con efectos jurídicos sobre usted ni elaboramos perfiles con fines publicitarios, y no los vendemos ni los compartimos con terceros para publicidad. La única excepción es la medición de Google Analytics y Google Ads descrita en la [Política de Cookies](/politica-cookies): sin su permiso Google solo recibe datos técnicos básicos de la visita y, con él, puede medir cómo se usa el sitio y asociar la visita al anuncio en el que hizo clic.",
       },
       { type: "heading", level: 2, text: "3. Autorización" },
       {
@@ -157,7 +162,7 @@ export const legalDocuments: LegalDocument[] = [
       { type: "heading", level: 2, text: "4. Cookies y almacenamiento en su navegador" },
       {
         type: "paragraph",
-        text: "El sitio solo guarda en su navegador lo que aparece en la [Política de Cookies](/politica-cookies), con su duración y finalidad. Lo estrictamente necesario no requiere consentimiento; lo demás (país y campaña de origen) solo se guarda si usted lo acepta, y puede cambiar esa decisión cuando quiera desde el enlace «Preferencias de cookies» del pie de página.",
+        text: "El sitio solo guarda en su navegador lo que aparece en la [Política de Cookies](/politica-cookies), con su duración y finalidad. Lo estrictamente necesario no requiere consentimiento; lo demás (país, campaña de origen y las cookies de Google Analytics y Google Ads) solo se guarda si usted lo acepta, y puede cambiar esa decisión cuando quiera desde el enlace «Preferencias de cookies» del pie de página.",
       },
       { type: "heading", level: 2, text: "5. Proveedores que tratan datos por nuestra cuenta" },
       {
@@ -193,6 +198,11 @@ export const legalDocuments: LegalDocument[] = [
             "Bold",
             "Pagos en línea con tarjeta desde el portal de clientes",
             "Datos de pago que usted escribe en el formulario de Bold; a nosotros solo nos llega la confirmación",
+          ],
+          [
+            "Google (Google Analytics y Google Ads)",
+            "Medir cómo se usa el sitio público y qué anuncios generan consultas",
+            "Datos técnicos de la visita (dirección IP, navegador, páginas vistas y acciones de contacto) y, solo con su permiso de medición, identificadores de sus cookies; nunca su nombre, su correo ni el texto de sus mensajes",
           ],
           [
             "Have I Been Pwned",
@@ -303,15 +313,20 @@ export const legalDocuments: LegalDocument[] = [
     title: "Política de Cookies",
     description:
       "Lista exacta de lo que este sitio guarda en su navegador, para qué sirve, cuánto dura y cómo aceptarlo, rechazarlo o cambiarlo en cualquier momento.",
-    updatedAt: "2026-10-12",
-    version: "2.1",
+    updatedAt: "2026-11-20",
+    version: "2.2",
     summary: [
-      "No usamos cookies de analítica ni píxeles de redes sociales. La etiqueta de Google Ads de las páginas de campaña solo guarda cookies si usted acepta la medición.",
+      "Usamos Google Analytics y la etiqueta de Google Ads, que solo guardan cookies si usted acepta la medición. No usamos píxeles de redes sociales.",
       "Lo estrictamente necesario (sesión, su elección de cookies) funciona sin pedirle permiso.",
       "Su país y de qué campaña llegó solo se guardan si usted lo acepta.",
       "Puede aceptar, rechazar o cambiar su elección cuando quiera, con la misma facilidad.",
     ],
     changelog: [
+      {
+        date: "2026-11-20",
+        change:
+          "Se incorpora Google Analytics 4 en las páginas públicas, con el mismo Modo de consentimiento de Google, y la etiqueta de Google Ads pasa a cargarse también en todas las páginas públicas (antes solo en las de campaña y confirmación). Se vuelve a pedir su decisión sobre la medición.",
+      },
       {
         date: "2026-10-12",
         change:
@@ -329,10 +344,10 @@ export const legalDocuments: LegalDocument[] = [
         type: "paragraph",
         text: "Una cookie es un pequeño archivo que un sitio web guarda en su navegador para recordar información entre visitas. El navegador ofrece otros mecanismos equivalentes (almacenamiento local y de sesión) que esta política trata igual. Aquí figura todo lo que este sitio guarda, sin excepciones.",
       },
-      { type: "heading", level: 2, text: "1. Qué no usamos" },
+      { type: "heading", level: 2, text: "1. Qué usamos y qué no" },
       {
         type: "paragraph",
-        text: "No usamos Google Analytics ni otra analítica de terceros, píxeles de redes sociales ni herramientas de grabación de sesiones o de seguimiento entre sitios. La única excepción es la etiqueta de Google Ads de las páginas de campaña (/landing) y de confirmación de envío (/gracias), que usa el Modo de consentimiento de Google: se carga siempre, pero sin su permiso de la categoría de medición no guarda cookies y Google solo recibe datos técnicos básicos de la visita (dirección IP, navegador y página). Con su permiso, puede guardar sus cookies y asociar la visita al anuncio en el que hizo clic (ver la sección 5). No vendemos lo que se guarda en su navegador.",
+        text: "No usamos píxeles de redes sociales ni herramientas de grabación de sesiones o de seguimiento entre sitios. Las páginas públicas cargan la etiqueta de Google, con Google Analytics y Google Ads, usando el Modo de consentimiento de Google: se carga siempre, pero sin su permiso de la categoría de medición no guarda cookies y Google solo recibe datos técnicos básicos de la visita (dirección IP, navegador y página). Con su permiso, puede guardar sus cookies, medir cómo se usa el sitio y asociar la visita al anuncio en el que hizo clic (ver la sección 5). No vendemos lo que se guarda en su navegador.",
       },
       { type: "heading", level: 2, text: "2. Qué guardamos, para qué y cuánto tiempo" },
       {
@@ -353,7 +368,7 @@ export const legalDocuments: LegalDocument[] = [
         items: [
           "Necesarias: indispensables para que el sitio funcione o para recordar su elección. No requieren consentimiento y no se pueden desactivar. Si solo navega el sitio público sin iniciar sesión, no se instala la cookie de sesión.",
           "Preferencias: recuerdan su país para proponerle moneda e indicativo por defecto. Solo se guardan si las acepta; si las rechaza, el sitio funciona igual y simplemente deduce el país en cada visita sin guardarlo.",
-          "Medición: guardan de qué campaña o página llegó para saber qué canales funcionan y adjuntarlo a su mensaje si nos escribe. Con su permiso, la etiqueta de Google Ads también puede guardar sus cookies (_gcl_au, _gcl_aw). Solo se guardan si las acepta; si las rechaza, su mensaje llega igual, sin ese dato.",
+          "Medición: guardan de qué campaña o página llegó para saber qué canales funcionan y adjuntarlo a su mensaje si nos escribe. Con su permiso, Google Analytics y la etiqueta de Google Ads también pueden guardar sus cookies (_ga, _ga_*, _gcl_au, _gcl_aw). Solo se guardan si las acepta; si las rechaza, su mensaje llega igual, sin ese dato.",
         ],
       },
       {
@@ -377,7 +392,7 @@ export const legalDocuments: LegalDocument[] = [
       },
       {
         type: "paragraph",
-        text: `${GOOGLE_ADS_STORAGE_NOTE.purpose} Consulte la política de privacidad de ${GOOGLE_ADS_STORAGE_NOTE.provider} para conocer su detalle.`,
+        text: `${GOOGLE_TAG_STORAGE_NOTE.purpose} Consulte la política de privacidad de ${GOOGLE_TAG_STORAGE_NOTE.provider} para conocer su detalle.`,
       },
       {
         type: "paragraph",

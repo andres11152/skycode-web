@@ -195,12 +195,11 @@ export function Footer({ serviceLinks }: { serviceLinks: FooterServiceLinks }) {
             <Link
               prefetch={false}
               href={homePath}
-              aria-label={footerData.logoAria}
               className="flex h-14 items-start outline-none transition-transform duration-300 ease-out hover:scale-105 max-sm:mb-6 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
             >
               <ThemedLogo
                 variant="full"
-                alt="SkyCode Agency"
+                alt={footerData.logoAria}
                 width={260}
                 height={170}
                 className="h-14 w-auto"

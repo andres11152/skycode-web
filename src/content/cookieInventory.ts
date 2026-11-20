@@ -97,12 +97,17 @@ export const THIRD_PARTY_STORAGE_NOTE = {
     "Solo si paga una factura desde el portal de clientes: el formulario de pago de Bold, que se abre en un marco propio, puede guardar sus propias cookies técnicas y antifraude. Nosotros no las controlamos ni las leemos.",
 } as const;
 
-/** Se carga en /landing y /gracias con el Modo de consentimiento de Google: denegado hasta que la persona acepta la categoría "medición". */
-export const GOOGLE_ADS_STORAGE_NOTE = {
-  provider: "Google Ads",
+/**
+ * Etiqueta de Google (GA4 + Google Ads, componente `GoogleTag`): se carga en todas las páginas públicas con el
+ * Modo de consentimiento de Google, denegado hasta que la persona acepta la categoría "medición". Las cookies
+ * las escribe gtag.js, no nuestro código, por eso van como nota de terceros y no en STORAGE_INVENTORY.
+ * Si cambia el comportamiento de la etiqueta, hay que cambiar este texto (lo cita la Política de Cookies).
+ */
+export const GOOGLE_TAG_STORAGE_NOTE = {
+  provider: "Google (Google Analytics y Google Ads)",
   category: "measurement" as ConsentCategory,
   purpose:
-    "Las páginas de campaña (/landing) y de confirmación de envío (/gracias) cargan la etiqueta de Google Ads para medir qué anuncios generan consultas, con el Modo de consentimiento de Google. Sin su permiso de la categoría de medición no guarda cookies, pero Google recibe datos técnicos básicos de la visita (dirección IP, navegador y página). Con su permiso, puede guardar cookies propias (como _gcl_au y _gcl_aw) y asociar la visita al anuncio en el que hizo clic.",
+    "Las páginas públicas del sitio cargan la etiqueta de Google con el Modo de consentimiento de Google, para dos fines: Google Analytics, que mide cuántas personas visitan cada página y qué acciones de contacto completan (enviar un formulario, usar el cotizador, abrir WhatsApp, el correo o el teléfono), y Google Ads, que mide qué anuncios generan consultas. Sin su permiso de la categoría de medición no guarda cookies, pero Google recibe datos técnicos básicos de la visita (dirección IP, navegador y página). Con su permiso, puede guardar cookies propias (_ga y _ga_* de Google Analytics, hasta 2 años; _gcl_au y _gcl_aw de Google Ads, hasta 90 días) y asociar la visita al anuncio en el que hizo clic. Nunca le enviamos su nombre, su correo ni el texto de sus mensajes. No se carga en el portal de clientes, el panel interno ni las páginas de acceso.",
 } as const;
 
 export function entriesByCategory(category: ConsentCategory): StorageEntry[] {

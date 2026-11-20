@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { RevealText } from "@/components/ui/RevealText";
+import { RevealWords } from "@/components/ui/RevealText";
 import { BogotaLink } from "@/components/bogota/BogotaLink";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { getProcessContent } from "@/content/process";
@@ -27,8 +27,9 @@ export function Process({ locale = defaultLocale }: { locale?: Locale }) {
           <h2
             id="process-title"
             className="text-4xl font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl"
+            aria-label={processData.title}
           >
-            <RevealText text={processData.title} />
+            <RevealWords text={processData.title} />
           </h2>
           <p style={{ "--i": 3 } as CSSProperties} className="reveal-up mt-5 text-lg leading-relaxed text-foreground/80">{processData.description}</p>
         </div>

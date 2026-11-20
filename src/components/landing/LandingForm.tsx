@@ -8,6 +8,7 @@ import { PhoneField } from "@/components/ui/PhoneField";
 import { getAttribution } from "@/lib/attribution";
 import { isValidRealEmail } from "@/lib/emailValidation";
 import { logError } from "@/lib/logger";
+import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 export interface LandingFormCopy {
@@ -108,6 +109,7 @@ export function LandingForm({ copy, defaultService }: { copy: LandingFormCopy; d
 
       if (response.ok) {
         navigating = true;
+        trackEvent("generate_lead", { form_location: "landing", lead_source: "Landing Ads" });
         // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- carga completa a propósito: la conversión de Google Ads se mide por la carga de /gracias.
         window.location.href = THANK_YOU_PATH;
       } else {

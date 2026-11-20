@@ -13,6 +13,7 @@ import { useGeoCountry } from "@/lib/useGeoCountry";
 import { openContactModal } from "@/lib/contactModalEvent";
 import { ESTIMATOR_TYPE_TO_SERVICE_SLUG } from "@/lib/leadServices";
 import { logError } from "@/lib/logger";
+import { trackEvent } from "@/lib/analytics";
 import { DURATION, EASE_OUT, SPRING_SOFT } from "@/lib/animations";
 
 export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }) {
@@ -105,7 +106,39 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
   const displayPrice = useDeferredValue(totalPrice);
   const displayWeeks = useDeferredValue(totalWeeks);
 
+  // Medición del cotizador (GA4): `quote_start` una sola vez, con la primera elección de la persona (tipo,
+  // extra o ritmo; la moneda no cuenta, la fija también la geolocalización); `quote_complete` al terminar,
+  // abriendo el contacto prellenado o recibiendo la cotización por correo.
+  const quoteStarted = useRef(false);
+  const markQuoteStart = (projectType: string) => {
+    if (quoteStarted.current) return;
+    quoteStarted.current = true;
+    trackEvent("quote_start", { project_type: projectType });
+  };
+  const trackQuoteComplete = (method: "contact_form" | "email") => {
+    trackEvent("quote_complete", {
+      method,
+      project_type: selectedType,
+      pace: urgency,
+      addon_count: selectedAddons.length,
+      currency,
+      estimated_value: totalPrice,
+      estimated_weeks: totalWeeks,
+    });
+  };
+
+  const selectType = (id: string) => {
+    markQuoteStart(id);
+    setSelectedType(id);
+  };
+
+  const selectPace = (pace: "standard" | "express") => {
+    markQuoteStart(selectedType);
+    setUrgency(pace);
+  };
+
   const toggleAddon = (id: string) => {
+    markQuoteStart(selectedType);
     setSelectedAddons((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
@@ -131,6 +164,8 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
       total: formatPrice(totalPrice),
       weeks: String(totalWeeks),
     });
+
+    trackQuoteComplete("contact_form");
 
     // Abre el modal de contacto ya prellenado (mensaje + servicio real para el
     // CRM): la persona no pierde la página ni el resumen que acaba de armar.
@@ -163,6 +198,9 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
 
       if (!res.ok) throw new Error("request failed");
       setCaptureStatus("sent");
+      // El correo crea un lead en el CRM ("Cotizador (solo email)"): cuenta como cotización terminada y como lead.
+      trackQuoteComplete("email");
+      trackEvent("generate_lead", { form_location: "estimator_email", lead_source: "Cotizador (solo email)" });
     } catch (err) {
       logError("Error al enviar la cotización por correo", err);
       setCaptureStatus("error");
@@ -243,7 +281,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                       type="button"
                       key={type.id}
                       aria-pressed={isSelected}
-                      onClick={() => setSelectedType(type.id)}
+                      onClick={() => selectType(type.id)}
                       className={`group relative flex w-full cursor-pointer flex-col justify-between rounded-xl border p-4 text-left outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] motion-reduce:active:scale-100 ${
                         isSelected
                           ? "border-accent bg-accent/10 shadow-[0_0_20px_color-mix(in_srgb,var(--accent)_15%,transparent)]"
@@ -322,7 +360,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                 <button
                   type="button"
                   aria-pressed={urgency === "standard"}
-                  onClick={() => setUrgency("standard")}
+                  onClick={() => selectPace("standard")}
                   className={`rounded-xl border p-3 text-left text-xs font-medium outline-none transition-[border-color,background-color,transform] duration-200 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] motion-reduce:active:scale-100 ${
                     urgency === "standard"
                       ? "border-accent bg-accent/10 text-foreground font-bold"
@@ -335,7 +373,7 @@ export function ProjectEstimator({ locale = defaultLocale }: { locale?: Locale }
                 <button
                   type="button"
                   aria-pressed={urgency === "express"}
-                  onClick={() => setUrgency("express")}
+                  onClick={() => selectPace("express")}
                   className={`rounded-xl border p-3 text-left text-xs font-medium outline-none transition-[border-color,background-color,transform] duration-200 ease-[var(--ease-out)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] motion-reduce:active:scale-100 ${
                     urgency === "express"
                       ? "border-accent bg-accent/10 text-foreground font-bold"

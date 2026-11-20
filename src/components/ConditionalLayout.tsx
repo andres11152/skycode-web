@@ -8,7 +8,7 @@ import { Footer, type FooterServiceLinks } from "@/components/Footer";
 import { SkipLink } from "@/components/SkipLink";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { AttributionCapture } from "@/components/AttributionCapture";
-import { GoogleAdsTag } from "@/components/GoogleAdsTag";
+import { isPrivateAppPath } from "@/lib/privateRoutes";
 import { useLocale } from "@/components/LocaleProvider";
 import { ContactModalProvider } from "@/components/contact/ContactModalProvider";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
@@ -33,22 +33,12 @@ const CookieBanner = dynamic(
 export function ConditionalLayout({ children, serviceLinks }: { children: React.ReactNode; serviceLinks: FooterServiceLinks }) {
   const pathname = usePathname();
   const locale = useLocale();
-  // `startsWith`, no igualdad exacta: /dashboard, /portal, /invitar y
-  // /propuesta tienen subrutas propias (/dashboard/leads,
-  // /dashboard/equipo, /portal, /invitar/[token], /propuesta/[id]) que
-  // también deben quedar sin el Navbar/Footer públicos — cada una ya trae
-  // su propio header (DashboardChrome/PortalChrome) o es una pantalla
-  // transaccional de página completa (aceptar invitación, ver y responder
-  // una propuesta) donde el nav público con su propio CTA de "Cotizar
-  // Proyecto" solo compite con la acción real de la página.
-  const isAppShell =
-    pathname === "/login" ||
-    pathname === "/olvide-password" ||
-    pathname.startsWith("/resetear-password") ||
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/portal") ||
-    pathname.startsWith("/invitar") ||
-    pathname.startsWith("/propuesta");
+  // Panel, portal, acceso y enlaces con token (/dashboard/leads, /portal, /invitar/[token],
+  // /propuesta/[id]…) quedan sin el Navbar/Footer públicos: cada una ya trae su propio header
+  // (DashboardChrome/PortalChrome) o es una pantalla transaccional de página completa (aceptar
+  // invitación, ver y responder una propuesta) donde el nav público con su propio CTA solo compite con
+  // la acción real de la página. La lista vive en lib/privateRoutes.ts (la comparte la analítica).
+  const isAppShell = isPrivateAppPath(pathname);
 
   // Landing de campaña (Google Ads): sin Navbar/Footer ni enlaces de salida
   // que compitan con el formulario — salvo el botón flotante de WhatsApp
@@ -107,11 +97,9 @@ export function ConditionalLayout({ children, serviceLinks }: { children: React.
         {/* Mismo fondo fluido que el resto del sitio público (claro y oscuro). */}
         <FluidFieldBackground />
         {children}
-        {/* Medición: el aviso de cookies, la captura del gclid/UTM y la etiqueta de Google Ads
-            (esta última solo con consentimiento). Sin esto los leads de la campaña llegaban al
-            CRM sin saber de qué anuncio venían. */}
+        {/* Medición: el aviso de cookies y la captura del gclid/UTM (la etiqueta de Google se monta en
+            el layout raíz). Sin esto los leads de la campaña llegaban al CRM sin saber de qué anuncio venían. */}
         <AttributionCapture />
-        <GoogleAdsTag />
         <CookieBanner />
       </main>
     );
