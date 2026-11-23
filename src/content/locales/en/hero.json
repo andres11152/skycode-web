@@ -17,11 +17,6 @@
     "ariaLabel": "View portfolio: real projects and case studies"
   },
   "localLink": "Remote engineering team based in Bogotá",
-  "guarantees": [
-    "100% proprietary code",
-    "90-day stability warranty",
-    "Direct engineer communication"
-  ],
   "portalMockup": {
     "caption": "Client portal · sample view",
     "url": "portal.your-company.com",

@@ -29,10 +29,11 @@ export async function HomeSections({ locale }: { locale: Locale }) {
   // contenedor de scroll, así que el `sticky` del cierre sigue funcionando.
   return (
     <main id="main-content" className="flex flex-1 flex-col overflow-x-clip">
-      <div className="flex flex-col lg:min-h-svh">
-        <Hero locale={locale} />
-        <TrustStrip locale={locale} />
-      </div>
+      {/* El Hero ocupa por sí solo el primer pantallazo (min-h-svh, contenido centrado). Antes compartía
+          un contenedor min-h-svh con la barra de pruebas: el Hero no se adaptaba al alto de la pantalla y
+          la tarjeta asomaba como una tira cortada al pie (1440×900) o empujaba las garantías fuera (1280×720). */}
+      <Hero locale={locale} />
+      <TrustStrip locale={locale} />
       <Highlights locale={locale} />
       <Services locale={locale} />
       <Portfolio locale={locale} projects={portfolioProjects} />

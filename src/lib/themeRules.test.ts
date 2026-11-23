@@ -86,7 +86,6 @@ const ACCENT_SECONDARY_FILES: Record<string, string> = {
   "components/sections/TrustStrip.tsx": "trazo bajo cada cifra y punto de los claims de la barra de pruebas bajo el Hero",
   "components/sections/ClosingStatement.tsx": "banda amarilla del cierre (band-yellow)",
   "components/sections/ClosingStatementFallback.tsx": "la misma banda mientras carga el cierre",
-  "components/sections/Hero.tsx": "píldora de la promesa principal (tinte y borde, texto foreground)",
   "components/sections/Process.tsx": "marcador del último paso (la entrega); la numeración da el orden",
   "components/bogota/BogotaVisuals.tsx": "cursor de terminal sobre bg-inverse (~14:1)",
 };

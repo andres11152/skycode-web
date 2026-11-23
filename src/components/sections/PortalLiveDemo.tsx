@@ -122,7 +122,8 @@ export function PortalLiveDemo({ copy }: { copy: PortalCopy }) {
         </ul>
       </div>
 
-      <div style={delay(520)} className="assemble flex items-start gap-3 rounded-xl bg-foreground/[0.04] p-3.5 max-sm:p-3">
+      {/* En móvil se omite: el portal entra entero en el primer pantallazo en vez de cortarse a mitad del comentario. */}
+      <div style={delay(520)} className="assemble flex items-start gap-3 rounded-xl bg-foreground/[0.04] p-3.5 max-sm:hidden">
         <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground font-mono text-xs font-bold text-background">
           S
           {/* Aviso de mensaje nuevo: aparece con un resorte cuando llega el comentario. */}

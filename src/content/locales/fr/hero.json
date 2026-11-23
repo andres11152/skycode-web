@@ -17,11 +17,6 @@
     "ariaLabel": "Voir le portfolio de projets"
   },
   "localLink": "Équipe d'ingénieurs distante basée à Bogotá",
-  "guarantees": [
-    "Code 100 % propriétaire",
-    "90 jours de garantie",
-    "Contact direct ingénieurs"
-  ],
   "portalMockup": {
     "caption": "Portail client · vue d'exemple",
     "url": "portail.votre-entreprise.com",

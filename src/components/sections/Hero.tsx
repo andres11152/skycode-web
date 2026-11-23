@@ -28,7 +28,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
     <section
       id="inicio"
       aria-label={heroData.sectionAria}
-      className="relative overflow-hidden scroll-mt-24 px-6 pt-28 pb-16 sm:pt-32 lg:flex lg:flex-1 lg:items-center lg:py-24"
+      className="relative overflow-hidden scroll-mt-24 px-6 pt-24 pb-14 sm:pt-32 sm:pb-20 lg:flex lg:min-h-svh lg:items-center lg:pt-28 lg:pb-16"
     >
       {/* Grilla fina estática con resplandor de marca. Antes: cuadros que aparecían al azar (JS con
           ResizeObserver), un movimiento más compitiendo con el resto de la página. */}
@@ -56,7 +56,7 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
            * el énfasis lo da el contraste tonal, y el acento queda para el CTA. Son tres campos de
            * contenido (`titleBefore`/`titleAccent`/`titleAfter`), no una frase partida en runtime.
            */}
-          <h1 className="text-3xl leading-[1.12] font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl lg:text-6xl">
+          <h1 className="text-3xl leading-[1.1] font-semibold tracking-[-0.03em] text-balance text-foreground sm:text-5xl lg:text-6xl lg:leading-[1.05]">
             <span>{heroData.titleBefore}</span>
             <span className="text-foreground/55">{heroData.titleAccent}</span>
             <span>{heroData.titleAfter}</span>
@@ -98,34 +98,10 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
             </div>
           </div>
 
-          {/* Garantías: solo desde `sm` (en móvil la franja amarilla de abajo ya las repite). La primera en píldora amarilla y el resto con el punto del logo como viñeta, sin palomitas dentro de círculos. Viven en
-              hero.json (3 idiomas), no en un ternario por locale en el JSX. */}
-          <ul className="mt-3 hidden flex-wrap items-center gap-x-4 gap-y-2 text-sm text-foreground/80 sm:flex">
-            {heroData.guarantees.map((point, index) =>
-              index === 0 ? (
-                // La promesa principal ("el código es tuyo") en píldora amarilla, como "Sin amarres"
-                // en Instagram. Texto en `foreground` pleno: el amarillo es solo tinte y borde.
-                <li
-                  key={point}
-                  className="rounded-full border border-accent-secondary bg-accent-secondary/20 px-3 py-1 font-medium text-foreground"
-                >
-                  {point}
-                </li>
-              ) : (
-                // Viñeta = el punto del logo: a diferencia de un filete vertical, se ve bien también
-                // cuando la fila se parte en dos (la píldora ocupa más ancho).
-                <li key={point} className="flex items-center gap-2">
-                  <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-brand-dot" />
-                  {point}
-                </li>
-              ),
-            )}
-          </ul>
-
           {/* Entrada a la página local de Bogotá (solo español: fuera de /, lleva la insignia ES). */}
           <Link
             href={bogotaPagePath}
-            className="group -ml-1 inline-flex min-h-11 items-center gap-2 rounded-full px-1 text-sm font-medium text-foreground/80 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background max-sm:hidden"
+            className="group -ml-1 mt-1 inline-flex min-h-11 items-center gap-2 rounded-full px-1 text-sm font-medium text-foreground/80 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background max-sm:hidden"
           >
             <MapPin size={18} weight="regular" aria-hidden="true" />
             <span className="link-underline underline decoration-foreground/25 underline-offset-4">
@@ -148,7 +124,9 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           </Tilt>
         </div>
 
-        {/* Solo móvil: el CTA secundario y la página local, como enlaces bajo el portal. */}
+        {/* Solo móvil: el CTA secundario como enlace bajo el portal. La página local no se repite aquí (el enlace de
+            escritorio ya está en el HTML y el Footer también la enlaza): con los dos, la fila se partía en dos
+            líneas y quedaba cortada al pie del primer pantallazo. */}
         <div className="-mt-2 flex flex-wrap items-center gap-x-6 sm:hidden">
           <Link
             href={heroData.ctaSecondary.href}
@@ -157,14 +135,6 @@ export function Hero({ locale = defaultLocale }: { locale?: Locale }) {
           >
             <span className="link-underline">{heroData.ctaSecondary.label}</span>
             <ArrowRight size={14} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" />
-          </Link>
-          <Link
-            href={bogotaPagePath}
-            className="group inline-flex min-h-11 items-center gap-1.5 rounded-full text-sm font-medium text-foreground/80 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            <MapPin size={16} aria-hidden="true" />
-            <span className="underline decoration-foreground/25 underline-offset-4">{heroData.localLink}</span>
-            {locale !== "es" && <EsBadge />}
           </Link>
         </div>
       </div>
