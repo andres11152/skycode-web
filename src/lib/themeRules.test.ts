@@ -83,7 +83,7 @@ const ALLOWED_FIXED_COLOR: Record<string, { values: string[]; reason: string }> 
 const ACCENT_SECONDARY_FILES: Record<string, string> = {
   "components/ui/BrandPeriod.tsx": "el punto redondo del logo al final de un titular (Hero H1, cierre, Footer)",
   "components/ui/SectionEyebrow.tsx": "el punto del logo antes de cada etiqueta de sección",
-  "components/sections/TrustStrip.tsx": "franja amarilla bajo el Hero (band-yellow)",
+  "components/sections/TrustStrip.tsx": "trazo bajo cada cifra y punto de los claims de la barra de pruebas bajo el Hero",
   "components/sections/ClosingStatement.tsx": "banda amarilla del cierre (band-yellow)",
   "components/sections/ClosingStatementFallback.tsx": "la misma banda mientras carga el cierre",
   "components/sections/Hero.tsx": "píldora de la promesa principal (tinte y borde, texto foreground)",

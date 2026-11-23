@@ -129,11 +129,9 @@
   color: var(--on-accent-secondary);
   background-color: var(--accent-secondary);
   background-image:
-    radial-gradient(55% 45% at 92% 0%, color-mix(in srgb, #ffffff 50%, transparent), transparent 75%),
     linear-gradient(to right, color-mix(in srgb, var(--on-accent-secondary) 5%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in srgb, var(--on-accent-secondary) 5%, transparent) 1px, transparent 1px);
   background-size:
-    100% 100%,
     72px 72px,
     72px 72px;
 }
