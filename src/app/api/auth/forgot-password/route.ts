@@ -106,12 +106,20 @@ export async function POST(request: Request) {
         try {
           const resend = new Resend(apiKey);
           const fromAddress = process.env.RESEND_FROM_EMAIL || "SKYCODE Web <contact@skycode.agency>";
-          await resend.emails.send({
+          const { data, error } = await resend.emails.send({
             from: fromAddress,
             to: user.email,
             subject: "Restablecer tu contraseña de SKYCODE Agency",
             text: `Recibimos una solicitud para restablecer tu contraseña.\n\nSi fuiste tú, hazlo acá (válido por 1 hora):\n${resetUrl}\n\nSi no fuiste tú, ignora este correo — tu contraseña no cambia hasta que abras el enlace.`,
           });
+          // El SDK de Resend NO lanza cuando la API rechaza el envío (dominio sin verificar, remitente inválido,
+          // clave sin permiso): devuelve `{ data, error }`. Sin este chequeo un rechazo pasaba como envío exitoso
+          // y no quedaba ningún rastro (bug real: restablecimiento de contraseña "enviado" que nunca llegó).
+          if (error) {
+            logError("⚠️ [Forgot Password Resend Rejected] Resend rechazó el envío", error, { from: fromAddress });
+          } else {
+            console.info(`[Forgot Password] Correo aceptado por Resend (id ${data?.id ?? "?"}) desde ${fromAddress}`);
+          }
         } catch (emailErr) {
           logError("⚠️ [Forgot Password Resend Warning]", emailErr);
         }
