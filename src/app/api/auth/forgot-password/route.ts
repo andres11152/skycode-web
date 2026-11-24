@@ -1,3 +1,4 @@
+import { publicOrigin } from "@/lib/publicOrigin";
 import { NextResponse, after } from "next/server";
 import { Resend } from "resend";
 import { randomUUID } from "node:crypto";
@@ -80,7 +81,7 @@ export async function POST(request: Request) {
       ip,
     });
 
-    const origin = new URL(request.url).origin;
+    const origin = publicOrigin(request);
     const resetUrl = `${origin}/resetear-password/${token}`;
 
     // El envío por Resend (una llamada de red a un tercero, con latencia

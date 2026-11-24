@@ -1,3 +1,4 @@
+import { publicOrigin } from "@/lib/publicOrigin";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
@@ -77,7 +78,7 @@ export const POST = withAuth("proposals:write", async (request, { session }) => 
     });
 
     const proposal = await getProposalById(proposalId);
-    const origin = new URL(request.url).origin;
+    const origin = publicOrigin(request);
     const proposalUrl = `${origin}/propuesta/${proposalId}`;
 
     const apiKey = process.env.RESEND_API_KEY?.trim();

@@ -1,3 +1,4 @@
+import { publicOrigin } from "@/lib/publicOrigin";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
@@ -64,7 +65,7 @@ export const POST = withAuth("team:write", async (request, { session }) => {
       ip,
     });
 
-    const origin = new URL(request.url).origin;
+    const origin = publicOrigin(request);
     const inviteUrl = `${origin}/invitar/${inviteId}`;
 
     const apiKey = process.env.RESEND_API_KEY?.trim();
