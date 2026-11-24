@@ -45,23 +45,13 @@ const AUTH_NO_STORE_SOURCES = [
 const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
-  // Memoria del servidor: la instancia de Render tiene 512 MB y se caía por OOM (eventos "Ran out of
-  // memory" desde el 2026-11-20). Medido con sharp: 6 imágenes AVIF en paralelo llevan el proceso a
-  // ~510-540 MB y tardan 10-20 s (con 10 núcleos; con 0,5 CPU es peor); en WebP ~200 MB y 0,5 s. La caché
-  // de `/_next/image` vive en disco efímero, así que cada reinicio la borraba y la siguiente ráfaga
-  // volvía a recodificar todo y a tumbar la instancia. Por eso: solo WebP, una codificación a la vez y
-  // sin tamaños que no existen en origen (la variante mayor del bucket mide 2400 px).
+  // Memoria del servidor (instancia de 512 MB en Render): sin el optimizador `/_next/image` no hay sharp en
+  // el camino de las peticiones. Ver src/lib/imageLoader.ts. La caché en memoria de páginas baja a 25 MB.
   cacheMaxMemorySize: 25 * 1024 * 1024,
   images: {
-    formats: ["image/webp"],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2560],
-    // Imágenes del portafolio (ver lib/portfolioStorage.ts) viven en un
-    // bucket público de Cloudflare R2, no en `public/` — `next/image`
-    // rechaza cualquier host externo no declarado acá, sin importar
-    // `unoptimized`. El wildcard cubre la URL de desarrollo `pub-*.r2.dev`
-    // que Cloudflare genera por defecto; si más adelante se conecta un
-    // dominio propio (ver `.env.example`, `R2_PORTFOLIO_PUBLIC_BASE_URL`),
-    // hay que agregar también ese hostname acá.
+    loader: "custom",
+    loaderFile: "./src/lib/imageLoader.ts",
+    // Ya no pasa por el optimizador, pero se deja declarado para `next/image` en desarrollo y por si se vuelve a él.
     remotePatterns: [{ protocol: "https", hostname: "*.r2.dev" }],
   },
   // `@phosphor-icons/react` evalúa al cargar un Map con los 6 pesos de CADA ícono importado (~145 KB de
@@ -92,13 +82,6 @@ const nextConfig: NextConfig = {
     // los documentos admiten 20 MB y las imágenes de portafolio/perfil 15 MB
     // (los límites reales los aplica cada ruta).
     proxyClientMaxBodySize: "25mb",
-    // sharp toma la mitad de los núcleos del HOST (no los 0,5 CPU del contenedor) y cada hilo de libvips
-    // reserva su propia memoria. Uno a la vez, sin la caché de operaciones de libvips (la caché en disco
-    // de Next ya evita repetir trabajo) y leyendo la imagen de forma secuencial.
-    imgOptConcurrency: 1,
-    imgOptOperationCache: false,
-    imgOptSequentialRead: true,
-    imgOptMaxInputPixels: 40_000_000,
   },
   // La barra final se resuelve en `proxy.ts` (junto con las URLs heredadas de WordPress y los casos
   // retirados, ver lib/legacyUrls.ts), no con la redirección interna de Next: esa va ANTES que las del
