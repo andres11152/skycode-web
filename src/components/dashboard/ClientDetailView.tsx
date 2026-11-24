@@ -17,6 +17,7 @@ import {
   UserX,
   KeyRound,
   Copy,
+  Trash2,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Modal } from "@/components/ui/Modal";
@@ -37,12 +38,16 @@ export function ClientDetailView({
   canWrite,
   canManagePrivacy,
   portalUsers,
+  pendingInvite,
+  canDelete,
   initialActivities,
 }: {
   client: ClientDetail;
   canWrite: boolean;
   canManagePrivacy: boolean;
   portalUsers: Array<{ id: number; email: string; status: string }>;
+  pendingInvite: { id: string; email: string; expiresAt: string } | null;
+  canDelete: boolean;
   initialActivities: ClientActivity[];
 }) {
   const router = useRouter();
@@ -51,11 +56,13 @@ export function ClientDetailView({
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: client.name,
+    email: client.email,
     company: client.company ?? "",
     phone: client.phone ?? "",
     notes: client.notes,
   });
   const [anonymizeOpen, setAnonymizeOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const feedback = useFeedback();
 
@@ -80,6 +87,33 @@ export function ClientDetailView({
     }
   };
 
+  const handleRevokeInvite = async () => {
+    const ok = await feedback.confirm({
+      title: "Revocar invitación",
+      description: "El enlace que ya enviaste dejará de funcionar. Puedes crear uno nuevo cuando quieras.",
+      confirmLabel: "Revocar",
+      tone: "danger",
+    });
+    if (!ok) return;
+    setInviting(true);
+    try {
+      const res = await fetch(`/api/clients/${client.id}/portal-invite`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        feedback.toast({ tone: "error", message: data.error || "No se pudo revocar la invitación." });
+        return;
+      }
+      setInviteResult(null);
+      feedback.toast({ message: "Invitación revocada." });
+      router.refresh();
+    } catch (err) {
+      logError("Error al revocar invitación", err);
+      feedback.toast({ tone: "error", message: "Error de red al revocar la invitación." });
+    } finally {
+      setInviting(false);
+    }
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     setError(null);
@@ -87,7 +121,14 @@ export function ClientDetailView({
       const res = await fetch("/api/clients", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: client.id, ...form }),
+        body: JSON.stringify({
+          id: client.id,
+          name: form.name,
+          company: form.company,
+          phone: form.phone,
+          notes: form.notes,
+          ...(form.email.trim().toLowerCase() !== client.email.toLowerCase() ? { email: form.email.trim() } : {}),
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -123,10 +164,30 @@ export function ClientDetailView({
             )}
 
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-foreground/70">
-              <span className="flex min-w-0 items-center gap-1.5 break-all font-mono">
-                <Mail size={13} className="text-foreground/70" />
-                {client.email}
-              </span>
+              {isEditing && !client.anonymized_at ? (
+                <span className="flex min-w-0 flex-col gap-1">
+                  <span className="flex items-center gap-1.5">
+                    <Mail size={13} className="text-foreground/70" />
+                    <input
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                      aria-label="Correo del cliente"
+                      aria-describedby="client-email-hint"
+                      autoComplete="off"
+                      className="min-h-11 w-full min-w-0 rounded-lg border border-foreground/20 bg-foreground/10 px-3 py-2 font-mono text-xs text-foreground outline-none focus:border-accent sm:w-72"
+                    />
+                  </span>
+                  <span id="client-email-hint" className="text-[11px] text-foreground/70">
+                    Al cambiarlo se actualizan sus propuestas y se revocan las invitaciones pendientes al portal.
+                  </span>
+                </span>
+              ) : (
+                <span className="flex min-w-0 items-center gap-1.5 break-all font-mono">
+                  <Mail size={13} className="text-foreground/70" />
+                  {client.email}
+                </span>
+              )}
               {isEditing ? (
                 <span className="flex items-center gap-1.5">
                   <Building2 size={13} className="text-foreground/70" />
@@ -185,7 +246,7 @@ export function ClientDetailView({
                     onClick={() => {
                       setIsEditing(false);
                       setError(null);
-                      setForm({ name: client.name, company: client.company ?? "", phone: client.phone ?? "", notes: client.notes });
+                      setForm({ name: client.name, email: client.email, company: client.company ?? "", phone: client.phone ?? "", notes: client.notes });
                     }}
                   >
                     <X size={13} />
@@ -247,11 +308,24 @@ export function ClientDetailView({
               entregables. Le enviamos un enlace a <span className="font-mono">{client.email}</span> para que cree su contraseña.
             </p>
           )}
+          {portalUsers.length === 0 && pendingInvite && !inviteResult && (
+            <p className="rounded-xl border border-warning/25 bg-warning/10 p-3 text-xs text-foreground/80">
+              Invitación pendiente enviada a <span className="font-mono">{pendingInvite.email}</span>. Vence el {formatShortDate(pendingInvite.expiresAt)}.
+            </p>
+          )}
           {portalUsers.length === 0 && (
-            <Button variant="accent" onClick={handlePortalInvite} disabled={inviting}>
-              <KeyRound size={13} />
-              {inviting ? "Creando invitación..." : "Invitar al portal"}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="accent" onClick={handlePortalInvite} disabled={inviting}>
+                <KeyRound size={13} />
+                {inviting ? "Creando invitación..." : pendingInvite ? "Reenviar invitación" : "Invitar al portal"}
+              </Button>
+              {pendingInvite && (
+                <Button variant="secondary" onClick={handleRevokeInvite} disabled={inviting}>
+                  <X size={13} />
+                  Revocar enlace
+                </Button>
+              )}
+            </div>
           )}
           {inviteResult && (
             <Alert tone="success">
@@ -276,6 +350,36 @@ export function ClientDetailView({
                 </Button>
               </div>
             </Alert>
+          )}
+        </div>
+      )}
+
+      {canDelete && !client.anonymized_at && (
+        <div className="rounded-xl border border-danger/25 bg-background shadow-sm shadow-black/5 p-5 space-y-3">
+          <h2 className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-danger">
+            <Trash2 size={14} />
+            Eliminar cliente
+          </h2>
+          {client.projects.length > 0 ? (
+            <p className="text-xs text-foreground/70">
+              No se puede eliminar: tiene {client.projects.length} proyecto(s) con su facturación. Esos registros se conservan por obligación
+              contable; para quitar sus datos personales usa <span className="font-semibold">Anonimizar</span>.
+            </p>
+          ) : (
+            <>
+              <p className="text-xs text-foreground/70">
+                Úsalo para un cliente creado por error (por ejemplo, con el correo mal escrito). Se elimina de forma permanente junto con su
+                cuenta de portal, sus invitaciones y su bitácora. Si solo te equivocaste en el correo, edítalo con el botón Editar.
+              </p>
+              <button
+                type="button"
+                onClick={() => setDeleteOpen(true)}
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-danger/30 px-4 text-xs font-medium text-danger hover:bg-danger/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                <Trash2 size={13} />
+                Eliminar cliente
+              </button>
+            </>
           )}
         </div>
       )}
@@ -461,6 +565,13 @@ export function ClientDetailView({
 
       <ClientActivityLog clientId={client.id} initialActivities={initialActivities} canWrite={canWrite} />
 
+      <DeleteClientModal
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        clientId={client.id}
+        clientName={client.name}
+      />
+
       <AnonymizeClientModal
         open={anonymizeOpen}
         onClose={() => setAnonymizeOpen(false)}
@@ -566,6 +677,81 @@ function AnonymizeClientModal({
           >
             <UserX size={14} />
             {isSubmitting ? "Anonimizando…" : "Anonimizar definitivamente"}
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+
+/** Exige escribir el nombre del cliente antes de eliminarlo (misma barrera que "anonimizar"). */
+function DeleteClientModal({ open, onClose, clientId, clientName }: { open: boolean; onClose: () => void; clientId: number; clientName: string }) {
+  const router = useRouter();
+  const feedback = useFeedback();
+  const inputId = useId();
+  const [confirmText, setConfirmText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const close = () => {
+    onClose();
+    setConfirmText("");
+    setError(null);
+  };
+
+  const confirm = async () => {
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/clients/${clientId}`, { method: "DELETE" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "No se pudo eliminar el cliente.");
+        return;
+      }
+      feedback.toast({ message: "Cliente eliminado." });
+      router.push("/dashboard/clientes");
+      router.refresh();
+    } catch (err) {
+      logError("Error al eliminar cliente", err);
+      setError("Ocurrió un error de red al eliminar el cliente.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={close} title="Eliminar cliente" closeLabel="Cerrar">
+      <div className="flex flex-col gap-4">
+        <p className="text-sm text-foreground/80 leading-relaxed">
+          Vas a eliminar a <span className="font-semibold text-foreground">{clientName}</span> de forma permanente, junto con su cuenta de
+          portal, invitaciones y bitácora. No se puede deshacer.
+        </p>
+        {error && <Alert tone="error">{error}</Alert>}
+        <div className="space-y-1.5">
+          <label htmlFor={inputId} className="block text-xs font-semibold text-foreground/80">
+            Escribe <span className="font-mono">{clientName}</span> para confirmar
+          </label>
+          <input
+            id={inputId}
+            type="text"
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            autoComplete="off"
+            className="w-full rounded-xl border border-foreground/15 bg-foreground/10 py-2.5 px-4 text-xs text-foreground outline-none focus:border-accent"
+          />
+        </div>
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="secondary" onClick={close}>Cancelar</Button>
+          <button
+            type="button"
+            onClick={confirm}
+            disabled={confirmText !== clientName || submitting}
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-danger px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:brightness-90 disabled:opacity-50 disabled:pointer-events-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <Trash2 size={14} />
+            {submitting ? "Eliminando…" : "Eliminar definitivamente"}
           </button>
         </div>
       </div>

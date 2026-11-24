@@ -1,5 +1,5 @@
 import { daysBetweenDates, todayBogota, isBeforeToday } from "../dateOnly";
-import { query } from "../db";
+import { query, withTransaction } from "../db";
 import { convertCurrency, type Currency } from "../currency";
 import { getClientProjects } from "./projects";
 import type { Client, ClientDetail, Invoice, Proposal } from "@/components/dashboard/types";
@@ -329,4 +329,87 @@ export async function getClientPortalUsers(clientId: number): Promise<Array<{ id
     [clientId]
   );
   return res.rows.map((r) => ({ id: Number(r.id), email: String(r.email), status: String(r.status) }));
+}
+
+export type ChangeClientEmailResult =
+  | { status: "ok"; before: string; after: string; revokedInvites: number; updatedProposals: number }
+  | { status: "unchanged" }
+  | { status: "not_found" }
+  | { status: "email_taken" }
+  | { status: "has_portal_user" };
+
+/**
+ * Corrige el correo de un cliente (típicamente un error de tipeo al crearlo). El correo es la clave con la que
+ * proyectos y propuestas aceptadas hacen el upsert, así que el cambio mantiene la coherencia en UNA transacción:
+ * - las propuestas ligadas por el correo viejo pasan al nuevo (no hay FK `proposals.client_id`);
+ * - las invitaciones al portal pendientes se revocan (su enlace apuntaba al correo equivocado);
+ * - se rechaza si el correo ya es de otro cliente, o si el cliente ya tiene una cuenta de portal activa (su inicio
+ *   de sesión sigue siendo el correo de la cuenta y quedarían desalineados).
+ */
+export async function changeClientEmail(id: number, newEmail: string): Promise<ChangeClientEmailResult> {
+  const next = newEmail.trim().toLowerCase();
+  return withTransaction(async (client) => {
+    const current = await client.query("SELECT email FROM clients WHERE id = $1 AND anonymized_at IS NULL FOR UPDATE;", [id]);
+    if (current.rows.length === 0) return { status: "not_found" } as const;
+    const before = String(current.rows[0].email);
+    if (before.toLowerCase() === next) return { status: "unchanged" } as const;
+
+    const portal = await client.query("SELECT 1 FROM users WHERE role = 'client' AND client_id = $1 LIMIT 1;", [id]);
+    if (portal.rows.length > 0) return { status: "has_portal_user" } as const;
+
+    const taken = await client.query("SELECT 1 FROM clients WHERE lower(email) = $1 AND id <> $2 LIMIT 1;", [next, id]);
+    if (taken.rows.length > 0) return { status: "email_taken" } as const;
+
+    await client.query("UPDATE clients SET email = $1 WHERE id = $2;", [next, id]);
+    const proposals = await client.query("UPDATE proposals SET client_email = $1 WHERE lower(client_email) = $2;", [next, before.toLowerCase()]);
+    const invites = await client.query("DELETE FROM invites WHERE client_id = $1 AND accepted_at IS NULL;", [id]);
+    return { status: "ok", before, after: next, revokedInvites: invites.rowCount ?? 0, updatedProposals: proposals.rowCount ?? 0 } as const;
+  });
+}
+
+export type DeleteClientResult =
+  | { status: "ok"; deleted: { id: number; name: string; email: string; company: string | null } }
+  | { status: "not_found" }
+  | { status: "has_projects"; projectCount: number };
+
+/**
+ * Elimina de verdad un cliente creado por error. Solo si NO tiene proyectos (los proyectos arrastran facturas,
+ * pagos y retainers, que por obligación contable no se borran; para esos casos existe "anonimizar"). Lo que cuelga
+ * del cliente y no tiene valor contable se va con él: su cuenta de portal, sus invitaciones y su bitácora.
+ */
+export async function deleteClient(id: number): Promise<DeleteClientResult> {
+  return withTransaction(async (client) => {
+    const found = await client.query("SELECT id, name, email, company FROM clients WHERE id = $1 FOR UPDATE;", [id]);
+    if (found.rows.length === 0) return { status: "not_found" } as const;
+
+    const projects = await client.query("SELECT count(*)::int AS n FROM projects WHERE client_id = $1;", [id]);
+    const projectCount = Number(projects.rows[0].n);
+    if (projectCount > 0) return { status: "has_projects", projectCount } as const;
+
+    await client.query("DELETE FROM clients WHERE id = $1;", [id]);
+    const row = found.rows[0];
+    return {
+      status: "ok",
+      deleted: { id: Number(row.id), name: String(row.name), email: String(row.email), company: row.company ? String(row.company) : null },
+    } as const;
+  });
+}
+
+export interface PendingPortalInvite {
+  id: string;
+  email: string;
+  expiresAt: string;
+}
+
+/** Invitación al portal sin usar y vigente (la más reciente), para mostrarla y poder reenviarla o revocarla. */
+export async function getClientPendingInvite(clientId: number): Promise<PendingPortalInvite | null> {
+  const res = await query(
+    `SELECT id, email, expires_at FROM invites
+     WHERE client_id = $1 AND accepted_at IS NULL AND expires_at > now()
+     ORDER BY created_at DESC LIMIT 1;`,
+    [clientId]
+  );
+  const row = res.rows[0];
+  if (!row) return null;
+  return { id: String(row.id), email: String(row.email), expiresAt: new Date(row.expires_at).toISOString() };
 }

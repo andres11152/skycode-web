@@ -4,12 +4,13 @@ import { withAuth } from "@/lib/withAuth";
 import { logAuditBestEffort } from "@/lib/audit";
 import { query } from "@/lib/db";
 import { getClientIp } from "@/lib/rateLimit";
-import { createClient, getClientsPage, updateClient } from "@/lib/queries/clients";
+import { changeClientEmail, createClient, getClientsPage, updateClient } from "@/lib/queries/clients";
 import { getUsdToCopRate } from "@/lib/exchangeRate";
 import { logError } from "@/lib/logger";
 
 const UpdateClientSchema = z.object({
   id: z.number().int().positive(),
+  email: z.email().trim().max(254).optional(),
   name: z.string().trim().min(1).max(255).optional(),
   company: z.string().trim().max(255).optional(),
   phone: z.string().trim().max(50).optional(),
@@ -39,8 +40,8 @@ export const GET = withAuth("clients:read", async (request) => {
 });
 
 /**
- * PATCH /api/clients - Edita los datos de contacto de un cliente (nunca
- * el email, ver lib/queries/clients.ts). Requiere clients:write.
+ * PATCH /api/clients - Edita los datos de un cliente, incluido el correo (con sus reglas en
+ * `changeClientEmail`: propuestas y accesos coherentes, nunca con cuenta de portal activa). Requiere clients:write.
  */
 export const PATCH = withAuth("clients:write", async (request, { session }) => {
   try {
@@ -48,10 +49,40 @@ export const PATCH = withAuth("clients:write", async (request, { session }) => {
     if (!parsed.success) {
       return NextResponse.json({ error: "Datos de solicitud inválidos." }, { status: 400 });
     }
-    const { id, ...data } = parsed.data;
+    const { id, email, ...data } = parsed.data;
+
+    if (email === undefined && Object.keys(data).length === 0) {
+      return NextResponse.json({ error: "Sin campos para actualizar." }, { status: 400 });
+    }
+
+    const ip = getClientIp(request);
+    if (email !== undefined) {
+      const change = await changeClientEmail(id, email);
+      if (change.status === "not_found") return NextResponse.json({ error: "Cliente no encontrado." }, { status: 404 });
+      if (change.status === "email_taken") {
+        return NextResponse.json({ error: "Ya existe otro cliente con ese correo." }, { status: 409 });
+      }
+      if (change.status === "has_portal_user") {
+        return NextResponse.json(
+          { error: "Este cliente ya tiene una cuenta de portal activa; su correo de acceso no se puede cambiar desde aquí." },
+          { status: 409 }
+        );
+      }
+      if (change.status === "ok") {
+        await logAuditBestEffort(query, {
+          actorId: session.id,
+          actorEmail: session.email,
+          action: "client.change_email",
+          entityType: "client",
+          entityId: id,
+          diff: { before: { email: change.before }, after: { email: change.after, revokedInvites: change.revokedInvites, updatedProposals: change.updatedProposals } },
+          ip,
+        });
+      }
+    }
 
     if (Object.keys(data).length === 0) {
-      return NextResponse.json({ error: "Sin campos para actualizar." }, { status: 400 });
+      return NextResponse.json({ success: true });
     }
 
     const result = await updateClient(id, data, { query });
@@ -66,7 +97,7 @@ export const PATCH = withAuth("clients:write", async (request, { session }) => {
       entityType: "client",
       entityId: id,
       diff: result,
-      ip: getClientIp(request),
+      ip,
     });
 
     return NextResponse.json({ success: true, client: result.after });

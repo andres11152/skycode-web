@@ -17,6 +17,7 @@ export type Permission =
   | "profitability:read"
   | "clients:read"
   | "clients:write"
+  | "clients:delete"
   | "tasks:read"
   | "tasks:write"
   | "support:read"
@@ -57,6 +58,7 @@ export const ALL_PERMISSIONS = [
   "profitability:read",
   "clients:read",
   "clients:write",
+  "clients:delete",
   "tasks:read",
   "tasks:write",
   "support:read",
@@ -150,6 +152,7 @@ const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Permission>> = {
     "profitability:read",
     "clients:read",
     "clients:write",
+    "clients:delete",
     "tasks:read",
     "tasks:write",
     "support:read",

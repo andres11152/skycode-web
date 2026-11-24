@@ -54,6 +54,9 @@ export async function POST(request: Request, { params }: RouteContext) {
       return NextResponse.json({ error: "Este cliente ya tiene una cuenta con ese correo." }, { status: 409 });
     }
 
+    // Un solo enlace vivo por cliente: reenviar deja sin efecto los anteriores (p. ej. los de un correo mal escrito).
+    await query("DELETE FROM invites WHERE client_id = $1 AND accepted_at IS NULL;", [client.id]);
+
     const inviteId = randomUUID();
     const expiresAt = new Date(Date.now() + INVITE_LIFETIME_MS);
     await createTeamInvite({ id: inviteId, email, role: "client", invitedBy: session.id, expiresAt, clientId: client.id });
@@ -93,5 +96,37 @@ export async function POST(request: Request, { params }: RouteContext) {
   } catch (error) {
     logError("❌ [API POST Client Portal Invite Error]", error);
     return NextResponse.json({ error: "Error al crear la invitación." }, { status: 500 });
+  }
+}
+
+/** DELETE /api/clients/[id]/portal-invite - Revoca la invitación pendiente (su enlace deja de funcionar). clients:write. */
+export async function DELETE(request: Request, { params }: RouteContext) {
+  const auth = await requireSession();
+  if ("error" in auth) return auth.error;
+  const { session } = auth;
+  if (!hasPermission(session.role, "clients:write")) {
+    return NextResponse.json({ error: "Permiso denegado." }, { status: 403 });
+  }
+
+  const clientId = Number((await params).id);
+  if (!Number.isInteger(clientId) || clientId <= 0) {
+    return NextResponse.json({ error: "ID de cliente inválido." }, { status: 400 });
+  }
+
+  try {
+    const res = await query("DELETE FROM invites WHERE client_id = $1 AND accepted_at IS NULL;", [clientId]);
+    await logAuditBestEffort(query, {
+      actorId: session.id,
+      actorEmail: session.email,
+      action: "client.portal_invite_revoke",
+      entityType: "client",
+      entityId: clientId,
+      diff: { after: { revoked: res.rowCount ?? 0 } },
+      ip: getClientIp(request),
+    });
+    return NextResponse.json({ success: true, revoked: res.rowCount ?? 0 });
+  } catch (error) {
+    logError("❌ [API DELETE Client Portal Invite Error]", error);
+    return NextResponse.json({ error: "Error al revocar la invitación." }, { status: 500 });
   }
 }

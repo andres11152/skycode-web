@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { requireSession } from "@/lib/withAuth";
 import { hasPermission } from "@/lib/rbac";
-import { getClientDetail } from "@/lib/queries/clients";
+import { deleteClient, getClientDetail } from "@/lib/queries/clients";
+import { logAuditBestEffort } from "@/lib/audit";
+import { getClientIp } from "@/lib/rateLimit";
+import { query } from "@/lib/db";
 import { getUsdToCopRate } from "@/lib/exchangeRate";
 import { logError } from "@/lib/logger";
 
@@ -40,5 +43,52 @@ export async function GET(_request: Request, { params }: RouteContext) {
   } catch (error) {
     logError("❌ [API GET Client Detail Error]", error);
     return NextResponse.json({ error: "Error al obtener el cliente." }, { status: 500 });
+  }
+}
+
+/**
+ * DELETE /api/clients/[id] - Elimina un cliente creado por error (exclusivo de admin, `clients:delete`).
+ * 409 si ya tiene proyectos: esos arrastran facturas y pagos que la ley obliga a conservar; para ese caso
+ * existe "anonimizar" (`data_privacy:manage`). Se lleva consigo su cuenta de portal, invitaciones y bitácora.
+ */
+export async function DELETE(request: Request, { params }: RouteContext) {
+  const auth = await requireSession();
+  if ("error" in auth) return auth.error;
+  const { session } = auth;
+  if (!hasPermission(session.role, "clients:delete")) {
+    return NextResponse.json({ error: "Permiso denegado." }, { status: 403 });
+  }
+
+  const clientId = parseClientId((await params).id);
+  if (clientId === null) {
+    return NextResponse.json({ error: "ID de cliente inválido." }, { status: 400 });
+  }
+
+  try {
+    const result = await deleteClient(clientId);
+    if (result.status === "not_found") {
+      return NextResponse.json({ error: "Cliente no encontrado." }, { status: 404 });
+    }
+    if (result.status === "has_projects") {
+      return NextResponse.json(
+        { error: `Este cliente tiene ${result.projectCount} proyecto(s) con facturación asociada y no se puede eliminar. Usa "Anonimizar" para quitar sus datos personales.` },
+        { status: 409 }
+      );
+    }
+
+    await logAuditBestEffort(query, {
+      actorId: session.id,
+      actorEmail: session.email,
+      action: "client.delete",
+      entityType: "client",
+      entityId: clientId,
+      diff: { before: result.deleted },
+      ip: getClientIp(request),
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    logError("❌ [API DELETE Client Error]", error);
+    return NextResponse.json({ error: "Error al eliminar el cliente." }, { status: 500 });
   }
 }

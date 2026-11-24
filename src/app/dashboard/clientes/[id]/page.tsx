@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { requireSessionOrRedirect } from "@/lib/withAuth";
 import { hasPermission } from "@/lib/rbac";
-import { getClientDetail, getClientPortalUsers } from "@/lib/queries/clients";
+import { getClientDetail, getClientPendingInvite, getClientPortalUsers } from "@/lib/queries/clients";
 import { getClientActivities } from "@/lib/queries/clientActivities";
 import { getUsdToCopRate } from "@/lib/exchangeRate";
 import { ClientDetailView } from "@/components/dashboard/ClientDetailView";
@@ -25,10 +25,11 @@ export default async function DashboardClientDetailPage({ params }: PageProps) {
   if (!Number.isInteger(clientId) || clientId <= 0) notFound();
 
   const usdToCopRate = await getUsdToCopRate();
-  const [client, activities, portalUsers] = await Promise.all([
+  const [client, activities, portalUsers, pendingInvite] = await Promise.all([
     getClientDetail(clientId, usdToCopRate),
     getClientActivities(clientId),
     getClientPortalUsers(clientId),
+    getClientPendingInvite(clientId),
   ]);
   if (!client) notFound();
 
@@ -39,6 +40,8 @@ export default async function DashboardClientDetailPage({ params }: PageProps) {
       canManagePrivacy={hasPermission(session.role, "data_privacy:manage")}
       initialActivities={activities}
       portalUsers={portalUsers}
+      pendingInvite={pendingInvite}
+      canDelete={hasPermission(session.role, "clients:delete")}
     />
   );
 }
