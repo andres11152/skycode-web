@@ -1,14 +1,20 @@
 "use client";
 
-import { useState, useTransition, useRef } from "react";
+import { useId, useState, useTransition, useRef } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Building2, Search,   ArrowRight, Layers, Receipt } from "lucide-react";
+import { Building2, Search, ArrowRight, Layers, Receipt, Plus } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { EmptyState } from "./EmptyState";
 import { formatMoney } from "@/lib/utils";
 import type { Client } from "./types";
 import { Pagination } from "./ui/Pagination";
+import { Modal } from "@/components/ui/Modal";
+import { Button } from "./ui/Button";
+import { Alert } from "./ui/Alert";
+import { Field } from "./ui/Field";
+import { useFeedback } from "./ui/Feedback";
+import { logError } from "@/lib/logger";
 
 interface ClientsTableProps {
   clients: Client[];
@@ -16,12 +22,14 @@ interface ClientsTableProps {
   page: number;
   pageSize: number;
   q: string;
+  canWrite?: boolean;
 }
 
-export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTableProps) {
+export function ClientsTable({ clients, total, page, pageSize, q, canWrite = false }: ClientsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [isNavigating, startNavigation] = useTransition();
+  const [newOpen, setNewOpen] = useState(false);
 
   const [searchInput, setSearchInput] = useState(q);
   const [prevQ, setPrevQ] = useState(q);
@@ -53,12 +61,21 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Clientes</h1>
-        <p className="mt-1 text-xs text-foreground/70 font-sans">
-          Directorio de clientes — proyectos, facturación y saldo pendiente en una vista
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Clientes</h1>
+          <p className="mt-1 text-xs text-foreground/70 font-sans">
+            Directorio de clientes — proyectos, facturación y saldo pendiente en una vista
+          </p>
+        </div>
+        {canWrite && (
+          <Button variant="accent" onClick={() => setNewOpen(true)}>
+            <Plus size={14} />
+            Nuevo cliente
+          </Button>
+        )}
       </div>
+      <NewClientModal open={newOpen} onClose={() => setNewOpen(false)} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <SpotlightCard>
@@ -168,5 +185,78 @@ export function ClientsTable({ clients, total, page, pageSize, q }: ClientsTable
         )}
       </div>
     </div>
+  );
+}
+
+
+function NewClientModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const router = useRouter();
+  const feedback = useFeedback();
+  const baseId = useId();
+  const [form, setForm] = useState({ name: "", email: "", company: "", phone: "" });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const close = () => {
+    onClose();
+    setError(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/clients", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          ...(form.company.trim() ? { company: form.company } : {}),
+          ...(form.phone.trim() ? { phone: form.phone } : {}),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "No se pudo crear el cliente.");
+        return;
+      }
+      feedback.toast({ message: "Cliente creado." });
+      setForm({ name: "", email: "", company: "", phone: "" });
+      onClose();
+      router.push(`/dashboard/clientes/${data.client.id}`);
+      router.refresh();
+    } catch (err) {
+      logError("Error al crear cliente", err);
+      setError("Ocurrió un error de red al crear el cliente.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={close} title="Nuevo cliente" closeLabel="Cerrar">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {error && <Alert tone="error">{error}</Alert>}
+        <Field id={`${baseId}-name`} label="Nombre" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} required autoComplete="off" />
+        <Field
+          id={`${baseId}-email`}
+          label="Correo"
+          type="email"
+          value={form.email}
+          onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+          hint="Es también el correo con el que entrará a su portal."
+          required
+          autoComplete="off"
+        />
+        <Field id={`${baseId}-company`} label="Empresa (opcional)" value={form.company} onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))} autoComplete="off" />
+        <Field id={`${baseId}-phone`} label="Teléfono (opcional)" type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} autoComplete="off" />
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="secondary" onClick={close}>Cancelar</Button>
+          <Button type="submit" variant="accent" disabled={saving}>{saving ? "Creando..." : "Crear cliente"}</Button>
+        </div>
+      </form>
+    </Modal>
   );
 }

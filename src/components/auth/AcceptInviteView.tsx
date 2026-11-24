@@ -10,7 +10,7 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { HoneypotField, SecurityCheckStatus } from "@/components/auth/AuthShieldFields";
 import { usePowChallenge } from "@/lib/usePowChallenge";
 
-export function AcceptInviteView({ token }: { token: string }) {
+export function AcceptInviteView({ token, audience = "team" }: { token: string; audience?: "team" | "client" }) {
   const router = useRouter();
   const nameId = useId();
   const passwordId = useId();
@@ -47,7 +47,7 @@ export function AcceptInviteView({ token }: { token: string }) {
 
       setSuccess(true);
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push(audience === "client" ? "/portal" : "/dashboard");
         router.refresh();
       }, 1000);
     } catch (err) {
@@ -68,7 +68,7 @@ export function AcceptInviteView({ token }: { token: string }) {
           </Link>
           <h1 className="text-2xl font-bold tracking-tight text-background">Activa tu cuenta</h1>
           <p className="mt-1.5 text-xs text-background/80 font-sans">
-            Te invitaron a unirte al panel interno de SKYCODE Agency
+            {audience === "client" ? "Te invitaron al portal de clientes de SKYCODE Agency" : "Te invitaron a unirte al panel interno de SKYCODE Agency"}
           </p>
         </div>
 
@@ -84,7 +84,7 @@ export function AcceptInviteView({ token }: { token: string }) {
                   <CheckCircle size={32} />
                 </div>
                 <h3 className="text-lg font-bold text-background">¡Cuenta activada!</h3>
-                <p className="text-xs text-background/70">Redirigiendo al panel...</p>
+                <p className="text-xs text-background/70">{audience === "client" ? "Redirigiendo a tu portal..." : "Redirigiendo al panel..."}</p>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="relative space-y-4">

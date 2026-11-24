@@ -226,15 +226,17 @@ export interface CreateInviteParams {
   role: string;
   invitedBy: number | string;
   expiresAt: Date;
+  /** Solo para invitaciones al portal de un cliente (`role: "client"`); null = invitación de equipo. */
+  clientId?: number | null;
 }
 
 /**
  * Inserta una invitación para unirse al equipo interno.
  */
-export async function createTeamInvite({ id, email, role, invitedBy, expiresAt }: CreateInviteParams) {
+export async function createTeamInvite({ id, email, role, invitedBy, expiresAt, clientId = null }: CreateInviteParams) {
   await query(
-    `INSERT INTO invites (id, email, role, invited_by, expires_at) VALUES ($1, $2, $3, $4, $5);`,
-    [id, email.toLowerCase(), role, invitedBy, expiresAt]
+    `INSERT INTO invites (id, email, role, invited_by, expires_at, client_id) VALUES ($1, $2, $3, $4, $5, $6);`,
+    [id, email.toLowerCase(), role, invitedBy, expiresAt, clientId]
   );
 }
 
@@ -242,6 +244,7 @@ export interface InviteRow {
   id: string;
   email: string;
   role: string;
+  clientId: number | null;
 }
 
 /**
@@ -249,7 +252,7 @@ export interface InviteRow {
  */
 export async function findValidInvite(token: string): Promise<InviteRow | null> {
   const res = await query(
-    `SELECT id, email, role FROM invites WHERE id = $1 AND accepted_at IS NULL AND expires_at > now();`,
+    `SELECT id, email, role, client_id FROM invites WHERE id = $1 AND accepted_at IS NULL AND expires_at > now();`,
     [token]
   );
   const row = res.rows[0];
@@ -259,6 +262,7 @@ export async function findValidInvite(token: string): Promise<InviteRow | null> 
     id: String(row.id),
     email: String(row.email),
     role: String(row.role),
+    clientId: row.client_id === null || row.client_id === undefined ? null : Number(row.client_id),
   };
 }
 
@@ -268,19 +272,21 @@ export interface AcceptInviteParams {
   email: string;
   passwordHash: string;
   role: string;
+  /** Cliente al que queda atado el usuario de portal; null para el equipo interno. */
+  clientId?: number | null;
 }
 
 /**
  * Crea el usuario de equipo y marca la invitación como aceptada dentro de una transacción.
  */
 export async function acceptTeamInviteAndCreateUser(
-  { token, name, email, passwordHash, role }: AcceptInviteParams,
+  { token, name, email, passwordHash, role, clientId = null }: AcceptInviteParams,
   dbRunner: QueryRunner
 ) {
   const userRes = await dbRunner.query(
-    `INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4)
+    `INSERT INTO users (name, email, password_hash, role, client_id) VALUES ($1, $2, $3, $4, $5)
      RETURNING id, name, email, role;`,
-    [name, email, passwordHash, role]
+    [name, email, passwordHash, role, clientId]
   );
   const newUser = userRes.rows[0];
 

@@ -28,5 +28,5 @@ export default async function DashboardClientsPage({ searchParams }: PageProps) 
   const usdToCopRate = await getUsdToCopRate();
   const { clients, total } = await getClientsPage({ q, page, pageSize: PAGE_SIZE, usdToCopRate });
 
-  return <ClientsTable clients={clients} total={total} page={page} pageSize={PAGE_SIZE} q={q} />;
+  return <ClientsTable clients={clients} total={total} page={page} pageSize={PAGE_SIZE} q={q} canWrite={hasPermission(session.role, "clients:write")} />;
 }

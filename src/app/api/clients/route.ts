@@ -4,7 +4,7 @@ import { withAuth } from "@/lib/withAuth";
 import { logAuditBestEffort } from "@/lib/audit";
 import { query } from "@/lib/db";
 import { getClientIp } from "@/lib/rateLimit";
-import { getClientsPage, updateClient } from "@/lib/queries/clients";
+import { createClient, getClientsPage, updateClient } from "@/lib/queries/clients";
 import { getUsdToCopRate } from "@/lib/exchangeRate";
 import { logError } from "@/lib/logger";
 
@@ -73,5 +73,45 @@ export const PATCH = withAuth("clients:write", async (request, { session }) => {
   } catch (error) {
     logError("❌ [API PATCH Client Error]", error);
     return NextResponse.json({ error: "Error al actualizar el cliente." }, { status: 500 });
+  }
+});
+
+const CreateClientSchema = z.object({
+  name: z.string().trim().min(1).max(255),
+  email: z.email().trim().max(254),
+  company: z.string().trim().max(255).optional(),
+  phone: z.string().trim().max(50).optional(),
+});
+
+/**
+ * POST /api/clients - Crea un cliente a mano (por ejemplo para darle acceso al portal antes de su primer
+ * proyecto). Requiere clients:write. 409 si ya existe un cliente con ese correo.
+ */
+export const POST = withAuth("clients:write", async (request, { session }) => {
+  try {
+    const parsed = CreateClientSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Nombre o correo inválido." }, { status: 400 });
+    }
+
+    const client = await createClient(parsed.data, { query });
+    if (!client) {
+      return NextResponse.json({ error: "Ya existe un cliente con ese correo." }, { status: 409 });
+    }
+
+    await logAuditBestEffort(query, {
+      actorId: session.id,
+      actorEmail: session.email,
+      action: "client.create",
+      entityType: "client",
+      entityId: client.id,
+      diff: { after: client },
+      ip: getClientIp(request),
+    });
+
+    return NextResponse.json({ success: true, client }, { status: 201 });
+  } catch (error) {
+    logError("❌ [API POST Clients Error]", error);
+    return NextResponse.json({ error: "Error al crear el cliente." }, { status: 500 });
   }
 });

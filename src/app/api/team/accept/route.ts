@@ -77,6 +77,7 @@ export async function POST(request: Request) {
           email: invite.email,
           passwordHash,
           role: invite.role,
+          clientId: invite.clientId,
         },
         client
       );

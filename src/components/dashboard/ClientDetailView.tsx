@@ -15,6 +15,8 @@ import {
   Download,
   ShieldAlert,
   UserX,
+  KeyRound,
+  Copy,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Modal } from "@/components/ui/Modal";
@@ -34,11 +36,13 @@ export function ClientDetailView({
   client,
   canWrite,
   canManagePrivacy,
+  portalUsers,
   initialActivities,
 }: {
   client: ClientDetail;
   canWrite: boolean;
   canManagePrivacy: boolean;
+  portalUsers: Array<{ id: number; email: string; status: string }>;
   initialActivities: ClientActivity[];
 }) {
   const router = useRouter();
@@ -54,6 +58,28 @@ export function ClientDetailView({
   const [anonymizeOpen, setAnonymizeOpen] = useState(false);
 
   const feedback = useFeedback();
+
+  const [inviting, setInviting] = useState(false);
+  const [inviteResult, setInviteResult] = useState<{ url: string; emailSent: boolean; email: string } | null>(null);
+  const handlePortalInvite = async () => {
+    setInviting(true);
+    try {
+      const res = await fetch(`/api/clients/${client.id}/portal-invite`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        feedback.toast({ tone: "error", message: data.error || "No se pudo crear la invitación." });
+        return;
+      }
+      setInviteResult({ url: data.inviteUrl, emailSent: Boolean(data.emailSent), email: data.email });
+      feedback.toast({ message: data.emailSent ? "Invitación enviada por correo." : "Invitación creada. Copia el enlace y envíaselo." });
+    } catch (err) {
+      logError("Error al invitar al portal", err);
+      feedback.toast({ tone: "error", message: "Error de red al crear la invitación." });
+    } finally {
+      setInviting(false);
+    }
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     setError(null);
@@ -199,6 +225,60 @@ export function ClientDetailView({
 
         {error && <Alert tone="error" className="mt-3">{error}</Alert>}
       </div>
+
+      {canWrite && (
+        <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-3">
+          <h2 className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-foreground/70">
+            <KeyRound size={14} />
+            Acceso al portal del cliente
+          </h2>
+          {portalUsers.length > 0 ? (
+            <ul className="space-y-1 text-xs text-foreground/80">
+              {portalUsers.map((u) => (
+                <li key={u.id} className="flex items-center gap-2 font-mono">
+                  {u.email}
+                  <Badge tone={u.status === "active" ? "success" : "neutral"}>{u.status === "active" ? "Activo" : "Desactivado"}</Badge>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-xs text-foreground/70">
+              Desde el portal este cliente ve el avance de sus proyectos, abre tickets de soporte, sube documentos, revisa facturas y aprueba
+              entregables. Le enviamos un enlace a <span className="font-mono">{client.email}</span> para que cree su contraseña.
+            </p>
+          )}
+          {portalUsers.length === 0 && (
+            <Button variant="accent" onClick={handlePortalInvite} disabled={inviting}>
+              <KeyRound size={13} />
+              {inviting ? "Creando invitación..." : "Invitar al portal"}
+            </Button>
+          )}
+          {inviteResult && (
+            <Alert tone="success">
+              <p>
+                {inviteResult.emailSent
+                  ? `Enviamos el enlace a ${inviteResult.email}. También lo puedes copiar (válido 7 días):`
+                  : `El correo no se pudo enviar. Copia este enlace y envíaselo a ${inviteResult.email} (válido 7 días):`}
+              </p>
+              <div className="mt-2 flex items-center gap-2">
+                <input readOnly value={inviteResult.url} aria-label="Enlace de invitación" className="min-h-11 w-full rounded-lg border border-foreground/20 bg-background px-3 text-xs font-mono text-foreground" />
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    navigator.clipboard.writeText(inviteResult.url).then(
+                      () => feedback.toast({ message: "Enlace copiado." }),
+                      () => feedback.toast({ tone: "error", message: "No se pudo copiar." })
+                    );
+                  }}
+                >
+                  <Copy size={13} />
+                  Copiar
+                </Button>
+              </div>
+            </Alert>
+          )}
+        </div>
+      )}
 
       {canManagePrivacy && (
         <div className="rounded-xl border border-foreground/10 bg-background shadow-sm shadow-black/5 p-5 space-y-3">

@@ -281,3 +281,52 @@ export async function updateClient(id: number, data: UpdateClientData, dbRunner:
 
   return { before: before.rows[0], after: res.rows[0] };
 }
+
+export interface CreateClientData {
+  name: string;
+  email: string;
+  company?: string;
+  phone?: string;
+}
+
+/**
+ * Crea un cliente a mano (sin proyecto ni propuesta todavía). El correo es la clave única: un proyecto o una
+ * propuesta aceptada con ese mismo correo se enlaza después a este mismo cliente (`ON CONFLICT (email)`), así que
+ * crearlo antes no duplica nada. `null` si ya existe un cliente con ese correo.
+ */
+export async function createClient(data: CreateClientData, dbRunner: QueryRunner) {
+  const res = await dbRunner.query(
+    `INSERT INTO clients (name, email, company, phone)
+     VALUES ($1, $2, $3, $4)
+     ON CONFLICT (email) DO NOTHING
+     RETURNING id, name, email, company, phone;`,
+    [data.name, data.email.toLowerCase(), data.company ?? null, data.phone ?? null]
+  );
+  return res.rows[0] ?? null;
+}
+
+export interface ClientForPortalInvite {
+  id: number;
+  name: string;
+  email: string;
+}
+
+/** Cliente activo (no anonimizado) para invitarlo al portal. */
+export async function getClientForPortalInvite(id: number): Promise<ClientForPortalInvite | null> {
+  const res = await query(
+    "SELECT id, name, email FROM clients WHERE id = $1 AND anonymized_at IS NULL;",
+    [id]
+  );
+  const row = res.rows[0];
+  if (!row) return null;
+  return { id: Number(row.id), name: String(row.name), email: String(row.email) };
+}
+
+/** Usuarios de portal ya activos de un cliente (para avisar en la ficha y no invitar dos veces). */
+export async function getClientPortalUsers(clientId: number): Promise<Array<{ id: number; email: string; status: string }>> {
+  const res = await query(
+    "SELECT id, email, status FROM users WHERE role = 'client' AND client_id = $1 ORDER BY id;",
+    [clientId]
+  );
+  return res.rows.map((r) => ({ id: Number(r.id), email: String(r.email), status: String(r.status) }));
+}
